@@ -52,16 +52,25 @@ public class CevNetworkCreator {
         // 1) when the app creates a network for the first time
         // 2) when the user has destroyed every network in the root network
         if (coreStatus.getCyRootNetwork() == null || coreStatus.getCyRootNetwork().getSharedNetworkTable() == null) {
+            //all networks were deleted, set count to zero
+            coreStatus.resetNetworkCount();
+
             //here a subnetwork is created and then promoted to a root network
             subNetwork = (CySubNetwork) cyNetworkFactory.createNetwork();
-            //promote the current network to a root network, add the root network to the model
-            coreStatus.setCyRootNetwork(cyRootNetworkManager.getRootNetwork(subNetwork));
-            coreStatus.resetNetworkCount();
             //set name for the subnetwork
             subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
+
+            //promote the current network to a root network
+            CyRootNetwork rootNetwork = cyRootNetworkManager.getRootNetwork(subNetwork);
+            //set name for root network
+            rootNetwork.getRow(rootNetwork).set(CyRootNetwork.NAME, Model.APP_NAME);
+
+            //update the model
+            coreStatus.setCyRootNetwork(rootNetwork);
         } else {
             //subsequent networks are added to same root network
             subNetwork = coreStatus.getCyRootNetwork().addSubNetwork();
+            //set name for the subnetwork
             subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
         }
 

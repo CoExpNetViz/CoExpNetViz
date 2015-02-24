@@ -10,6 +10,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
@@ -55,7 +56,10 @@ public class CyActivator extends AbstractCyActivator {
 
         //register OSGi services
         registerAllServices(context, action, new Properties());
-        registerService(context, new NetworkEventListener(model), NetworkAboutToBeDestroyedListener.class, new Properties());
+
+        NetworkEventListener networkEventListener = new NetworkEventListener(model);
+        registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
+        registerService(context, networkEventListener, NetworkAddedListener.class, new Properties());
 
         //for debugging: print message if the app started succesfully
         System.out.println(Model.APP_NAME + " started succesfully");

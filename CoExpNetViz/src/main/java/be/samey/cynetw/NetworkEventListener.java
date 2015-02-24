@@ -4,13 +4,15 @@ import be.samey.model.Model;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
  *
  * @author sam
  */
-public class NetworkEventListener implements NetworkAboutToBeDestroyedListener {
+public class NetworkEventListener implements NetworkAboutToBeDestroyedListener, NetworkAddedListener {
 
     private Model model;
 
@@ -31,10 +33,15 @@ public class NetworkEventListener implements NetworkAboutToBeDestroyedListener {
         //forget the destroyed network and its associated visual styles
         model.getCoreStatus().getSubNetworkStylesMap().remove(doomedNetwork);
 
-//        System.out.println("About to be destroyed:");
-//        System.out.println(natbde.getNetwork().getRow(natbde.getNetwork()).get("name", String.class));
-//        System.out.println("Networks are:");
-//        System.out.println(natbde.getSource().getNetworkSet());
+    }
+
+    @Override
+    public void handleEvent(NetworkAddedEvent nae) {
+//        CyNetwork network = nae.getNetwork();
+//        network.getRow(network).set(CyNetwork.NAME, Model.APP_NAME + model.getCoreStatus().getNetworkCount());
+//
+//        //for debugging
+//        System.out.println("name changed");
     }
 
 }

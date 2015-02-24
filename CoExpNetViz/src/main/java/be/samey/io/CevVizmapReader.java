@@ -29,13 +29,10 @@ public class CevVizmapReader {
         int i = 0;
         for (VisualStyle vs : vsSet) {
             //chagne the name to somthing meaningful
-            String styleName = String.format("%s_%d", networkName, i);
+            String styleName = String.format("%s-%d", networkName, i);
             vs.setTitle(styleName);
             //makes style available in styles tab of the main Cytoscape window
             visualMappingManager.addVisualStyle(vs);
-
-            //for debugging
-            System.out.println("added style: " + styleName);
 
             i++;
         }

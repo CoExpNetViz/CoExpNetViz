@@ -455,7 +455,7 @@ public class TabOneSpecies extends JPanel implements Observer {
             CevNetworkReader.readSIF(sifPath, cn);
             CevTableReader.readNOA(noaPath, cn, model);
             CevTableReader.readEDA(edaPath, cn, model);
-            CevVizmapReader.readVIZ(vizPath, model);
+            CevVizmapReader.readVIZ(vizPath, cn, model);
 
             model.getServices().getCyNetworkManager().addNetwork(cn);
         } catch (IOException ex) {

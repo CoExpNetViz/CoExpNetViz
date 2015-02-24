@@ -13,12 +13,6 @@ import java.util.Observable;
  */
 public class GuiStatus extends Observable {
 
-    private final Model model;
-
-    public GuiStatus(Model model) {
-        this.model = model;
-    }
-
     //tab 1: one species
     private boolean chooseSpecies;
     private boolean inpBait;

@@ -15,7 +15,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public class CevVizmapReader {
 
-    public static void readVIZ(Path path, Model model) {
+    public static void readVIZ(Path path, CyNetwork network, Model model) {
         //get required services
         LoadVizmapFileTaskFactory loadVizmapFileTaskFactory = model.getServices().getLoadVizmapFileTaskFactory();
         VisualMappingManager visualMappingManager = model.getServices().getVisualMappingManager();
@@ -25,9 +25,22 @@ public class CevVizmapReader {
         Set<VisualStyle> vsSet = loadVizmapFileTaskFactory.loadStyles(file);
 
         //add them to the available styles
+        String networkName = network.getRow(network).get("name", String.class);
+        int i = 0;
         for (VisualStyle vs : vsSet) {
+            //chagne the name to somthing meaningful
+            String styleName = String.format("%s_%d", networkName, i);
+            vs.setTitle(styleName);
+            //makes style available in styles tab of the main Cytoscape window
             visualMappingManager.addVisualStyle(vs);
+
+            //for debugging
+            System.out.println("added style: " + styleName);
+
+            i++;
         }
+        //remeber that these styles belongs to this network
+        model.getCoreStatus().getSubNetworkStylesMap().put(network, vsSet);
     }
 
 }

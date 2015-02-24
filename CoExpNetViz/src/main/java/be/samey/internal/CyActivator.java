@@ -1,5 +1,6 @@
 package be.samey.internal;
 
+import be.samey.cynetw.NetworkEventListener;
 import be.samey.model.Model;
 import java.util.Properties;
 
@@ -8,6 +9,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
@@ -23,7 +25,7 @@ import org.osgi.framework.BundleContext;
  * @author Sam De Meyer
  */
 public class CyActivator extends AbstractCyActivator {
-    
+
     @Override
     public void start(BundleContext context) throws Exception {
 
@@ -51,11 +53,9 @@ public class CyActivator extends AbstractCyActivator {
         //create the menu action (menu entry for the app)
         CevMenuAction action = new CevMenuAction(cyApplicationManager, Model.APP_NAME, model);
 
-        //still have to figure this out
-        Properties properties = new Properties();
-
         //register OSGi services
-        registerAllServices(context, action, properties);
+        registerAllServices(context, action, new Properties());
+        registerService(context, new NetworkEventListener(model), NetworkAboutToBeDestroyedListener.class, new Properties());
 
         //for debugging: print message if the app started succesfully
         System.out.println(Model.APP_NAME + " started succesfully");

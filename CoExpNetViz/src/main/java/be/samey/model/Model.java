@@ -12,9 +12,9 @@ package be.samey.model;
 public class Model {
 
     public Model() {
-        services = new Services(this);
-        guiStatus = new GuiStatus(this);
-        coreStatus = new CoreStatus(this);
+        services = new Services();
+        guiStatus = new GuiStatus();
+        coreStatus = new CoreStatus();
     }
 
     //properties of the app that do not change during execution

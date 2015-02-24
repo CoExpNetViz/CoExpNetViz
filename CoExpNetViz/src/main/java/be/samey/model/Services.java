@@ -20,12 +20,6 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
  */
 public class Services {
 
-    private Model model;
-
-    public Services(Model model) {
-        this.model = model;
-    }
-
     private CyApplicationManager cyApplicationManager;
     private CyNetworkFactory cyNetworkFactory;
     private CyNetworkManager cyNetworkManager;

@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.gui;
 
 import be.samey.cynetw.CevNetworkCreator;
-import be.samey.io.CevNetworkReader;
-import be.samey.io.CevTableReader;
-import be.samey.io.CevVizmapReader;
 import be.samey.model.CoreStatus;
 import be.samey.model.GuiStatus;
 import be.samey.model.Model;
@@ -23,8 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -42,7 +32,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
-import org.cytoscape.model.CyNetwork;
 
 /**
  *
@@ -323,11 +312,11 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         //reset radiobuttons
         chooseSpeciesRb.setSelected(true);
-        guiStatus.setChooseSpecies(chooseSpeciesRb.isSelected());
+        guiStatus.setChooseSpeciesSelected(chooseSpeciesRb.isSelected());
         inpBaitRb.setSelected(true);
-        guiStatus.setInpBait(inpBaitRb.isSelected());
+        guiStatus.setInpBaitSelected(inpBaitRb.isSelected());
         saveFileChb.setSelected(false);
-        guiStatus.setSaveFile(saveFileChb.isSelected());
+        guiStatus.setSaveFileSelected(saveFileChb.isSelected());
 
         //reset cutoffs
         nCutoffSp.setValue(guiStatus.getDefaultNegCutoff());
@@ -348,27 +337,27 @@ public class TabOneSpecies extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
 
         //update: choose species or use own data
-        boolean chooseSpecies = guiStatus.getChooseSpecies();
-        chooseSpeciesLbl.setEnabled(chooseSpecies);
-        chooseSpeciesCb.setEnabled(chooseSpecies);
-        ownDataLbl.setEnabled(!chooseSpecies);
-        ownDataExpTf.setEnabled(!chooseSpecies);
-        ownDataExpBtn.setEnabled(!chooseSpecies);
-        ownDataDescTf.setEnabled(!chooseSpecies);
-        ownDataDescBtn.setEnabled(!chooseSpecies);
+        boolean chooseSpeciesSelected = guiStatus.isChooseSpeciesSelected();
+        chooseSpeciesLbl.setEnabled(chooseSpeciesSelected);
+        chooseSpeciesCb.setEnabled(chooseSpeciesSelected);
+        ownDataLbl.setEnabled(!chooseSpeciesSelected);
+        ownDataExpTf.setEnabled(!chooseSpeciesSelected);
+        ownDataExpBtn.setEnabled(!chooseSpeciesSelected);
+        ownDataDescTf.setEnabled(!chooseSpeciesSelected);
+        ownDataDescBtn.setEnabled(!chooseSpeciesSelected);
 
         //update: input bait genes or upload a file
-        boolean inpBait = guiStatus.getInpBait();
-        inpBaitLbl.setEnabled(inpBait);
-        inpBaitTa.setEnabled(inpBait);
-        fileBaitLbl.setEnabled(!inpBait);
-        fileBaitTf.setEnabled(!inpBait);
-        fileBaitBtn.setEnabled(!inpBait);
+        boolean inpBaitSelected = guiStatus.isInpBaitSelected();
+        inpBaitLbl.setEnabled(inpBaitSelected);
+        inpBaitTa.setEnabled(inpBaitSelected);
+        fileBaitLbl.setEnabled(!inpBaitSelected);
+        fileBaitTf.setEnabled(!inpBaitSelected);
+        fileBaitBtn.setEnabled(!inpBaitSelected);
 
         //update: save file or not
-        boolean saveFile = guiStatus.getSaveFile();
-        saveFileTf.setEnabled(saveFile);
-        saveFileBtn.setEnabled(saveFile);
+        boolean saveFileSelected = guiStatus.isSaveFileSelected();
+        saveFileTf.setEnabled(saveFileSelected);
+        saveFileBtn.setEnabled(saveFileSelected);
     }
 
     //some action listeners
@@ -377,7 +366,7 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            guiStatus.setChooseSpecies(chooseSpeciesRb.isSelected());
+            guiStatus.setChooseSpeciesSelected(chooseSpeciesRb.isSelected());
         }
 
     }
@@ -387,7 +376,7 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            guiStatus.setInpBait(inpBaitRb.isSelected());
+            guiStatus.setInpBaitSelected(inpBaitRb.isSelected());
         }
 
     }
@@ -397,7 +386,7 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            guiStatus.setSaveFile(saveFileChb.isSelected());
+            guiStatus.setSaveFileSelected(saveFileChb.isSelected());
         }
 
     }
@@ -419,16 +408,15 @@ public class TabOneSpecies extends JPanel implements Observer {
         public void actionPerformed(ActionEvent e) {
             //check if all paths entered by the user are correct
             Path p1, p2, p3, p4;
-            p1 = Paths.get(ownDataExpTf.getText());
             try {
-                if (!guiStatus.getChooseSpecies()) {
+                if (!guiStatus.isChooseSpeciesSelected()) {
                     p1 = Paths.get(ownDataExpTf.getText()).toRealPath();
                     p2 = Paths.get(ownDataDescTf.getText()).toRealPath();
                 }
-                if (!guiStatus.getInpBait()) {
+                if (!guiStatus.isInpBaitSelected()) {
                     p3 = Paths.get(fileBaitTf.getText()).toRealPath();
                 }
-                if (!guiStatus.getSaveFile()) {
+                if (!guiStatus.isSaveFileSelected()) {
                     p4 = Paths.get(saveFileTf.getText()).toRealPath();
                 }
             } catch (IOException ex) {
@@ -437,28 +425,7 @@ public class TabOneSpecies extends JPanel implements Observer {
             }
 
             //for debugging
-            test();
-        }
-
-    }
-
-    //for debugging
-    private void test() {
-        try {
-            Path sifPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/Test_Network_File.sif");
-            Path noaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/nodeattr.txt");
-            Path edaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/edgeattr.txt");
-            Path vizPath = Paths.get("/home/sam/Documents/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/BaitStyles.xml");
-
-            CevNetworkCreator cnc = new CevNetworkCreator(model);
-            CyNetwork cn = cnc.createSubNetwork();
-            CevNetworkReader.readSIF(sifPath, cn);
-            CevTableReader.readNOA(noaPath, cn, model);
-            CevTableReader.readEDA(edaPath, cn, model);
-
-            model.getServices().getCyNetworkManager().addNetwork(cn);
-        } catch (IOException ex) {
-            Logger.getLogger(TabOneSpecies.class.getName()).log(Level.SEVERE, null, ex);
+            new CevNetworkCreator(model).test();
         }
 
     }

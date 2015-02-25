@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.model;
 
 import java.util.Observable;
@@ -14,39 +9,41 @@ import java.util.Observable;
 public class GuiStatus extends Observable {
 
     //tab 1: one species
-    private boolean chooseSpecies;
-    private boolean inpBait;
-    private boolean saveFile;
+    private boolean chooseSpeciesSelected;
+    private boolean inpBaitSelected;
+    private boolean saveFileSelected;
 
-    public void setChooseSpecies(boolean chooseSpecies) {
+    public void setChooseSpeciesSelected(boolean chooseSpeciesSelected) {
         //TODO: only do this part if there was actually a change
-        this.chooseSpecies = chooseSpecies;
+        this.chooseSpeciesSelected = chooseSpeciesSelected;
         setChanged();
         notifyObservers();
     }
 
-    public boolean getChooseSpecies() {
-        return chooseSpecies;
+    public boolean isChooseSpeciesSelected() {
+        return chooseSpeciesSelected;
     }
 
-    public void setInpBait(boolean inpBait) {
-        this.inpBait = inpBait;
+    public void setInpBaitSelected(boolean inpBaitSelected) {
+        //TODO: only do this part if there was actually a change
+        this.inpBaitSelected = inpBaitSelected;
         setChanged();
         notifyObservers();
     }
 
-    public boolean getInpBait() {
-        return inpBait;
+    public boolean isInpBaitSelected() {
+        return inpBaitSelected;
     }
 
-    public void setSaveFile(boolean saveFile) {
-        this.saveFile = saveFile;
+    public void setSaveFileSelected(boolean saveFileSelected) {
+        //TODO: only do this part if there was actually a change
+        this.saveFileSelected = saveFileSelected;
         setChanged();
         notifyObservers();
     }
 
-    public boolean getSaveFile() {
-        return saveFile;
+    public boolean isSaveFileSelected() {
+        return saveFileSelected;
     }
 
     //all tabs

@@ -1,5 +1,9 @@
 package be.samey.model;
 
+import be.samey.gui.SpeciesEntry;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -8,21 +12,12 @@ import java.util.Observable;
  */
 public class GuiStatus extends Observable {
 
-    //tab 1: one species
-    private boolean chooseSpeciesSelected;
     private boolean inpBaitSelected;
     private boolean saveFileSelected;
+    private double defaultNegCutoff = -0.6;
+    private double defaultPosCutoff = 0.8;
 
-    public void setChooseSpeciesSelected(boolean chooseSpeciesSelected) {
-        //TODO: only do this part if there was actually a change
-        this.chooseSpeciesSelected = chooseSpeciesSelected;
-        setChanged();
-        notifyObservers();
-    }
-
-    public boolean isChooseSpeciesSelected() {
-        return chooseSpeciesSelected;
-    }
+    private List<SpeciesEntry> speciesList = new ArrayList<SpeciesEntry>();
 
     public void setInpBaitSelected(boolean inpBaitSelected) {
         //TODO: only do this part if there was actually a change
@@ -46,9 +41,33 @@ public class GuiStatus extends Observable {
         return saveFileSelected;
     }
 
-    //all tabs
-    private double defaultNegCutoff = -0.6;
-    private double defaultPosCutoff = 0.8;
+    public void addSpecies(SpeciesEntry se) {
+        //only do something if list changed
+        if (speciesList.add(se)) {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void removeSpecies(SpeciesEntry se) {
+        //only do something if list changed
+        if (speciesList.remove(se)) {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void removeAllSpecies() {
+        //only do something if list changed
+        if (speciesList.removeAll(speciesList)) {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public Iterator<SpeciesEntry> getSpeciesIterator() {
+        return speciesList.iterator();
+    }
 
     public double getDefaultNegCutoff() {
         return defaultNegCutoff;

@@ -32,7 +32,7 @@ public class RootTabbedPane extends JTabbedPane {
                 addTab("Two Species", tabTwo);
                 addTab("Multiple Species", tabMlt);
 
-                setPreferredSize(new Dimension(500, 600));
+                setPreferredSize(new Dimension(500, 700));
         }
 
 }

@@ -4,7 +4,6 @@ import be.samey.cynetw.CevNetworkCreator;
 import be.samey.model.CoreStatus;
 import be.samey.model.GuiStatus;
 import be.samey.model.Model;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,8 +13,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -23,6 +20,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -39,12 +37,23 @@ import javax.swing.UIManager;
  *
  * @author sam
  */
-public class TabOneSpecies extends JPanel implements Observer {
+public class TabOneSpecies_backup extends JPanel implements Observer {
 
     private final Model model;
     private final GuiStatus guiStatus;
+    private final CoreStatus coreStatus;
 
-    //input baits
+    private JRadioButton chooseSpeciesRb;
+    private JRadioButton ownDataRb;
+    private JLabel chooseSpeciesLbl;
+    private JComboBox chooseSpeciesCb;
+    private JLabel ownDataLbl;
+    private JPanel ownDataExpPnl;
+    private JTextField ownDataExpTf;
+    private JButton ownDataExpBtn;
+    private JPanel ownDataDescPnl;
+    private JTextField ownDataDescTf;
+    private JButton ownDataDescBtn;
     private JRadioButton inpBaitRb;
     private JRadioButton fileBaitRb;
     private JLabel inpBaitLbl;
@@ -54,12 +63,6 @@ public class TabOneSpecies extends JPanel implements Observer {
     private JPanel fileBaitPnl;
     private JTextField fileBaitTf;
     private JButton fileBaitBtn;
-    //choose species
-    private JLabel chooseSpeciesLbl;
-    private JScrollPane chooseSpeciesSp;
-    private JPanel chooseSpeciesPnl;
-    private JButton addSpeciesBtn;
-    //choose cutoff
     private JLabel chooseCutoffLbl;
     private JPanel cutoffPnl;
     private JLabel nCutoffLbl;
@@ -74,18 +77,48 @@ public class TabOneSpecies extends JPanel implements Observer {
     private JButton resetBtn;
 
     private ButtonGroup inpBaitOrfileBaitBg;
+    private ButtonGroup chooseSpeciesOrOwnDataBg;
     private SpinnerModel nCutoffSm;
     private SpinnerModel pCutoffSm;
 
-    public TabOneSpecies(Model model) {
+    public TabOneSpecies_backup(Model model) {
         this.model = model;
         this.guiStatus = model.getGuiStatus();
+        this.coreStatus = model.getCoreStatus();
         guiStatus.addObserver(this);
         constructGui();
         refreshGui();
     }
 
     private void constructGui() {
+        //make all Jcomponents
+        //top two radio buttons
+        chooseSpeciesRb = new JRadioButton("Choose species");
+        chooseSpeciesRb.addActionListener(new ChooseSpeciesOrOwnDataAl());
+        ownDataRb = new JRadioButton("Upload own data");
+        ownDataRb.addActionListener(new ChooseSpeciesOrOwnDataAl());
+        chooseSpeciesOrOwnDataBg = new ButtonGroup();
+        chooseSpeciesOrOwnDataBg.add(chooseSpeciesRb);
+        chooseSpeciesOrOwnDataBg.add(ownDataRb);
+        //choose species label and combobox
+        chooseSpeciesLbl = new JLabel("Choose species");
+        chooseSpeciesCb = new JComboBox(Model.SPECIES_CHOICES);
+        //upload own data label, textfield and button
+        ownDataLbl = new JLabel("Upload own data");
+        ownDataExpPnl = new JPanel();
+        ownDataExpPnl.setLayout(new BoxLayout(ownDataExpPnl, BoxLayout.LINE_AXIS));
+        ownDataExpTf = new JTextField();
+        ownDataExpTf.setToolTipText("Path to expression data file");
+        ownDataExpBtn = new JButton("Browse");
+        ownDataExpBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
+        ownDataExpBtn.addActionListener(new BrowseAl(this, ownDataExpTf, "Choose expression data file", BrowseAl.FILE));
+        ownDataDescPnl = new JPanel();
+        ownDataDescPnl.setLayout(new BoxLayout(ownDataDescPnl, BoxLayout.LINE_AXIS));
+        ownDataDescTf = new JTextField();
+        ownDataDescTf.setToolTipText("Path to gene description data file (optional)");
+        ownDataDescBtn = new JButton("Browse");
+        ownDataDescBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
+        ownDataDescBtn.addActionListener(new BrowseAl(this, ownDataDescTf, "Choose gene description file", BrowseAl.FILE));
         //input bait genes or choose file
         inpBaitRb = new JRadioButton("Input bait genes");
         inpBaitRb.addActionListener(new ChooseSpeciesOrOwnDataBgAl());
@@ -107,15 +140,6 @@ public class TabOneSpecies extends JPanel implements Observer {
         fileBaitBtn = new JButton("Browse");
         fileBaitBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
         fileBaitBtn.addActionListener(new BrowseAl(this, fileBaitTf, "Choose file with bait genes", BrowseAl.FILE));
-        //choose species
-        chooseSpeciesLbl = new JLabel("<html>Choose which data sets to use,<br>"
-            + "pick one dataset for every species you have specified in the bait genes");
-        chooseSpeciesPnl = new JPanel();
-        chooseSpeciesPnl.setLayout(new BoxLayout(chooseSpeciesPnl, BoxLayout.PAGE_AXIS));
-        chooseSpeciesSp = new JScrollPane(chooseSpeciesPnl);
-        chooseSpeciesSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        addSpeciesBtn = new JButton("Add species");
-        addSpeciesBtn.addActionListener(new addSpeciesAl());
         //choose cutoffs
         chooseCutoffLbl = new JLabel("Choose cutoff");
         cutoffPnl = new JPanel();
@@ -148,25 +172,67 @@ public class TabOneSpecies extends JPanel implements Observer {
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.insets = new Insets(10, 0, 0, 0);
         c.weightx = 0.5;
-        //----------------------------------------------------------------------
-        //input bait genes
-        //top two radio buttons (input bait genes or file)
+        //top two radio buttons (choose species or own data)
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        add(chooseSpeciesRb, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        add(ownDataRb, c);
+        //choose species label above combobox
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 3;
+        add(chooseSpeciesLbl, c);
+        //choose species combobox
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 3;
+        add(chooseSpeciesCb, c);
+        //upload own data
+        //Use own data label
+        c.insets = new Insets(10, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        add(ownDataLbl, c);
+        //textfield and button for co-expression data
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 4;
+        c.gridwidth = 3;
+        ownDataExpPnl.add(ownDataExpTf);
+        ownDataExpPnl.add(ownDataExpBtn);
+        add(ownDataExpPnl, c);
+        //textfield and button for gene description data
+        c.gridx = 0;
+        c.gridy = 5;
+        c.gridwidth = 3;
+        ownDataDescPnl.add(ownDataDescTf);
+        ownDataDescPnl.add(ownDataDescBtn);
+        add(ownDataDescPnl, c);
+        //bottom two radio buttons (input bait genes or file)
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 00;
+        c.gridy = 6;
         c.gridwidth = 1;
         add(inpBaitRb, c);
         c.gridx = 1;
-        c.gridy = 00;
+        c.gridy = 6;
         c.gridwidth = 1;
         add(fileBaitRb, c);
         //input baits or choose file
         //input bait genes label
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
-        c.gridy = 01;
+        c.gridy = 7;
         c.gridwidth = 3;
         add(inpBaitLbl, c);
         //bait genes text area
@@ -174,57 +240,33 @@ public class TabOneSpecies extends JPanel implements Observer {
         c.weighty = 1.0;
         c.ipady = (160);
         c.gridx = 0;
-        c.gridy = 02;
+        c.gridy = 8;
         c.gridwidth = 3;
         add(inpBaitSp, c);
         //choose bait genes file label
         c.weighty = 0.0;
         c.ipady = 0;
         c.gridx = 0;
-        c.gridy = 03;
+        c.gridy = 9;
         c.gridwidth = 3;
         add(fileBaitLbl, c);
         //bait genes file textfield and button
         c.gridx = 0;
-        c.gridy = 04;
+        c.gridy = 10;
         c.gridwidth = 3;
         fileBaitPnl.add(fileBaitTf);
         fileBaitPnl.add(fileBaitBtn);
         add(fileBaitPnl, c);
-        //----------------------------------------------------------------------
-        //choose species
-        //choose species label
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 10;
-        c.gridwidth = 3;
-        add(chooseSpeciesLbl, c);
-        //choose species scrollpane
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 11;
-        c.ipady = (160);
-        c.gridwidth = 3;
-        add(chooseSpeciesSp, c);
-        //add species button
-        c.insets = new Insets(0, 0, 0, 90);
-        c.gridx = 0;
-        c.gridy = 12;
-        c.ipady = (0);
-        c.gridwidth = 1;
-        add(addSpeciesBtn, c);
-        //----------------------------------------------------------------------
-        //choose cutoffs
         //choose cutoff label
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 20;
+        c.gridy = 11;
         c.gridwidth = 3;
         add(chooseCutoffLbl, c);
         //cutoff labels and spinners
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 21;
+        c.gridy = 12;
         c.gridwidth = 3;
         cutoffPnl.add(nCutoffLbl);
         cutoffPnl.add(Box.createRigidArea(new Dimension(5, 0))); //spacer
@@ -234,18 +276,17 @@ public class TabOneSpecies extends JPanel implements Observer {
         cutoffPnl.add(Box.createRigidArea(new Dimension(5, 0)));
         cutoffPnl.add(pCutoffSp);
         add(cutoffPnl, c);
-        //----------------------------------------------------------------------
         //save file
         //checkbox
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 30;
+        c.gridy = 13;
         c.gridwidth = 1;
         add(saveFileChb, c);
         //save file textfield and button
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 31;
+        c.gridy = 14;
         c.gridwidth = 3;
         saveFilePnl.add(saveFileTf);
         saveFilePnl.add(saveFileBtn);
@@ -254,22 +295,24 @@ public class TabOneSpecies extends JPanel implements Observer {
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 32;
+        c.gridy = 15;
         c.gridwidth = 1;
         add(goBtn, c);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         c.gridx = 2;
-        c.gridy = 32;
+        c.gridy = 15;
         c.gridwidth = 1;
         add(resetBtn, c);
     }
 
     //resets all options on the tab and clears all input fields
     private void refreshGui() {
-        //reset species
-        guiStatus.removeAllSpecies();
+        //reset species choice
+        chooseSpeciesCb.setSelectedIndex(0);
 
         //reset radiobuttons
+        chooseSpeciesRb.setSelected(true);
+//        guiStatus.setChooseSpeciesSelected(chooseSpeciesRb.isSelected());
         inpBaitRb.setSelected(true);
         guiStatus.setInpBaitSelected(inpBaitRb.isSelected());
         saveFileChb.setSelected(false);
@@ -280,6 +323,8 @@ public class TabOneSpecies extends JPanel implements Observer {
         pCutoffSp.setValue(guiStatus.getDefaultPosCutoff());
 
         //clear fields
+        ownDataExpTf.setText("");
+        ownDataDescTf.setText("");
         inpBaitTa.setText("");
         fileBaitTf.setText("");
         saveFileTf.setText("");
@@ -291,6 +336,16 @@ public class TabOneSpecies extends JPanel implements Observer {
     //watch out to not trigger an update from the model from within this method.
     public void update(Observable o, Object arg) {
 
+        //update: choose species or use own data
+//        boolean chooseSpeciesSelected = guiStatus.isChooseSpeciesSelected();
+//        chooseSpeciesLbl.setEnabled(chooseSpeciesSelected);
+//        chooseSpeciesCb.setEnabled(chooseSpeciesSelected);
+//        ownDataLbl.setEnabled(!chooseSpeciesSelected);
+//        ownDataExpTf.setEnabled(!chooseSpeciesSelected);
+//        ownDataExpBtn.setEnabled(!chooseSpeciesSelected);
+//        ownDataDescTf.setEnabled(!chooseSpeciesSelected);
+//        ownDataDescBtn.setEnabled(!chooseSpeciesSelected);
+
         //update: input bait genes or upload a file
         boolean inpBaitSelected = guiStatus.isInpBaitSelected();
         inpBaitLbl.setEnabled(inpBaitSelected);
@@ -299,17 +354,6 @@ public class TabOneSpecies extends JPanel implements Observer {
         fileBaitTf.setEnabled(!inpBaitSelected);
         fileBaitBtn.setEnabled(!inpBaitSelected);
 
-        //update: choose species
-        chooseSpeciesPnl.removeAll();
-        Iterator<SpeciesEntry> seIt = guiStatus.getSpeciesIterator();
-        while (seIt.hasNext()) {
-            SpeciesEntry se = seIt.next();
-            se.setAlignmentX(Component.CENTER_ALIGNMENT);
-            chooseSpeciesPnl.add(se);
-        }
-        chooseSpeciesPnl.revalidate();
-        chooseSpeciesPnl.repaint();
-
         //update: save file or not
         boolean saveFileSelected = guiStatus.isSaveFileSelected();
         saveFileTf.setEnabled(saveFileSelected);
@@ -317,23 +361,22 @@ public class TabOneSpecies extends JPanel implements Observer {
     }
 
     //some action listeners
+    //created when the user chooses to use a species or to upload his own data
+    private class ChooseSpeciesOrOwnDataAl implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+//            guiStatus.setChooseSpeciesSelected(chooseSpeciesRb.isSelected());
+        }
+
+    }
+
     //created when the user chooses to input baits directly or with a file
     private class ChooseSpeciesOrOwnDataBgAl implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             guiStatus.setInpBaitSelected(inpBaitRb.isSelected());
-        }
-
-    }
-
-    //created when the user chooses to input baits directly or with a file
-    private class addSpeciesAl implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SpeciesEntry se = new SpeciesEntry();
-            guiStatus.addSpecies(se);
         }
 
     }
@@ -366,6 +409,10 @@ public class TabOneSpecies extends JPanel implements Observer {
             //check if all paths entered by the user are correct
             Path p1, p2, p3, p4;
             try {
+//                if (!guiStatus.isChooseSpeciesSelected()) {
+//                    p1 = Paths.get(ownDataExpTf.getText()).toRealPath();
+//                    p2 = Paths.get(ownDataDescTf.getText()).toRealPath();
+//                }
                 if (!guiStatus.isInpBaitSelected()) {
                     p3 = Paths.get(fileBaitTf.getText()).toRealPath();
                 }

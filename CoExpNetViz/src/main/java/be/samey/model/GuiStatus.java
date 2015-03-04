@@ -2,9 +2,9 @@ package be.samey.model;
 
 import be.samey.gui.SpeciesEntry;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import javax.swing.JFrame;
 
 /**
  *
@@ -12,12 +12,22 @@ import java.util.Observable;
  */
 public class GuiStatus extends Observable {
 
+    private JFrame rootPanelFrame;
+
     private boolean inpBaitSelected;
     private boolean saveFileSelected;
     private double defaultNegCutoff = -0.6;
     private double defaultPosCutoff = 0.8;
 
     private List<SpeciesEntry> speciesList = new ArrayList<SpeciesEntry>();
+
+    public void setRootPanelFrame(JFrame rootPanelFrame) {
+        this.rootPanelFrame = rootPanelFrame;
+    }
+
+    public JFrame getRootPanelFrame() {
+        return rootPanelFrame;
+    }
 
     public void setInpBaitSelected(boolean inpBaitSelected) {
         //TODO: only do this part if there was actually a change
@@ -65,8 +75,8 @@ public class GuiStatus extends Observable {
         }
     }
 
-    public Iterator<SpeciesEntry> getSpeciesIterator() {
-        return speciesList.iterator();
+    public List<SpeciesEntry> getSpeciesList() {
+        return speciesList;
     }
 
     public double getDefaultNegCutoff() {
@@ -76,4 +86,5 @@ public class GuiStatus extends Observable {
     public double getDefaultPosCutoff() {
         return defaultPosCutoff;
     }
+
 }

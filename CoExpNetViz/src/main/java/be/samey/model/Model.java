@@ -20,6 +20,7 @@ public class Model {
     //properties of the app that do not change during execution
     public static final String APP_NAME = "CoExpNetViz";
     public static final String[] SPECIES_CHOICES = {"Tomato", "Arabidopsis", "Patato-ITAG", "Patato-PGSC"};
+    public static final int MAX_SPECIES_COUNT = 5;
 
     //all services are kept in this object
     private Services services;

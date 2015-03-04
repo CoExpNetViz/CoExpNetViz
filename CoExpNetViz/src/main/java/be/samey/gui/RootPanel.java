@@ -4,6 +4,7 @@ import be.samey.cynetw.CevNetworkCreator;
 import be.samey.model.CoreStatus;
 import be.samey.model.GuiStatus;
 import be.samey.model.Model;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -11,19 +12,25 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -39,10 +46,11 @@ import javax.swing.UIManager;
  *
  * @author sam
  */
-public class TabOneSpecies extends JPanel implements Observer {
+public class RootPanel extends JPanel implements Observer {
 
     private final Model model;
     private final GuiStatus guiStatus;
+    private final CoreStatus coreStatus;
 
     //input baits
     private JRadioButton inpBaitRb;
@@ -76,11 +84,14 @@ public class TabOneSpecies extends JPanel implements Observer {
     private ButtonGroup inpBaitOrfileBaitBg;
     private SpinnerModel nCutoffSm;
     private SpinnerModel pCutoffSm;
+    private String[] numbers = new String[]{"first", "second", "third", "fourth", "fith"};
 
-    public TabOneSpecies(Model model) {
+    public RootPanel(Model model) {
         this.model = model;
         this.guiStatus = model.getGuiStatus();
+        this.coreStatus = model.getCoreStatus();
         guiStatus.addObserver(this);
+        setPreferredSize(new Dimension(500, 640));
         constructGui();
         refreshGui();
     }
@@ -111,9 +122,10 @@ public class TabOneSpecies extends JPanel implements Observer {
         chooseSpeciesLbl = new JLabel("<html>Choose which data sets to use,<br>"
             + "pick one dataset for every species you have specified in the bait genes");
         chooseSpeciesPnl = new JPanel();
-        chooseSpeciesPnl.setLayout(new BoxLayout(chooseSpeciesPnl, BoxLayout.PAGE_AXIS));
+        chooseSpeciesPnl.setLayout(new BoxLayout(chooseSpeciesPnl, BoxLayout.Y_AXIS));
         chooseSpeciesSp = new JScrollPane(chooseSpeciesPnl);
         chooseSpeciesSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        chooseSpeciesSp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         addSpeciesBtn = new JButton("Add species");
         addSpeciesBtn.addActionListener(new addSpeciesAl());
         //choose cutoffs
@@ -268,6 +280,7 @@ public class TabOneSpecies extends JPanel implements Observer {
     private void refreshGui() {
         //reset species
         guiStatus.removeAllSpecies();
+        guiStatus.addSpecies(new SpeciesEntry(model));
 
         //reset radiobuttons
         inpBaitRb.setSelected(true);
@@ -282,8 +295,10 @@ public class TabOneSpecies extends JPanel implements Observer {
         //clear fields
         inpBaitTa.setText("");
         fileBaitTf.setText("");
-        saveFileTf.setText("");
+        saveFileTf.setText(System.getProperty("user.dir"));
 
+        //for debugging
+//        fileBaitTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/baits.txt");
     }
 
     @Override
@@ -301,10 +316,9 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         //update: choose species
         chooseSpeciesPnl.removeAll();
-        Iterator<SpeciesEntry> seIt = guiStatus.getSpeciesIterator();
-        while (seIt.hasNext()) {
-            SpeciesEntry se = seIt.next();
-            se.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (SpeciesEntry se : guiStatus.getSpeciesList()) {
+            se.setAlignmentY(TOP_ALIGNMENT);
+            se.setAlignmentX(LEFT_ALIGNMENT);
             chooseSpeciesPnl.add(se);
         }
         chooseSpeciesPnl.revalidate();
@@ -332,7 +346,13 @@ public class TabOneSpecies extends JPanel implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SpeciesEntry se = new SpeciesEntry();
+            //do not allow more species than what is supported
+            if (guiStatus.getSpeciesList().size() >= Model.MAX_SPECIES_COUNT) {
+                JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                    String.format("No more than %d species are supported", Model.MAX_SPECIES_COUNT));
+                return;
+            }
+            SpeciesEntry se = new SpeciesEntry(model);
             guiStatus.addSpecies(se);
         }
 
@@ -358,27 +378,126 @@ public class TabOneSpecies extends JPanel implements Observer {
 
     }
 
-    //created when the user clicks the "Run analysis" button (this.goBtn)
+    /**
+     * Created when the user clicks the "Run analysis" button (this.goBtn). All
+     * input fields are checked for correctness and passed on to the core model
+     */
     private class GoAl implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //check if all paths entered by the user are correct
-            Path p1, p2, p3, p4;
-            try {
-                if (!guiStatus.isInpBaitSelected()) {
-                    p3 = Paths.get(fileBaitTf.getText()).toRealPath();
+            Path baitPath, outPath;
+            /*
+             read in bait genes
+             */
+            if (!guiStatus.isInpBaitSelected()) {
+                if (fileBaitTf.getText().trim().length() == 0) {
+                    JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                        "Please enter a baits file or input your baits manually",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
-                if (!guiStatus.isSaveFileSelected()) {
-                    p4 = Paths.get(saveFileTf.getText()).toRealPath();
+                try {
+                    baitPath = Paths.get(fileBaitTf.getText().trim()).toRealPath();
+                    Charset charset = Charset.forName("UTF-8");
+                    BufferedReader reader = Files.newBufferedReader(baitPath, charset);
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    coreStatus.setBaits(sb.toString());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                        "There was an error while reading the baits file\n" + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-            } catch (IOException ex) {
-                System.out.format("Coult not resolve file %s%n", ex);
-                //TODO: warn the user somehow
+            } else {
+                //TODO: better format checking
+                if (inpBaitTa.getText().trim().length() == 0) {
+                    JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                        "Please specify your bait genes",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                } else {
+                    coreStatus.setBaits(inpBaitTa.getText());
+                }
+            }
+            /*
+             get Species paths
+             */
+            List<SpeciesEntry> sel = guiStatus.getSpeciesList();
+            for (int i = 0; i < 5; i++) {
+                if (i < sel.size()) {
+                    SpeciesEntry se = sel.get(i);
+                    //check if names are supplied
+                    if (se.speciesTf.getText().trim().length() == 0) {
+                        JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                            String.format("No species name was given for the %s species", numbers[i]),
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    coreStatus.getNames()[i] = se.speciesTf.getText();
+                    //check if path is correct
+                    if (se.speciesPathTf.getText().trim().length() == 0) {
+                        JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                            String.format("Please specify a path for the %s species", numbers[i]),
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    try {
+                        Path speciesPath = Paths.get(se.speciesPathTf.getText().trim()).toRealPath();
+                        coreStatus.getFilePaths()[i] = speciesPath;
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                            String.format("There was an error while reading the gene expression file for the %s species\n"
+                                + "%s", numbers[i], ex.getMessage()),
+                            "Warning",
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } else {
+                    coreStatus.getNames()[i] = null;
+                    coreStatus.getFilePaths()[i] = null;
+                }
+            }
+            /*
+             check if output path is correct
+             */
+            if (guiStatus.isSaveFileSelected()) {
+                if (saveFileTf.getText().trim().length() == 0) {
+                    JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                        "No output direcory was given",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                try {
+                    outPath = Paths.get(saveFileTf.getText().trim()).toRealPath();
+                    coreStatus.setOutPath(outPath);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(guiStatus.getRootPanelFrame(),
+                        "There was an error while accessing the output directory" + ex.getMessage(),
+                        "Warning",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
 
             //for debugging
-            new CevNetworkCreator(model).test();
+            System.out.println("---Debug output---");
+            System.out.println(coreStatus.getBaits());
+            System.out.println(Arrays.toString(coreStatus.getNames()));
+            System.out.println(Arrays.toString(coreStatus.getFilePaths()));
+            System.out.println(coreStatus.getOutPath());
+            System.out.println(saveFileTf.getText().trim() + ":---");
+//            new CevNetworkCreator(model).test();
         }
 
     }

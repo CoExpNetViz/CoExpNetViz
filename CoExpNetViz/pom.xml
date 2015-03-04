@@ -73,10 +73,14 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <!-- pitfall: all used packages must be in the export tag below-->
                         <Export-Package>${bundle.namespace}.*</Export-Package>
+                        <!--<Export-Package>org.apache.httpcomponents.*</Export-Package>-->
                         <Private-Package>${bundle.namespace}.internal.*</Private-Package>
                         <Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
+                        <Embed-Dependency>*;scope=!provided</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Import-Package>*;resolution:=optional</Import-Package>
+                        <!--<Embed-Dependency>org.apache.httpcomponents;scope=compile|runtime</Embed-Dependency>-->
                     </instructions>
                 </configuration>
             </plugin>
@@ -105,6 +109,18 @@
             <name>Cytoscape Releases</name>
             <url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
         </repository>
+
+        <!--Links to springsource repositories-->
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
     </repositories>
 
     <!-- Dependencies needed to compile this project. -->
@@ -113,22 +129,26 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.2.0</version>
+            <scope>provided</scope>
         </dependency>
 		
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>swing-application-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>session-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Logging -->
@@ -144,17 +164,33 @@
             <groupId>org.cytoscape</groupId>
             <artifactId>vizmap-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>core-task-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>model-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!--        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
+            <version>3.1.0</version>
+            <optional>true</optional>
+        </dependency>-->
 
     </dependencies>
 

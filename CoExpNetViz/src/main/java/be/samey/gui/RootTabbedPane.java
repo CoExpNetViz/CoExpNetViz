@@ -17,14 +17,14 @@ public class RootTabbedPane extends JTabbedPane {
 
         private Model model;
 
-        TabOneSpecies tabOne;
+        RootPanel tabOne;
         TabTwoSpecies tabTwo;
         TabMltSpecies tabMlt;
 
         public RootTabbedPane(Model model) {
                 this.model = model;
 
-                tabOne = new TabOneSpecies(model);
+                tabOne = new RootPanel(model);
                 tabTwo = new TabTwoSpecies(model);
                 tabMlt = new TabMltSpecies(model);
 

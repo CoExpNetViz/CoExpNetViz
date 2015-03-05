@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
@@ -30,7 +32,7 @@ import org.cytoscape.work.TaskManager;
  *
  * @author sam
  */
-public class CevNetworkCreator {
+public class CevNetworkBuilder implements Observer {
 
     private Model model;
     private CoreStatus coreStatus;
@@ -39,9 +41,10 @@ public class CevNetworkCreator {
     private CyRootNetworkManager cyRootNetworkManager;
     private VisualMappingManager visualMappingManager;
 
-    public CevNetworkCreator(Model model) {
+    public CevNetworkBuilder(Model model) {
         this.model = model;
         this.coreStatus = model.getCoreStatus();
+        coreStatus.addObserver(this);
         //services
         this.cyNetworkFactory = model.getServices().getCyNetworkFactory();
         this.cyRootNetworkManager = model.getServices().getCyRootNetworkManager();
@@ -101,57 +104,64 @@ public class CevNetworkCreator {
 
     }
 
-    //for debugging
-    public void runAnalysis() {
+    /**
+     * reads the network files and creates a view, add the networks nodeTable
+     * and view to the coremodel.
+     * 
+     */
+    public void createNetworkView() {
         try {
-            //for debugging, prints the baits, files, and cutoffs specified by the user
-            //in the finished app this info is sent to the server
-            System.out.println("---Debug output---");
-            System.out.println("baits: " + coreStatus.getBaits());
-            System.out.println("names: " + Arrays.toString(coreStatus.getNames()));
-            System.out.println("files: " + Arrays.toString(coreStatus.getFilePaths()));
-            System.out.println("neg c: " + coreStatus.getNCutoff());
-            System.out.println("pos c: " + coreStatus.getPCutoff());
-            System.out.println("out d: " + coreStatus.getOutPath());
-            //TODO: run the app on the server from here
-            //in the finished app this info should come from files downloaded from the server
-            Path sifPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.sif");
-            Path noaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.node.attr");
-            Path edaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.edge.attr");
-            Path vizPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/CevStyle.xml");
 
             //read files
             CyNetwork cn = createSubNetwork();
-            CevNetworkReader.readSIF(sifPath, cn);
-            CyTable cevNodeTable = CevTableReader.readNOA(noaPath, cn, model);
-            CevTableReader.readEDA(edaPath, cn, model);
+            CevNetworkReader.readSIF(coreStatus.getSifPath(), cn);
+            CyTable cevNodeTable = CevTableReader.readNOA(coreStatus.getNoaPath(), cn, model);
+            CevTableReader.readEDA(coreStatus.getEdaPath(), cn, model);
             if (getCevStyle() == null) {
                 // only add the visual style after the user has used this app at
                 // least once to prevent cluttering the Style menu when the user
                 // is not using this app
-                CevVizmapReader.readVIZ(vizPath, model);
+                CevVizmapReader.readVIZ(coreStatus.getVizPath(), model);
             }
 
-            //add the network and make it visible
+            //add the network
             model.getServices().getCyNetworkManager().addNetwork(cn);
             CyNetworkView cnv = model.getServices().getCyNetworkViewFactory().createNetworkView(cn);
             model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
             getCevStyle().apply(cnv);
-            CyLayoutAlgorithm layout = model.getServices().
-                getCyLayoutAlgorithmManager().getLayout("attributes-layout");
-            TaskManager<?, ?> tm = model.getServices().getTaskManager();
-            ArrayList<CyColumn> columnList = (ArrayList) cevNodeTable.getColumns();
-            String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
-            TaskIterator it = layout.createTaskIterator(cnv,
-                layout.createLayoutContext(),
-                CyLayoutAlgorithm.ALL_NODE_VIEWS,
-                groupColumnName);
-            tm.execute(it);
 
+            //add this data to the corestatus to pass it on to the next task
+            //which is applying the layout
+            coreStatus.setLastNoaTable(cevNodeTable);
+            coreStatus.setLastCnv(cnv);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
+            //TODO: warn user somehow
         }
 
+    }
+
+    /**
+     * applies the layout to the last view
+     */
+    public void applyLayout() {
+
+        CyLayoutAlgorithm layout = model.getServices().
+            getCyLayoutAlgorithmManager().getLayout("attributes-layout");
+        TaskManager<?, ?> tm = model.getServices().getTaskManager();
+        ArrayList<CyColumn> columnList = (ArrayList) coreStatus.getLastNoaTable().getColumns();
+        String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
+        TaskIterator ti = layout.createTaskIterator(coreStatus.getLastCnv(),
+            layout.createLayoutContext(),
+            CyLayoutAlgorithm.ALL_NODE_VIEWS,
+            groupColumnName);
+        tm.execute(ti);
+//        return ti;
+    }
+
+    @Override
+    public void update(Observable o, Object o1) {
+        applyLayout();
     }
 
 }

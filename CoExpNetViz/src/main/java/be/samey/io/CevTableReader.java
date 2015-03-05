@@ -27,18 +27,18 @@ public class CevTableReader {
      * The node attribute file must be tab delimited, the first column must
      * contain the node names. The file must also contain a tab delimited header
      * line, the header is used to assign column names. Data types are assigned
-     * automatically: if a column entry is a latin number the data type is
-     * {@link double}, if not the data type is {@link String}.
+     * automatically: if a column contains only numeric data then the type is
+     * {@link double}, if one or more entries are not numeric the data type is
+     * {@link String}.
      * <p>
-     * I don't know yet what will happen if column has mixed data types, but it
-     * will probably be bad.
      *
      * @param noaPath path to node attribute file
      * @param network network to add attributes to
      * @param model the {@link  Model} for the app
+     * @return the node attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public static void readNOA(Path noaPath, CyNetwork network, Model model) throws IOException {
+    public static CyTable readNOA(Path noaPath, CyNetwork network, Model model) throws IOException {
 
         //get the required service for this method
         CyNetworkTableManager cyNetworkTableManager = model.getServices().getCyNetworkTableManager();
@@ -67,6 +67,8 @@ public class CevTableReader {
                 row.set(tableMap.header[i], edgeAttr[i]);
             }
         }
+
+        return cevNodeTable;
     }
 
     /**
@@ -74,18 +76,18 @@ public class CevTableReader {
      * The edge attribute file must be tab delimited, the first column must
      * contain the edge names. The file must also contain a tab delimited header
      * line, the header is used to assign column names. Data types are assigned
-     * automatically: if a column entry is a latin number the data type is
-     * {@link double}, if not the data type is {@link String}.
+     * automatically: if a column contains only numeric data then the type is
+     * {@link double}, if one or more entries are not numeric the data type is
+     * {@link String}.
      * <p>
-     * I don't know yet what will happen if column has mixed data types, but it
-     * will probably be bad.
      *
      * @param edaPath path to edge attribute file
      * @param network network to add attributes to
      * @param model the {@link  Model} for the app
+     * @return the edge attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public static void readEDA(Path edaPath, CyNetwork network, Model model) throws IOException {
+    public static CyTable readEDA(Path edaPath, CyNetwork network, Model model) throws IOException {
 
         //get the required service for this method
         CyNetworkTableManager cyNetworkTableManager = model.getServices().getCyNetworkTableManager();
@@ -114,6 +116,8 @@ public class CevTableReader {
                 row.set(tableMap.header[i], edgeAttr[i]);
             }
         }
+
+        return cevEdgeTable;
     }
 
     /**

@@ -8,11 +8,14 @@ import be.samey.model.Model;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.subnetwork.CySubNetwork;
@@ -53,7 +56,7 @@ public class CevNetworkCreator {
      *
      * @return a new {@link CySubNetwork}
      */
-    public CySubNetwork createSubNetwork() {
+    private CySubNetwork createSubNetwork() {
         //initialize the network
         CySubNetwork subNetwork;
         //there are two situations in which a new root network must be created
@@ -120,7 +123,7 @@ public class CevNetworkCreator {
             //read files
             CyNetwork cn = createSubNetwork();
             CevNetworkReader.readSIF(sifPath, cn);
-            CevTableReader.readNOA(noaPath, cn, model);
+            CyTable cevNodeTable = CevTableReader.readNOA(noaPath, cn, model);
             CevTableReader.readEDA(edaPath, cn, model);
             if (getCevStyle() == null) {
                 // only add the visual style after the user has used this app at
@@ -134,11 +137,17 @@ public class CevNetworkCreator {
             CyNetworkView cnv = model.getServices().getCyNetworkViewFactory().createNetworkView(cn);
             model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
             getCevStyle().apply(cnv);
-
-            CyLayoutAlgorithm layout = model.getServices().getCyLayoutAlgorithmManager().getLayout("attributes-layout");
+            CyLayoutAlgorithm layout = model.getServices().
+                getCyLayoutAlgorithmManager().getLayout("attributes-layout");
             TaskManager<?, ?> tm = model.getServices().getTaskManager();
-            TaskIterator it = layout.createTaskIterator(cnv, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "Correlation_to_baits");
+            ArrayList<CyColumn> columnList = (ArrayList) cevNodeTable.getColumns();
+            String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
+            TaskIterator it = layout.createTaskIterator(cnv,
+                layout.createLayoutContext(),
+                CyLayoutAlgorithm.ALL_NODE_VIEWS,
+                groupColumnName);
             tm.execute(it);
+
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

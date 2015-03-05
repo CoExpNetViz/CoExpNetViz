@@ -14,6 +14,9 @@ public class CoreStatus {
 
     private CevNetworkCreator cnc;
 
+    //Which column to use to group nodes
+    public static final int GROUP_COLUMN = 0;
+
     public CoreStatus(Model model) {
         this.model = model;
     }

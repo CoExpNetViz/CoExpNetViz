@@ -179,19 +179,19 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.cytoscape</groupId>
+            <artifactId>layout-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Third party -->
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.4</version>
             <optional>true</optional>
         </dependency>
-
-        <!--        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
-            <version>3.1.0</version>
-            <optional>true</optional>
-        </dependency>-->
-
     </dependencies>
 
 </project>

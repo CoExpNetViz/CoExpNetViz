@@ -8,13 +8,20 @@ import be.samey.model.Model;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
 
 /**
  *
@@ -80,37 +87,58 @@ public class CevNetworkCreator {
 
     }
 
-    private boolean isCevStyleCreated() {
-        //only add the visual style after the user has used this app at least once
-        // to prevent cluttering the Style menu when the user is not using this
-        // app
+    private VisualStyle getCevStyle() {
         for (VisualStyle vs : visualMappingManager.getAllVisualStyles()) {
             if (vs.getTitle().equals(Model.APP_NAME)) {
-                return true;
+                return vs;
             }
 
         }
-        return false;
+        return null;
 
     }
 
     //for debugging
-    public void test() {
+    public void runAnalysis() {
         try {
-            Path sifPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/Test_Network_File.sif");
-            Path noaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/nodeattr.txt");
-            Path edaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/edgeattr.txt");
-            Path vizPath = Paths.get("/home/sam/Documents/uma1_s2-mp2-data/CoExpNetViz4Sam/OUTPUT/Example_Sorghum_Sam/CevStyle.xml");
+            //for debugging, prints the baits, files, and cutoffs specified by the user
+            //in the finished app this info is sent to the server
+            System.out.println("---Debug output---");
+            System.out.println("baits: " + coreStatus.getBaits());
+            System.out.println("names: " + Arrays.toString(coreStatus.getNames()));
+            System.out.println("files: " + Arrays.toString(coreStatus.getFilePaths()));
+            System.out.println("neg c: " + coreStatus.getNCutoff());
+            System.out.println("pos c: " + coreStatus.getPCutoff());
+            System.out.println("out d: " + coreStatus.getOutPath());
+            //TODO: run the app on the server from here
+            //in the finished app this info should come from files downloaded from the server
+            Path sifPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.sif");
+            Path noaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.node.attr");
+            Path edaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.edge.attr");
+            Path vizPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/CevStyle.xml");
 
+            //read files
             CyNetwork cn = createSubNetwork();
             CevNetworkReader.readSIF(sifPath, cn);
             CevTableReader.readNOA(noaPath, cn, model);
             CevTableReader.readEDA(edaPath, cn, model);
-
-            if (!isCevStyleCreated()) {
+            if (getCevStyle() == null) {
+                // only add the visual style after the user has used this app at
+                // least once to prevent cluttering the Style menu when the user
+                // is not using this app
                 CevVizmapReader.readVIZ(vizPath, model);
             }
+
+            //add the network and make it visible
             model.getServices().getCyNetworkManager().addNetwork(cn);
+            CyNetworkView cnv = model.getServices().getCyNetworkViewFactory().createNetworkView(cn);
+            model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
+            getCevStyle().apply(cnv);
+
+            CyLayoutAlgorithm layout = model.getServices().getCyLayoutAlgorithmManager().getLayout("attributes-layout");
+            TaskManager<?, ?> tm = model.getServices().getTaskManager();
+            TaskIterator it = layout.createTaskIterator(cnv, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "Correlation_to_baits");
+            tm.execute(it);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

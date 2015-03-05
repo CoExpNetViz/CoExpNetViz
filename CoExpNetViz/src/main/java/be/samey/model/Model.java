@@ -14,7 +14,7 @@ public class Model {
     public Model() {
         services = new Services();
         guiStatus = new GuiStatus();
-        coreStatus = new CoreStatus();
+        coreStatus = new CoreStatus(this);
     }
 
     //properties of the app that do not change during execution

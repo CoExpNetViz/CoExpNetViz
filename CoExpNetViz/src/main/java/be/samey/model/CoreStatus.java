@@ -1,5 +1,6 @@
 package be.samey.model;
 
+import be.samey.cynetw.CevNetworkCreator;
 import java.nio.file.Path;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 
@@ -8,6 +9,14 @@ import org.cytoscape.model.subnetwork.CyRootNetwork;
  * @author sam
  */
 public class CoreStatus {
+
+    private Model model;
+
+    private CevNetworkCreator cnc;
+
+    public CoreStatus(Model model) {
+        this.model = model;
+    }
 
     //some general information that is useful for many parts of the app
     //all subnetworks can be retrieved with rootnetwork.getSubNetworkList()
@@ -21,13 +30,28 @@ public class CoreStatus {
     private String baits;
 
     //which files to use to upload to the server
-    private Path[] filespaths = new Path[Model.MAX_SPECIES_COUNT];
+    private Path[] filePaths = new Path[Model.MAX_SPECIES_COUNT];
 
     //name for matrices to use to upload to the server
     private String[] names = new String[Model.MAX_SPECIES_COUNT];
 
+    //cutoffs
+    private double pCutoff;
+    private double nCutoff;
+
     //output directory
     private Path outPath;
+
+    /**
+     * Starts running the analysis
+     */
+    public void runAnalysis() {
+        if (cnc == null) {
+            cnc = new CevNetworkCreator(model);
+        }
+        //TODO: change this method so that it connects to the server
+        cnc.runAnalysis();
+    }
 
     public CyRootNetwork getCyRootNetwork() {
         return cyRootNetwork;
@@ -58,7 +82,7 @@ public class CoreStatus {
     }
 
     public Path[] getFilePaths() {
-        return filespaths;
+        return filePaths;
     }
 
     public String[] getNames() {
@@ -71,5 +95,21 @@ public class CoreStatus {
 
     public void setOutPath(Path outPath) {
         this.outPath = outPath;
+    }
+
+    public double getPCutoff() {
+        return pCutoff;
+    }
+
+    public void setPCutoff(double pCutoff) {
+        this.pCutoff = pCutoff;
+    }
+
+    public double getNCutoff() {
+        return nCutoff;
+    }
+
+    public void setNCutoff(double nCutoff) {
+        this.nCutoff = nCutoff;
     }
 }

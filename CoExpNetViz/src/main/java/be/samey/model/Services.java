@@ -12,7 +12,11 @@ import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.TaskManager;
 
 /**
  *
@@ -28,6 +32,10 @@ public class Services {
     private CyNetworkTableManager cyNetworkTableManager;
     private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
     private VisualMappingManager visualMappingManager;
+    private CyNetworkViewFactory cyNetworkViewFactory;
+    private CyNetworkViewManager cyNetworkViewManager;
+    private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
+    private TaskManager taskManager;
 
     public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
         this.cyApplicationManager = cyApplicationManager;
@@ -91,5 +99,37 @@ public class Services {
 
     public VisualMappingManager getVisualMappingManager() {
         return visualMappingManager;
+    }
+
+    public void setCyNetworkViewFactory(CyNetworkViewFactory cyNetworkViewFactory) {
+        this.cyNetworkViewFactory = cyNetworkViewFactory;
+    }
+
+    public CyNetworkViewFactory getCyNetworkViewFactory() {
+        return cyNetworkViewFactory;
+    }
+
+    public void setCyNetworkViewManager(CyNetworkViewManager cyNetworkViewManager) {
+        this.cyNetworkViewManager = cyNetworkViewManager;
+    }
+
+    public CyNetworkViewManager getCyNetworkViewManager() {
+        return cyNetworkViewManager;
+    }
+
+    public void setCyLayoutAlgorithmManager(CyLayoutAlgorithmManager cyLayoutAlgorithmManager) {
+        this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
+    }
+
+    public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
+        return cyLayoutAlgorithmManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 }

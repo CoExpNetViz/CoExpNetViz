@@ -14,7 +14,11 @@ import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.TaskManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -39,6 +43,10 @@ public class CyActivator extends AbstractCyActivator {
         CyNetworkTableManager CyNetworkTableManager = getService(context, CyNetworkTableManager.class);
         LoadVizmapFileTaskFactory loadVizmapFileTaskFactory = getService(context, LoadVizmapFileTaskFactory.class);
         VisualMappingManager visualMappingManager = getService(context, VisualMappingManager.class);
+        CyNetworkViewFactory cyNetworkViewFactory = getService(context, CyNetworkViewFactory.class);
+        CyNetworkViewManager cyNetworkViewManager = getService(context, CyNetworkViewManager.class);
+        CyLayoutAlgorithmManager cyLayoutAlgorithmManager = getService(context, CyLayoutAlgorithmManager.class);
+		TaskManager taskManager = getService(context, TaskManager.class);
 
         //add them to the model's services
         Model model = new Model();
@@ -50,6 +58,10 @@ public class CyActivator extends AbstractCyActivator {
         model.getServices().setCyNetworkTableManager(CyNetworkTableManager);
         model.getServices().setLoadVizmapFileTaskFactory(loadVizmapFileTaskFactory);
         model.getServices().setVisualMappingManager(visualMappingManager);
+        model.getServices().setCyNetworkViewFactory(cyNetworkViewFactory);
+        model.getServices().setCyNetworkViewManager(cyNetworkViewManager);
+        model.getServices().setCyLayoutAlgorithmManager(cyLayoutAlgorithmManager);
+        model.getServices().setTaskManager(taskManager);
 
         //create the menu action (menu entry for the app)
         CevMenuAction action = new CevMenuAction(cyApplicationManager, Model.APP_NAME, model);

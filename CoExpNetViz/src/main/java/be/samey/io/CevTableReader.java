@@ -152,8 +152,17 @@ public class CevTableReader {
         //holds attributes
         Map<String, Object[]> aMap = new HashMap<String, Object[]>();
         String line;
-        String[] lineSplit;
+        String[] lineSplit = null;
         Object[] attributes = new Object[header.length];
+
+        //holds types of columns
+        Class[] attrTypes = new Class[header.length];
+        //start all columns as double, set to string if at least one value in
+        // column isn't numeric
+        for (int i = 0; i < header.length; i++) {
+            attrTypes[i] = Double.class;
+        }
+
         //iterate over the file
         while ((line = reader.readLine()) != null) {
             //parse line
@@ -165,14 +174,10 @@ public class CevTableReader {
                     attributes[i - 1] = Double.parseDouble(lineSplit[i]);
                 } else {
                     attributes[i - 1] = lineSplit[i];
+                    attrTypes[i - 1] = String.class; //any non numeric value makes this a column of Strings
                 }
             }
             aMap.put(lineSplit[0], attributes);
-        }
-        //see what the types are that were stored in attributes
-        Class[] attrTypes = new Class[attributes.length];
-        for (int i = 0; i < attributes.length; i++) {
-            attrTypes[i] = attributes[i].getClass();
         }
         TableMap tableMap = new TableMap(header, attrTypes, aMap);
         return tableMap;

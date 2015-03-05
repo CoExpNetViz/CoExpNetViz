@@ -1,11 +1,8 @@
 package be.samey.gui;
 
-import be.samey.cynetw.CevNetworkCreator;
 import be.samey.model.CoreStatus;
 import be.samey.model.GuiStatus;
 import be.samey.model.Model;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,8 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -283,10 +278,8 @@ public class RootPanel extends JPanel implements Observer {
         guiStatus.addSpecies(new SpeciesEntry(model));
 
         //reset radiobuttons
-        inpBaitRb.setSelected(true);
-        guiStatus.setInpBaitSelected(inpBaitRb.isSelected());
-        saveFileChb.setSelected(false);
-        guiStatus.setSaveFileSelected(saveFileChb.isSelected());
+        guiStatus.setInpBaitSelected(true);
+        guiStatus.setSaveFileSelected(false);
 
         //reset cutoffs
         nCutoffSp.setValue(guiStatus.getDefaultNegCutoff());
@@ -298,7 +291,7 @@ public class RootPanel extends JPanel implements Observer {
         saveFileTf.setText(System.getProperty("user.dir"));
 
         //for debugging
-//        fileBaitTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/baits.txt");
+        testWithDefaults();
     }
 
     @Override
@@ -308,6 +301,7 @@ public class RootPanel extends JPanel implements Observer {
 
         //update: input bait genes or upload a file
         boolean inpBaitSelected = guiStatus.isInpBaitSelected();
+        inpBaitRb.setSelected(inpBaitSelected);
         inpBaitLbl.setEnabled(inpBaitSelected);
         inpBaitTa.setEnabled(inpBaitSelected);
         fileBaitLbl.setEnabled(!inpBaitSelected);
@@ -326,6 +320,7 @@ public class RootPanel extends JPanel implements Observer {
 
         //update: save file or not
         boolean saveFileSelected = guiStatus.isSaveFileSelected();
+        saveFileChb.setSelected(saveFileSelected);
         saveFileTf.setEnabled(saveFileSelected);
         saveFileBtn.setEnabled(saveFileSelected);
     }
@@ -489,17 +484,37 @@ public class RootPanel extends JPanel implements Observer {
                     return;
                 }
             }
+            /*
+             get cutoffs
+             */
+            double nCutoff = (Double) nCutoffSp.getValue();
+            coreStatus.setNCutoff(nCutoff);
+            double pCutoff = (Double) pCutoffSp.getValue();
+            coreStatus.setPCutoff(pCutoff);
 
-            //for debugging
-            System.out.println("---Debug output---");
-            System.out.println(coreStatus.getBaits());
-            System.out.println(Arrays.toString(coreStatus.getNames()));
-            System.out.println(Arrays.toString(coreStatus.getFilePaths()));
-            System.out.println(coreStatus.getOutPath());
-            System.out.println(saveFileTf.getText().trim() + ":---");
-//            new CevNetworkCreator(model).test();
+            /*
+             survived all checks, run the analysis
+             */
+            coreStatus.runAnalysis();
         }
 
+    }
+
+    //for debugging
+    private void testWithDefaults() {
+        guiStatus.setInpBaitSelected(!inpBaitRb.isSelected());
+        fileBaitTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/baits.txt");
+        guiStatus.getSpeciesList().get(0).speciesTf.setText("Tomato");
+        guiStatus.getSpeciesList().get(0).speciesPathTf.setText("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/datasets/Tomato_dataset.txt");
+        guiStatus.addSpecies(new SpeciesEntry(model));
+        guiStatus.getSpeciesList().get(1).speciesTf.setText("Apple");
+        guiStatus.getSpeciesList().get(1).speciesPathTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/datasets/Apple_dataset.txt");
+        guiStatus.addSpecies(new SpeciesEntry(model));
+        guiStatus.getSpeciesList().get(2).speciesTf.setText("Arabidopsis");
+        guiStatus.getSpeciesList().get(2).speciesPathTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/datasets/Arabidopsis_dataset.txt");
+        guiStatus.addSpecies(new SpeciesEntry(model));
+        guiStatus.getSpeciesList().get(3).speciesTf.setText("Patato");
+        guiStatus.getSpeciesList().get(3).speciesPathTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/datasets/Potato_dataset.txt");
     }
 
 }

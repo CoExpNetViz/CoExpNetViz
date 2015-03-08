@@ -23,9 +23,8 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import java.util.ArrayList;
+import be.samey.model.CoreStatus;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.cytoscape.model.CyNode;
@@ -35,25 +34,14 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-/*
- This layout partitions the graph according to the selected node attribute's values.
- The nodes of the graph are broken into discrete partitions, where each partition has
- the same attribute value. For example, assume there are four nodes, where each node
- has the "IntAttr" attribute defined. Assume node 1 and 2 have the value "100" for
- the "IntAttr" attribute, and node 3 and 4 have the value "200." This will place nodes
- 1 and 2 in the first partition and nodes 3 and 4 in the second partition.  Each
- partition is drawn in a circle.
- */
-/**
- *
- */
 public class CevGroupAttributesLayout extends AbstractLayoutAlgorithm {
 
     /**
      * Creates a new GroupAttributesLayout object.
+     * @param undo
      */
     public CevGroupAttributesLayout(UndoSupport undo) {
-        super("cev-attributes-layout", "Cev Group Layout", undo);
+        super(CoreStatus.COMP_LAYOUT_NAME, CoreStatus.HUMAN_LAYOUT_NAME, undo);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {

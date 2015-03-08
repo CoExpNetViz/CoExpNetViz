@@ -11,14 +11,14 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class RunAnalysisTask extends AbstractTask {
 
-    private Model model;
+    private final Model model;
 
     public RunAnalysisTask(Model model){
         this.model = model;
     }
     @Override
     public void run(TaskMonitor tm) throws Exception {
-        tm.setTitle("Running analysis on server");
+        tm.setTitle("Running analysis");
         ServerConn sc = new ServerConn(model);
         sc.connect();
     }

@@ -19,7 +19,9 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.events.VisualStyleSetListener;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
@@ -80,6 +82,8 @@ public class CyActivator extends AbstractCyActivator {
         NetworkEventListener networkEventListener = new NetworkEventListener(model);
         registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
         registerService(context, networkEventListener, NetworkAddedListener.class, new Properties());
+        registerService(context, networkEventListener, NetworkViewAddedListener.class, new Properties());
+        registerService(context, networkEventListener, VisualStyleSetListener.class, new Properties());
 
         //cev layout service
         CevGroupAttributesLayout cgal = new CevGroupAttributesLayout(undoSupport);

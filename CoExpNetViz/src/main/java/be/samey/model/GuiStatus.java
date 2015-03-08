@@ -1,10 +1,12 @@
 package be.samey.model;
 
+import be.samey.gui.RootPanel;
 import be.samey.gui.SpeciesEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -12,14 +14,18 @@ import javax.swing.JFrame;
  */
 public class GuiStatus extends Observable {
 
+    //these are not declared final because I don't want them to be loaded if
+    //the cytoscape user is not currently using this app. But these should be
+    //initialized only once.
     private JFrame rootPanelFrame;
+    private JPanel rootPanel;
 
     private boolean inpBaitSelected;
     private boolean saveFileSelected;
-    private double defaultNegCutoff = -0.6;
-    private double defaultPosCutoff = 0.8;
+    private final double defaultNegCutoff = -0.6;
+    private final double defaultPosCutoff = 0.8;
 
-    private List<SpeciesEntry> speciesList = new ArrayList<SpeciesEntry>();
+    private final List<SpeciesEntry> speciesList = new ArrayList<SpeciesEntry>();
 
     public void setRootPanelFrame(JFrame rootPanelFrame) {
         this.rootPanelFrame = rootPanelFrame;
@@ -27,6 +33,22 @@ public class GuiStatus extends Observable {
 
     public JFrame getRootPanelFrame() {
         return rootPanelFrame;
+    }
+
+    /**
+     * Sets the panel which will be notified by the guiStatus on state changes
+     * 
+     * @param rootPanel 
+     */
+    public void setRootPanel(RootPanel rootPanel) {
+        this.rootPanel = rootPanel;
+        this.addObserver(rootPanel);
+        setChanged();
+        notifyObservers();
+    }
+
+    public JPanel getRootPanel() {
+        return rootPanel;
     }
 
     public void setInpBaitSelected(boolean inpBaitSelected) {

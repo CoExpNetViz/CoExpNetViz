@@ -1,12 +1,11 @@
 package be.samey.model;
 
 import be.samey.cynetw.CevNetworkBuilder;
+import be.samey.cynetw.CevTaskObserver;
 import be.samey.cynetw.CreateNetworkTask;
 import be.samey.cynetw.RunAnalysisTask;
-import be.samey.io.ServerConn;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Observable;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.view.model.CyNetworkView;
@@ -16,9 +15,9 @@ import org.cytoscape.work.TaskIterator;
  *
  * @author sam
  */
-public class CoreStatus extends Observable {
+public class CoreStatus {
 
-    private Model model;
+    private final Model model;
 
     private CevNetworkBuilder cnb;
 
@@ -26,8 +25,11 @@ public class CoreStatus extends Observable {
     public static final int GROUP_COLUMN = 0;
     //which column contains the species of the baits
     public static final int SPECIES_COLUMN = 4;
-    //what value indicates a node is not a bait in the SPECIES_COLUMN
+    //what value indicates a node is a bait in the SPECIES_COLUMN
     public static final String BAIT_GROUP = "";
+    //the name to use for the new layout created by this app
+    public static final String COMP_LAYOUT_NAME = "cev-layout";
+    public static final String HUMAN_LAYOUT_NAME = "Cev target-bait Layout";
 
     public CoreStatus(Model model) {
         this.model = model;
@@ -75,11 +77,6 @@ public class CoreStatus extends Observable {
     //this is set by CreateNetworkTask and used by ShowNetworkTask
     private CyNetworkView lastCnv;
 
-    public void notifyNetworkCreated() {
-        setChanged();
-        notifyObservers();
-    }
-
     /**
      * Starts running the analysis, the model and coreStatus should remain
      * unaltered during execution of this method, if not concurrency problems
@@ -104,20 +101,21 @@ public class CoreStatus extends Observable {
         ti.append(new CreateNetworkTask(model));
 
         //now execute them, execute() forks a new thread and returns immediatly
-        model.getServices().getTaskManager().execute(ti);
+        model.getServices().getTaskManager().execute(ti, new CevTaskObserver(model));
 
         /*
-         * After completion of the two tasks above, the layout can be applied.
-         * Creating the layout task can only happen after completion of the two
-         * above tasks. This is because the view of the network is needed to
-         * create the layout task. Therefore the layout task can not be added to
-         * the above taskiterator. It is necessary that the layout task is
-         * created after completion of all tasks in the above taskiterator. To
-         * solve this, CreateNetworkTask triggers a notification of the
-         * coreStatus. This will trigger an update in the CevNetworkBuilder,
-         * this update will perform the layout task. This strange routing is a
-         * workaround to prevent triggering a task from withing another task.
-         * I should try to find a better solution for this problem.
+         * Three tasks have to be executed in order to create the final network
+         * with the correct Style and Layout. 1) Running the analysis, 2)
+         * creating the network view and applying a Style. 3) Apply the layout.
+         * The first two are executed here. The third task inherits from
+         * AbstractLayoutTask, an abstract class defined in the cytoscape layout
+         * implementation. The constructor of the task requires a CyNetworkView.
+         * For this reason, the third task can only be initialized after
+         * completion of the second task. This makes it impossible to append the
+         * third task to the same taskiterator as the first two tasks. To work
+         * around this problem, the execution of the third task is done by the
+         * CevTaskObserver, this observer will start the third task after
+         * completion of the first two tasks in the above taskIterator.
          */
     }
 

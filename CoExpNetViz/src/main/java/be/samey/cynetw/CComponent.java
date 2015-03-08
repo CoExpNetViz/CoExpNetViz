@@ -15,11 +15,11 @@ import org.cytoscape.model.CyNode;
  * @param <T> The type of the attribute which is used for grouping and sorting
  * @param <U> The type of the attribute used to group baits
  */
-public class CComponent<T extends Comparable<T>, U extends Comparable<U>> implements Comparable<CComponent> {
+class CComponent<T extends Comparable<T>, U extends Comparable<U>> implements Comparable<CComponent> {
 
-    Map<T, List<CyNode>> targetsMap = new TreeMap<T, List<CyNode>>();
-    Map<U, List<CyNode>> baitsMap = new TreeMap<U, List<CyNode>>();
-    List<CyNode> invalidNodes = new ArrayList<CyNode>();
+    private final Map<T, List<CyNode>> targetsMap = new TreeMap<T, List<CyNode>>();
+    private final Map<U, List<CyNode>> baitsMap = new TreeMap<U, List<CyNode>>();
+    private final List<CyNode> invalidNodes = new ArrayList<CyNode>();
     int size = 0;
 
     Comparator<CyNode> comparator = new Comparator<CyNode>() {
@@ -69,7 +69,7 @@ public class CComponent<T extends Comparable<T>, U extends Comparable<U>> implem
     }
 
     /**
-     * Sorts the partitions in this connected component on the attribute use for
+     * Sorts the targets in this connected component on the attribute use for
      * grouping. Every partition has its nodes sorted by SUID. Nodes with
      * <code>null<\code> attributes are grouped in the last partition.
      *
@@ -99,7 +99,7 @@ public class CComponent<T extends Comparable<T>, U extends Comparable<U>> implem
     }
 
     /**
-     * Returns a list of baits sorted by attribute, then by SUID
+     * Returns a list of lists of baits sorted by attribute, then by SUID
      *
      * @return
      */

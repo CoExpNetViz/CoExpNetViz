@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.model;
 
 import org.cytoscape.application.CyApplicationManager;
@@ -20,7 +15,9 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 /**
- *
+ * this class creates an easy way to share the cytoscape services with any class
+ * in this application.
+ * 
  * @author sam
  */
 public class Services {

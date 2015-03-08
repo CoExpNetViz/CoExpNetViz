@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -85,12 +84,16 @@ public class RootPanel extends JPanel implements Observer {
         this.model = model;
         this.guiStatus = model.getGuiStatus();
         this.coreStatus = model.getCoreStatus();
-        guiStatus.addObserver(this);
         setPreferredSize(new Dimension(500, 640));
         constructGui();
         refreshGui();
     }
 
+    /**
+     * initializes all parts of the gui, this should only be used once and it
+     * should be used only in the constructor to prevent problems with broken
+     * references.
+     */
     private void constructGui() {
         //input bait genes or choose file
         inpBaitRb = new JRadioButton("Input bait genes");
@@ -271,7 +274,9 @@ public class RootPanel extends JPanel implements Observer {
         add(resetBtn, c);
     }
 
-    //resets all options on the tab and clears all input fields
+    /**
+     * resets all options on the tab and clears all input fields
+     */
     private void refreshGui() {
         //reset species
         guiStatus.removeAllSpecies();
@@ -295,8 +300,12 @@ public class RootPanel extends JPanel implements Observer {
     }
 
     @Override
-    //called whenever the model notify's its observers
-    //watch out to not trigger an update from the model from within this method.
+    /**
+     * Triggered when the {@link GuiStatus} notifies its observers. Updates all
+     * components statuses to match the {@link GuiStatus}. Don't trigger a
+     * GuiStatus update from within this method, that would start an endless
+     * loop.
+     */
     public void update(Observable o, Object arg) {
 
         //update: input bait genes or upload a file
@@ -304,6 +313,7 @@ public class RootPanel extends JPanel implements Observer {
         inpBaitRb.setSelected(inpBaitSelected);
         inpBaitLbl.setEnabled(inpBaitSelected);
         inpBaitTa.setEnabled(inpBaitSelected);
+        fileBaitRb.setSelected(!inpBaitSelected);
         fileBaitLbl.setEnabled(!inpBaitSelected);
         fileBaitTf.setEnabled(!inpBaitSelected);
         fileBaitBtn.setEnabled(!inpBaitSelected);
@@ -375,7 +385,8 @@ public class RootPanel extends JPanel implements Observer {
 
     /**
      * Created when the user clicks the "Run analysis" button (this.goBtn). All
-     * input fields are checked for correctness and passed on to the core model
+     * input fields are checked for correctness and passed on to the
+     * {@link CoreStatus} model. If all checks are OK, then the analysis is run.
      */
     private class GoAl implements ActionListener {
 
@@ -500,9 +511,9 @@ public class RootPanel extends JPanel implements Observer {
 
     }
 
-    //for debugging
+    //for debugging, adds some default input for quick testing
     private void testWithDefaults() {
-        guiStatus.setInpBaitSelected(!inpBaitRb.isSelected());
+        guiStatus.setInpBaitSelected(false);
         fileBaitTf.setText("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/baits.txt");
         guiStatus.getSpeciesList().get(0).speciesTf.setText("Tomato");
         guiStatus.getSpeciesList().get(0).speciesPathTf.setText("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/datasets/Tomato_dataset.txt");

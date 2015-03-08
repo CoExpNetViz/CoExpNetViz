@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.cynetw;
 
 import be.samey.model.Model;
-import java.nio.file.Path;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -16,8 +10,7 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class CreateNetworkTask extends AbstractTask {
 
-    private Model model;
-
+    private final Model model;
 
     public CreateNetworkTask(Model model) {
         this.model = model;
@@ -29,7 +22,6 @@ public class CreateNetworkTask extends AbstractTask {
         CevNetworkBuilder cnb = model.getCoreStatus().getCevNetworkBuilder();
         cnb.createNetworkView();
 
-        model.getCoreStatus().notifyNetworkCreated();
     }
 
 }

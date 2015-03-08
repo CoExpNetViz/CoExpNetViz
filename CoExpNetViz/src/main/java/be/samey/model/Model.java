@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.model;
 
 /**
@@ -24,33 +19,33 @@ public class Model {
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/submit_run.php";
 
     //all services are kept in this object
-    private Services services;
+    private final Services services;
 
-    public void setServices(Services services) {
-        this.services = services;
-    }
+//    public void setServices(Services services) {
+//        this.services = services;
+//    }
 
     public Services getServices() {
         return services;
     }
 
     //all gui interaction with the user are kept here
-    private GuiStatus guiStatus;
+    private final GuiStatus guiStatus;
 
-    public void setGuiStatus(GuiStatus guistatus) {
-        this.guiStatus = guistatus;
-    }
+//    public void setGuiStatus(GuiStatus guistatus) {
+//        this.guiStatus = guistatus;
+//    }
 
     public GuiStatus getGuiStatus() {
         return guiStatus;
     }
 
     //information about the current status for the application it kept here
-    private CoreStatus coreStatus;
+    private final CoreStatus coreStatus;
 
-    public void setCoreStatus(CoreStatus coreStatus) {
-        this.coreStatus = coreStatus;
-    }
+//    public void setCoreStatus(CoreStatus coreStatus) {
+//        this.coreStatus = coreStatus;
+//    }
 
     public CoreStatus getCoreStatus() {
         return coreStatus;

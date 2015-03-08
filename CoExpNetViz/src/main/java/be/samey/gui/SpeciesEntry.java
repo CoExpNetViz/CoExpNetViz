@@ -1,18 +1,13 @@
 package be.samey.gui;
 
 import be.samey.model.Model;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +20,7 @@ import javax.swing.UIManager;
  */
 public class SpeciesEntry extends JPanel {
 
-    private Model model;
+    private final Model model;
 
     JLabel speciesLbl;
     JTextField speciesTf;
@@ -90,7 +85,7 @@ public class SpeciesEntry extends JPanel {
         add(browseBtn, c);
     }
 
-    //created when the user chooses to input baits directly or with a file
+    //created when the user click the "remove" button for a species dataset
     private class RemoveSpeciesAl implements ActionListener {
 
         SpeciesEntry seToRemove;

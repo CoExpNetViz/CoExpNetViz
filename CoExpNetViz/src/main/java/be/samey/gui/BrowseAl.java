@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.gui;
 
 import java.awt.event.ActionEvent;
@@ -20,10 +15,10 @@ public class BrowseAl implements ActionListener {
     public static final int DIRECTORY = JFileChooser.DIRECTORIES_ONLY;
     public static final int FILE = JFileChooser.FILES_ONLY;
     
-    private JComponent parent;
-    private JTextField target;
-    private String windowTitle;
-    private int mode;
+    private final JComponent parent;
+    private final JTextField target;
+    private final String windowTitle;
+    private final int mode;
 
     public BrowseAl(JComponent parent, JTextField target, String windowTitle, int mode) {
         this.parent = parent;

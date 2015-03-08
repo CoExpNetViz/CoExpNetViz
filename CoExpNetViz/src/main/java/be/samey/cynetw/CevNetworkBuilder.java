@@ -5,51 +5,29 @@ import be.samey.io.CevTableReader;
 import be.samey.io.CevVizmapReader;
 import be.samey.model.CoreStatus;
 import be.samey.model.Model;
+import be.samey.model.Services;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.view.layout.AbstractLayoutTask;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskManager;
 
 /**
  *
  * @author sam
  */
-public class CevNetworkBuilder implements Observer {
+public class CevNetworkBuilder /*implements Observer*/ {
 
-    private Model model;
-    private CoreStatus coreStatus;
-    //services
-    private CyNetworkFactory cyNetworkFactory;
-    private CyRootNetworkManager cyRootNetworkManager;
-    private VisualMappingManager visualMappingManager;
+    private final Model model;
+    private final CoreStatus coreStatus;
+    private final Services services;
 
     public CevNetworkBuilder(Model model) {
         this.model = model;
         this.coreStatus = model.getCoreStatus();
-        coreStatus.addObserver(this);
-        //services
-        this.cyNetworkFactory = model.getServices().getCyNetworkFactory();
-        this.cyRootNetworkManager = model.getServices().getCyRootNetworkManager();
-        this.visualMappingManager = model.getServices().getVisualMappingManager();
+        this.services = model.getServices();
     }
 
     /**
@@ -71,12 +49,12 @@ public class CevNetworkBuilder implements Observer {
             coreStatus.resetNetworkCount();
 
             //here a subnetwork is created and then promoted to a root network
-            subNetwork = (CySubNetwork) cyNetworkFactory.createNetwork();
+            subNetwork = (CySubNetwork) services.getCyNetworkFactory().createNetwork();
             //set name for the subnetwork
             subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
 
             //promote the current network to a root network
-            CyRootNetwork rootNetwork = cyRootNetworkManager.getRootNetwork(subNetwork);
+            CyRootNetwork rootNetwork = services.getCyRootNetworkManager().getRootNetwork(subNetwork);
             //set name for root network
             rootNetwork.getRow(rootNetwork).set(CyRootNetwork.NAME, Model.APP_NAME);
 
@@ -95,7 +73,7 @@ public class CevNetworkBuilder implements Observer {
     }
 
     private VisualStyle getCevStyle() {
-        for (VisualStyle vs : visualMappingManager.getAllVisualStyles()) {
+        for (VisualStyle vs : services.getVisualMappingManager().getAllVisualStyles()) {
             if (vs.getTitle().equals(Model.APP_NAME)) {
                 return vs;
             }
@@ -128,49 +106,20 @@ public class CevNetworkBuilder implements Observer {
             //add the network
             model.getServices().getCyNetworkManager().addNetwork(cn);
             CyNetworkView cnv = model.getServices().getCyNetworkViewFactory().createNetworkView(cn);
-            model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
-            getCevStyle().apply(cnv);
 
             //add this data to the corestatus to pass it on to the next task
             //which is applying the layout
             coreStatus.setLastNoaTable(cevNodeTable);
             coreStatus.setLastCnv(cnv);
+
+            model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
+            model.getServices().getVisualMappingManager().setVisualStyle(getCevStyle(), cnv);
+
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             //TODO: warn user somehow
         }
 
-    }
-
-    /**
-     * applies the layout to the last view
-     */
-    public void applyLayout() {
-
-        CevGroupAttributesLayout layout = (CevGroupAttributesLayout) model.getServices().
-            getCyLayoutAlgorithmManager().getLayout("cev-attributes-layout");
-        TaskManager<?, ?> tm = model.getServices().getTaskManager();
-        ArrayList<CyColumn> columnList = (ArrayList) coreStatus.getLastNoaTable().getColumns();
-        String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
-        String speciesColumnName = columnList.get(4 + CoreStatus.SPECIES_COLUMN).getName();
-        TaskIterator ti = layout.createTaskIterator(coreStatus.getLastCnv(),
-            layout.createLayoutContext(),
-            CyLayoutAlgorithm.ALL_NODE_VIEWS,
-            groupColumnName,
-            speciesColumnName);
-        tm.execute(ti);
-
-//        AbstractLayoutTask alt = new CevGroupAttributesLayoutTask("CevGroupAttributes",
-//            coreStatus.getLastCnv(),
-//            CyLayoutAlgorithm.ALL_NODE_VIEWS,
-//            new CevGroupAttributesLayoutContext(),
-//            groupColumnName,
-//            null);
-    }
-
-    @Override
-    public void update(Observable o, Object o1) {
-        applyLayout();
     }
 
 }

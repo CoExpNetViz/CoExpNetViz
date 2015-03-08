@@ -21,6 +21,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.view.layout.AbstractLayoutTask;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -107,7 +108,7 @@ public class CevNetworkBuilder implements Observer {
     /**
      * reads the network files and creates a view, add the networks nodeTable
      * and view to the coremodel.
-     * 
+     *
      */
     public void createNetworkView() {
         try {
@@ -146,17 +147,25 @@ public class CevNetworkBuilder implements Observer {
      */
     public void applyLayout() {
 
-        CyLayoutAlgorithm layout = model.getServices().
-            getCyLayoutAlgorithmManager().getLayout("attributes-layout");
+        CevGroupAttributesLayout layout = (CevGroupAttributesLayout) model.getServices().
+            getCyLayoutAlgorithmManager().getLayout("cev-attributes-layout");
         TaskManager<?, ?> tm = model.getServices().getTaskManager();
         ArrayList<CyColumn> columnList = (ArrayList) coreStatus.getLastNoaTable().getColumns();
         String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
+        String speciesColumnName = columnList.get(4 + CoreStatus.SPECIES_COLUMN).getName();
         TaskIterator ti = layout.createTaskIterator(coreStatus.getLastCnv(),
             layout.createLayoutContext(),
             CyLayoutAlgorithm.ALL_NODE_VIEWS,
-            groupColumnName);
+            groupColumnName,
+            speciesColumnName);
         tm.execute(ti);
-//        return ti;
+
+//        AbstractLayoutTask alt = new CevGroupAttributesLayoutTask("CevGroupAttributes",
+//            coreStatus.getLastCnv(),
+//            CyLayoutAlgorithm.ALL_NODE_VIEWS,
+//            new CevGroupAttributesLayoutContext(),
+//            groupColumnName,
+//            null);
     }
 
     @Override

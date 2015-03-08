@@ -1,5 +1,6 @@
 package be.samey.internal;
 
+import be.samey.cynetw.CevGroupAttributesLayout;
 import be.samey.cynetw.NetworkEventListener;
 import be.samey.model.Model;
 import java.util.Properties;
@@ -14,12 +15,16 @@ import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
+
+import static org.cytoscape.work.ServiceProperties.*;
 
 /**
  * This is the entry point for the CoExpNetViz plugin for Cytoscape 3. Here the
@@ -46,7 +51,8 @@ public class CyActivator extends AbstractCyActivator {
         CyNetworkViewFactory cyNetworkViewFactory = getService(context, CyNetworkViewFactory.class);
         CyNetworkViewManager cyNetworkViewManager = getService(context, CyNetworkViewManager.class);
         CyLayoutAlgorithmManager cyLayoutAlgorithmManager = getService(context, CyLayoutAlgorithmManager.class);
-		TaskManager taskManager = getService(context, TaskManager.class);
+        TaskManager taskManager = getService(context, TaskManager.class);
+        UndoSupport undoSupport = getService(context, UndoSupport.class);
 
         //add them to the model's services
         Model model = new Model();
@@ -62,6 +68,7 @@ public class CyActivator extends AbstractCyActivator {
         model.getServices().setCyNetworkViewManager(cyNetworkViewManager);
         model.getServices().setCyLayoutAlgorithmManager(cyLayoutAlgorithmManager);
         model.getServices().setTaskManager(taskManager);
+        model.getServices().setUndoSupport(undoSupport);
 
         //create the menu action (menu entry for the app)
         CevMenuAction action = new CevMenuAction(cyApplicationManager, Model.APP_NAME, model);
@@ -69,9 +76,18 @@ public class CyActivator extends AbstractCyActivator {
         //register OSGi services
         registerAllServices(context, action, new Properties());
 
+        //network event service
         NetworkEventListener networkEventListener = new NetworkEventListener(model);
         registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
         registerService(context, networkEventListener, NetworkAddedListener.class, new Properties());
+
+        //cev layout service
+        CevGroupAttributesLayout cgal = new CevGroupAttributesLayout(undoSupport);
+        Properties cgalProperties = new Properties();
+        cgalProperties.setProperty("preferredTaskManager", "menu");
+        cgalProperties.setProperty(TITLE, cgal.toString());
+        cgalProperties.setProperty(MENU_GRAVITY, "10.65");
+        registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
 
         //for debugging: print message if the app started succesfully
         System.out.println(Model.APP_NAME + " started succesfully");

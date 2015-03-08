@@ -17,6 +17,7 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  *
@@ -36,6 +37,7 @@ public class Services {
     private CyNetworkViewManager cyNetworkViewManager;
     private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
     private TaskManager taskManager;
+    private UndoSupport undoSupport;
 
     public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
         this.cyApplicationManager = cyApplicationManager;
@@ -131,5 +133,14 @@ public class Services {
 
     public TaskManager getTaskManager() {
         return taskManager;
+    }
+
+    public void setUndoSupport(UndoSupport UndoSupport) {
+        this.undoSupport = UndoSupport;
+
+    }
+
+    public UndoSupport getUndoSupport() {
+        return undoSupport;
     }
 }

@@ -24,6 +24,10 @@ public class CoreStatus extends Observable {
 
     //Which column to use to group nodes
     public static final int GROUP_COLUMN = 0;
+    //which column contains the species of the baits
+    public static final int SPECIES_COLUMN = 4;
+    //what value indicates a node is not a bait in the SPECIES_COLUMN
+    public static final String BAIT_GROUP = "";
 
     public CoreStatus(Model model) {
         this.model = model;

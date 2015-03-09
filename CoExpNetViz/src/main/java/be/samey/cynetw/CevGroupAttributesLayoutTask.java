@@ -110,7 +110,6 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
             /* FIXME Error. */
         }
 
-        System.out.println(speciesAttribute);
     }
 
     /**

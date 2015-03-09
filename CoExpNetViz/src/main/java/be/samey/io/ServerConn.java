@@ -1,10 +1,21 @@
 package be.samey.io;
 
 import be.samey.model.Model;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.rauschig.jarchivelib.ArchiveEntry;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.ArchiveStream;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
+
+import static java.nio.file.StandardCopyOption.*;
 
 /**
  *
@@ -18,7 +29,26 @@ public class ServerConn {
         this.model = model;
     }
 
-    public void connect() throws InterruptedException {
+    public void connect() throws InterruptedException, IOException {
+
+        /*----------------------------------------------------------------------
+         1) create output directory
+         */
+        //if the user clicked the checkbox to save the output, then the archive
+        //downloaded from the server is saved in the directory specified by the
+        //user. If the user does not want to save the output, then the archive
+        //is downloaded to a temp folder.
+        Path outPath;
+        if (model.getCoreStatus().getOutPath() == null) {
+            outPath = Files.createTempDirectory("Cev_archive");
+        } else {
+            outPath = model.getCoreStatus().getOutPath();
+        }
+        Path archivePath = outPath.resolve("Cev.tgz");
+
+        /*----------------------------------------------------------------------
+         2) Upload user files and settings
+         */
         String url = Model.URL;
         //TODO: get info from coreStatus
         // ...
@@ -27,18 +57,62 @@ public class ServerConn {
         // ...
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        //TODO: run the app on the server from here
-        Thread.sleep(1000); //simulate networking time
+        //TODO: upload files
+        Thread.sleep(1000); //simulate runtime on server
 
-        //in the finished app this info should come from files downloaded from the server
-        Path sifPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.sif");
-        Path noaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.node.attr");
-        Path edaPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/network1.edge.attr");
-        Path vizPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/CevStyle.xml");
+        /*----------------------------------------------------------------------
+         3) Download response to output directory
+         */
+        //TODO: download archive to outPath
+        //now replaced with local copy so I can test the archiver libraries
+        Files.copy(Paths.get("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network.tgz"), archivePath, REPLACE_EXISTING);
 
+        //TODO: close useragent
+
+        /*----------------------------------------------------------------------
+         4) Unpack files to temp dir
+         */
+        //create a temp folder to store the network files
+        Path unpackPath = Files.createTempDirectory("Cev_netw");
+        //unpack the network files
+        Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
+        File archive = archivePath.toFile();
+        ArchiveStream stream = archiver.stream(archive);
+        ArchiveEntry entry;
+
+        Path sifPath = null;
+        Path noaPath = null;
+        Path edaPath = null;
+        Path logPath = null;
+        File netwFile;
+        while ((entry = stream.getNextEntry()) != null) {
+            netwFile = entry.extract(unpackPath.toFile());
+            if (netwFile.toString().endsWith(".sif")) {
+                sifPath = netwFile.toPath();
+            }
+            if (netwFile.toString().endsWith(".node.attr")) {
+                noaPath = netwFile.toPath();
+            }
+            if (netwFile.toString().endsWith(".edge.attr")) {
+                edaPath = netwFile.toPath();
+            }
+            if (netwFile.toString().endsWith("_log")) {
+                logPath = netwFile.toPath();
+            }
+        }
+        stream.close();
+
+        /*----------------------------------------------------------------------
+         5) update corestatus with network paths
+         */
+        //TODO: sanity checks
         model.getCoreStatus().setSifPath(sifPath);
         model.getCoreStatus().setNoaPath(noaPath);
         model.getCoreStatus().setEdaPath(edaPath);
+        model.getCoreStatus().setLogPath(logPath);
+
+        //TODO: move this to resources
+        Path vizPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/CevStyle.xml");
         model.getCoreStatus().setVizPath(vizPath);
 
     }

@@ -77,6 +77,8 @@ public class CevNetworkReader {
             }
 
         }
+
+        //TODO: close reader
     }
 
 }

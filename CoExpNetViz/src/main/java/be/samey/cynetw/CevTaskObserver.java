@@ -24,12 +24,12 @@ public class CevTaskObserver implements TaskObserver {
 
     @Override
     public void taskFinished(ObservableTask task) {
-        System.out.println("task finished");
+
     }
 
     @Override
     public void allFinished(FinishStatus finishStatus) {
-        System.out.println("all finished");
+
         CevGroupAttributesLayout layout = (CevGroupAttributesLayout) model.getServices().
             getCyLayoutAlgorithmManager().getLayout(CoreStatus.COMP_LAYOUT_NAME);
         ArrayList<CyColumn> columnList = (ArrayList) model.getCoreStatus().getLastNoaTable().getColumns();

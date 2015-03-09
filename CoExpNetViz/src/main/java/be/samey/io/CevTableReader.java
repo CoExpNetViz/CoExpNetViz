@@ -139,14 +139,14 @@ public class CevTableReader {
      * and the attributes themselves (stored in the map) are returned as fields
      * of a <code>TableMap</code> object.
      *
-     * @param edaPath The {@link Path} to a attribute file
+     * @param tablePath The {@link Path} to a attribute file
      * @return The attributes and other data stored in a <code>TableMap</code>
      * @throws IOException if the input file can not be accessed
      */
-    private static TableMap makeTableMap(Path edaPath) throws IOException {
+    private static TableMap makeTableMap(Path tablePath) throws IOException {
         //open file
         Charset charset = Charset.forName("UTF-8");
-        BufferedReader reader = Files.newBufferedReader(edaPath, charset);
+        BufferedReader reader = Files.newBufferedReader(tablePath, charset);
 
         //get column names, first column name does not matter because it is 
         // already present, it contains the attribute mapping names.
@@ -183,6 +183,9 @@ public class CevTableReader {
             }
             aMap.put(lineSplit[0], attributes);
         }
+
+        //TODO: close reader
+
         TableMap tableMap = new TableMap(header, attrTypes, aMap);
         return tableMap;
     }

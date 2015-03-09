@@ -111,9 +111,5 @@ public class ServerConn {
         model.getCoreStatus().setEdaPath(edaPath);
         model.getCoreStatus().setLogPath(logPath);
 
-        //TODO: move this to resources
-        Path vizPath = Paths.get("/home/sam/favs/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network/CevStyle.xml");
-        model.getCoreStatus().setVizPath(vizPath);
-
     }
 }

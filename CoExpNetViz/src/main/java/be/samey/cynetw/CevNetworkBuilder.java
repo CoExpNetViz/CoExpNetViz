@@ -7,6 +7,8 @@ import be.samey.model.CoreStatus;
 import be.samey.model.Model;
 import be.samey.model.Services;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
@@ -84,9 +86,8 @@ public class CevNetworkBuilder /*implements Observer*/ {
     }
 
     /**
-     * reads the network files and creates a view, add the networks nodeTable
-     * and view to the coremodel.
-     *
+     * reads the network files and creates a view. Applies Style. Adds the
+     * networks nodeTable and view to the coremodel.
      */
     public void createNetworkView() {
         try {
@@ -100,7 +101,7 @@ public class CevNetworkBuilder /*implements Observer*/ {
                 // only add the visual style after the user has used this app at
                 // least once to prevent cluttering the Style menu when the user
                 // is not using this app
-                CevVizmapReader.readVIZ(coreStatus.getVizPath(), model);
+                CevVizmapReader.readVIZ(model);
             }
 
             //add the network

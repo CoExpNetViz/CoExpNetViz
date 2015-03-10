@@ -20,7 +20,7 @@ public class RunAnalysisTask extends AbstractTask {
     public void run(TaskMonitor tm) throws Exception {
         tm.setTitle("Running analysis");
         ServerConn sc = new ServerConn(model);
-        sc.connect();
+        sc.connect(tm);
     }
 
 }

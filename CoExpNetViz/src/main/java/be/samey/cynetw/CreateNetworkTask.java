@@ -18,9 +18,8 @@ public class CreateNetworkTask extends AbstractTask {
 
     @Override
     public void run(TaskMonitor tm) throws Exception {
-        tm.setStatusMessage("Reading network files");
         CevNetworkBuilder cnb = model.getCoreStatus().getCevNetworkBuilder();
-        cnb.createNetworkView();
+        cnb.createNetworkView(tm);
 
     }
 

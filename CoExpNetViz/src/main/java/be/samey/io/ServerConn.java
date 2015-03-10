@@ -16,6 +16,7 @@ import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
 
 import static java.nio.file.StandardCopyOption.*;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  *
@@ -29,7 +30,7 @@ public class ServerConn {
         this.model = model;
     }
 
-    public void connect() throws InterruptedException, IOException {
+    public void connect(TaskMonitor tm) throws InterruptedException, IOException {
 
         /*----------------------------------------------------------------------
          1) create output directory
@@ -49,6 +50,8 @@ public class ServerConn {
         /*----------------------------------------------------------------------
          2) Upload user files and settings
          */
+        tm.setStatusMessage("Uploading your data");
+        tm.setProgress(0.1);
         String url = Model.URL;
         //TODO: get info from coreStatus
         // ...
@@ -63,6 +66,8 @@ public class ServerConn {
         /*----------------------------------------------------------------------
          3) Download response to output directory
          */
+        tm.setStatusMessage("Dowloading network files");
+        tm.setProgress(0.3);
         //TODO: download archive to outPath
         //now replaced with local copy so I can test the archiver libraries
         Files.copy(Paths.get("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network.tgz"), archivePath, REPLACE_EXISTING);

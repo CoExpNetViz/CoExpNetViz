@@ -54,18 +54,24 @@ public class CevTableReader {
                 cevNodeTable.createColumn(attrColumnName, tableMap.attrTypes[i], false);
             }
         }
+        //add node Degree column
+        String colName = "Degree";
+        if (cevNodeTable.getColumn(colName) == null) {
+            cevNodeTable.createColumn(colName, Integer.class, false);
+        }
 
         //add attributes to network edge table
         CyRow row;
         String nodeName;
-        Object[] edgeAttr;
+        Object[] nodeAttr;
         for (CyNode node : network.getNodeList()) {
             row = network.getRow(node);
             nodeName = row.get(CyNetwork.NAME, String.class);
-            edgeAttr = tableMap.aMap.get(nodeName);
-            for (int i = 0; i < edgeAttr.length; i++) {
-                row.set(tableMap.header[i], edgeAttr[i]);
+            nodeAttr = tableMap.aMap.get(nodeName);
+            for (int i = 0; i < nodeAttr.length; i++) {
+                row.set(tableMap.header[i], nodeAttr[i]);
             }
+            row.set(colName, network.getNeighborList(node, CyEdge.Type.ANY).size());
         }
 
         return cevNodeTable;
@@ -147,47 +153,49 @@ public class CevTableReader {
         //open file
         Charset charset = Charset.forName("UTF-8");
         BufferedReader reader = Files.newBufferedReader(tablePath, charset);
+        try {
 
-        //get column names, first column name does not matter because it is 
-        // already present, it contains the attribute mapping names.
-        String[] header = reader.readLine().split("\t");
-        header = Arrays.copyOfRange(header, 1, header.length);
+            //get column names, first column name does not matter because it is 
+            // already present, it contains the attribute mapping names.
+            String[] header = reader.readLine().split("\t");
+            header = Arrays.copyOfRange(header, 1, header.length);
 
-        //holds attributes
-        Map<String, Object[]> aMap = new HashMap<String, Object[]>();
-        String line;
-        String[] lineSplit = null;
-        Object[] attributes = new Object[header.length];
+            //holds attributes
+            Map<String, Object[]> aMap = new HashMap<String, Object[]>();
+            String line;
+            String[] lineSplit;
+            Object[] attributes;
 
-        //holds types of columns
-        Class[] attrTypes = new Class[header.length];
-        //start all columns as double, set to string if at least one value in
-        // column isn't numeric
-        for (int i = 0; i < header.length; i++) {
-            attrTypes[i] = Double.class;
-        }
-
-        //iterate over the file
-        while ((line = reader.readLine()) != null) {
-            //parse line
-            lineSplit = line.split("\t");
-            attributes = new Object[header.length];
-            //store attribute as number if it is numeric
-            for (int i = 1; i < lineSplit.length; i++) {
-                if (isNumeric(lineSplit[i])) {
-                    attributes[i - 1] = Double.parseDouble(lineSplit[i]);
-                } else {
-                    attributes[i - 1] = lineSplit[i];
-                    attrTypes[i - 1] = String.class; //any non numeric value makes this a column of Strings
-                }
+            //holds types of columns
+            Class[] attrTypes = new Class[header.length];
+            //start all columns as double, set to string if at least one value in
+            // column isn't numeric
+            for (int i = 0; i < header.length; i++) {
+                attrTypes[i] = Double.class;
             }
-            aMap.put(lineSplit[0], attributes);
+
+            //iterate over the file
+            while ((line = reader.readLine()) != null) {
+                //parse line
+                lineSplit = line.split("\t");
+                attributes = new Object[header.length];
+                //store attribute as number if it is numeric
+                for (int i = 1; i < lineSplit.length; i++) {
+                    if (isNumeric(lineSplit[i])) {
+                        attributes[i - 1] = Double.parseDouble(lineSplit[i]);
+                    } else {
+                        attributes[i - 1] = lineSplit[i];
+                        attrTypes[i - 1] = String.class; //any non numeric value makes this a column of Strings
+                    }
+                }
+                aMap.put(lineSplit[0], attributes);
+            }
+            TableMap tableMap = new TableMap(header, attrTypes, aMap);
+            return tableMap;
+
+        } finally {
+            reader.close();
         }
-
-        //TODO: close reader
-
-        TableMap tableMap = new TableMap(header, attrTypes, aMap);
-        return tableMap;
     }
 
     /**

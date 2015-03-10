@@ -7,25 +7,24 @@ import be.samey.model.CoreStatus;
 import be.samey.model.Model;
 import be.samey.model.Services;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  *
  * @author sam
  */
 public class CevNetworkBuilder /*implements Observer*/ {
-
+    
     private final Model model;
     private final CoreStatus coreStatus;
     private final Services services;
-
+    
     public CevNetworkBuilder(Model model) {
         this.model = model;
         this.coreStatus = model.getCoreStatus();
@@ -68,28 +67,32 @@ public class CevNetworkBuilder /*implements Observer*/ {
             //set name for the subnetwork
             subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
         }
-
+        
         coreStatus.incrementNetworkCount();
         return subNetwork;
-
+        
     }
-
+    
     private VisualStyle getCevStyle() {
         for (VisualStyle vs : services.getVisualMappingManager().getAllVisualStyles()) {
             if (vs.getTitle().equals(Model.APP_NAME)) {
                 return vs;
             }
-
+            
         }
         return null;
-
+        
     }
 
     /**
      * reads the network files and creates a view. Applies Style. Adds the
      * networks nodeTable and view to the coremodel.
+     *
+     * @param tm
      */
-    public void createNetworkView() {
+    public void createNetworkView(TaskMonitor tm) throws Exception {
+        tm.setStatusMessage("creating network");
+        tm.setProgress(0.5);
         try {
 
             //read files
@@ -112,15 +115,16 @@ public class CevNetworkBuilder /*implements Observer*/ {
             //which is applying the layout
             coreStatus.setLastNoaTable(cevNodeTable);
             coreStatus.setLastCnv(cnv);
-
+            
             model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
             model.getServices().getVisualMappingManager().setVisualStyle(getCevStyle(), cnv);
-
+            
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-            //TODO: warn user somehow
+            //when executed in a Task, this message will be shown to the user
+            // (see documentation for org.cytoscape.work.Task)
+            throw new Exception(String.format("An error ocurred while reading the network files%n%s%n", ex));
         }
-
+        
     }
-
+    
 }

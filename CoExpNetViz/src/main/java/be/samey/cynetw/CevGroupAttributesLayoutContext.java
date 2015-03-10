@@ -36,6 +36,8 @@ public class CevGroupAttributesLayoutContext {
      will increase the size of the partition proportionally.
      */
 
+    @Tunable(description = "Which column to use to group baits")
+    public String speciesAttribute = "Species";
     @Tunable(description = "Horizontal spacing between two unconnected nodes")
     public double nspacingx = 80.0;
     @Tunable(description = "Vertical spacing between two unconnected nodes")
@@ -55,5 +57,7 @@ public class CevGroupAttributesLayoutContext {
     @Tunable(description = "Scale of the radius of the partition")
     public double radmult = 50.0;
     @Tunable(description = "How far the baits are from the connected component center")
-    public double enlargef = 3.0;
+    public double enlargef = 2.0;
+    @Tunable(description = "How large the radius is for baits in the same group")
+    public double benlargef = 5.0;
 }

@@ -32,53 +32,56 @@ public class CevNetworkReader {
         Charset charset = Charset.forName("UTF-8");
         BufferedReader reader = Files.newBufferedReader(sifPath, charset);
 
-        //this map keeps track of which nodes were added and which nodes were not
-        Map<String, CyNode> nMap = new HashMap<String, CyNode>();
-        String line;
-        String[] lineSplit;
-        String firstNodeName;
-        String linkType;
-        String[] connectedNodeNames;
-        CyNode firstNode;
-        CyNode connectedNode;
-        //iterate over the file
-        while ((line = reader.readLine()) != null) {
-            //parse line
-            lineSplit = line.split("\\s");
-            firstNodeName = lineSplit[0];
-            linkType = lineSplit[1];
-            connectedNodeNames = Arrays.copyOfRange(lineSplit, 2, lineSplit.length);
+        try {
+            //this map keeps track of which nodes were added and which nodes were not
+            Map<String, CyNode> nMap = new HashMap<String, CyNode>();
+            String line;
+            String[] lineSplit;
+            String firstNodeName;
+            String linkType;
+            String[] connectedNodeNames;
+            CyNode firstNode;
+            CyNode connectedNode;
+            //iterate over the file
+            while ((line = reader.readLine()) != null) {
+                //parse line
+                lineSplit = line.split("\\s");
+                firstNodeName = lineSplit[0];
+                linkType = lineSplit[1];
+                connectedNodeNames = Arrays.copyOfRange(lineSplit, 2, lineSplit.length);
 
-            //add first node to node map if needed
-            if (!nMap.containsKey(firstNodeName)) {
+                //add first node to node map if needed
+                if (!nMap.containsKey(firstNodeName)) {
                 //the node is not in the map, which means it is also not in the network
-                //thus create the node
-                firstNode = network.addNode();
-                network.getRow(firstNode).set(CyNetwork.NAME, firstNodeName);
-                nMap.put(firstNodeName, firstNode);
-            }
-            firstNode = nMap.get(firstNodeName);
-
-            //iterate nodes linked to first node
-            for (String connectedNodeName : connectedNodeNames) {
-                //add other nodes to node map if needed
-                if (!nMap.containsKey(connectedNodeName)) {
-                    //the node is not in the map, which means it is also not in the network
                     //thus create the node
-                    connectedNode = network.addNode();
-                    network.getRow(connectedNode).set(CyNetwork.NAME, connectedNodeName);
-                    nMap.put(connectedNodeName, connectedNode);
+                    firstNode = network.addNode();
+                    network.getRow(firstNode).set(CyNetwork.NAME, firstNodeName);
+                    nMap.put(firstNodeName, firstNode);
                 }
-                connectedNode = nMap.get(connectedNodeName);
-                //make the edge
-                CyEdge edge = network.addEdge(firstNode, connectedNode, true);
-                network.getRow(edge).set(CyNetwork.NAME, String.format("%s (%s) %s", firstNodeName, linkType, connectedNodeName));
-                network.getRow(edge).set(CyEdge.INTERACTION, linkType);
+                firstNode = nMap.get(firstNodeName);
+
+                //iterate nodes linked to first node
+                for (String connectedNodeName : connectedNodeNames) {
+                    //add other nodes to node map if needed
+                    if (!nMap.containsKey(connectedNodeName)) {
+                    //the node is not in the map, which means it is also not in the network
+                        //thus create the node
+                        connectedNode = network.addNode();
+                        network.getRow(connectedNode).set(CyNetwork.NAME, connectedNodeName);
+                        nMap.put(connectedNodeName, connectedNode);
+                    }
+                    connectedNode = nMap.get(connectedNodeName);
+                    //make the edge
+                    CyEdge edge = network.addEdge(firstNode, connectedNode, true);
+                    network.getRow(edge).set(CyNetwork.NAME, String.format("%s (%s) %s", firstNodeName, linkType, connectedNodeName));
+                    network.getRow(edge).set(CyEdge.INTERACTION, linkType);
+                }
+
             }
 
+        } finally {
+            reader.close();
         }
-
-        //TODO: close reader
     }
 
 }

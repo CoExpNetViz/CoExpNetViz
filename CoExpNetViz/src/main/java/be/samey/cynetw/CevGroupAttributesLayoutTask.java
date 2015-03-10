@@ -72,12 +72,18 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
         this.taskMonitor = taskMonitor;
         this.network = networkView.getModel();
 
+        taskMonitor.setStatusMessage("Applying layout algorithm");
+        taskMonitor.setProgress(0.7);
+
         if (layoutAttribute == null || layoutAttribute.equals("(none)")) {
             throw new NullPointerException("Attribute is null.  This is required for this layout.");
         }
         if (speciesAttribute == null) {
-            //TODO: interactively ask for species column
-            throw new NullPointerException("Species column is null.  This is required for this layout.");
+            speciesAttribute = context.speciesAttribute;
+            CyTable dataTable = network.getDefaultNodeTable();
+            if (dataTable.getColumn(speciesAttribute) == null) {
+                throw new NullPointerException(String.format("Could not find the column \"%s\"%n", speciesAttribute));
+            }
         }
 
         construct();
@@ -151,7 +157,7 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
                         return;
                     }
 
-                    double radius = encircle(partition, offsetx, offsety);
+                    double radius = encircle(partition, offsetx, offsety, 1.0);
 
                     double diameter = 2.0 * radius;
 
@@ -238,7 +244,7 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
         networkView.getNodeView(node).setVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION, offsety);
     }
 
-    private double encircle(List<CyNode> partition, double offsetx, double offsety) {
+    private double encircle(List<CyNode> partition, double offsetx, double offsety, double enlargef) {
         if (partition == null) {
             return 0.0;
         }
@@ -251,7 +257,7 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
             return 0.0;
         }
 
-        double radius = context.radmult * Math.sqrt(partition.size());
+        double radius = context.radmult * Math.sqrt(partition.size()) * enlargef;
 
         if (radius < context.minrad) {
             radius = context.minrad;
@@ -277,13 +283,14 @@ public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
         double centery = (ccstarty - offsety) / 2;
         double ccphidelta = (2.0 * Math.PI) / baitsList.size();
         double ccphi = -Math.PI;
-        double ccradius = centerx * context.enlargef;
+
+        double ccradius = (centerx > centery ? centerx : centery) * context.enlargef;
 
         for (List<CyNode> bg : baitsList) {
 
             double bgx = centerx + (ccradius * Math.cos(ccphi));
             double bgy = offsety + centery + (ccradius * Math.sin(ccphi));
-            encircle(bg, bgx, bgy);
+            encircle(bg, bgx, bgy, context.benlargef);
             ccphi += ccphidelta;
         }
 

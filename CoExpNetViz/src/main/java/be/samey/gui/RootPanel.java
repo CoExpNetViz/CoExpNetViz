@@ -296,7 +296,7 @@ public class RootPanel extends JPanel implements Observer {
         saveFileTf.setText(System.getProperty("user.dir"));
 
         //for debugging
-        testWithDefaults();
+//        testWithDefaults();
     }
 
     @Override

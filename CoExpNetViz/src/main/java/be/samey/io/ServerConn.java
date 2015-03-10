@@ -3,9 +3,11 @@ package be.samey.io;
 import be.samey.model.Model;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.rauschig.jarchivelib.ArchiveEntry;
@@ -15,7 +17,13 @@ import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
 
-import static java.nio.file.StandardCopyOption.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.util.EntityUtils;
 import org.cytoscape.work.TaskMonitor;
 
 /**
@@ -23,13 +31,13 @@ import org.cytoscape.work.TaskMonitor;
  * @author sam
  */
 public class ServerConn {
-
+    
     private Model model;
-
+    
     public ServerConn(Model model) {
         this.model = model;
     }
-
+    
     public void connect(TaskMonitor tm) throws InterruptedException, IOException {
 
         /*----------------------------------------------------------------------
@@ -48,31 +56,27 @@ public class ServerConn {
         Path archivePath = outPath.resolve("Cev.tgz");
 
         /*----------------------------------------------------------------------
-         2) Upload user files and settings
+         2) Upload user files and settings, download response
          */
-        tm.setStatusMessage("Uploading your data");
+        tm.setStatusMessage("Running analysis on server");
         tm.setProgress(0.1);
-        String url = Model.URL;
-        //TODO: get info from coreStatus
-        // ...
 
-        //TODO: build useragent
-        // ...
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        //make multipart entity with user data and settings
+        HttpEntity postEntity = makeEntity(model.getCoreStatus().getBaits(),
+            model.getCoreStatus().getNames(),
+            model.getCoreStatus().getFilePaths(),
+            model.getCoreStatus().getPCutoff(),
+            model.getCoreStatus().getNCutoff());
 
-        //TODO: upload files
-        Thread.sleep(1000); //simulate runtime on server
-
-        /*----------------------------------------------------------------------
-         3) Download response to output directory
-         */
-        tm.setStatusMessage("Dowloading network files");
-        tm.setProgress(0.3);
-        //TODO: download archive to outPath
-        //now replaced with local copy so I can test the archiver libraries
-        Files.copy(Paths.get("/home/sam/Documents/uma1_s2-mp2-data/CexpNetViz_web-interface/out/network.tgz"), archivePath, REPLACE_EXISTING);
-
-        //TODO: close useragent
+        //run the app on the server
+        tm.setProgress(-1.0);
+        try {
+            executeAppOnSever(Model.URL, postEntity, archivePath);
+        } catch (Exception ex) {
+            //TODO: warn user somehow
+            ex.printStackTrace();
+        }
+        tm.setProgress(6.0);
 
         /*----------------------------------------------------------------------
          4) Unpack files to temp dir
@@ -84,7 +88,7 @@ public class ServerConn {
         File archive = archivePath.toFile();
         ArchiveStream stream = archiver.stream(archive);
         ArchiveEntry entry;
-
+        
         Path sifPath = null;
         Path noaPath = null;
         Path edaPath = null;
@@ -115,6 +119,80 @@ public class ServerConn {
         model.getCoreStatus().setNoaPath(noaPath);
         model.getCoreStatus().setEdaPath(edaPath);
         model.getCoreStatus().setLogPath(logPath);
+        
+    }
+    
+    public HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
+        double poscutoff, double negcutoff)
+        throws UnsupportedEncodingException {
 
+        //Tim has numbered his form entity names in this order, this could change
+        // change in the future
+        int[] formNames = new int[]{1, 2, 3, 4, 0};
+        
+        MultipartEntityBuilder mpeb = MultipartEntityBuilder.create();
+
+        //make the bait part
+        StringBody baitspart = new StringBody(baits, ContentType.TEXT_PLAIN);
+        mpeb.addPart("baits", baitspart);
+
+        //make the file upload parts
+        for (int i = 0; i < 5; i++) {
+            if (names[i] != null && filepaths[i] != null) {
+                mpeb.addBinaryBody("matrix" + formNames[i], filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
+            } else {
+                mpeb.addBinaryBody("matrix" + formNames[i], new byte[0], ContentType.APPLICATION_OCTET_STREAM, "");
+            }
+        }
+
+        //make the cutoff parts
+        StringBody poscpart = new StringBody(Double.toString(poscutoff));
+        mpeb.addPart("positive_correlation", poscpart);
+        StringBody negcpart = new StringBody(Double.toString(negcutoff));
+        mpeb.addPart("negative_correlation", negcpart);
+        
+        return mpeb.build();
+    }
+    
+    public void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws Exception {
+        
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(entity);
+        
+        System.out.println("executing request " + httppost.getRequestLine());
+        CloseableHttpResponse response = null;
+        HttpEntity resEntity = null;
+        try {
+            response = httpclient.execute(httppost);
+            System.out.println(response.getStatusLine());
+            resEntity = response.getEntity();
+            saveResponse(resEntity.getContent(), archivePath);
+            EntityUtils.consume(resEntity);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+        httpclient.close();
+    }
+    
+    private void saveResponse(final InputStream input, Path outp) throws IOException {
+        OutputStream out = Files.newOutputStream(outp);
+        try {
+            final byte[] buffer = new byte[1024];
+            while (true) {
+                final int len = input.read(buffer);
+                if (len < 0) {
+                    break;
+                }
+                out.write(buffer, 0, len);
+            }
+        } catch (IOException ex) {
+            //TODO: warn user somehow
+            ex.printStackTrace();
+        } finally {
+            out.close();
+        }
     }
 }

@@ -16,7 +16,7 @@ public class Model {
     public static final String APP_NAME = "CoExpNetViz";
     public static final String[] SPECIES_CHOICES = {"Tomato", "Arabidopsis", "Patato-ITAG", "Patato-PGSC"};
     public static final int MAX_SPECIES_COUNT = 5;
-    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/submit_run.php";
+    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
 
     //all services are kept in this object
     private final Services services;

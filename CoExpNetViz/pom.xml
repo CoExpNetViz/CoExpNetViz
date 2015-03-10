@@ -13,6 +13,13 @@
 
     <name>${bundle.symbolicName} [${bundle.namespace}]</name>
 	
+    <licenses>
+        <license>
+            <name>lgpl_v3</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
     <packaging>bundle</packaging>
 
     <build>
@@ -62,6 +69,48 @@
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
+            </plugin>
+            <!--  Add licenses -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>license</id>
+                        <configuration>
+                            <projectName>CoExpNetViz</projectName>
+                            <organizationName>PSB/UGent</organizationName>
+                            <licenseName>lgpl_v3</licenseName>
+                            <inceptionYear>2015</inceptionYear>
+                            <generateBundle>true</generateBundle>
+                            <verbose>true</verbose>
+                            <bundleLicensePath>META-INF/LICENSE.txt</bundleLicensePath>
+                        </configuration>
+                        <goals>
+                            <goal>update-project-license</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>headers</id>
+                        <configuration>
+                            <inceptionYear>2015</inceptionYear>
+                            <organizationName>PSB/UGent</organizationName>
+                            <canUpdateCopyright>false</canUpdateCopyright>
+                            <projectName>CoExpNetViz</projectName>
+                            <licenseName>lgpl_v3</licenseName>
+                            <verbose>true</verbose>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                        </configuration>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Generates the OSGi metadata based on the osgi.bnd file. -->
             <plugin>

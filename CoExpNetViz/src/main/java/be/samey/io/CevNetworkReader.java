@@ -22,6 +22,7 @@ package be.samey.io;
  * #L%
  */
 
+import be.samey.internal.CyAppManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -40,6 +41,12 @@ import org.cytoscape.model.CyNode;
  */
 public class CevNetworkReader {
 
+    private CyAppManager cyAppManager;
+
+    public CevNetworkReader(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+    }
+
     /**
      * Adds nodes and edges from a .sif file to a new network. The .sif file
      * must have the standard Cytoscape format for network files.
@@ -49,7 +56,7 @@ public class CevNetworkReader {
      * will be added
      * @throws IOException if the network file could not be accessed
      */
-    public static void readSIF(Path sifPath, CyNetwork network) throws IOException {
+    public void readSIF(Path sifPath, CyNetwork network) throws IOException {
         //open file
         Charset charset = Charset.forName("UTF-8");
         BufferedReader reader = Files.newBufferedReader(sifPath, charset);

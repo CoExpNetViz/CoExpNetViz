@@ -21,8 +21,7 @@ package be.samey.io;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
 import java.io.InputStream;
 import java.util.Set;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
@@ -34,12 +33,18 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public class CevVizmapReader {
 
-    public static Set<VisualStyle> readVIZ(Model model) {
-        ClassLoader classLoader = Model.class.getClassLoader();
+    private CyAppManager cyAppManager;
+
+    public CevVizmapReader(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+    }
+
+    public Set<VisualStyle> readVIZ() {
+        ClassLoader classLoader = CyAppManager.class.getClassLoader();
         InputStream is = classLoader.getResourceAsStream("vizmap/CevStyle.xml");
 
         //get required services
-        LoadVizmapFileTaskFactory loadVizmapFileTaskFactory = model.getServices().getLoadVizmapFileTaskFactory();
+        LoadVizmapFileTaskFactory loadVizmapFileTaskFactory = cyAppManager.getCyServices().getLoadVizmapFileTaskFactory();
 
         //The factory method here already adds the visual styles to the
         // visualMappingManager. Don't add it again with

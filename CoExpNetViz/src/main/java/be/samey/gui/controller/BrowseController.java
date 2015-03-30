@@ -1,4 +1,4 @@
-package be.samey.gui;
+package be.samey.gui.controller;
 
 /*
  * #%L
@@ -21,33 +21,56 @@ package be.samey.gui;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+import be.samey.gui.model.GuiModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JTextField;
 
 /**
  *
  * @author sam
  */
-public class BrowseAl implements ActionListener {
+public abstract class BrowseController implements ActionListener {
+
+    private GuiModel guiModel;
+    private JComponent parent;
 
     public static final int DIRECTORY = JFileChooser.DIRECTORIES_ONLY;
     public static final int FILE = JFileChooser.FILES_ONLY;
-    
-    private final JComponent parent;
-    private final JTextField target;
+
     private final String windowTitle;
     private final int mode;
 
-    public BrowseAl(JComponent parent, JTextField target, String windowTitle, int mode) {
-        this.parent = parent;
-        this.target = target;
+    public BrowseController(String windowTitle, int mode) {
         this.windowTitle = windowTitle;
         this.mode = mode;
     }
+
+    public BrowseController(JComponent parent, String windowTitle, int mode) {
+        this.parent = parent;
+        this.windowTitle = windowTitle;
+        this.mode = mode;
+    }
+
+    public BrowseController(GuiModel guiModel, JComponent parent, String windowTitle, int mode) {
+        this.guiModel = guiModel;
+        this.parent = parent;
+        this.windowTitle = windowTitle;
+        this.mode = mode;
+    }
+
+    public void setGuiModel(GuiModel guiModel) {
+        this.guiModel = guiModel;
+    }
+
+    public void setParent(JComponent parent) {
+        this.parent = parent;
+    }
+
+    public abstract void updateModel(GuiModel guiModel, Path path);
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -57,7 +80,10 @@ public class BrowseAl implements ActionListener {
         chooser.setDialogTitle(windowTitle);
         int returnVal = chooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            target.setText(chooser.getSelectedFile().toString());
+
+            Path p = Paths.get(chooser.getSelectedFile().toString());
+            //TODO: validate path
+            updateModel(guiModel, p);
         }
     }
 }

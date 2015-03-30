@@ -1,4 +1,4 @@
-package be.samey.model;
+package be.samey.internal;
 
 /*
  * #%L
@@ -42,7 +42,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * 
  * @author sam
  */
-public class Services {
+public class CyServices {
 
     private CyApplicationManager cyApplicationManager;
     private CyNetworkFactory cyNetworkFactory;

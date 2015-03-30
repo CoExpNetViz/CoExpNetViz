@@ -22,12 +22,9 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.io.CevNetworkReader;
-import be.samey.io.CevTableReader;
-import be.samey.io.CevVizmapReader;
-import be.samey.model.CoreStatus;
-import be.samey.model.Model;
-import be.samey.model.Services;
+import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
+import be.samey.internal.CyServices;
 import java.io.IOException;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -43,14 +40,14 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class CevNetworkBuilder /*implements Observer*/ {
     
-    private final Model model;
-    private final CoreStatus coreStatus;
-    private final Services services;
-    
-    public CevNetworkBuilder(Model model) {
-        this.model = model;
-        this.coreStatus = model.getCoreStatus();
-        this.services = model.getServices();
+    private final CyAppManager cyAppManager;
+    private final CyServices cyServices;
+    private final CyModel cyModel;
+
+    public CevNetworkBuilder(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+        this.cyModel = cyAppManager.getCyModel();
+        this.cyServices = cyAppManager.getCyServices();
     }
 
     /**
@@ -67,37 +64,37 @@ public class CevNetworkBuilder /*implements Observer*/ {
         //there are two situations in which a new root network must be created
         // 1) when the app creates a network for the first time
         // 2) when the user has destroyed every network in the root network
-        if (coreStatus.getCyRootNetwork() == null || coreStatus.getCyRootNetwork().getSharedNetworkTable() == null) {
+        if (cyModel.getCyRootNetwork() == null || cyModel.getCyRootNetwork().getSharedNetworkTable() == null) {
             //all networks were deleted, set count to zero
-            coreStatus.resetNetworkCount();
+            cyModel.resetNetworkCount();
 
             //here a subnetwork is created and then promoted to a root network
-            subNetwork = (CySubNetwork) services.getCyNetworkFactory().createNetwork();
+            subNetwork = (CySubNetwork) cyServices.getCyNetworkFactory().createNetwork();
             //set name for the subnetwork
-            subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
+            subNetwork.getRow(subNetwork).set(CyNetwork.NAME, CyModel.APP_NAME + cyModel.getNetworkCount());
 
             //promote the current network to a root network
-            CyRootNetwork rootNetwork = services.getCyRootNetworkManager().getRootNetwork(subNetwork);
+            CyRootNetwork rootNetwork = cyServices.getCyRootNetworkManager().getRootNetwork(subNetwork);
             //set name for root network
-            rootNetwork.getRow(rootNetwork).set(CyRootNetwork.NAME, Model.APP_NAME);
+            rootNetwork.getRow(rootNetwork).set(CyRootNetwork.NAME, CyModel.APP_NAME);
 
             //update the model
-            coreStatus.setCyRootNetwork(rootNetwork);
+            cyModel.setCyRootNetwork(rootNetwork);
         } else {
             //subsequent networks are added to same root network
-            subNetwork = coreStatus.getCyRootNetwork().addSubNetwork();
+            subNetwork = cyModel.getCyRootNetwork().addSubNetwork();
             //set name for the subnetwork
-            subNetwork.getRow(subNetwork).set(CyNetwork.NAME, Model.APP_NAME + coreStatus.getNetworkCount());
+            subNetwork.getRow(subNetwork).set(CyNetwork.NAME, CyModel.APP_NAME + cyModel.getNetworkCount());
         }
         
-        coreStatus.incrementNetworkCount();
+        cyModel.incrementNetworkCount();
         return subNetwork;
         
     }
     
     private VisualStyle getCevStyle() {
-        for (VisualStyle vs : services.getVisualMappingManager().getAllVisualStyles()) {
-            if (vs.getTitle().equals(Model.APP_NAME)) {
+        for (VisualStyle vs : cyServices.getVisualMappingManager().getAllVisualStyles()) {
+            if (vs.getTitle().equals(CyModel.APP_NAME)) {
                 return vs;
             }
             
@@ -119,27 +116,27 @@ public class CevNetworkBuilder /*implements Observer*/ {
 
             //read files
             CyNetwork cn = createSubNetwork();
-            CevNetworkReader.readSIF(coreStatus.getSifPath(), cn);
-            CyTable cevNodeTable = CevTableReader.readNOA(coreStatus.getNoaPath(), cn, model);
-            CevTableReader.readEDA(coreStatus.getEdaPath(), cn, model);
+            cyAppManager.getCevNetworkreader().readSIF(cyModel.getSifPath(), cn);
+            CyTable cevNodeTable = cyAppManager.getCevTablereader().readNOA(cyModel.getNoaPath(), cn);
+            cyAppManager.getCevTablereader().readEDA(cyModel.getEdaPath(), cn);
             if (getCevStyle() == null) {
                 // only add the visual style after the user has used this app at
                 // least once to prevent cluttering the Style menu when the user
                 // is not using this app
-                CevVizmapReader.readVIZ(model);
+                cyAppManager.getCevVizmapReader().readVIZ();
             }
 
             //add the network
-            model.getServices().getCyNetworkManager().addNetwork(cn);
-            CyNetworkView cnv = model.getServices().getCyNetworkViewFactory().createNetworkView(cn);
+            cyAppManager.getCyServices().getCyNetworkManager().addNetwork(cn);
+            CyNetworkView cnv = cyAppManager.getCyServices().getCyNetworkViewFactory().createNetworkView(cn);
 
             //add this data to the corestatus to pass it on to the next task
             //which is applying the layout
-            coreStatus.setLastNoaTable(cevNodeTable);
-            coreStatus.setLastCnv(cnv);
+            cyModel.setLastNoaTable(cevNodeTable);
+            cyModel.setLastCnv(cnv);
             
-            model.getServices().getCyNetworkViewManager().addNetworkView(cnv);
-            model.getServices().getVisualMappingManager().setVisualStyle(getCevStyle(), cnv);
+            cyAppManager.getCyServices().getCyNetworkViewManager().addNetworkView(cnv);
+            cyAppManager.getCyServices().getVisualMappingManager().setVisualStyle(getCevStyle(), cnv);
             
         } catch (IOException ex) {
             //when executed in a Task, this message will be shown to the user

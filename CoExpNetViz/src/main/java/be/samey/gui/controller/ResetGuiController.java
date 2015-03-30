@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.gui.controller;
 
 /*
  * #%L
@@ -21,28 +21,28 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+import be.samey.gui.model.InpProfileModel;
 import be.samey.internal.CyAppManager;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
  * @author sam
  */
-public class CreateNetworkTask extends AbstractTask {
+public class ResetGuiController implements ActionListener {
 
     private final CyAppManager cyAppManager;
 
-    public CreateNetworkTask(CyAppManager cyAppManager) {
+    public ResetGuiController(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 
-    @Override
-    public void run(TaskMonitor tm) throws Exception {
-        CevNetworkBuilder cnb = cyAppManager.getCevNetworkBuilder();
-        cnb.createNetworkView(tm);
 
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        InpProfileModel ipm = cyAppManager.getGuiManager().makeDefaultProfile();
+        cyAppManager.getGuiManager().applyProfile(ipm);
     }
 
 }

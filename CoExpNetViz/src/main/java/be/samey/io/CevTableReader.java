@@ -22,7 +22,7 @@ package be.samey.io;
  * #L%
  */
 
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -44,6 +44,12 @@ import org.cytoscape.model.CyTable;
  */
 public class CevTableReader {
 
+    private CyAppManager cyAppManager;
+
+    public CevTableReader(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+    }
+
     /**
      * Adds the node attributes from a node attribute file to a given network.
      * The node attribute file must be tab delimited, the first column must
@@ -56,14 +62,13 @@ public class CevTableReader {
      *
      * @param noaPath path to node attribute file
      * @param network network to add attributes to
-     * @param model the {@link  Model} for the app
      * @return the node attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public static CyTable readNOA(Path noaPath, CyNetwork network, Model model) throws IOException {
+    public CyTable readNOA(Path noaPath, CyNetwork network) throws IOException {
 
         //get the required service for this method
-        CyNetworkTableManager cyNetworkTableManager = model.getServices().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyServices().getCyNetworkTableManager();
 
         //read the file in a TableMap
         TableMap tableMap = makeTableMap(noaPath);
@@ -111,14 +116,13 @@ public class CevTableReader {
      *
      * @param edaPath path to edge attribute file
      * @param network network to add attributes to
-     * @param model the {@link  Model} for the app
      * @return the edge attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public static CyTable readEDA(Path edaPath, CyNetwork network, Model model) throws IOException {
+    public CyTable readEDA(Path edaPath, CyNetwork network) throws IOException {
 
         //get the required service for this method
-        CyNetworkTableManager cyNetworkTableManager = model.getServices().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyServices().getCyNetworkTableManager();
 
         //read the file in a TableMap
         TableMap tableMap = makeTableMap(edaPath);

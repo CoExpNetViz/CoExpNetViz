@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.gui.model;
 
 /*
  * #%L
@@ -22,27 +22,36 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.internal.CyAppManager;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
+import java.nio.file.Path;
+import java.util.Observable;
 
 /**
  *
  * @author sam
  */
-public class CreateNetworkTask extends AbstractTask {
+public abstract class GuiModel extends Observable{
 
-    private final CyAppManager cyAppManager;
-
-    public CreateNetworkTask(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    private Path defaultDirPath;
+    
+    public void triggerUpdate(){
+        setChanged();
+        notifyObservers();
+    }
+    
+    /**
+     * @return the defaultDirPath
+     */
+    public Path getDefaultDirPath() {
+        return defaultDirPath;
     }
 
-    @Override
-    public void run(TaskMonitor tm) throws Exception {
-        CevNetworkBuilder cnb = cyAppManager.getCevNetworkBuilder();
-        cnb.createNetworkView(tm);
-
+    /**
+     * @param defaultDirPath the defaultDirPath to set
+     */
+    public void setDefaultDirPath(Path defaultDirPath) {
+        if (this.defaultDirPath != defaultDirPath ){
+            this.defaultDirPath = defaultDirPath;
+            triggerUpdate();
+        }
     }
-
 }

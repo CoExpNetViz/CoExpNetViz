@@ -22,7 +22,7 @@ package be.samey.model;
  * #L%
  */
 
-import be.samey.gui.RootPanel;
+import be.samey.gui.InpPnl;
 import be.samey.gui.SpeciesEntry;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +36,9 @@ import javax.swing.JPanel;
  */
 public class GuiStatus extends Observable {
 
-    //these are not declared final because I don't want them to be loaded if
-    //the cytoscape user is not currently using this app. But these should be
-    //initialized only once.
-    private JFrame rootPanelFrame;
-    private JPanel rootPanel;
+    private final Model model;
+    private final JFrame rootPanelFrame;
+    private final InpPnl rootPanel;
 
     private boolean inpBaitSelected;
     private boolean saveFileSelected;
@@ -49,24 +47,21 @@ public class GuiStatus extends Observable {
 
     private final List<SpeciesEntry> speciesList = new ArrayList<SpeciesEntry>();
 
-    public void setRootPanelFrame(JFrame rootPanelFrame) {
-        this.rootPanelFrame = rootPanelFrame;
-    }
+    public GuiStatus(Model model){
+        this.model = model;
+        rootPanel = new InpPnl(model);
+        rootPanelFrame = new JFrame("Co-expression Network Visualization Tool");
 
-    public JFrame getRootPanelFrame() {
-        return rootPanelFrame;
-    }
+        rootPanelFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        rootPanelFrame.setContentPane(rootPanel);
 
-    /**
-     * Sets the panel which will be notified by the guiStatus on state changes
-     * 
-     * @param rootPanel 
-     */
-    public void setRootPanel(RootPanel rootPanel) {
-        this.rootPanel = rootPanel;
         this.addObserver(rootPanel);
         setChanged();
         notifyObservers();
+    }
+    
+    public JFrame getRootPanelFrame() {
+        return rootPanelFrame;
     }
 
     public JPanel getRootPanel() {

@@ -24,7 +24,6 @@ package be.samey.internal;
 
 import be.samey.cynetw.CevGroupAttributesLayout;
 import be.samey.cynetw.NetworkEventListener;
-import be.samey.model.Model;
 import java.util.Properties;
 
 import org.cytoscape.application.CyApplicationManager;
@@ -63,7 +62,7 @@ public class CyActivator extends AbstractCyActivator {
     @Override
     public void start(BundleContext context) throws Exception {
 
-        //get services
+        //get CytoScape services
         CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
         CyNetworkFactory cyNetworkFactory = getService(context, CyNetworkFactory.class);
         CyNetworkManager cyNetworkManager = getService(context, CyNetworkManager.class);
@@ -78,36 +77,46 @@ public class CyActivator extends AbstractCyActivator {
         TaskManager taskManager = getService(context, TaskManager.class);
         UndoSupport undoSupport = getService(context, UndoSupport.class);
 
-        //add them to the model's services
-        Model model = new Model();
-        model.getServices().setCyApplicationManager(cyApplicationManager);
-        model.getServices().setCyNetworkFactory(cyNetworkFactory);
-        model.getServices().setCyNetworkManager(cyNetworkManager);
-        model.getServices().setCyRootNetworkManager(cyRootNetworkManager);
-        model.getServices().setCyTableFactory(cyTableFactory);
-        model.getServices().setCyNetworkTableManager(CyNetworkTableManager);
-        model.getServices().setLoadVizmapFileTaskFactory(loadVizmapFileTaskFactory);
-        model.getServices().setVisualMappingManager(visualMappingManager);
-        model.getServices().setCyNetworkViewFactory(cyNetworkViewFactory);
-        model.getServices().setCyNetworkViewManager(cyNetworkViewManager);
-        model.getServices().setCyLayoutAlgorithmManager(cyLayoutAlgorithmManager);
-        model.getServices().setTaskManager(taskManager);
-        model.getServices().setUndoSupport(undoSupport);
+        //create the cyServices, keeps references to all cytoscape core model classes
+        CyServices cyServices = new CyServices();
+
+        //create the cyModel, keeps track of application state
+        CyModel cyModel = new CyModel();
+
+        //create the CyAppManager
+        CyAppManager cyAppManager = new CyAppManager(cyModel, cyServices);
+        
+        //create the network event listener
+        NetworkEventListener networkEventListener = new NetworkEventListener(cyAppManager);
 
         //create the menu action (menu entry for the app)
-        CevMenuAction action = new CevMenuAction(cyApplicationManager, Model.APP_NAME, model);
+        MenuAction action = new MenuAction(cyApplicationManager, CyModel.APP_NAME, cyAppManager);
 
-        //register OSGi services
-        registerAllServices(context, action, new Properties());
+        //add the CytoScape service references to cyServices
+        cyServices.setCyApplicationManager(cyApplicationManager);
+        cyServices.setCyNetworkFactory(cyNetworkFactory);
+        cyServices.setCyNetworkManager(cyNetworkManager);
+        cyServices.setCyRootNetworkManager(cyRootNetworkManager);
+        cyServices.setCyTableFactory(cyTableFactory);
+        cyServices.setCyNetworkTableManager(CyNetworkTableManager);
+        cyServices.setLoadVizmapFileTaskFactory(loadVizmapFileTaskFactory);
+        cyServices.setVisualMappingManager(visualMappingManager);
+        cyServices.setCyNetworkViewFactory(cyNetworkViewFactory);
+        cyServices.setCyNetworkViewManager(cyNetworkViewManager);
+        cyServices.setCyLayoutAlgorithmManager(cyLayoutAlgorithmManager);
+        cyServices.setTaskManager(taskManager);
+        cyServices.setUndoSupport(undoSupport);
 
-        //network event service
-        NetworkEventListener networkEventListener = new NetworkEventListener(model);
+        //register network event services
         registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
         registerService(context, networkEventListener, NetworkAddedListener.class, new Properties());
         registerService(context, networkEventListener, NetworkViewAddedListener.class, new Properties());
         registerService(context, networkEventListener, VisualStyleSetListener.class, new Properties());
 
-        //cev layout service
+        //register menu action in OSGi services
+        registerAllServices(context, action, new Properties());
+
+        //register cev layout service
         CevGroupAttributesLayout cgal = new CevGroupAttributesLayout(undoSupport);
         Properties cgalProperties = new Properties();
         cgalProperties.setProperty("preferredTaskManager", "menu");
@@ -116,6 +125,6 @@ public class CyActivator extends AbstractCyActivator {
         registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
 
         //for debugging: print message if the app started succesfully
-        System.out.println(Model.APP_NAME + " started succesfully");
+        System.out.println(CyModel.APP_NAME + " started succesfully");
     }
 }

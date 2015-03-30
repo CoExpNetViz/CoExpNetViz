@@ -22,8 +22,7 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.io.ServerConn;
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -33,16 +32,16 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class RunAnalysisTask extends AbstractTask {
 
-    private final Model model;
+    private final CyAppManager cyAppManager;
 
-    public RunAnalysisTask(Model model){
-        this.model = model;
+    public RunAnalysisTask(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
     }
+
     @Override
     public void run(TaskMonitor tm) throws Exception {
         tm.setTitle("Running analysis");
-        ServerConn sc = new ServerConn(model);
-        sc.connect(tm);
+        cyAppManager.getServerConn().connect(tm);
     }
 
 }

@@ -21,8 +21,8 @@ package be.samey.io;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,13 +53,15 @@ import org.cytoscape.work.TaskMonitor;
  * @author sam
  */
 public class ServerConn {
-    
-    private Model model;
-    
-    public ServerConn(Model model) {
-        this.model = model;
+
+    private final CyAppManager cyAppManager;
+    private final CyModel cyModel;
+
+    public ServerConn(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+        this.cyModel = cyAppManager.getCyModel();
     }
-    
+
     public void connect(TaskMonitor tm) throws InterruptedException, IOException {
 
         /*----------------------------------------------------------------------
@@ -70,10 +72,10 @@ public class ServerConn {
         //user. If the user does not want to save the output, then the archive
         //is downloaded to a temp folder.
         Path outPath;
-        if (model.getCoreStatus().getOutPath() == null) {
+        if (cyModel.getSaveFilePath() == null) {
             outPath = Files.createTempDirectory("Cev_archive");
         } else {
-            outPath = model.getCoreStatus().getOutPath();
+            outPath = cyModel.getSaveFilePath();
         }
         Path archivePath = outPath.resolve("Cev.tgz");
 
@@ -84,16 +86,16 @@ public class ServerConn {
         tm.setProgress(0.1);
 
         //make multipart entity with user data and settings
-        HttpEntity postEntity = makeEntity(model.getCoreStatus().getBaits(),
-            model.getCoreStatus().getNames(),
-            model.getCoreStatus().getFilePaths(),
-            model.getCoreStatus().getPCutoff(),
-            model.getCoreStatus().getNCutoff());
+        HttpEntity postEntity = makeEntity(cyModel.getBaits(),
+            cyModel.getSpeciesNames(),
+            cyModel.getSpeciesPaths(),
+            cyModel.getPCutoff(),
+            cyModel.getNCutoff());
 
         //run the app on the server
         tm.setProgress(-1.0);
         try {
-            executeAppOnSever(Model.URL, postEntity, archivePath);
+            executeAppOnSever(CyModel.URL, postEntity, archivePath);
         } catch (Exception ex) {
             //TODO: warn user somehow
             ex.printStackTrace();
@@ -110,7 +112,7 @@ public class ServerConn {
         File archive = archivePath.toFile();
         ArchiveStream stream = archiver.stream(archive);
         ArchiveEntry entry;
-        
+
         Path sifPath = null;
         Path noaPath = null;
         Path edaPath = null;
@@ -137,13 +139,13 @@ public class ServerConn {
          5) update corestatus with network paths
          */
         //TODO: sanity checks
-        model.getCoreStatus().setSifPath(sifPath);
-        model.getCoreStatus().setNoaPath(noaPath);
-        model.getCoreStatus().setEdaPath(edaPath);
-        model.getCoreStatus().setLogPath(logPath);
-        
+        cyModel.setSifPath(sifPath);
+        cyModel.setNoaPath(noaPath);
+        cyModel.setEdaPath(edaPath);
+        cyModel.setLogPath(logPath);
+
     }
-    
+
     public HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
         double poscutoff, double negcutoff)
         throws UnsupportedEncodingException {
@@ -151,7 +153,7 @@ public class ServerConn {
         //Tim has numbered his form entity names in this order, this could change
         // change in the future
         int[] formNames = new int[]{1, 2, 3, 4, 0};
-        
+
         MultipartEntityBuilder mpeb = MultipartEntityBuilder.create();
 
         //make the bait part
@@ -159,8 +161,8 @@ public class ServerConn {
         mpeb.addPart("baits", baitspart);
 
         //make the file upload parts
-        for (int i = 0; i < 5; i++) {
-            if (names[i] != null && filepaths[i] != null) {
+        for (int i = 0; i < CyModel.MAX_SPECIES_COUNT; i++) {
+            if (i < names.length && i < filepaths.length) {
                 mpeb.addBinaryBody("matrix" + formNames[i], filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
             } else {
                 mpeb.addBinaryBody("matrix" + formNames[i], new byte[0], ContentType.APPLICATION_OCTET_STREAM, "");
@@ -172,16 +174,16 @@ public class ServerConn {
         mpeb.addPart("positive_correlation", poscpart);
         StringBody negcpart = new StringBody(Double.toString(negcutoff));
         mpeb.addPart("negative_correlation", negcpart);
-        
+
         return mpeb.build();
     }
-    
+
     public void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws Exception {
-        
+
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);
         httppost.setEntity(entity);
-        
+
         System.out.println("executing request " + httppost.getRequestLine());
         CloseableHttpResponse response = null;
         HttpEntity resEntity = null;
@@ -198,7 +200,7 @@ public class ServerConn {
         }
         httpclient.close();
     }
-    
+
     private void saveResponse(final InputStream input, Path outp) throws IOException {
         OutputStream out = Files.newOutputStream(outp);
         try {

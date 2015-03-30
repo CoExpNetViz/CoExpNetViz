@@ -21,11 +21,8 @@ package be.samey.internal;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.RootPanel;
-import be.samey.model.Model;
+import be.samey.gui.GuiManager;
 import java.awt.event.ActionEvent;
-import javax.swing.JFrame;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -34,36 +31,37 @@ import org.cytoscape.application.swing.AbstractCyAction;
  * Creates a new menu item under Apps menu section.
  *
  */
-public class CevMenuAction extends AbstractCyAction {
+public class MenuAction extends AbstractCyAction {
 
-    private final Model model;
-    JFrame rootPanelFrame;
+    //model should be created only once, keeps track of application state
+    private final CyAppManager cyAppManager;
 
-    public CevMenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, Model model) {
-
+    public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, CyAppManager cyAppManager) {
         super(menuTitle, cyApplicationManager, null, null);
         setPreferredMenu("Apps");
-        this.model = model;
+
+        this.cyAppManager = cyAppManager;
     }
 
     //invoked on clicking the app in the menu
     @Override
     public void actionPerformed(ActionEvent e) {
-        //only make a new window if the app is launched for the first time
-        if (model.getGuiStatus().getRootPanelFrame() == null) {
-            //create a new window
-            rootPanelFrame = new JFrame("Co-expression Network Visualization Tool");
-            rootPanelFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            //root panel for the main window, contains the tabs with options
-            RootPanel rootPanel = new RootPanel(model);
-            model.getGuiStatus().setRootPanel(rootPanel);
-            rootPanelFrame.setContentPane(rootPanel);
-            model.getGuiStatus().setRootPanelFrame(rootPanelFrame);
-        } else {
-            rootPanelFrame = model.getGuiStatus().getRootPanelFrame();
+
+        //if there is no gui, then create it
+        if (cyAppManager.getGuiManager() == null) {
+
+            //create the Gui
+            GuiManager gm = new GuiManager(cyAppManager);
+            gm.initGui();
+
+            //rember that we have made the gui
+            //(triggers an update in the gui as well)
+            cyAppManager.setGuiManager(gm);
         }
-        //pack and show the window
-        rootPanelFrame.pack();
-        rootPanelFrame.setVisible(true);
+
+        //pack and show the gui in a window
+        cyAppManager.getGuiManager().showRootFrame();
+
     }
+
 }

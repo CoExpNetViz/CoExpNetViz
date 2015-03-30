@@ -21,17 +21,17 @@ package be.samey.gui;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.model.Model;
+import be.samey.gui.model.SpeciesEntryModel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -40,32 +40,31 @@ import javax.swing.UIManager;
  *
  * @author sam
  */
-public class SpeciesEntry extends JPanel {
+public class SpeciesEntry extends JPanel implements Observer {
 
-    private final Model model;
+    private SpeciesEntryModel speciesEntryModel;
 
     JLabel speciesLbl;
-    JTextField speciesTf;
+    JTextField speciesNameTf;
     JButton removeBtn;
     JLabel speciesPathLbl;
-    JTextField speciesPathTf;
+    JTextField speciesExprDataPathTf;
     JButton browseBtn;
 
-    public SpeciesEntry(Model model) {
-        this.model = model;
+    public SpeciesEntry() {
         constructGui();
     }
 
     private void constructGui() {
         this.speciesLbl = new JLabel(" Species:");
-        this.speciesTf = new JTextField();
+        this.speciesNameTf = new JTextField();
+        speciesNameTf.setToolTipText("Enter an arbitrary name for this dataset");
         this.removeBtn = new JButton("Remove");
-        removeBtn.addActionListener(new RemoveSpeciesAl(this));
         this.speciesPathLbl = new JLabel(" Path:");
-        this.speciesPathTf = new JTextField();
+        this.speciesExprDataPathTf = new JTextField();
+        speciesExprDataPathTf.setToolTipText("Enter the path to the expression data file");
         this.browseBtn = new JButton("Browse");
         browseBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
-        browseBtn.addActionListener(new BrowseAl(this, speciesPathTf, "Choose gene expression matrix", BrowseAl.FILE));
 
         //make layout
         setMaximumSize(new Dimension(475, 64));
@@ -83,7 +82,7 @@ public class SpeciesEntry extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         c.gridwidth = 2;
-        add(speciesTf, c);
+        add(speciesNameTf, c);
         c.weightx = 0.04;
         c.gridx = 3;
         c.gridy = 0;
@@ -99,7 +98,7 @@ public class SpeciesEntry extends JPanel {
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 2;
-        add(speciesPathTf, c);
+        add(speciesExprDataPathTf, c);
         c.weightx = 0.04;
         c.gridx = 3;
         c.gridy = 1;
@@ -107,27 +106,35 @@ public class SpeciesEntry extends JPanel {
         add(browseBtn, c);
     }
 
-    //created when the user click the "remove" button for a species dataset
-    private class RemoveSpeciesAl implements ActionListener {
+    /**
+     * @return the speciesEntryModel
+     */
+    public SpeciesEntryModel getSpeciesEntryModel() {
+        return speciesEntryModel;
+    }
 
-        SpeciesEntry seToRemove;
-
-        public RemoveSpeciesAl(SpeciesEntry seToRemove) {
-            this.seToRemove = seToRemove;
+    /**
+     * @param speciesEntryModel the speciesEntryModel to set
+     */
+    public void setSpeciesEntryModel(SpeciesEntryModel speciesEntryModel) {
+        if (this.speciesEntryModel != null) {
+            speciesEntryModel.deleteObserver(this);
         }
 
-        @Override
-        public void actionPerformed(ActionEvent ae) {
+        this.speciesEntryModel = speciesEntryModel;
+        speciesEntryModel.addObserver(this);
+    }
 
-            //user must at least supply one species
-            if (model.getGuiStatus().getSpeciesList().size() == 1) {
-                JOptionPane.showMessageDialog(model.getGuiStatus().getRootPanelFrame(),
-                    "You must use at least one dataset");
-                return;
-            }
-            model.getGuiStatus().removeSpecies(seToRemove);
-        }
+    @Override
+    public void update(Observable o, Object o1) {
+        String speciesName = speciesEntryModel.getSpeciesName();
+        speciesNameTf.setText(speciesName);
 
+        Path speciesExprDataPath = speciesEntryModel.getSpeciesExprDataPath();
+        speciesExprDataPathTf.setText(speciesExprDataPath.toString());
+        speciesExprDataPathTf.setBackground(
+            Files.isRegularFile(speciesExprDataPath) && Files.isReadable(speciesExprDataPath)
+                ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
     }
 
 }

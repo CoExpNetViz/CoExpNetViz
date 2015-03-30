@@ -22,7 +22,7 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.model.CoreStatus;
+import be.samey.internal.CyModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,7 +67,7 @@ class CComponent<T extends Comparable<T>, U extends Comparable<U>> implements Co
             // this will eventually be classified as target
             invalidNodes.add(node);
 
-        } else if (group.equals(CoreStatus.BAIT_GROUP)) {
+        } else if (group.equals(CyModel.BAIT_GROUP)) {
             //this node is a bait
             List<CyNode> baitgroup = baitsMap.get(species);
 

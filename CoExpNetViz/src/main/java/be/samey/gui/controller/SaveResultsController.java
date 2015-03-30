@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.gui.controller;
 
 /*
  * #%L
@@ -22,27 +22,36 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.internal.CyAppManager;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
+import be.samey.gui.model.InpPnlModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JToggleButton;
 
 /**
  *
  * @author sam
  */
-public class CreateNetworkTask extends AbstractTask {
+public class SaveResultsController implements ActionListener {
 
-    private final CyAppManager cyAppManager;
+    private InpPnlModel inpPnlModel;
 
-    public CreateNetworkTask(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    public SaveResultsController() {
+    }
+
+    public SaveResultsController(InpPnlModel inpPnlModel) {
+        this.inpPnlModel = inpPnlModel;
+    }
+
+    public void setInpPnlModel(InpPnlModel inpPnlModel) {
+        this.inpPnlModel = inpPnlModel;
     }
 
     @Override
-    public void run(TaskMonitor tm) throws Exception {
-        CevNetworkBuilder cnb = cyAppManager.getCevNetworkBuilder();
-        cnb.createNetworkView(tm);
-
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource() instanceof JToggleButton){
+            boolean saveResults = ((JToggleButton) ae.getSource()).isSelected();
+            inpPnlModel.setSaveResults(saveResults);
+        }
     }
 
 }

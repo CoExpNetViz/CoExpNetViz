@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.gui;
 
 /*
  * #%L
@@ -22,27 +22,20 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.internal.CyAppManager;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskMonitor;
+import java.awt.Color;
 
 /**
  *
  * @author sam
  */
-public class CreateNetworkTask extends AbstractTask {
+public class GuiConstants {
+    
+    public static final String ROOTFRAME_TITLE = "Co-expression Network Visualization Tool";
 
-    private final CyAppManager cyAppManager;
+    public static final double DEFAULT_NEG_CUTOFF = -0.6;
+    public static final double DEFAULT_POS_CUTOFF = 0.8;
 
-    public CreateNetworkTask(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
-    }
-
-    @Override
-    public void run(TaskMonitor tm) throws Exception {
-        CevNetworkBuilder cnb = cyAppManager.getCevNetworkBuilder();
-        cnb.createNetworkView(tm);
-
-    }
+    public static final Color APPROVE_COLOR = Color.white;
+    public static final Color DISAPPROVE_COLOR = Color.pink;
 
 }

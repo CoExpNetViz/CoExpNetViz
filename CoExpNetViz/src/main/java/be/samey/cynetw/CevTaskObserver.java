@@ -21,9 +21,8 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.model.CoreStatus;
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.util.ArrayList;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
@@ -38,10 +37,10 @@ import org.cytoscape.work.TaskObserver;
  */
 public class CevTaskObserver implements TaskObserver {
 
-    private final Model model;
+    private final CyAppManager cyAppManager;
 
-    public CevTaskObserver(Model model) {
-        this.model = model;
+    public CevTaskObserver(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
     }
 
     @Override
@@ -52,17 +51,17 @@ public class CevTaskObserver implements TaskObserver {
     @Override
     public void allFinished(FinishStatus finishStatus) {
 
-        CevGroupAttributesLayout layout = (CevGroupAttributesLayout) model.getServices().
-            getCyLayoutAlgorithmManager().getLayout(CoreStatus.COMP_LAYOUT_NAME);
-        ArrayList<CyColumn> columnList = (ArrayList) model.getCoreStatus().getLastNoaTable().getColumns();
-        String groupColumnName = columnList.get(4 + CoreStatus.GROUP_COLUMN).getName();
-        String speciesColumnName = columnList.get(4 + CoreStatus.SPECIES_COLUMN).getName();
-        TaskIterator ti = layout.createTaskIterator(model.getCoreStatus().getLastCnv(),
+        CevGroupAttributesLayout layout = (CevGroupAttributesLayout) cyAppManager.getCyServices().
+            getCyLayoutAlgorithmManager().getLayout(CyModel.COMP_LAYOUT_NAME);
+        ArrayList<CyColumn> columnList = (ArrayList) cyAppManager.getCyModel().getLastNoaTable().getColumns();
+        String groupColumnName = columnList.get(4 + CyModel.GROUP_COLUMN).getName();
+        String speciesColumnName = columnList.get(4 + CyModel.SPECIES_COLUMN).getName();
+        TaskIterator ti = layout.createTaskIterator(cyAppManager.getCyModel().getLastCnv(),
             layout.createLayoutContext(),
             CyLayoutAlgorithm.ALL_NODE_VIEWS,
             groupColumnName,
             speciesColumnName);
-        model.getServices().getTaskManager().execute(ti);
+        cyAppManager.getCyServices().getTaskManager().execute(ti);
     }
 
 }

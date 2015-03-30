@@ -22,7 +22,7 @@ package be.samey.cynetw;
  * #L%
  */
 
-import be.samey.model.CoreStatus;
+import be.samey.internal.CyModel;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class CevGroupAttributesLayout extends AbstractLayoutAlgorithm {
      * @param undo
      */
     public CevGroupAttributesLayout(UndoSupport undo) {
-        super(CoreStatus.COMP_LAYOUT_NAME, CoreStatus.HUMAN_LAYOUT_NAME, undo);
+        super(CyModel.COMP_LAYOUT_NAME, CyModel.HUMAN_LAYOUT_NAME, undo);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {

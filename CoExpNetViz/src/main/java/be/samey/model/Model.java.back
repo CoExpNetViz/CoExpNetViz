@@ -1,5 +1,7 @@
 package be.samey.model;
 
+import be.samey.internal.CyServices;
+
 /*
  * #%L
  * CoExpNetViz
@@ -28,12 +30,6 @@ package be.samey.model;
  */
 public class Model {
 
-    public Model() {
-        services = new Services();
-        guiStatus = new GuiStatus();
-        coreStatus = new CoreStatus(this);
-    }
-
     //properties of the app that do not change during execution
     public static final String APP_NAME = "CoExpNetViz";
     public static final String[] SPECIES_CHOICES = {"Tomato", "Arabidopsis", "Patato-ITAG", "Patato-PGSC"};
@@ -41,32 +37,26 @@ public class Model {
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
 
     //all services are kept in this object
-    private final Services services;
-
-//    public void setServices(Services services) {
-//        this.services = services;
-//    }
-
-    public Services getServices() {
-        return services;
-    }
+    private final CyServices services;
 
     //all gui interaction with the user are kept here
-    private final GuiStatus guiStatus;
-
-//    public void setGuiStatus(GuiStatus guistatus) {
-//        this.guiStatus = guistatus;
-//    }
-
-    public GuiStatus getGuiStatus() {
-        return guiStatus;
-    }
+//    private final GuiStatus guiStatus;
 
     //information about the current status for the application it kept here
     private final CoreStatus coreStatus;
 
-//    public void setCoreStatus(CoreStatus coreStatus) {
-//        this.coreStatus = coreStatus;
+    public Model(CyServices services) {
+        this.services = services;
+        coreStatus = new CoreStatus(this);
+//        guiStatus = new GuiStatus(this);
+    }
+
+    public CyServices getServices() {
+        return services;
+    }
+
+//    public GuiStatus getGuiStatus() {
+//        return guiStatus;
 //    }
 
     public CoreStatus getCoreStatus() {

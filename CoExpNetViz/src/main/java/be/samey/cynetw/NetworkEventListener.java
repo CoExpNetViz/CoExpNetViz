@@ -21,8 +21,7 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.model.Model;
+import be.samey.internal.CyAppManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
@@ -34,7 +33,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleSetListener;
 
 /**
  * Not used at the moment, but can come in handy later (and for testing things)
- * 
+ *
  * @author sam
  */
 public class NetworkEventListener implements
@@ -43,10 +42,10 @@ public class NetworkEventListener implements
     NetworkViewAddedListener,
     VisualStyleSetListener {
 
-    private final Model model;
+    private final CyAppManager cyAppManager;
 
-    public NetworkEventListener(Model model) {
-        this.model = model;
+    public NetworkEventListener(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
     }
 
     @Override

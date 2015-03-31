@@ -107,7 +107,6 @@ public class GuiManager {
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         rootFrame.setContentPane(inpPnl);
 
-        activeModel.triggerUpdate();
     }
 
     /**
@@ -186,6 +185,12 @@ public class GuiManager {
         //TODO
     }
 
+    public void showRootFrame() {
+        rootFrame.pack();
+        rootFrame.setVisible(true);
+        activeModel.triggerUpdate();
+    }
+
     public InpPnl getInpPnl() {
         return inpPnl;
     }
@@ -210,11 +215,6 @@ public class GuiManager {
         this.settingsPath = settingsPath;
     }
 
-    public void showRootFrame() {
-        rootFrame.pack();
-        rootFrame.setVisible(true);
-    }
-
     public void setActiveModel(InpPnlModel inpPnlModel) {
         if (inpPnlModel != this.activeModel) {
             this.activeModel = inpPnlModel;
@@ -226,21 +226,4 @@ public class GuiManager {
         return activeModel;
     }
 
-    //for debugging, adds some default input for quick testing
-//    private void testWithDefaults(InpProfileModel ipm) {
-//        InpPnlModel inpPnlModel = ipm.getActiveModel();
-//        inpPnlModel.setUseBaitFile(true);
-//        inpPnlModel.setBaitFilePath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt"));
-//        ipm.getSpeciesEntryModel(0).setSpeciesName("Tomato");
-//        ipm.getSpeciesEntryModel(0).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Tomato_dataset.txt"));
-//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-//        ipm.getSpeciesEntryModel(1).setSpeciesName("Apple");
-//        ipm.getSpeciesEntryModel(1).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Apple_dataset.txt"));
-//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-//        ipm.getSpeciesEntryModel(2).setSpeciesName("Arabidopsis");
-//        ipm.getSpeciesEntryModel(2).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Arabidopsis_dataset.txt"));
-//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-//        ipm.getSpeciesEntryModel(3).setSpeciesName("Patato");
-//        ipm.getSpeciesEntryModel(3).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Potato_dataset.txt"));
-//    }
 }

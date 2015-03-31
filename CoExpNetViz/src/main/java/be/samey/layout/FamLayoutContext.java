@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.layout;
 
 /*
  * #%L
@@ -24,8 +24,9 @@ package be.samey.cynetw;
 
 import org.cytoscape.work.Tunable;
 
-public class CevGroupAttributesLayoutContext {
+public class FamLayoutContext {
     /*
+    TODO: update documentation and field descriptions
      Layout parameters:
      - spacingx: Horizontal spacing (on the x-axis) between two partitions in a row.
      - spacingy: Vertical spacing (on the y-axis) between the largest partitions of two rows.

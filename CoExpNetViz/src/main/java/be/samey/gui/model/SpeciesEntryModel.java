@@ -22,7 +22,6 @@ package be.samey.gui.model;
  * #L%
  */
 
-import be.samey.gui.model.AbstrModel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

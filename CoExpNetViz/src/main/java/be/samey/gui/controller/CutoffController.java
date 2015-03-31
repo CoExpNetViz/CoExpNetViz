@@ -22,6 +22,7 @@ package be.samey.gui.controller;
  * #L%
  */
 import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -43,12 +44,18 @@ public class CutoffController extends AbstrController implements ChangeListener 
             JSpinner sp = (JSpinner) ce.getSource();
             double cutOff = (Double) sp.getValue();
 
-            if (sp.getName().equals("nCutoff")) {
+            if (sp.getName().equals("nCutoffSp")) {
                 getActiveModel().setNegCutoff(cutOff);
+                return;
             }
-            if (sp.getName().equals("pCutoff")) {
+            if (sp.getName().equals("pCutoffSp")) {
                 getActiveModel().setPosCutoff(cutOff);
+                return;
             }
+        }
+
+        if (cyAppManager.getGuiManager() != null) {
+            System.err.println(CyModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ce.getSource());
         }
 
     }

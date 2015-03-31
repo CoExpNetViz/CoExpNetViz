@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.layout;
 
 /*
  * #%L
@@ -33,22 +33,22 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-public class CevGroupAttributesLayout extends AbstractLayoutAlgorithm {
+public class FamLayout extends AbstractLayoutAlgorithm {
 
     /**
      * Creates a new GroupAttributesLayout object.
      * @param undo
      */
-    public CevGroupAttributesLayout(UndoSupport undo) {
+    public FamLayout(UndoSupport undo) {
         super(CyModel.COMP_LAYOUT_NAME, CyModel.HUMAN_LAYOUT_NAME, undo);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {
-        return new TaskIterator(new CevGroupAttributesLayoutTask(toString(), networkView, nodesToLayOut, (CevGroupAttributesLayoutContext) context, attrName, null, undoSupport));
+        return new TaskIterator(new FamLayoutTask(toString(), networkView, nodesToLayOut, (FamLayoutContext) context, attrName, null, undoSupport));
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName, String baitName) {
-        return new TaskIterator(new CevGroupAttributesLayoutTask(toString(), networkView, nodesToLayOut, (CevGroupAttributesLayoutContext) context, attrName, baitName, undoSupport));
+        return new TaskIterator(new FamLayoutTask(toString(), networkView, nodesToLayOut, (FamLayoutContext) context, attrName, baitName, undoSupport));
     }
 
     @Override
@@ -64,8 +64,8 @@ public class CevGroupAttributesLayout extends AbstractLayoutAlgorithm {
     }
 
     @Override
-    public CevGroupAttributesLayoutContext createLayoutContext() {
-        return new CevGroupAttributesLayoutContext();
+    public FamLayoutContext createLayoutContext() {
+        return new FamLayoutContext();
     }
 
     @Override

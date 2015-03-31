@@ -44,7 +44,7 @@ import org.cytoscape.model.CyTable;
  */
 public class CevTableReader {
 
-    private CyAppManager cyAppManager;
+    private final CyAppManager cyAppManager;
 
     public CevTableReader(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;

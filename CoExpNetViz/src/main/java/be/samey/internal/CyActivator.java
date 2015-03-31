@@ -22,7 +22,7 @@ package be.samey.internal;
  * #L%
  */
 
-import be.samey.cynetw.CevGroupAttributesLayout;
+import be.samey.layout.FamLayout;
 import be.samey.cynetw.NetworkEventListener;
 import java.util.Properties;
 
@@ -117,7 +117,7 @@ public class CyActivator extends AbstractCyActivator {
         registerAllServices(context, action, new Properties());
 
         //register cev layout service
-        CevGroupAttributesLayout cgal = new CevGroupAttributesLayout(undoSupport);
+        FamLayout cgal = new FamLayout(undoSupport);
         Properties cgalProperties = new Properties();
         cgalProperties.setProperty("preferredTaskManager", "menu");
         cgalProperties.setProperty(TITLE, cgal.toString());

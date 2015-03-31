@@ -30,6 +30,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -55,8 +57,6 @@ import javax.swing.UIManager;
  */
 public class InpPnl extends JPanel implements Observer {
 
-//    //The currently loaded settings profile
-//    private InpPnlModel inpPnlModel;
     //input baits
     JRadioButton baitInpRb;
     JRadioButton baitFileRb;
@@ -320,12 +320,28 @@ public class InpPnl extends JPanel implements Observer {
             baitFileBtn.setEnabled(useBaitFile);
 
             //update: species
-            chooseSpeciesPnl.removeAll();
+            //get currently visible species
+            List<SpeciesEntry> seList = new ArrayList<SpeciesEntry>();
+            for (Component comp : chooseSpeciesPnl.getComponents()) {
+                if (comp instanceof SpeciesEntry) {
+                    SpeciesEntry se = (SpeciesEntry) comp;
+                    seList.add(se);
+                }
+            }
+            //remove species that are not in the model
+            for (SpeciesEntry se : seList) {
+                if (!inpPnlModel.getAllSpecies().values().contains(se)) {
+                    chooseSpeciesPnl.remove(se);
+                }
+            }
+            //add new species from the model
             for (SpeciesEntryModel sem : inpPnlModel.getAllSpecies().keySet()) {
                 SpeciesEntry se = inpPnlModel.getAllSpecies().get(sem);
-                se.setAlignmentX(Component.LEFT_ALIGNMENT);
-                chooseSpeciesPnl.add(se);
-                sem.triggerUpdate();
+                if (!seList.contains(se)) {
+                    se.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    chooseSpeciesPnl.add(se);
+                    sem.triggerUpdate();
+                }
             }
 
             chooseSpeciesPnl.revalidate();

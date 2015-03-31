@@ -22,6 +22,7 @@ package be.samey.gui.controller;
  * #L%
  */
 import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
@@ -45,12 +46,18 @@ public class BaitFileOrInpController extends AbstrController implements ActionLi
             if (jtb.getName().equals("baitFileRb")) {
                 boolean useBaitFile = jtb.isSelected();
                 getActiveModel().setUseBaitFile(useBaitFile);
+                return;
             }
 
             if (jtb.getName().equals("baitInpRb")) {
                 boolean inpBaits = jtb.isSelected();
                 getActiveModel().setUseBaitFile(!inpBaits);
+                return;
             }
+        }
+
+        if (cyAppManager.getGuiManager() != null) {
+            System.err.println(CyModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ae.getSource());
         }
     }
 

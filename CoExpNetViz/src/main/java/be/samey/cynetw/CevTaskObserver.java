@@ -21,6 +21,7 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+import be.samey.layout.FamLayout;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class CevTaskObserver implements TaskObserver {
     @Override
     public void allFinished(FinishStatus finishStatus) {
 
-        CevGroupAttributesLayout layout = (CevGroupAttributesLayout) cyAppManager.getCyServices().
+        FamLayout layout = (FamLayout) cyAppManager.getCyServices().
             getCyLayoutAlgorithmManager().getLayout(CyModel.COMP_LAYOUT_NAME);
         ArrayList<CyColumn> columnList = (ArrayList) cyAppManager.getCyModel().getLastNoaTable().getColumns();
         String groupColumnName = columnList.get(4 + CyModel.GROUP_COLUMN).getName();

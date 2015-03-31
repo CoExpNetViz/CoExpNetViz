@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.layout;
 
 /*
  * #%L
@@ -42,20 +42,20 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CevGroupAttributesLayoutTask extends AbstractLayoutTask {
+public class FamLayoutTask extends AbstractLayoutTask {
 
-    private static Logger logger = LoggerFactory.getLogger(CevGroupAttributesLayoutTask.class);
+    private static Logger logger = LoggerFactory.getLogger(FamLayoutTask.class);
 
     private TaskMonitor taskMonitor;
     private CyNetwork network;
     private String speciesAttribute;
 
-    private CevGroupAttributesLayoutContext context;
+    private FamLayoutContext context;
 
-    public CevGroupAttributesLayoutTask(final String displayName,
+    public FamLayoutTask(final String displayName,
         CyNetworkView networkView,
         Set<View<CyNode>> nodesToLayOut,
-        CevGroupAttributesLayoutContext context,
+        FamLayoutContext context,
         String attrName,
         String baitName,
         UndoSupport undo) {

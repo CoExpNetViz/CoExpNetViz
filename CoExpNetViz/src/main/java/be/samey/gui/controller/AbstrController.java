@@ -28,7 +28,6 @@ import be.samey.gui.model.InpPnlModel;
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -41,7 +41,7 @@ import org.cytoscape.model.CyNode;
  */
 public class CevNetworkReader {
 
-    private CyAppManager cyAppManager;
+    private final CyAppManager cyAppManager;
 
     public CevNetworkReader(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;

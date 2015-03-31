@@ -1,4 +1,4 @@
-package be.samey.cynetw;
+package be.samey.layout;
 
 /*
  * #%L

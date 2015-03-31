@@ -33,7 +33,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public class CevVizmapReader {
 
-    private CyAppManager cyAppManager;
+    private final CyAppManager cyAppManager;
 
     public CevVizmapReader(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;

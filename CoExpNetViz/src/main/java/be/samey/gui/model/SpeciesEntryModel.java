@@ -22,7 +22,7 @@ package be.samey.gui.model;
  * #L%
  */
 
-import be.samey.gui.model.GuiModel;
+import be.samey.gui.model.AbstrModel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -30,7 +30,7 @@ import java.nio.file.Paths;
  *
  * @author sam
  */
-public class SpeciesEntryModel extends GuiModel {
+public class SpeciesEntryModel extends AbstrModel {
 
     private String speciesName;
     private Path speciesExprDataPath;
@@ -61,7 +61,7 @@ public class SpeciesEntryModel extends GuiModel {
     /**
      * @return the speciesExprDataPath
      */
-    public Path getSpeciesExprDataPath() {
+    public Path getSpeciesFilePath() {
         return speciesExprDataPath;
     }
 

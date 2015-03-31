@@ -21,45 +21,29 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import be.samey.gui.model.GuiModel;
-import java.awt.event.FocusAdapter;
+
+import be.samey.gui.model.SpeciesEntryModel;
+import be.samey.internal.CyAppManager;
 import java.awt.event.FocusEvent;
-import java.nio.file.Path;
+import java.awt.event.FocusListener;
 import java.nio.file.Paths;
-import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author sam
  */
-public abstract class FileTfController extends FocusAdapter {
+public class SpeciesFileTfController extends AbstrTfController implements FocusListener {
 
-    private GuiModel guiModel;
+    private SpeciesEntryModel sem;
 
-    public FileTfController() {
+    public SpeciesFileTfController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+        super(cyAppManager);
+        this.sem = sem;
     }
-
-    public FileTfController(GuiModel guiModel) {
-        this.guiModel = guiModel;
-    }
-
-    public GuiModel getGuiModel() {
-        return guiModel;
-    }
-
-    public void setGuiModel(GuiModel guiModel) {
-        this.guiModel = guiModel;
-    }
-
-    public abstract void updateModel(GuiModel guiModel, Path path);
 
     @Override
     public void focusLost(FocusEvent fe) {
-        super.focusLost(fe);
-        JTextComponent tc = (JTextComponent) fe.getSource();
-        Path path = Paths.get(tc.getText());
-        updateModel(guiModel, path);
-
+        sem.setSpeciesExprDataPath(Paths.get(getText(fe)));
     }
 
 }

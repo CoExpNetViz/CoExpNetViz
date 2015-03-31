@@ -240,6 +240,13 @@
             <version>0.7.0</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.15</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>

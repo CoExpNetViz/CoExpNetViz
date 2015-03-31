@@ -22,13 +22,7 @@ package be.samey.gui;
  * #L%
  */
 import be.samey.gui.model.SpeciesEntryModel;
-import be.samey.gui.model.InpProfileModel;
 import be.samey.gui.model.InpPnlModel;
-import be.samey.gui.model.GuiModel;
-import be.samey.gui.controller.TfController;
-import be.samey.gui.controller.FileTfController;
-import be.samey.gui.controller.DelSpeciesController;
-import be.samey.gui.controller.BrowseController;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -36,8 +30,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -63,17 +55,15 @@ import javax.swing.UIManager;
  */
 public class InpPnl extends JPanel implements Observer {
 
-    //The currently loaded settings profile
-    private InpProfileModel inpProfileModel;
-    private InpPnlModel inpPnlModel;
-
+//    //The currently loaded settings profile
+//    private InpPnlModel inpPnlModel;
     //input baits
-    JRadioButton inpBaitRb;
-    JRadioButton useBaitFileRb;
-    JLabel inpBaitLbl;
-    JTextArea inpBaitTa;
+    JRadioButton baitInpRb;
+    JRadioButton baitFileRb;
+    JLabel baitInpLbl;
+    JTextArea baitInpTa;
     JScrollPane inpBaitSp;
-    JLabel fileBaitLbl;
+    JLabel baitFileLbl;
     JPanel fileBaitPnl;
     JTextField baitFileTf;
     JButton baitFileBtn;
@@ -111,20 +101,20 @@ public class InpPnl extends JPanel implements Observer {
      */
     private void constructGui() {
         //input bait genes or choose file
-        inpBaitRb = new JRadioButton("Input bait genes");
-        inpBaitRb.setName("InpBaitRb");
-        useBaitFileRb = new JRadioButton("Upload file with bait genes");
-        useBaitFileRb.setName("UseBaitFileRb");
+        baitInpRb = new JRadioButton("Input bait genes");
+        baitInpRb.setName("baitInpRb");
+        baitFileRb = new JRadioButton("Upload file with bait genes");
+        baitFileRb.setName("baitFileRb");
         inpBaitOrfileBaitBg = new ButtonGroup();
-        inpBaitOrfileBaitBg.add(inpBaitRb);
-        inpBaitOrfileBaitBg.add(useBaitFileRb);
-        inpBaitLbl = new JLabel("Enter bait genes");
-        inpBaitTa = new JTextArea();
-        inpBaitTa.setLineWrap(true);
-        inpBaitTa.setToolTipText("Enter gene identifiers seperated by whitespace, eg 'Solyc02g04650'");
-        inpBaitSp = new JScrollPane(inpBaitTa);
+        inpBaitOrfileBaitBg.add(baitInpRb);
+        inpBaitOrfileBaitBg.add(baitFileRb);
+        baitInpLbl = new JLabel("Enter bait genes");
+        baitInpTa = new JTextArea();
+        baitInpTa.setLineWrap(true);
+        baitInpTa.setToolTipText("Enter gene identifiers seperated by whitespace, eg 'Solyc02g04650'");
+        inpBaitSp = new JScrollPane(baitInpTa);
         inpBaitSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        fileBaitLbl = new JLabel("Choose file with bait genes");
+        baitFileLbl = new JLabel("Choose file with bait genes");
         fileBaitPnl = new JPanel();
         fileBaitPnl.setLayout(new BoxLayout(fileBaitPnl, BoxLayout.LINE_AXIS));
         baitFileTf = new JTextField();
@@ -149,10 +139,12 @@ public class InpPnl extends JPanel implements Observer {
         nCutoffLbl = new JLabel("Neg. cutoff");
         nCutoffSm = new SpinnerNumberModel(0.0, -1.0, 0.0, 0.1);
         nCutoffSp = new JSpinner(nCutoffSm);
+        nCutoffSp.setName("nCutoffSp");
         nCutoffSp.setMaximumSize(new Dimension(64, 32));
         pCutoffLbl = new JLabel("Pos. cutoff");
         pCutoffSm = new SpinnerNumberModel(0.0, 0.0, 1.0, 0.1);
         pCutoffSp = new JSpinner(pCutoffSm);
+        pCutoffSp.setName("pCutoffSp");
         pCutoffSp.setMaximumSize(new Dimension(64, 32));
         //save output
         saveFileChb = new JCheckBox("Save output");
@@ -164,7 +156,6 @@ public class InpPnl extends JPanel implements Observer {
         saveFileBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
         //run analysis or reset form
         goBtn = new JButton("Run analysis");
-//        goBtn.addActionListener(new GoAl());
         resetBtn = new JButton("Reset form");
 
         //create gridbaglayout and add components to it
@@ -181,18 +172,18 @@ public class InpPnl extends JPanel implements Observer {
         c.gridx = 0;
         c.gridy = 00;
         c.gridwidth = 1;
-        add(inpBaitRb, c);
+        add(baitInpRb, c);
         c.gridx = 1;
         c.gridy = 00;
         c.gridwidth = 1;
-        add(useBaitFileRb, c);
+        add(baitFileRb, c);
         //input baits or choose file
         //input bait genes label
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 01;
         c.gridwidth = 3;
-        add(inpBaitLbl, c);
+        add(baitInpLbl, c);
         //bait genes text area
         c.insets = new Insets(0, 0, 0, 0);
         c.weighty = 1.0;
@@ -207,7 +198,7 @@ public class InpPnl extends JPanel implements Observer {
         c.gridx = 0;
         c.gridy = 03;
         c.gridwidth = 3;
-        add(fileBaitLbl, c);
+        add(baitFileLbl, c);
         //bait genes file textfield and button
         c.gridx = 0;
         c.gridy = 04;
@@ -288,36 +279,6 @@ public class InpPnl extends JPanel implements Observer {
         add(resetBtn, c);
     }
 
-    /*
-     ---------------------------------------------------------------------------
-     Below is the logic concerning the actions and state of the GUI
-     ---------------------------------------------------------------------------
-     */
-    /**
-     * @return the inpProfile
-     */
-    public InpProfileModel getInpProfile() {
-        return inpProfileModel;
-    }
-
-    /**
-     * @param inpProfileModel the inpProfile to set
-     */
-    public void setInpProfile(InpProfileModel inpProfileModel) {
-
-        if (this.inpPnlModel != null) {
-            this.inpPnlModel.deleteObserver(this);
-        }
-        this.inpPnlModel = inpProfileModel.getInpPnlModel();
-        inpPnlModel.addObserver(this);
-
-        if (this.inpProfileModel != null) {
-            this.inpProfileModel.deleteObserver(this);
-        }
-        this.inpProfileModel = inpProfileModel;
-        inpProfileModel.addObserver(this);
-    }
-
     @Override
     /**
      * Triggered when the {@link InpPnlModel} notifies its observers. Updates
@@ -325,112 +286,67 @@ public class InpPnl extends JPanel implements Observer {
      * InpPnlModel update from within this method, that would start an endless
      * loop.
      */
-    public void update(Observable o, Object arg) {
+    public void update(Observable model, Object obj) {
 
-        //update: string input fields
-        String jobTitle = inpPnlModel.getJobTitle();
-        //TODO make jobtitle field
+        //for debugging
+        System.out.println("InpPanel" + " updated from: " + model);
 
-        //update: baits
-        boolean useBaitFile = inpPnlModel.isUseBaitFile();
-        inpBaitRb.setSelected(!useBaitFile);
-        useBaitFileRb.setSelected(useBaitFile);
-        inpBaitLbl.setEnabled(!useBaitFile);
-        inpBaitTa.setEnabled(!useBaitFile);
-        String baits = inpPnlModel.getBaits();
-        inpBaitTa.setText(baits);
-        fileBaitLbl.setEnabled(useBaitFile);
-        baitFileTf.setEnabled(useBaitFile);
-        Path baitFilePath = inpPnlModel.getBaitFilePath();
-        baitFileTf.setText(baitFilePath.toString());
-        baitFileTf.setBackground(
-            Files.isRegularFile(baitFilePath) && Files.isReadable(baitFilePath)
-                ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
-        baitFileBtn.setEnabled(useBaitFile);
+        if (model instanceof InpPnlModel) {
 
-        //update: species
-        List<SpeciesEntry> seList = new ArrayList<SpeciesEntry>();
-        for (Component comp : chooseSpeciesPnl.getComponents()) {
-            if (comp instanceof SpeciesEntry) {
-                SpeciesEntry se = (SpeciesEntry) comp;
-                seList.add(se);
-            }
-        }
-        //get rid of removed species
-        for (SpeciesEntry se : seList) {
-            SpeciesEntryModel sem = se.getSpeciesEntryModel();
-            if (!inpProfileModel.getSpeciesEntryModels().contains(sem)) {
-                chooseSpeciesPnl.remove(se);
-            }
-        }
-        //add new species from model
-        for (SpeciesEntryModel sem : inpProfileModel.getSpeciesEntryModels()) {
-            boolean add = true;
-            for (SpeciesEntry se : seList) {
-                if (se.getSpeciesEntryModel() == sem) {
-                    add = false;
-                }
-            }
-            if (add) {
-                SpeciesEntry se = makeSpeciesEntry(sem);
+            //for debugging
+            System.out.println("InpPanel" + " updated from inputPnlModel");
+
+            InpPnlModel inpPnlModel = (InpPnlModel) model;
+
+            //update: string input fields
+            String jobTitle = inpPnlModel.getJobTitle();
+            //TODO make jobtitle field
+
+            //update: baits
+            boolean useBaitFile = inpPnlModel.isUseBaitFile();
+            baitInpRb.setSelected(!useBaitFile);
+            baitFileRb.setSelected(useBaitFile);
+            baitInpLbl.setEnabled(!useBaitFile);
+            baitInpTa.setEnabled(!useBaitFile);
+            String baits = inpPnlModel.getBaits();
+            baitInpTa.setText(baits);
+            baitFileLbl.setEnabled(useBaitFile);
+            baitFileTf.setEnabled(useBaitFile);
+            Path baitFilePath = inpPnlModel.getBaitFilePath();
+            baitFileTf.setText(baitFilePath.toString());
+            baitFileTf.setBackground(
+                Files.isRegularFile(baitFilePath) && Files.isReadable(baitFilePath)
+                    ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
+            baitFileBtn.setEnabled(useBaitFile);
+
+            //update: species
+            chooseSpeciesPnl.removeAll();
+            for (SpeciesEntryModel sem : inpPnlModel.getAllSpecies().keySet()) {
+                SpeciesEntry se = inpPnlModel.getAllSpecies().get(sem);
                 se.setAlignmentX(Component.LEFT_ALIGNMENT);
                 chooseSpeciesPnl.add(se);
-
                 sem.triggerUpdate();
             }
+
+            chooseSpeciesPnl.revalidate();
+            chooseSpeciesPnl.repaint();
+
+            //update: cutoffs
+            nCutoffSp.setValue(inpPnlModel.getNegCutoff());
+            pCutoffSp.setValue(inpPnlModel.getPosCutoff());
+
+            //update: save
+            boolean saveResults = inpPnlModel.isSaveResults();
+            saveFileChb.setSelected(saveResults);
+            saveFileTf.setEnabled(saveResults);
+            Path saveFilePath = inpPnlModel.getSaveFilePath();
+            saveFileTf.setText(saveFilePath.toString());
+            saveFileTf.setBackground(
+                Files.isDirectory(saveFilePath) && Files.isReadable(saveFilePath)
+                    ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
+            saveFileBtn.setEnabled(saveResults);
         }
-        chooseSpeciesPnl.revalidate();
-        chooseSpeciesPnl.repaint();
 
-        //update: cutoffs
-        nCutoffSp.setValue(inpPnlModel.getNegCutoff());
-        pCutoffSp.setValue(inpPnlModel.getPosCutoff());
-
-        //update: save
-        boolean saveResults = inpPnlModel.isSaveResults();
-        saveFileChb.setSelected(saveResults);
-        saveFileTf.setEnabled(saveResults);
-        Path saveFilePath = inpPnlModel.getSaveFilePath();
-        saveFileTf.setText(saveFilePath.toString());
-        saveFileTf.setBackground(
-            Files.isDirectory(saveFilePath) && Files.isReadable(saveFilePath)
-                ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
-        saveFileBtn.setEnabled(saveResults);
     }
 
-    private SpeciesEntry makeSpeciesEntry(SpeciesEntryModel sem) {
-
-        //make controllers
-        TfController tc = new TfController(sem) {
-            @Override
-            public void updateModel(GuiModel guiModel, String text) {
-                ((SpeciesEntryModel) guiModel).setSpeciesName(text);
-            }
-        };
-        DelSpeciesController delSpeciesController = new DelSpeciesController(inpProfileModel, sem);
-        BrowseController seBc = new BrowseController(sem, this, "Choose species", BrowseController.FILE) {
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((SpeciesEntryModel) guiModel).setSpeciesExprDataPath(path);
-            }
-        };
-        FileTfController ftc = new FileTfController(sem) {
-
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((SpeciesEntryModel) guiModel).setSpeciesExprDataPath(path);
-            }
-        };
-
-        //make Gui
-        SpeciesEntry se = new SpeciesEntry();
-        se.setSpeciesEntryModel(sem);
-
-        //attach controllers to GUI
-        se.browseBtn.addActionListener(seBc);
-        se.speciesExprDataPathTf.addFocusListener(ftc);
-        se.speciesNameTf.addFocusListener(tc);
-        se.removeBtn.addActionListener(delSpeciesController);
-        return se;
-    }
 }

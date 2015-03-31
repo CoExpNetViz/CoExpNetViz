@@ -22,36 +22,39 @@ package be.samey.gui.controller;
  * #L%
  */
 
+import be.samey.gui.GuiManager;
+import be.samey.gui.SpeciesEntry;
 import be.samey.gui.model.InpPnlModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JToggleButton;
+import be.samey.gui.model.SpeciesEntryModel;
+import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author sam
  */
-public class SaveResultsController implements ActionListener {
+public abstract class AbstrController {
 
-    private InpPnlModel inpPnlModel;
+    protected final CyAppManager cyAppManager;
+    protected final CyModel cyModel;
 
-    public SaveResultsController() {
+    public AbstrController(CyAppManager cyAppManager) {
+        this.cyAppManager = cyAppManager;
+        this.cyModel = cyAppManager.getCyModel();
     }
 
-    public SaveResultsController(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
+    protected GuiManager getGuiManager(){
+        return cyAppManager.getGuiManager();
     }
 
-    public void setInpPnlModel(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
+    protected InpPnlModel getActiveModel() {
+        return getGuiManager().getActiveModel();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() instanceof JToggleButton){
-            boolean saveResults = ((JToggleButton) ae.getSource()).isSelected();
-            inpPnlModel.setSaveResults(saveResults);
-        }
+    protected Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies(){
+        return getGuiManager().getActiveModel().getAllSpecies();
     }
 
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.gui.controller;
 
 /*
@@ -26,38 +21,35 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.model.GuiModel;
-import java.awt.event.FocusAdapter;
+import be.samey.internal.CyAppManager;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author sam
  */
-public abstract class TfController extends FocusAdapter {
+public abstract class AbstrTfController extends AbstrController implements FocusListener {
 
-    private GuiModel guiModel;
-
-    public TfController() {
+    public AbstrTfController(CyAppManager cyAppManager) {
+        super(cyAppManager);
     }
 
-    public TfController(GuiModel guiModel) {
-        this.guiModel = guiModel;
-    }
+    protected String getText(FocusEvent fe) {
 
-    public void setGuiModel(GuiModel guiModel) {
-        this.guiModel = guiModel;
-    }
+        String text = "";
+        if (fe.getSource() instanceof JTextComponent) {
 
-    public abstract void updateModel(GuiModel guiModel, String text);
+            JTextComponent tc = (JTextComponent) fe.getSource();
+            text = tc.getText();
+        }
+        return text;
+    }
 
     @Override
-    public void focusLost(FocusEvent fe) {
-        super.focusLost(fe);
-        JTextComponent tc = (JTextComponent) fe.getSource();
-        updateModel(guiModel, tc.getText());
+    public void focusGained(FocusEvent fe) {
+        //nothing to do here
     }
 
 }

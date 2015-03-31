@@ -24,22 +24,24 @@ package be.samey.gui.controller;
 import be.samey.internal.CyAppManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JToggleButton;
 
 /**
  *
  * @author sam
  */
-public class ResetGuiController extends AbstrController implements ActionListener {
+public class SaveFileChbController extends AbstrController implements ActionListener {
 
-    public ResetGuiController(CyAppManager cyAppManager) {
+    public SaveFileChbController(CyAppManager cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
+        if (ae.getSource() instanceof JToggleButton) {
+            boolean saveResults = ((JToggleButton) ae.getSource()).isSelected();
+            getActiveModel().setSaveResults(saveResults);
+        }
     }
-
 
 }

@@ -21,44 +21,37 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.model.InpProfileModel;
 import be.samey.gui.model.SpeciesEntryModel;
-import be.samey.internal.CyModel;
+import be.samey.internal.CyAppManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
+import java.nio.file.Path;
 
 /**
  *
  * @author sam
  */
-public class AddSpeciesController implements ActionListener{
+public class SpeciesFileBtnController extends AbstrBrowseController implements ActionListener {
 
-    private InpProfileModel inpProfileModel;
+    private SpeciesEntryModel sem;
 
-    public AddSpeciesController() {
+    public SpeciesFileBtnController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+        super(cyAppManager);
+        this.sem = sem;
     }
 
-    public AddSpeciesController(InpProfileModel inpProfileModel) {
-        this.inpProfileModel = inpProfileModel;
-    }
-
-    public void setInpProfileModel(InpProfileModel inpProfileModel) {
-        this.inpProfileModel = inpProfileModel;
-    }
-    
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (inpProfileModel.getSpeciesEntryModels().size() >= CyModel.MAX_SPECIES_COUNT){
-            
-                JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                    String.format("No more than %d species are supported", CyModel.MAX_SPECIES_COUNT));
-                return;
+        Path path = showFileChooser(
+            "Choose file with expression data",
+            FILE,
+            sem.getSpeciesFilePath());
+        sem.setSpeciesExprDataPath(path);
+
+        if (sem.getSpeciesName().trim().isEmpty()) {
+            String name = path.getFileName().toString().split("\\.")[0];
+            sem.setSpeciesName(name);
         }
-        SpeciesEntryModel sem = new SpeciesEntryModel();
-        inpProfileModel.addSpeciesEntryModel(sem);
+
     }
-    
 }

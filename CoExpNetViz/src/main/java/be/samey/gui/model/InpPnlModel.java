@@ -21,11 +21,12 @@ package be.samey.gui.model;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import be.samey.gui.GuiConstants;
-import be.samey.gui.model.GuiModel;
+import be.samey.gui.SpeciesEntry;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -33,7 +34,7 @@ import java.nio.file.Paths;
  *
  * Corresponds to one input settings profile
  */
-public class InpPnlModel extends GuiModel {
+public class InpPnlModel extends AbstrModel {
 
     private String jobTitle;
     private boolean useBaitFile;
@@ -44,7 +45,9 @@ public class InpPnlModel extends GuiModel {
     private boolean saveResults;
     private Path saveFilePath;
 
-    public InpPnlModel() {
+    private Map<SpeciesEntryModel, SpeciesEntry> species;
+
+    public InpPnlModel(SpeciesEntryModel sem, SpeciesEntry se) {
         jobTitle = "";
         useBaitFile = false;
         baits = "";
@@ -52,7 +55,11 @@ public class InpPnlModel extends GuiModel {
         negCutoff = GuiConstants.DEFAULT_NEG_CUTOFF;
         posCutoff = GuiConstants.DEFAULT_POS_CUTOFF;
         saveResults = false;
-        saveFilePath = Paths.get("");
+        saveFilePath = Paths.get(System.getProperty("user.home"));
+
+        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+
+        species.put(sem, se);
     }
 
     /**
@@ -66,7 +73,7 @@ public class InpPnlModel extends GuiModel {
      * @param jobTitle the jobTitle to set
      */
     public void setJobTitle(String jobTitle) {
-        if (!this.jobTitle.equals(jobTitle) ){
+        if (!this.jobTitle.equals(jobTitle)) {
             this.jobTitle = jobTitle;
             setChanged();
             notifyObservers();
@@ -84,7 +91,7 @@ public class InpPnlModel extends GuiModel {
      * @param useBaitFile the useBaitFile to set
      */
     public void setUseBaitFile(boolean useBaitFile) {
-        if (this.useBaitFile != useBaitFile ){
+        if (this.useBaitFile != useBaitFile) {
             this.useBaitFile = useBaitFile;
             setChanged();
             notifyObservers();
@@ -102,7 +109,7 @@ public class InpPnlModel extends GuiModel {
      * @param baits the baits to set
      */
     public void setBaits(String baits) {
-        if (!this.baits.equals(baits) ){
+        if (!this.baits.equals(baits)) {
             this.baits = baits;
             setChanged();
             notifyObservers();
@@ -120,7 +127,7 @@ public class InpPnlModel extends GuiModel {
      * @param baitFilePath the baitFilePath to set
      */
     public void setBaitFilePath(Path baitFilePath) {
-        if (this.baitFilePath != baitFilePath ){
+        if (this.baitFilePath != baitFilePath) {
             this.baitFilePath = baitFilePath;
             setChanged();
             notifyObservers();
@@ -138,7 +145,7 @@ public class InpPnlModel extends GuiModel {
      * @param NegCutoff the negCutoff to set
      */
     public void setNegCutoff(double NegCutoff) {
-        if (this.negCutoff != NegCutoff ){
+        if (this.negCutoff != NegCutoff) {
             this.negCutoff = NegCutoff;
             setChanged();
             notifyObservers();
@@ -156,7 +163,7 @@ public class InpPnlModel extends GuiModel {
      * @param PosCutoff the posCutoff to set
      */
     public void setPosCutoff(double PosCutoff) {
-        if (this.posCutoff != PosCutoff ){
+        if (this.posCutoff != PosCutoff) {
             this.posCutoff = PosCutoff;
             setChanged();
             notifyObservers();
@@ -174,7 +181,7 @@ public class InpPnlModel extends GuiModel {
      * @param saveResults the saveResults to set
      */
     public void setSaveResults(boolean saveResults) {
-        if (this.saveResults != saveResults ){
+        if (this.saveResults != saveResults) {
             this.saveResults = saveResults;
             setChanged();
             notifyObservers();
@@ -192,11 +199,38 @@ public class InpPnlModel extends GuiModel {
      * @param saveFilePath the saveFilePath to set
      */
     public void setSaveFilePath(Path saveFilePath) {
-        if (this.saveFilePath != saveFilePath ){
+        if (this.saveFilePath != saveFilePath) {
             this.saveFilePath = saveFilePath;
             setChanged();
             notifyObservers();
         }
+    }
+
+    public SpeciesEntry getSpeciesEntry(SpeciesEntryModel sem) {
+        return species.get(sem);
+    }
+
+    public void addSpecies(SpeciesEntryModel sem, SpeciesEntry se) {
+        if (!species.containsKey(sem)) {
+            species.put(sem, se);
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void removeSpecies(SpeciesEntryModel sem) {
+        if (species.containsKey(sem)) {
+            species.remove(sem);
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    /**
+     * @return the species
+     */
+    public Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies() {
+        return species;
     }
 
 }

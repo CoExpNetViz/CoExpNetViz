@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.gui.controller;
 
 /*
@@ -26,10 +21,7 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.model.InpPnlModel;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import be.samey.internal.CyAppManager;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -38,28 +30,27 @@ import javax.swing.event.ChangeListener;
  *
  * @author sam
  */
-public abstract class CutoffController implements ChangeListener {
+public class CutoffController extends AbstrController implements ChangeListener {
 
-    private InpPnlModel inpPnlModel;
-
-    public CutoffController() {
+    public CutoffController(CyAppManager cyAppManager) {
+        super(cyAppManager);
     }
-
-    public CutoffController(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
-    }
-    
-    public void setGuiModel(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
-    }
-
-    public abstract void updateModel(InpPnlModel inpPnlModel, double cutOff);
 
     @Override
     public void stateChanged(ChangeEvent ce) {
-        JSpinner sp = (JSpinner) ce.getSource();
-        double cutOff = (Double) sp.getValue();
-        updateModel(inpPnlModel, cutOff);
+        if (ce.getSource() instanceof JSpinner) {
+
+            JSpinner sp = (JSpinner) ce.getSource();
+            double cutOff = (Double) sp.getValue();
+
+            if (sp.getName().equals("nCutoff")) {
+                getActiveModel().setNegCutoff(cutOff);
+            }
+            if (sp.getName().equals("pCutoff")) {
+                getActiveModel().setPosCutoff(cutOff);
+            }
+        }
+
     }
 
 }

@@ -1,4 +1,4 @@
-package be.samey.gui.controller;
+package be.samey.gui.model;
 
 /*
  * #%L
@@ -21,25 +21,17 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import be.samey.internal.CyAppManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Observable;
 
 /**
  *
  * @author sam
  */
-public class ResetGuiController extends AbstrController implements ActionListener {
+public abstract class AbstrModel extends Observable {
 
-    public ResetGuiController(CyAppManager cyAppManager) {
-        super(cyAppManager);
+    public void triggerUpdate() {
+        setChanged();
+        notifyObservers();
     }
-
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
-    }
-
 
 }

@@ -23,21 +23,28 @@ package be.samey.gui;
  */
 import be.samey.gui.controller.ResetGuiController;
 import be.samey.gui.model.SpeciesEntryModel;
-import be.samey.gui.model.InpProfileModel;
 import be.samey.gui.model.InpPnlModel;
-import be.samey.gui.model.GuiModel;
-import be.samey.gui.controller.TfController;
-import be.samey.gui.controller.FileTfController;
-import be.samey.gui.controller.CutoffController;
-import be.samey.gui.controller.SaveResultsController;
-import be.samey.gui.controller.UseBaitFileController;
-import be.samey.gui.controller.AddSpeciesController;
-import be.samey.gui.controller.BrowseController;
+import be.samey.gui.controller.SaveFileChbController;
+import be.samey.gui.controller.SpeciesAddBtnController;
+import be.samey.gui.controller.SpeciesFileBtnController;
+import be.samey.gui.controller.BaitFileTfController;
 import be.samey.gui.controller.RunAnalysisController;
+import be.samey.gui.controller.BaitFileBtnController;
+import be.samey.gui.controller.SaveFileTfController;
+import be.samey.gui.controller.BaitFileOrInpController;
+import be.samey.gui.controller.BaitInpTaController;
+import be.samey.gui.controller.CutoffController;
+import be.samey.gui.controller.SaveFileBtnController;
+import be.samey.gui.controller.SpeciesDelController;
+import be.samey.gui.controller.SpeciesFileTfController;
+import be.samey.gui.controller.SpeciesNameTfController;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import javax.swing.JFrame;
 
 /**
@@ -54,122 +61,129 @@ public class GuiManager {
     private Path lastUsedDirPath;
     private Path settingsPath;
 
-    //baits
-    UseBaitFileController useBaitFileController;
-    TfController baitInpTac;
-    BrowseController baitFileBc;
-    FileTfController baitFileTfc;
-    //species
-    AddSpeciesController addSpeciesController;
-    //cutoffs
-    CutoffController nCutoffController;
-    CutoffController pCutoffController;
-    SaveResultsController saveResultsController;
-    //save
-    FileTfController saveFileTfc;
-    BrowseController saveFileBc;
-    //controllers that acces non-GUI classes
-    RunAnalysisController runAnalysisController;
-    ResetGuiController resetGuiController;
+    private InpPnlModel activeModel;
+
+    private List<InpPnlModel> allModels;
 
     public GuiManager(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;
         this.cyModel = cyAppManager.getCyModel();
+
+        lastUsedDirPath = Paths.get(System.getProperty("user.home"));
+        settingsPath = initSettingsPath();
+        System.out.println(settingsPath);
     }
 
     public void initGui() {
         //make GUI
         inpPnl = new InpPnl();
 
-        //make controllers
+        //attach controllers
         //baits
-        useBaitFileController = new UseBaitFileController();
-        baitInpTac = new TfController() {
-            @Override
-            public void updateModel(GuiModel guiModel, String text) {
-                ((InpPnlModel) guiModel).setBaits(text);
-            }
-        };
-        baitFileTfc = new FileTfController() {
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((InpPnlModel) guiModel).setBaitFilePath(path);
-            }
-        };
-        baitFileBc = new BrowseController(inpPnl, "Choose file with bait genes", BrowseController.FILE) {
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((InpPnlModel) guiModel).setBaitFilePath(path);
-            }
-        };
+        inpPnl.baitInpRb.addActionListener(new BaitFileOrInpController(cyAppManager));
+        inpPnl.baitFileRb.addActionListener(new BaitFileOrInpController(cyAppManager));
+        inpPnl.baitInpTa.addFocusListener(new BaitInpTaController(cyAppManager));
+        inpPnl.baitFileTf.addFocusListener(new BaitFileTfController(cyAppManager));
+        inpPnl.baitFileBtn.addActionListener(new BaitFileBtnController(cyAppManager));
         //species
-        addSpeciesController = new AddSpeciesController();
+        inpPnl.addSpeciesBtn.addActionListener(new SpeciesAddBtnController(cyAppManager));
         //cutoffs
-        nCutoffController = new CutoffController() {
-            @Override
-            public void updateModel(InpPnlModel inpPnlModel, double cutOff) {
-                inpPnlModel.setNegCutoff(cutOff);
-            }
-        };
-        pCutoffController = new CutoffController() {
-            @Override
-            public void updateModel(InpPnlModel inpPnlModel, double cutOff) {
-                inpPnlModel.setPosCutoff(cutOff);
-            }
-        };
+        inpPnl.nCutoffSp.addChangeListener(new CutoffController(cyAppManager));
+        inpPnl.pCutoffSp.addChangeListener(new CutoffController(cyAppManager));
         //save
-        saveFileTfc = new FileTfController() {
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((InpPnlModel) guiModel).setSaveFilePath(path);
-            }
-        };
-        saveFileBc = new BrowseController(inpPnl, "Choose output directory", BrowseController.DIRECTORY) {
-            @Override
-            public void updateModel(GuiModel guiModel, Path path) {
-                ((InpPnlModel) guiModel).setSaveFilePath(path);
-            }
-        };
-        saveResultsController = new SaveResultsController();
-        //controllers that acces non-GUI classes
-        runAnalysisController = new RunAnalysisController(cyAppManager);
-        resetGuiController = new ResetGuiController(cyAppManager);
+        inpPnl.saveFileChb.addActionListener(new SaveFileChbController(cyAppManager));
+        inpPnl.saveFileTf.addFocusListener(new SaveFileTfController(cyAppManager));
+        inpPnl.saveFileBtn.addActionListener(new SaveFileBtnController(cyAppManager));
+        //buttons
+        inpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
+        inpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
 
-        //attach controllers to GUI
-        //baits
-        inpPnl.inpBaitRb.addActionListener(useBaitFileController);
-        inpPnl.useBaitFileRb.addActionListener(useBaitFileController);
-        inpPnl.inpBaitTa.addFocusListener(baitInpTac);
-        inpPnl.baitFileTf.addFocusListener(baitFileTfc);
-        inpPnl.baitFileBtn.addActionListener(baitFileBc);
-        //species
-        inpPnl.addSpeciesBtn.addActionListener(addSpeciesController);
-        //cutoffs
-        inpPnl.pCutoffSp.addChangeListener(pCutoffController);
-        inpPnl.nCutoffSp.addChangeListener(nCutoffController);
-        //save
-        inpPnl.saveFileChb.addActionListener(saveResultsController);
-        inpPnl.saveFileBtn.addActionListener(saveFileBc);
-        inpPnl.saveFileTf.addFocusListener(saveFileTfc);
-        //controllers that acces non-GUI classes
-        inpPnl.goBtn.addActionListener(runAnalysisController);
-        inpPnl.resetBtn.addActionListener(resetGuiController);
+        activeModel = makeDefaultModel();
 
-        //make profile and attach it to controllers and GUI
-        InpProfileModel ipm = makeDefaultProfile();
-        
-        //for debugging
-        testWithDefaults(ipm);
-
-        applyProfile(ipm);
-
-        cyModel.addObserver(inpPnl);
+        activeModel.addObserver(inpPnl);
 
         //put the GUI in a new Frame
         rootFrame = new JFrame(GuiConstants.ROOTFRAME_TITLE);
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         rootFrame.setContentPane(inpPnl);
 
+        activeModel.triggerUpdate();
+    }
+
+    /**
+     * Create speciesEntry with controllers that updates sem
+     *
+     * @param sem
+     * @return
+     */
+    public SpeciesEntry initSpeciesEntry(SpeciesEntryModel sem) {
+        SpeciesEntry se = new SpeciesEntry();
+
+        se.speciesNameTf.addFocusListener(new SpeciesNameTfController(cyAppManager, sem));
+        se.speciesFileTf.addFocusListener(new SpeciesFileTfController(cyAppManager, sem));
+        se.removeBtn.addActionListener(new SpeciesDelController(cyAppManager, sem));
+        se.browseBtn.addActionListener(new SpeciesFileBtnController(cyAppManager, sem));
+
+        sem.addObserver(se);
+
+        return se;
+    }
+
+    public InpPnlModel makeDefaultModel() {
+        SpeciesEntryModel sem = new SpeciesEntryModel();
+        SpeciesEntry se = initSpeciesEntry(sem);
+        return new InpPnlModel(sem, se);
+    }
+
+    private Path initSettingsPath() {
+
+        Path cyHomePath = Paths.get(System.getProperty("user.dir"));
+        Path cyConfPath = cyHomePath.resolve("CytoscapeConfiguration");
+
+        Path localSettingsPath;
+
+        //try to get a settings directory in the cytoscape config folder
+        if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
+            localSettingsPath = cyConfPath.resolve(CyModel.APP_NAME + "_settings");
+            //settins folder doesn't exists, so try to make it
+            if (!Files.exists(localSettingsPath)) {
+                try {
+                    Files.createDirectory(localSettingsPath);
+                    return localSettingsPath;
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                    //TODO:warn user somehow
+                }
+            } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
+                //settings folder exists, check if I can write there
+                return localSettingsPath;
+            }
+        }
+
+        //if the above attempt failed, then try to get a settings a folder in
+        // the user home directory
+        localSettingsPath = Paths.get(System.getProperty("user.home"));
+        localSettingsPath = localSettingsPath.resolve(CyModel.APP_NAME + "_settings");
+        if (!Files.exists(localSettingsPath)) {
+            //settins folder doesn't exists, so try to make it
+            try {
+                Files.createDirectory(localSettingsPath);
+                return localSettingsPath;
+            } catch (IOException ex) {
+                System.out.println(ex);
+                //TODO:warn user somehow
+            }
+        } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
+            //settings folder exists, check if I can write there
+            return localSettingsPath;
+        }
+
+        //TODO: handle this better?
+        return null;
+    }
+
+    private void readProfiles() {
+        //TODO
     }
 
     public InpPnl getInpPnl() {
@@ -201,83 +215,32 @@ public class GuiManager {
         rootFrame.setVisible(true);
     }
 
-    public InpProfileModel makeDefaultProfile() {
-        //TODO get last used dir and profiles from file
-        lastUsedDirPath = Paths.get("user.home");
-
-        //make Gui models
-        InpPnlModel inpPnlModel = new InpPnlModel();
-        inpPnlModel.setDefaultDirPath(lastUsedDirPath);
-        SpeciesEntryModel speciesEntryModel = new SpeciesEntryModel();
-        speciesEntryModel.setDefaultDirPath(lastUsedDirPath);
-        InpProfileModel inpProfileModel = new InpProfileModel();
-        inpProfileModel.setInpPnlModel(inpPnlModel);
-        inpProfileModel.addSpeciesEntryModel(speciesEntryModel);
-
-        return inpProfileModel;
-
+    public void setActiveModel(InpPnlModel inpPnlModel) {
+        if (inpPnlModel != this.activeModel) {
+            this.activeModel = inpPnlModel;
+            activeModel.addObserver(inpPnl);
+        }
     }
 
-    //TODO
-    void readProfiles() {
-
-    }
-
-    public void applyProfile(InpProfileModel inpProfileModel) {
-
-        InpPnlModel inpPnlModel = inpProfileModel.getInpPnlModel();
-
-        //Tell GUI to listen to this model from now on
-        inpPnl.setInpProfile(inpProfileModel);
-
-        //Tell action listeners to update this model from now on
-        //baits
-        useBaitFileController.setInpPnlModel(inpPnlModel);
-        baitInpTac.setGuiModel(inpPnlModel);
-        baitFileTfc.setGuiModel(inpPnlModel);
-        baitFileBc.setGuiModel(inpPnlModel);
-        //species
-        addSpeciesController.setInpProfileModel(inpProfileModel);
-        //cutoffs
-        nCutoffController.setGuiModel(inpPnlModel);
-        pCutoffController.setGuiModel(inpPnlModel);
-        //save
-        saveResultsController.setInpPnlModel(inpPnlModel);
-        saveFileBc.setGuiModel(inpPnlModel);
-        saveFileTfc.setGuiModel(inpPnlModel);
-        //controllers that acces non-GUI classes
-        runAnalysisController.setInpProfileModel(inpProfileModel);
-
-        inpProfileModel.triggerUpdate();
+    public InpPnlModel getActiveModel() {
+        return activeModel;
     }
 
     //for debugging, adds some default input for quick testing
-    private void testWithDefaults(InpProfileModel ipm) {
-        InpPnlModel inpPnlModel = ipm.getInpPnlModel();
-        inpPnlModel.setUseBaitFile(true);
-        inpPnlModel.setBaitFilePath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt"));
-        ipm.getSpeciesEntryModel(0).setSpeciesName("Tomato");
-        ipm.getSpeciesEntryModel(0).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Tomato_dataset.txt"));
-        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-        ipm.getSpeciesEntryModel(1).setSpeciesName("Apple");
-        ipm.getSpeciesEntryModel(1).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Apple_dataset.txt"));
-        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-        ipm.getSpeciesEntryModel(2).setSpeciesName("Arabidopsis");
-        ipm.getSpeciesEntryModel(2).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Arabidopsis_dataset.txt"));
-        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
-        ipm.getSpeciesEntryModel(3).setSpeciesName("Patato");
-        ipm.getSpeciesEntryModel(3).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Potato_dataset.txt"));
-    }
-}
-
-//        guiStatus.getSpeciesList().get(0).speciesPathTf.setText();
-//        guiStatus.addSpecies(new SpeciesEntry(model));
-//        guiStatus.getSpeciesList().get(1).speciesTf.setText("Apple");
-//        guiStatus.getSpeciesList().get(1).speciesPathTf.setText("/home/sam/favs/uma1_s2-mp2-web-datasets/Apple_dataset.txt");
-//        guiStatus.addSpecies(new SpeciesEntry(model));
-//        guiStatus.getSpeciesList().get(2).speciesTf.setText("Arabidopsis");
-//        guiStatus.getSpeciesList().get(2).speciesPathTf.setText("/home/sam/favs/uma1_s2-mp2-web-datasets/Arabidopsis_dataset.txt");
-//        guiStatus.addSpecies(new SpeciesEntry(model));
-//        guiStatus.getSpeciesList().get(3).speciesTf.setText("Patato");
-//        guiStatus.getSpeciesList().get(3).speciesPathTf.setText("/home/sam/favs/uma1_s2-mp2-web-datasets/Potato_dataset.txt");
+//    private void testWithDefaults(InpProfileModel ipm) {
+//        InpPnlModel inpPnlModel = ipm.getActiveModel();
+//        inpPnlModel.setUseBaitFile(true);
+//        inpPnlModel.setBaitFilePath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt"));
+//        ipm.getSpeciesEntryModel(0).setSpeciesName("Tomato");
+//        ipm.getSpeciesEntryModel(0).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Tomato_dataset.txt"));
+//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
+//        ipm.getSpeciesEntryModel(1).setSpeciesName("Apple");
+//        ipm.getSpeciesEntryModel(1).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Apple_dataset.txt"));
+//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
+//        ipm.getSpeciesEntryModel(2).setSpeciesName("Arabidopsis");
+//        ipm.getSpeciesEntryModel(2).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Arabidopsis_dataset.txt"));
+//        ipm.addSpeciesEntryModel(new SpeciesEntryModel());
+//        ipm.getSpeciesEntryModel(3).setSpeciesName("Patato");
+//        ipm.getSpeciesEntryModel(3).setSpeciesExprDataPath(Paths.get("/home/sam/favs/uma1_s2-mp2-web-datasets/Potato_dataset.txt"));
 //    }
+}

@@ -1,4 +1,4 @@
-package be.samey.gui.model;
+package be.samey.gui.controller;
 
 /*
  * #%L
@@ -21,37 +21,25 @@ package be.samey.gui.model;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import java.nio.file.Path;
-import java.util.Observable;
+import be.samey.internal.CyAppManager;
+import java.awt.event.ActionEvent;
 
 /**
  *
  * @author sam
  */
-public abstract class GuiModel extends Observable{
+public class BaitFileBtnController extends AbstrBrowseController {
 
-    private Path defaultDirPath;
-    
-    public void triggerUpdate(){
-        setChanged();
-        notifyObservers();
-    }
-    
-    /**
-     * @return the defaultDirPath
-     */
-    public Path getDefaultDirPath() {
-        return defaultDirPath;
+    public BaitFileBtnController(CyAppManager cyAppManager) {
+        super(cyAppManager);
     }
 
-    /**
-     * @param defaultDirPath the defaultDirPath to set
-     */
-    public void setDefaultDirPath(Path defaultDirPath) {
-        if (this.defaultDirPath != defaultDirPath ){
-            this.defaultDirPath = defaultDirPath;
-            triggerUpdate();
-        }
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        getActiveModel().setBaitFilePath(showFileChooser(
+            "Choose file with bait genes",
+            FILE,
+            getActiveModel().getBaitFilePath()));
     }
+
 }

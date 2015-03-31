@@ -23,23 +23,23 @@ package be.samey.gui.controller;
  */
 import be.samey.internal.CyAppManager;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  *
  * @author sam
  */
-public class ResetGuiController extends AbstrController implements ActionListener {
+public class SaveFileBtnController extends AbstrBrowseController {
 
-    public ResetGuiController(CyAppManager cyAppManager) {
+    public SaveFileBtnController(CyAppManager cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
+        getActiveModel().setSaveFilePath(showFileChooser(
+            "Choose output directory",
+            DIRECTORY,
+            getActiveModel().getSaveFilePath()));
     }
-
 
 }

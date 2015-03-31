@@ -21,25 +21,24 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 import be.samey.internal.CyAppManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.nio.file.Paths;
 
 /**
  *
  * @author sam
  */
-public class ResetGuiController extends AbstrController implements ActionListener {
+public class BaitFileTfController extends AbstrTfController {
 
-    public ResetGuiController(CyAppManager cyAppManager) {
+    public BaitFileTfController(CyAppManager cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
+    public void focusLost(FocusEvent fe) {
+        getActiveModel().setBaitFilePath(Paths.get(getText(fe)));
     }
-
 
 }

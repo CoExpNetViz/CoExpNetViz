@@ -21,46 +21,34 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.model.InpPnlModel;
+import be.samey.gui.model.SpeciesEntryModel;
+import be.samey.internal.CyAppManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JToggleButton;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author sam
  */
-public class UseBaitFileController implements ActionListener {
+public class SpeciesDelController extends AbstrController implements ActionListener {
 
-    private InpPnlModel inpPnlModel;
+    private final SpeciesEntryModel sem;
 
-    public UseBaitFileController() {
-    }
-
-    public UseBaitFileController(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
-    }
-
-    public void setInpPnlModel(InpPnlModel inpPnlModel) {
-        this.inpPnlModel = inpPnlModel;
+    public SpeciesDelController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+        super(cyAppManager);
+        this.sem = sem;
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() instanceof JToggleButton) {
-            JToggleButton jtb = ((JToggleButton) ae.getSource());
 
-            if (jtb.getName().equals("UseBaitFileRb")) {
-                boolean useBaitFile = jtb.isSelected();
-                inpPnlModel.setUseBaitFile(useBaitFile);
-            }
-
-            if (jtb.getName().equals("InpBaitRb")) {
-                boolean inpBaits = jtb.isSelected();
-                inpPnlModel.setUseBaitFile(!inpBaits);
-            }
+        if (getActiveModel().getAllSpecies().size() == 1) {
+            JOptionPane.showMessageDialog(getGuiManager().getInpPnl(),
+                "You must use at least one dataset");
+            return;
         }
+        getActiveModel().removeSpecies(sem);
     }
 
 }

@@ -42,13 +42,11 @@ import javax.swing.UIManager;
  */
 public class SpeciesEntry extends JPanel implements Observer {
 
-    private SpeciesEntryModel speciesEntryModel;
-
     JLabel speciesLbl;
     JTextField speciesNameTf;
     JButton removeBtn;
     JLabel speciesPathLbl;
-    JTextField speciesExprDataPathTf;
+    JTextField speciesFileTf;
     JButton browseBtn;
 
     public SpeciesEntry() {
@@ -61,8 +59,8 @@ public class SpeciesEntry extends JPanel implements Observer {
         speciesNameTf.setToolTipText("Enter an arbitrary name for this dataset");
         this.removeBtn = new JButton("Remove");
         this.speciesPathLbl = new JLabel(" Path:");
-        this.speciesExprDataPathTf = new JTextField();
-        speciesExprDataPathTf.setToolTipText("Enter the path to the expression data file");
+        this.speciesFileTf = new JTextField();
+        speciesFileTf.setToolTipText("Enter the path to the expression data file");
         this.browseBtn = new JButton("Browse");
         browseBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
 
@@ -98,7 +96,7 @@ public class SpeciesEntry extends JPanel implements Observer {
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 2;
-        add(speciesExprDataPathTf, c);
+        add(speciesFileTf, c);
         c.weightx = 0.04;
         c.gridx = 3;
         c.gridy = 1;
@@ -106,35 +104,30 @@ public class SpeciesEntry extends JPanel implements Observer {
         add(browseBtn, c);
     }
 
-    /**
-     * @return the speciesEntryModel
-     */
-    public SpeciesEntryModel getSpeciesEntryModel() {
-        return speciesEntryModel;
-    }
-
-    /**
-     * @param speciesEntryModel the speciesEntryModel to set
-     */
-    public void setSpeciesEntryModel(SpeciesEntryModel speciesEntryModel) {
-        if (this.speciesEntryModel != null) {
-            speciesEntryModel.deleteObserver(this);
-        }
-
-        this.speciesEntryModel = speciesEntryModel;
-        speciesEntryModel.addObserver(this);
-    }
-
     @Override
-    public void update(Observable o, Object o1) {
-        String speciesName = speciesEntryModel.getSpeciesName();
-        speciesNameTf.setText(speciesName);
+    public void update(Observable model, Object obj) {
 
-        Path speciesExprDataPath = speciesEntryModel.getSpeciesExprDataPath();
-        speciesExprDataPathTf.setText(speciesExprDataPath.toString());
-        speciesExprDataPathTf.setBackground(
-            Files.isRegularFile(speciesExprDataPath) && Files.isReadable(speciesExprDataPath)
-                ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
+        //for debugging
+        System.out.println("SpeciesEntry" + " updated from: " + model);
+
+        if (model instanceof SpeciesEntryModel) {
+
+            //for debugging
+            System.out.println("SpeciesEntry" + " updated from SpeciesEntryModel");
+
+            SpeciesEntryModel sem = (SpeciesEntryModel) model;
+
+            //update: species Name
+            String speciesName = sem.getSpeciesName();
+            speciesNameTf.setText(speciesName);
+
+            //update: species dataset path
+            Path speciesExprDataPath = sem.getSpeciesFilePath();
+            speciesFileTf.setText(speciesExprDataPath.toString());
+            speciesFileTf.setBackground(
+                Files.isRegularFile(speciesExprDataPath) && Files.isReadable(speciesExprDataPath)
+                    ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
+        }
     }
 
 }

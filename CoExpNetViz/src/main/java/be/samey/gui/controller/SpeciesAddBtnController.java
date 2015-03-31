@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be.samey.gui.controller;
 
 /*
@@ -27,8 +22,10 @@ package be.samey.gui.controller;
  * #L%
  */
 
-import be.samey.gui.model.InpProfileModel;
+import be.samey.gui.SpeciesEntry;
 import be.samey.gui.model.SpeciesEntryModel;
+import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
@@ -38,37 +35,23 @@ import javax.swing.JOptionPane;
  *
  * @author sam
  */
-public class DelSpeciesController implements ActionListener{
+public class SpeciesAddBtnController extends AbstrController implements ActionListener{
 
-    private InpProfileModel inpProfileModel;
-    private SpeciesEntryModel speciesEntryModel;
-
-    public DelSpeciesController() {
-    }
-
-    public DelSpeciesController(InpProfileModel inpProfileModel, SpeciesEntryModel speciesEntryModel) {
-        this.inpProfileModel = inpProfileModel;
-        this.speciesEntryModel = speciesEntryModel;
-    }
-
-
-    public void setInpProfileModel(InpProfileModel inpProfileModel) {
-        this.inpProfileModel = inpProfileModel;
-    }
-
-    public void setSpeciesEntryModel(SpeciesEntryModel speciesEntryModel) {
-        this.speciesEntryModel = speciesEntryModel;
+    public SpeciesAddBtnController(CyAppManager cyAppManager) {
+        super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-
-            if (inpProfileModel.getSpeciesEntryModels().size() == 1) {
+        if (getActiveModel().getAllSpecies().size() >= CyModel.MAX_SPECIES_COUNT){
+            
                 JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                    "You must use at least one dataset");
+                    String.format("No more than %d species are supported", CyModel.MAX_SPECIES_COUNT));
                 return;
-            }
-            inpProfileModel.removeSpeciesEntryModel(speciesEntryModel);
+        }
+        SpeciesEntryModel sem = new SpeciesEntryModel();
+        SpeciesEntry se = getGuiManager().initSpeciesEntry(sem);
+        getActiveModel().addSpecies(sem, se);
     }
     
 }

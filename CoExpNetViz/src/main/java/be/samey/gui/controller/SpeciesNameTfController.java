@@ -21,25 +21,28 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.internal.CyAppManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  *
  * @author sam
  */
-public class ResetGuiController extends AbstrController implements ActionListener {
+public class SpeciesNameTfController extends AbstrTfController implements FocusListener{
 
-    public ResetGuiController(CyAppManager cyAppManager) {
+    private SpeciesEntryModel sem;
+
+    public SpeciesNameTfController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
         super(cyAppManager);
+        this.sem = sem;
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
+    public void focusLost(FocusEvent fe) {
+        sem.setSpeciesName(getText(fe));
     }
-
-
+    
 }

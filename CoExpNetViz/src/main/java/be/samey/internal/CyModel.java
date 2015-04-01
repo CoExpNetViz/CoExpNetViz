@@ -35,7 +35,6 @@ public class CyModel extends Observable {
 
     //properties of the app that do not change during execution
     public static final String APP_NAME = "CoExpNetViz";
-    public static final String[] SPECIES_CHOICES = {"Tomato", "Arabidopsis", "Patato-ITAG", "Patato-PGSC"};
     public static final int MAX_SPECIES_COUNT = 5;
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
     //Which column to use to group nodes
@@ -45,8 +44,15 @@ public class CyModel extends Observable {
     //what value indicates a node is a bait in the SPECIES_COLUMN
     public static final String BAIT_GROUP = "";
     //the name to use for the new layout created by this app
-    public static final String COMP_LAYOUT_NAME = "cev-layout";
-    public static final String HUMAN_LAYOUT_NAME = "Cev target-bait Layout";
+    public static final String COMP_LAYOUT_NAME = "fam-layout";
+    public static final String HUMAN_LAYOUT_NAME = "Family node Layout";
+    //status messages for the analysis task
+    public static final String PROG_TITLE = "Running " + APP_NAME;
+    public static final String PROG_SERV = "Running analysis on server";
+    public static final String PROG_NETW = "Creating network";
+    public static final String PROG_LAYT = "Applying " + HUMAN_LAYOUT_NAME;
+    public static final double PROG_CONN_COMPLETE = 0.8;
+    public static final double PROG_NETW_COMPLETE = 0.9;
 
     //sent to server
     private String baits;

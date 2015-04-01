@@ -46,7 +46,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.EntityUtils;
-import org.cytoscape.work.TaskMonitor;
 
 /**
  *
@@ -57,12 +56,19 @@ public class ServerConn {
     private final CyAppManager cyAppManager;
     private final CyModel cyModel;
 
+    private HttpPost httppost;
+
     public ServerConn(CyAppManager cyAppManager) {
         this.cyAppManager = cyAppManager;
         this.cyModel = cyAppManager.getCyModel();
     }
 
-    public void connect(TaskMonitor tm) throws InterruptedException, IOException {
+    public void stop() throws Exception {
+        httppost.abort();
+        throw new Exception("The http request was aborted");
+    }
+
+    public void connect() throws InterruptedException, IOException {
 
         /*----------------------------------------------------------------------
          1) create output directory
@@ -82,9 +88,6 @@ public class ServerConn {
         /*----------------------------------------------------------------------
          2) Upload user files and settings, download response
          */
-        tm.setStatusMessage("Running analysis on server");
-        tm.setProgress(0.1);
-
         //make multipart entity with user data and settings
         HttpEntity postEntity = makeEntity(cyModel.getBaits(),
             cyModel.getSpeciesNames(),
@@ -93,14 +96,7 @@ public class ServerConn {
             cyModel.getNCutoff());
 
         //run the app on the server
-        tm.setProgress(-1.0);
-        try {
-            executeAppOnSever(CyModel.URL, postEntity, archivePath);
-        } catch (Exception ex) {
-            //TODO: warn user somehow
-            ex.printStackTrace();
-        }
-        tm.setProgress(6.0);
+        executeAppOnSever(CyModel.URL, postEntity, archivePath);
 
         /*----------------------------------------------------------------------
          4) Unpack files to temp dir
@@ -146,7 +142,7 @@ public class ServerConn {
 
     }
 
-    public HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
+    private HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
         double poscutoff, double negcutoff)
         throws UnsupportedEncodingException {
 
@@ -178,18 +174,16 @@ public class ServerConn {
         return mpeb.build();
     }
 
-    public void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws Exception {
+    private void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws IOException  {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httppost = new HttpPost(url);
+        httppost = new HttpPost(url);
         httppost.setEntity(entity);
 
-        System.out.println("executing request " + httppost.getRequestLine());
         CloseableHttpResponse response = null;
         HttpEntity resEntity = null;
         try {
             response = httpclient.execute(httppost);
-            System.out.println(response.getStatusLine());
             resEntity = response.getEntity();
             saveResponse(resEntity.getContent(), archivePath);
             EntityUtils.consume(resEntity);
@@ -212,9 +206,6 @@ public class ServerConn {
                 }
                 out.write(buffer, 0, len);
             }
-        } catch (IOException ex) {
-            //TODO: warn user somehow
-            ex.printStackTrace();
         } finally {
             out.close();
         }

@@ -32,7 +32,6 @@ import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.TaskMonitor;
 
 /**
  *
@@ -109,9 +108,7 @@ public class CevNetworkBuilder /*implements Observer*/ {
      *
      * @param tm
      */
-    public void createNetworkView(TaskMonitor tm) throws Exception {
-        tm.setStatusMessage("creating network");
-        tm.setProgress(0.5);
+    public void createNetworkView() throws Exception {
         try {
 
             //read files

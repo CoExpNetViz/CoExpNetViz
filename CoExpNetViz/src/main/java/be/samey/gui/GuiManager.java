@@ -71,7 +71,6 @@ public class GuiManager {
 
         lastUsedDirPath = Paths.get(System.getProperty("user.home"));
         settingsPath = initSettingsPath();
-        System.out.println(settingsPath);
     }
 
     public void initGui() {

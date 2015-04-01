@@ -23,8 +23,6 @@ package be.samey.internal;
  */
 
 import be.samey.cynetw.CevNetworkBuilder;
-import be.samey.cynetw.CevTaskObserver;
-import be.samey.cynetw.CreateNetworkTask;
 import be.samey.cynetw.RunAnalysisTask;
 import be.samey.gui.GuiManager;
 import be.samey.io.CevNetworkReader;
@@ -69,25 +67,10 @@ public class CyAppManager {
 
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));
-        ti.append(new CreateNetworkTask(this));
 
-        //now execute them, execute() forks a new thread and returns immediatly
-        cyServices.getTaskManager().execute(ti, new CevTaskObserver(this));
+        //execute() forks a new thread and returns immediatly
+        cyServices.getTaskManager().execute(ti);
 
-        /*
-         * Three tasks have to be executed in order to create the final network
-         * with the correct Style and Layout. 1) Running the analysis, 2)
-         * creating the network view and applying a Style. 3) Apply the layout.
-         * The first two are executed here. The third task inherits from
-         * AbstractLayoutTask, an abstract class defined in the cytoscape layout
-         * implementation. The constructor of the task requires a CyNetworkView.
-         * For this reason, the third task can only be initialized after
-         * completion of the second task. This makes it impossible to append the
-         * third task to the same taskiterator as the first two tasks. To work
-         * around this problem, the execution of the third task is done by the
-         * CevTaskObserver, this observer will start the third task after
-         * completion of the first two tasks in the above taskIterator.
-         */
     }
 
     /**

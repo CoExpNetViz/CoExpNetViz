@@ -108,12 +108,12 @@ public class SpeciesEntry extends JPanel implements Observer {
     public void update(Observable model, Object obj) {
 
         //for debugging
-        System.out.println("SpeciesEntry" + " updated from: " + model);
+//        System.out.println("SpeciesEntry" + " updated from: " + model);
 
         if (model instanceof SpeciesEntryModel) {
 
             //for debugging
-            System.out.println("SpeciesEntry" + " updated from SpeciesEntryModel");
+//            System.out.println("SpeciesEntry" + " updated from SpeciesEntryModel");
 
             SpeciesEntryModel sem = (SpeciesEntryModel) model;
 

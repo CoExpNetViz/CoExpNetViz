@@ -21,7 +21,7 @@ package be.samey.layout;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+import be.samey.internal.CyModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -71,8 +71,8 @@ public class FamLayoutTask extends AbstractLayoutTask {
         this.taskMonitor = taskMonitor;
         this.network = networkView.getModel();
 
-        taskMonitor.setStatusMessage("Applying layout algorithm");
-        taskMonitor.setProgress(0.7);
+        taskMonitor.setProgress(CyModel.PROG_NETW_COMPLETE);
+        taskMonitor.setStatusMessage(CyModel.PROG_LAYT);
 
         if (layoutAttribute == null || layoutAttribute.equals("(none)")) {
             throw new NullPointerException("Attribute is null.  This is required for this layout.");
@@ -100,8 +100,6 @@ public class FamLayoutTask extends AbstractLayoutTask {
             logger.warn("Attribute name is not defined.");
             return;
         }
-
-        taskMonitor.setStatusMessage("Initializing");
 
         CyTable dataTable = network.getDefaultNodeTable();
         Class<?> klass = dataTable.getColumn(layoutAttribute).getType();

@@ -289,13 +289,11 @@ public class InpPnl extends JPanel implements Observer {
     public void update(Observable model, Object obj) {
 
         //for debugging
-        System.out.println("InpPanel" + " updated from: " + model);
-
+//        System.out.println("InpPanel" + " updated from: " + model);
         if (model instanceof InpPnlModel) {
 
             //for debugging
-            System.out.println("InpPanel" + " updated from inputPnlModel");
-
+//            System.out.println("InpPanel" + " updated from inputPnlModel");
             InpPnlModel inpPnlModel = (InpPnlModel) model;
 
             //update: string input fields
@@ -358,7 +356,9 @@ public class InpPnl extends JPanel implements Observer {
             Path saveFilePath = inpPnlModel.getSaveFilePath();
             saveFileTf.setText(saveFilePath.toString());
             saveFileTf.setBackground(
-                Files.isDirectory(saveFilePath) && Files.isReadable(saveFilePath)
+                Files.isDirectory(saveFilePath)
+                && Files.isReadable(saveFilePath)
+                && !saveFilePath.toString().trim().isEmpty()
                     ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
             saveFileBtn.setEnabled(saveResults);
         }

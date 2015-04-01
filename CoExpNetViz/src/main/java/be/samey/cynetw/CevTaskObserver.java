@@ -21,15 +21,9 @@ package be.samey.cynetw;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import be.samey.layout.FamLayout;
 import be.samey.internal.CyAppManager;
-import be.samey.internal.CyModel;
-import java.util.ArrayList;
-import org.cytoscape.model.CyColumn;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.work.FinishStatus;
 import org.cytoscape.work.ObservableTask;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskObserver;
 
 /**
@@ -52,17 +46,6 @@ public class CevTaskObserver implements TaskObserver {
     @Override
     public void allFinished(FinishStatus finishStatus) {
 
-        FamLayout layout = (FamLayout) cyAppManager.getCyServices().
-            getCyLayoutAlgorithmManager().getLayout(CyModel.COMP_LAYOUT_NAME);
-        ArrayList<CyColumn> columnList = (ArrayList) cyAppManager.getCyModel().getLastNoaTable().getColumns();
-        String groupColumnName = columnList.get(4 + CyModel.GROUP_COLUMN).getName();
-        String speciesColumnName = columnList.get(4 + CyModel.SPECIES_COLUMN).getName();
-        TaskIterator ti = layout.createTaskIterator(cyAppManager.getCyModel().getLastCnv(),
-            layout.createLayoutContext(),
-            CyLayoutAlgorithm.ALL_NODE_VIEWS,
-            groupColumnName,
-            speciesColumnName);
-        cyAppManager.getCyServices().getTaskManager().execute(ti);
     }
 
 }

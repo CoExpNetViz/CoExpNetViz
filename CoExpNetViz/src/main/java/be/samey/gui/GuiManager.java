@@ -56,8 +56,9 @@ public class GuiManager {
     private final CyAppManager cyAppManager;
     private final CyModel cyModel;
 
-    private InpPnl inpPnl;
-    private JFrame rootFrame;
+    private final InpPnl inpPnl;
+    private final JFrame rootFrame;
+
     private Path lastUsedDirPath;
     private Path settingsPath;
 
@@ -71,40 +72,45 @@ public class GuiManager {
 
         lastUsedDirPath = Paths.get(System.getProperty("user.home"));
         settingsPath = initSettingsPath();
-    }
 
-    public void initGui() {
         //make GUI
-        inpPnl = new InpPnl();
-
-        //attach controllers
-        //baits
-        inpPnl.baitInpRb.addActionListener(new BaitFileOrInpController(cyAppManager));
-        inpPnl.baitFileRb.addActionListener(new BaitFileOrInpController(cyAppManager));
-        inpPnl.baitInpTa.addFocusListener(new BaitInpTaController(cyAppManager));
-        inpPnl.baitFileTf.addFocusListener(new BaitFileTfController(cyAppManager));
-        inpPnl.baitFileBtn.addActionListener(new BaitFileBtnController(cyAppManager));
-        //species
-        inpPnl.addSpeciesBtn.addActionListener(new SpeciesAddBtnController(cyAppManager));
-        //cutoffs
-        inpPnl.nCutoffSp.addChangeListener(new CutoffController(cyAppManager));
-        inpPnl.pCutoffSp.addChangeListener(new CutoffController(cyAppManager));
-        //save
-        inpPnl.saveFileChb.addActionListener(new SaveFileChbController(cyAppManager));
-        inpPnl.saveFileTf.addFocusListener(new SaveFileTfController(cyAppManager));
-        inpPnl.saveFileBtn.addActionListener(new SaveFileBtnController(cyAppManager));
-        //buttons
-        inpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
-        inpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
-
-        activeModel = makeDefaultModel();
-
-        activeModel.addObserver(inpPnl);
+        inpPnl = initGui();
 
         //put the GUI in a new Frame
         rootFrame = new JFrame(GuiConstants.ROOTFRAME_TITLE);
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         rootFrame.setContentPane(inpPnl);
+
+    }
+
+    private InpPnl initGui() {
+        InpPnl tempInpPnl = new InpPnl();
+
+        //attach controllers
+        //baits
+        tempInpPnl.baitInpRb.addActionListener(new BaitFileOrInpController(cyAppManager));
+        tempInpPnl.baitFileRb.addActionListener(new BaitFileOrInpController(cyAppManager));
+        tempInpPnl.baitInpTa.addFocusListener(new BaitInpTaController(cyAppManager));
+        tempInpPnl.baitFileTf.addFocusListener(new BaitFileTfController(cyAppManager));
+        tempInpPnl.baitFileBtn.addActionListener(new BaitFileBtnController(cyAppManager));
+        //species
+        tempInpPnl.addSpeciesBtn.addActionListener(new SpeciesAddBtnController(cyAppManager));
+        //cutoffs
+        tempInpPnl.nCutoffSp.addChangeListener(new CutoffController(cyAppManager));
+        tempInpPnl.pCutoffSp.addChangeListener(new CutoffController(cyAppManager));
+        //save
+        tempInpPnl.saveFileChb.addActionListener(new SaveFileChbController(cyAppManager));
+        tempInpPnl.saveFileTf.addFocusListener(new SaveFileTfController(cyAppManager));
+        tempInpPnl.saveFileBtn.addActionListener(new SaveFileBtnController(cyAppManager));
+        //buttons
+        tempInpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
+        tempInpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
+
+        activeModel = makeDefaultModel();
+
+        activeModel.addObserver(tempInpPnl);
+
+        return tempInpPnl;
 
     }
 

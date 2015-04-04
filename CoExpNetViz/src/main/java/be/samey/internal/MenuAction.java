@@ -54,7 +54,6 @@ public class MenuAction extends AbstractCyAction {
             GuiManager gm = new GuiManager(cyAppManager);
 
             //rember that we have made the gui
-            //(triggers an update in the gui as well)
             cyAppManager.setGuiManager(gm);
         }
 

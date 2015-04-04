@@ -21,7 +21,6 @@ package be.samey.io;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import be.samey.internal.CyAppManager;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -207,7 +206,10 @@ public class CevTableReader {
                 attributes = new Object[header.length];
                 //store attribute as number if it is numeric
                 for (int i = 1; i < lineSplit.length; i++) {
-                    if (isNumeric(lineSplit[i])) {
+                    String attr = lineSplit[i];
+                    if (attr.equalsIgnoreCase("NA")) {
+                        attributes[i - 1] = Double.NaN;
+                    } else if (isNumeric(attr)) {
                         attributes[i - 1] = Double.parseDouble(lineSplit[i]);
                     } else {
                         attributes[i - 1] = lineSplit[i];

@@ -38,11 +38,11 @@ public class CyModel extends Observable {
     public static final int MAX_SPECIES_COUNT = 5;
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
     //Which column to use to group nodes
-    public static final int GROUP_COLUMN = 0;
+    public static final int GROUP_COLUMN = 3;
     //which column contains the species of the baits
-    public static final int SPECIES_COLUMN = 4;
+    public static final int SPECIES_COLUMN = 2;
     //what value indicates a node is a bait in the SPECIES_COLUMN
-    public static final String BAIT_GROUP = "";
+    public static final String BAIT_GROUP = "#FFFFFF";
     //the name to use for the new layout created by this app
     public static final String COMP_LAYOUT_NAME = "fam-layout";
     public static final String HUMAN_LAYOUT_NAME = "Family node Layout";

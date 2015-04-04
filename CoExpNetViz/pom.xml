@@ -156,18 +156,17 @@
             <name>Cytoscape Releases</name>
             <url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
         </repository>
-
     </repositories>
 
-    <!-- Dependencies needed to compile this project. -->
     <dependencies>
+        <!-- Dependencies needed to compile this project. -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.2.0</version>
             <scope>provided</scope>
         </dependency>
-		
+        <!-- Cytoscape modules -->
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
@@ -186,16 +185,6 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-api</artifactId>
-            <version>1.5.2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Other dependencies -->
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>vizmap-api</artifactId>
@@ -220,7 +209,51 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-        
+        <!-- Dependencies below are required for: compile, runtime and test.
+        These are all included in the "proved" scope. -->
+        <dependency>
+            <groupId>org.cytoscape</groupId>    
+            <artifactId>model-impl</artifactId>    
+            <version>3.1.0</version>     
+            <type>test-jar</type>    
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.cytoscape</groupId>    
+            <artifactId>model-impl</artifactId>     
+            <version>3.1.0</version>    
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.cytoscape</groupId>    
+            <artifactId>event-api</artifactId>    
+            <version>3.1.0</version>     
+            <type>test-jar</type>    
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-api</artifactId>
+            <version>1.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Unit testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Third party -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -246,7 +279,6 @@
             <version>1.15</version>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
 
 </project>

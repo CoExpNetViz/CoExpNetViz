@@ -106,8 +106,8 @@ public class GuiManager {
         tempInpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
         tempInpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
 
+        //make the model for the GUI
         activeModel = makeDefaultModel();
-
         activeModel.addObserver(tempInpPnl);
 
         return tempInpPnl;

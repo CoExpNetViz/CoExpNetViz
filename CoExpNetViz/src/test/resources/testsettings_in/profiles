@@ -1,0 +1,27 @@
+positive cutoff:
+  useBaitFile: true
+  baits: ['']
+  baitFilePath: /home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt
+  speciesNames: [Potato_dataset, Apple_dataset, Arabidopsis_dataset, Tomato_dataset]
+  negCutoff: -1.0
+  posCutoff: 0.8
+  saveResults: false
+  saveFilePath: /home/sam/Tests/out
+negative cutoff:
+  useBaitFile: false
+  baits: ['']
+  baitFilePath: /home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt
+  speciesNames: [Potato_dataset, Apple_dataset, Arabidopsis_dataset, Tomato_dataset]
+  negCutoff: -0.6
+  posCutoff: 1.0
+  saveResults: false
+  saveFilePath: /home/sam/Tests/out
+quick:
+  useBaitFile: true
+  baits: ['']
+  baitFilePath: /home/sam/favs/uma1_s2-mp2-web-datasets/baits.txt
+  speciesNames: [Potato_dataset]
+  negCutoff: -0.6
+  posCutoff: 0.8
+  saveResults: false
+  saveFilePath: /home/sam

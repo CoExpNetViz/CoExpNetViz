@@ -1,0 +1,3 @@
+{Potato_dataset: /datasets/Potato_dataset.txt, Apple_dataset: /datasets/Apple_dataset.txt,
+  Arabidopsis_dataset: /datasets/Arabidopsis_dataset.txt,
+  Tomato_dataset: /datasets/Tomato_dataset.txt}

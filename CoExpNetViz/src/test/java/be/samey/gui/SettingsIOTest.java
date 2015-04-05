@@ -47,65 +47,61 @@ import org.junit.Ignore;
  * @author sam
  */
 public class SettingsIOTest {
-    
+
+    CyAppManager cam;
+    SettingsIO sio;
+    InpPnlModel ipm;
+    SpeciesEntryModel sem1;
+    SpeciesEntryModel sem2;
+    SpeciesEntry se1;
+    SpeciesEntry se2;
+
+    String baits1 = "\rSolyc03g097500 \t  Solyc02g014730\n Solyc04g011600 AT5G41040\t\t AT5G23190    AT3G11430 ";
+    String[] baitArr = new String[]{"Solyc03g097500", "Solyc02g014730", "Solyc04g011600", "AT5G41040", "AT5G23190", "AT3G11430"};
+    String speciesName1 = "Species name 1";
+    String speciesName2 = "Species name 2";
+    Path path1 = Paths.get("Path/To/File");
+    Path path2 = Paths.get("Path/To/Other/File");
+    Path baitFilePath = Paths.get("Path/To/Biats");
+
     public SettingsIOTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of readAllProfiles method, of class SettingsIO.
-     */
-    @Test
-    public void testWriteAllProfiles() throws IOException, URISyntaxException {
-        System.out.println("writeAllProfiles");
-
         //get instances
-        CyAppManager cam = new CyAppManager(new CyModel(), null);
-        SpeciesEntryModel sem1 = new SpeciesEntryModel();
-        SpeciesEntry se1 = new SpeciesEntry();
-        InpPnlModel ipm1 = new InpPnlModel(sem1, se1);
-        SpeciesEntryModel sem2 = new SpeciesEntryModel();
-        SpeciesEntry se2 = new SpeciesEntry();
-        InpPnlModel ipm2 = new InpPnlModel(sem2, se2);
-        List<InpPnlModel> inpPnlModels = new ArrayList<InpPnlModel>();
-
-        //redirect settings folder for the test
-        URL url = getClass().getClassLoader().getResource("testsettings");
-        Path settingsPath = new File(url.toURI()).toPath();
-        cam.getCyModel().setSettingsPath(settingsPath);
+        cam = new CyAppManager(new CyModel(), null);
+        sio = new SettingsIO(cam);
+        sem1 = new SpeciesEntryModel();
+        sem2 = new SpeciesEntryModel();
+        se1 = new SpeciesEntry();
+        se2 = new SpeciesEntry();
+        ipm = new InpPnlModel(sem1, se1);
+        ipm.addSpecies(sem2, se2);
 
         //set some values
-        String testtitle = "testtitle";
-        String testbaits = "\rSolyc03g097500 \t  Solyc02g014730\n Solyc04g011600 AT5G41040\t\t AT5G23190    AT3G11430 ";
-        String testspecies = "speciesName1";
-        String baitfilepath = "foo";
-        ipm1.setTitle(testtitle);
-        ipm1.setBaits(testbaits);
-        ipm1.setBaitFilePath(Paths.get(baitfilepath));
-        sem1.setSpeciesName(testspecies);
-        String testtitle2 = "speciesName2";
-        ipm2.setTitle(testtitle2);
-        inpPnlModels.add(ipm1);
-        inpPnlModels.add(ipm2);
+        ipm.setTitle("The title");
+        ipm.setSaveResults(true);
+        ipm.setSaveFilePath(Paths.get(""));
+        ipm.setBaits(baits1);
+        ipm.setBaitFilePath(baitFilePath);
+        sem1.setSpeciesName(speciesName1);
+        sem1.setSpeciesExprDataPath(path1);
+        sem2.setSpeciesName(speciesName2);
+        sem2.setSpeciesExprDataPath(path2);
 
-        //thest method
-        SettingsIO sio = new SettingsIO(cam);
-        sio.writeAllProfiles(inpPnlModels);
+    }
+
+    @After
+    public void tearDown() {
     }
 
     /**
@@ -115,54 +111,59 @@ public class SettingsIOTest {
     public void testInpPnlProfile2Map() {
         System.out.println("inpPnlProfile2Map");
 
-        //get instances
-        CyAppManager cam = new CyAppManager(new CyModel(), null);
-        SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntry se = new SpeciesEntry();
-        InpPnlModel ipm = new InpPnlModel(sem, se);
-
-        //set some values
-        String testbaits = "\rSolyc03g097500 \t  Solyc02g014730\n Solyc04g011600 AT5G41040\t\t AT5G23190    AT3G11430 ";
-        String testspecies = "speciesName1";
-        String baitfilepath = "foo";
-        ipm.setBaits(testbaits);
-        ipm.setBaitFilePath(Paths.get(baitfilepath));
-        sem.setSpeciesName(testspecies);
-
-        //thest method
-        SettingsIO sio = new SettingsIO(cam);
+        //test method
         Map map = sio.inpPnlProfile2Map(ipm);
-        assertArrayEquals(new String[]{"Solyc03g097500", "Solyc02g014730", "Solyc04g011600", "AT5G41040", "AT5G23190", "AT3G11430"}, (String[]) map.get(SettingsIO.BAITS));
-        assertArrayEquals(new String[]{testspecies}, (String[]) map.get(SettingsIO.SPECIES_NAMES));
-        assertEquals(baitfilepath, map.get(SettingsIO.BAIT_FILE_PATH));
+        assertArrayEquals(baitArr, (String[]) map.get(SettingsIO.BAITS));
+        assertArrayEquals(new String[]{speciesName1, speciesName2}, (String[]) map.get(SettingsIO.SPECIES_NAMES));
+        assertEquals(baitFilePath.toString(), map.get(SettingsIO.BAIT_FILE_PATH));
     }
 
     /**
-     * Test of writeAllSpecies method, of class SettingsIO.
+     * Test of readAllProfiles method, of class SettingsIO. This is for for
+     * for convenience when testing new values in the inpPnlModel
      */
+//    @Ignore
     @Test
-    public void testWriteAllSpecies() throws IOException, URISyntaxException {
-        //get instances
-        CyAppManager cam = new CyAppManager(new CyModel(), null);
-        SpeciesEntryModel sem1 = new SpeciesEntryModel();
-        SpeciesEntryModel sem2 = new SpeciesEntryModel();
-        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
+    public void testWriteAllProfiles() throws IOException, URISyntaxException {
+        System.out.println("writeAllProfiles");
+
+        //set some values
+        List<InpPnlModel> inpPnlModels = new ArrayList<InpPnlModel>();
+        InpPnlModel ipmOne = ipm.copy();
+        ipmOne.setTitle("title one");
+        InpPnlModel ipmTwo = ipm.copy();
+        ipmTwo.setTitle("title two");
+        inpPnlModels.add(ipmOne);
+        inpPnlModels.add(ipmTwo);
 
         //redirect settings folder for the test
-        URL url = getClass().getClassLoader().getResource("testsettings");
+        URL url = getClass().getClassLoader().getResource("testsettings_out");
         Path settingsPath = new File(url.toURI()).toPath();
         cam.getCyModel().setSettingsPath(settingsPath);
 
+        //test method
+        sio.writeAllProfiles(inpPnlModels);
+    }
+
+    /**
+     * Test of writeAllSpecies method, of class SettingsIO. for convenience when
+     * testing new values in the inpPnlModel
+     */
+//    @Ignore
+    @Test
+    public void testWriteAllSpecies() throws IOException, URISyntaxException {
+
         //set some values
-        sem1.setSpeciesName("speciesName1");
-        sem1.setSpeciesExprDataPath(Paths.get("species/Path/1"));
-        sem2.setSpeciesName("speciesName2");
-        sem2.setSpeciesExprDataPath(Paths.get("species/Path/2"));
+        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
         sems.add(sem1);
         sems.add(sem2);
 
-        //thest method
-        SettingsIO sio = new SettingsIO(cam);
+        //redirect settings folder for the test
+        URL url = getClass().getClassLoader().getResource("testsettings_out");
+        Path settingsPath = new File(url.toURI()).toPath();
+        cam.getCyModel().setSettingsPath(settingsPath);
+
+        //test method
         sio.writeAllSpecies(sems);
     }
 
@@ -173,19 +174,18 @@ public class SettingsIOTest {
     public void testReadAllProfiles() throws URISyntaxException, IOException {
         System.out.println("readAllProfiles");
 
-        //get instances
-        CyAppManager cam = new CyAppManager(new CyModel(), null);
-
         //redirect settings folder for the test
-        URL url = getClass().getClassLoader().getResource("testsettings");
+        URL url = getClass().getClassLoader().getResource("testsettings_in");
         Path settingsPath = new File(url.toURI()).toPath();
         cam.getCyModel().setSettingsPath(settingsPath);
 
         //test method
-        SettingsIO sio = new SettingsIO(cam);
         List<InpPnlModel> ipms = sio.readAllProfiles();
+        assertEquals("positive cutoff", ((InpPnlModel) ipms.get(0)).getTitle());
+        assertEquals(4, ((InpPnlModel) ipms.get(0)).getAllSpecies().size());
+        assertEquals(1, ((InpPnlModel) ipms.get(2)).getAllSpecies().size());
     }
-    
+
     /**
      * Test of readAllSpecies method, of class SettingsIO.
      */
@@ -193,17 +193,14 @@ public class SettingsIOTest {
     public void testReadAllSpecies() throws URISyntaxException, IOException {
         System.out.println("readAllSpecies");
 
-        //get instances
-        CyAppManager cam = new CyAppManager(new CyModel(), null);
-
         //redirect settings folder for the test
-        URL url = getClass().getClassLoader().getResource("testsettings");
+        URL url = getClass().getClassLoader().getResource("testsettings_in");
         Path settingsPath = new File(url.toURI()).toPath();
         cam.getCyModel().setSettingsPath(settingsPath);
 
-        //thest method
-        SettingsIO sio = new SettingsIO(cam);
+        //test method
         Map<String, String> speciesMap = sio.readAllSpecies();
+        assertEquals("/datasets/Apple_dataset.txt", speciesMap.get("Apple_dataset"));
     }
-    
+
 }

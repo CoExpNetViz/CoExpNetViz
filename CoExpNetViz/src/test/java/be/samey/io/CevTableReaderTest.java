@@ -92,6 +92,7 @@ public class CevTableReaderTest {
 
         //check result
         assertEquals(2162, ct.getRowCount());
+        assertEquals(String.class, ct.getColumn("Species").getType());
     }
 
     /**
@@ -124,6 +125,7 @@ public class CevTableReaderTest {
 
         //check result
         assertEquals(4334, ct.getRowCount());
+        assertEquals(Double.class, ct.getColumn("r_value").getType());
     }
 
 }

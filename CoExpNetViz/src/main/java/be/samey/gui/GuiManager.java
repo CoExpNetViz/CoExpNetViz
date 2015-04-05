@@ -38,6 +38,7 @@ import be.samey.gui.controller.SaveFileBtnController;
 import be.samey.gui.controller.SpeciesDelController;
 import be.samey.gui.controller.SpeciesFileTfController;
 import be.samey.gui.controller.SpeciesNameTfController;
+import be.samey.gui.controller.TitleTfController;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
 import java.io.IOException;
@@ -87,6 +88,8 @@ public class GuiManager {
         InpPnl tempInpPnl = new InpPnl();
 
         //attach controllers
+        //title
+        tempInpPnl.titleTf.addFocusListener(new TitleTfController(cyAppManager));
         //baits
         tempInpPnl.baitInpRb.addActionListener(new BaitFileOrInpController(cyAppManager));
         tempInpPnl.baitFileRb.addActionListener(new BaitFileOrInpController(cyAppManager));

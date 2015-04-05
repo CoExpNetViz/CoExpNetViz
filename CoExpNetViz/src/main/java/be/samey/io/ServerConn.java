@@ -83,7 +83,16 @@ public class ServerConn {
         } else {
             outPath = cyModel.getSaveFilePath();
         }
-        Path archivePath = outPath.resolve("Cev.tgz");
+
+        String fileExtension = ".tgz";
+        String archiveName = cyModel.getTitle();
+
+        Path archivePath = outPath.resolve(archiveName + fileExtension);
+        //prevent overwriting the same file if the user forgot to change the
+        //title
+        if (Files.exists(archivePath)) {
+            archivePath = outPath.resolve(archiveName + "_" + CyAppManager.getTimeStamp() + fileExtension);
+        }
 
         /*----------------------------------------------------------------------
          2) Upload user files and settings, download response
@@ -174,7 +183,7 @@ public class ServerConn {
         return mpeb.build();
     }
 
-    private void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws IOException  {
+    private void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws IOException {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         httppost = new HttpPost(url);

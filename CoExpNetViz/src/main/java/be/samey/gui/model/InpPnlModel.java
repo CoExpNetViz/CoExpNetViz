@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public class InpPnlModel extends AbstrModel {
 
-    private String jobTitle;
+    private String title;
     private boolean useBaitFile;
     private String baits;
     private Path baitFilePath;
@@ -48,7 +48,7 @@ public class InpPnlModel extends AbstrModel {
     private Map<SpeciesEntryModel, SpeciesEntry> species;
 
     public InpPnlModel(SpeciesEntryModel sem, SpeciesEntry se) {
-        jobTitle = "";
+        title = "";
         useBaitFile = false;
         baits = "";
         baitFilePath = Paths.get("");
@@ -63,18 +63,18 @@ public class InpPnlModel extends AbstrModel {
     }
 
     /**
-     * @return the jobTitle
+     * @return the title
      */
-    public String getJobTitle() {
-        return jobTitle;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * @param jobTitle the jobTitle to set
+     * @param title the title to set
      */
-    public void setJobTitle(String jobTitle) {
-        if (!this.jobTitle.equals(jobTitle)) {
-            this.jobTitle = jobTitle;
+    public void setTitle(String title) {
+        if (!this.title.equals(title)) {
+            this.title = title;
             setChanged();
             notifyObservers();
         }

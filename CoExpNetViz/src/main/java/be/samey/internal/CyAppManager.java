@@ -21,7 +21,6 @@ package be.samey.internal;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import be.samey.cynetw.CevNetworkBuilder;
 import be.samey.cynetw.RunAnalysisTask;
 import be.samey.gui.GuiManager;
@@ -29,7 +28,9 @@ import be.samey.io.CevNetworkReader;
 import be.samey.io.CevTableReader;
 import be.samey.io.CevVizmapReader;
 import be.samey.io.ServerConn;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import org.cytoscape.work.TaskIterator;
 
 /**
@@ -54,9 +55,10 @@ public class CyAppManager {
         this.cyServices = cyServices;
     }
 
-    public void runAnalysis(){
+    public void runAnalysis() {
 
         System.out.println("---Debug output---");
+        System.out.println("title: " + cyModel.getTitle());
         System.out.println("baits: " + cyModel.getBaits());
         System.out.println("names: " + Arrays.toString(cyModel.getSpeciesNames()));
         System.out.println("files: " + Arrays.toString(cyModel.getSpeciesPaths()));
@@ -64,13 +66,22 @@ public class CyAppManager {
         System.out.println("pos c: " + cyModel.getPCutoff());
         System.out.println("out d: " + cyModel.getSaveFilePath());
 
-
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));
 
         //execute() forks a new thread and returns immediatly
         cyServices.getTaskManager().execute(ti);
 
+    }
+
+    /**
+     * Convenience method to quickly get a formatted current time string
+     * @return 
+     */
+    public static String getTimeStamp() {
+        Date now = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
+        return sdf.format(now);
     }
 
     /**
@@ -109,14 +120,14 @@ public class CyAppManager {
     }
 
     public CevNetworkReader getCevNetworkreader() {
-        if (cevNetworkReader == null){
+        if (cevNetworkReader == null) {
             cevNetworkReader = new CevNetworkReader(this);
         }
         return cevNetworkReader;
     }
 
     public CevTableReader getCevTablereader() {
-        if (cevTableReader == null){
+        if (cevTableReader == null) {
             cevTableReader = new CevTableReader(this);
         }
         return cevTableReader;

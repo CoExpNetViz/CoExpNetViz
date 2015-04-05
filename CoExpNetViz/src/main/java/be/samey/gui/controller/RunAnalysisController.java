@@ -23,6 +23,7 @@ package be.samey.gui.controller;
  */
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -58,6 +59,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
         JPanel parent = getGuiManager().getInpPnl();
 
         try {
+            sendTitle();
             sendBaits(parent);
             sendSpecies(parent);
             sendCutOffs();
@@ -68,6 +70,14 @@ public class RunAnalysisController extends AbstrController implements ActionList
 
         //if all checks were ok, we can run the analysis
         cyAppManager.runAnalysis();
+    }
+
+    private void sendTitle() {
+        if (getActiveModel().getTitle().trim().isEmpty()) {
+            cyModel.setTitle(CyModel.APP_NAME + "_" + CyAppManager.getTimeStamp());
+        } else {
+            cyModel.setTitle(getActiveModel().getTitle());
+        }
     }
 
     /**

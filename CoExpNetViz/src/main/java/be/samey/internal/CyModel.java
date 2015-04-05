@@ -33,7 +33,9 @@ import org.cytoscape.view.model.CyNetworkView;
  */
 public class CyModel extends Observable {
 
-    //properties of the app that do not change during execution
+    /*--------------------------------------------------------------------------
+     properties of the app that do not change during execution
+     */
     public static final String APP_NAME = "CoExpNetViz";
     public static final int MAX_SPECIES_COUNT = 5;
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
@@ -54,6 +56,12 @@ public class CyModel extends Observable {
     public static final double PROG_CONN_COMPLETE = 0.8;
     public static final double PROG_NETW_COMPLETE = 0.9;
 
+    /*--------------------------------------------------------------------------
+     The fields below represent all the information that is required to execute
+     one analysis (one RunAnalysisTask)
+     */
+    //title of the current analysis
+    private String title;
     //sent to server
     private String baits;
     private String[] speciesNames;
@@ -75,12 +83,26 @@ public class CyModel extends Observable {
     private Path vizPath;
     private Path logPath;
 
-    //the root network for the app
-    private CyRootNetwork cyRootNetwork;
+    /*--------------------------------------------------------------------------
+     Fields to keep track of the networks created by the app
+     */
 
-    //keeps track of how many networks have been created since the last root
-    // network was created
-    private int networkCount = 0;
+    /*--------------------------------------------------------------------------
+     Getters and setters
+     */
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * @return the baits
@@ -262,26 +284,6 @@ public class CyModel extends Observable {
      */
     public void setLogPath(Path logPath) {
         this.logPath = logPath;
-    }
-
-    public void setCyRootNetwork(CyRootNetwork cyRootNetwork) {
-        this.cyRootNetwork = cyRootNetwork;
-    }
-
-    public CyRootNetwork getCyRootNetwork() {
-        return cyRootNetwork;
-    }
-
-    public int getNetworkCount() {
-        return networkCount;
-    }
-
-    public void resetNetworkCount() {
-        networkCount = 0;
-    }
-
-    public void incrementNetworkCount() {
-        networkCount++;
     }
 
 }

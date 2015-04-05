@@ -57,6 +57,9 @@ import javax.swing.UIManager;
  */
 public class InpPnl extends JPanel implements Observer {
 
+    //title
+    JLabel titleLbl;
+    JTextField titleTf;
     //input baits
     JRadioButton baitInpRb;
     JRadioButton baitFileRb;
@@ -100,6 +103,9 @@ public class InpPnl extends JPanel implements Observer {
      * references.
      */
     private void constructGui() {
+        //title
+        titleLbl = new JLabel("Title (optional)");
+        titleTf = new JTextField();
         //input bait genes or choose file
         baitInpRb = new JRadioButton("Input bait genes");
         baitInpRb.setName("baitInpRb");
@@ -164,24 +170,36 @@ public class InpPnl extends JPanel implements Observer {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
         //----------------------------------------------------------------------
-        //input bait genes
-        //top two radio buttons (input bait genes or file)
-        c.fill = GridBagConstraints.NONE;
+        //title
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 00;
         c.gridwidth = 1;
+        add(titleLbl, c);
+        c.insets = new Insets(00, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 01;
+        c.gridwidth = 3;
+        add(titleTf, c);
+        //----------------------------------------------------------------------
+        //input bait genes
+        //top two radio buttons (input bait genes or file)
+        c.insets = new Insets(10, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 10;
+        c.gridwidth = 1;
         add(baitInpRb, c);
         c.gridx = 1;
-        c.gridy = 00;
+        c.gridy = 10;
         c.gridwidth = 1;
         add(baitFileRb, c);
         //input baits or choose file
         //input bait genes label
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
-        c.gridy = 01;
+        c.gridy = 11;
         c.gridwidth = 3;
         add(baitInpLbl, c);
         //bait genes text area
@@ -189,19 +207,19 @@ public class InpPnl extends JPanel implements Observer {
         c.weighty = 1.0;
         c.ipady = (160);
         c.gridx = 0;
-        c.gridy = 02;
+        c.gridy = 12;
         c.gridwidth = 3;
         add(inpBaitSp, c);
         //choose bait genes file label
         c.weighty = 0.0;
         c.ipady = 0;
         c.gridx = 0;
-        c.gridy = 03;
+        c.gridy = 13;
         c.gridwidth = 3;
         add(baitFileLbl, c);
         //bait genes file textfield and button
         c.gridx = 0;
-        c.gridy = 04;
+        c.gridy = 14;
         c.gridwidth = 3;
         fileBaitPnl.add(baitFileTf);
         fileBaitPnl.add(baitFileBtn);
@@ -211,20 +229,20 @@ public class InpPnl extends JPanel implements Observer {
         //choose species label
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 10;
+        c.gridy = 20;
         c.gridwidth = 3;
         add(chooseSpeciesLbl, c);
         //choose species scrollpane
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 11;
+        c.gridy = 21;
         c.ipady = (160);
         c.gridwidth = 3;
         add(chooseSpeciesSp, c);
         //add species button
         c.insets = new Insets(0, 0, 0, 90);
         c.gridx = 0;
-        c.gridy = 12;
+        c.gridy = 22;
         c.ipady = (0);
         c.gridwidth = 1;
         add(addSpeciesBtn, c);
@@ -233,13 +251,13 @@ public class InpPnl extends JPanel implements Observer {
         //choose cutoff label
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 20;
+        c.gridy = 30;
         c.gridwidth = 3;
         add(chooseCutoffLbl, c);
         //cutoff labels and spinners
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 21;
+        c.gridy = 31;
         c.gridwidth = 3;
         cutoffPnl.add(nCutoffLbl);
         cutoffPnl.add(Box.createRigidArea(new Dimension(5, 0))); //spacer
@@ -254,13 +272,13 @@ public class InpPnl extends JPanel implements Observer {
         //checkbox
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 30;
+        c.gridy = 40;
         c.gridwidth = 1;
         add(saveFileChb, c);
         //save file textfield and button
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 31;
+        c.gridy = 41;
         c.gridwidth = 3;
         saveFilePnl.add(saveFileTf);
         saveFilePnl.add(saveFileBtn);
@@ -269,12 +287,12 @@ public class InpPnl extends JPanel implements Observer {
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(10, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 32;
+        c.gridy = 42;
         c.gridwidth = 1;
         add(goBtn, c);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         c.gridx = 2;
-        c.gridy = 32;
+        c.gridy = 42;
         c.gridwidth = 1;
         add(resetBtn, c);
     }
@@ -297,8 +315,7 @@ public class InpPnl extends JPanel implements Observer {
             InpPnlModel inpPnlModel = (InpPnlModel) model;
 
             //update: string input fields
-            String jobTitle = inpPnlModel.getJobTitle();
-            //TODO make jobtitle field
+            titleTf.setText(inpPnlModel.getTitle());
 
             //update: baits
             boolean useBaitFile = inpPnlModel.isUseBaitFile();

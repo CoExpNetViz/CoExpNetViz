@@ -22,6 +22,7 @@ package be.samey.io;
  * #L%
  */
 import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import be.samey.internal.CyServices;
 import java.io.File;
 import java.net.URL;
@@ -81,7 +82,7 @@ public class CevTableReaderTest {
         CyNetworkTableManager cntm = nts.getNetworkTableManager();
         CyServices cs = new CyServices();
         cs.setCyNetworkTableManager(cntm);
-        CyAppManager cam = new CyAppManager(null, cs);
+        CyAppManager cam = new CyAppManager(new CyModel(), cs);
         CyNetwork cn = nts.getNetwork();
         CevNetworkReader cnr = new CevNetworkReader(cam);
         cnr.readSIF(sifPath, cn);
@@ -114,7 +115,7 @@ public class CevTableReaderTest {
         CyNetworkTableManager cntm = nts.getNetworkTableManager();
         CyServices cs = new CyServices();
         cs.setCyNetworkTableManager(cntm);
-        CyAppManager cam = new CyAppManager(null, cs);
+        CyAppManager cam = new CyAppManager(new CyModel(), cs);
         CyNetwork cn = nts.getNetwork();
         CevNetworkReader cnr = new CevNetworkReader(cam);
         cnr.readSIF(sifPath, cn);

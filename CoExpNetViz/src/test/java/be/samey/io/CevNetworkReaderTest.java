@@ -22,6 +22,7 @@ package be.samey.io;
  * #L%
  */
 import be.samey.internal.CyAppManager;
+import be.samey.internal.CyModel;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
@@ -73,7 +74,7 @@ public class CevNetworkReaderTest {
 
         //make instances
         NetworkTestSupport nts = new NetworkTestSupport();
-        CyAppManager cam = new CyAppManager(null, null);
+        CyAppManager cam = new CyAppManager(new CyModel(), null);
         CyNetwork cn = nts.getNetwork();
 
         //use method

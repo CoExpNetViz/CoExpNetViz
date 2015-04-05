@@ -62,6 +62,39 @@ public class InpPnlModel extends AbstrModel {
         species.put(sem, se);
     }
 
+    public InpPnlModel() {
+        title = "";
+        useBaitFile = false;
+        baits = "";
+        baitFilePath = Paths.get("");
+        negCutoff = GuiConstants.DEFAULT_NEG_CUTOFF;
+        posCutoff = GuiConstants.DEFAULT_POS_CUTOFF;
+        saveResults = false;
+        saveFilePath = Paths.get(System.getProperty("user.home"));
+
+        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+    }
+
+    public InpPnlModel copy() {
+        InpPnlModel inpPnlModel = new InpPnlModel();
+        inpPnlModel.setTitle(title);
+        inpPnlModel.setUseBaitFile(useBaitFile);
+        inpPnlModel.setBaits(baits);
+        inpPnlModel.setBaitFilePath(baitFilePath);
+        inpPnlModel.setNegCutoff(negCutoff);
+        inpPnlModel.setPosCutoff(posCutoff);
+        inpPnlModel.setSaveResults(saveResults);
+        inpPnlModel.setSaveFilePath(saveFilePath);
+
+        LinkedHashMap<SpeciesEntryModel, SpeciesEntry> newSpecies = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+        for (SpeciesEntryModel sem : species.keySet()) {
+            newSpecies.put(sem, species.get(sem));
+        }
+        inpPnlModel.setAllSpecies(newSpecies);
+
+        return inpPnlModel;
+    }
+
     /**
      * @return the title
      */
@@ -210,6 +243,12 @@ public class InpPnlModel extends AbstrModel {
         return species.get(sem);
     }
 
+    public void setSpeciesEntry(SpeciesEntryModel sem, SpeciesEntry se) {
+        species.put(sem, se);
+        setChanged();
+        notifyObservers();
+    }
+
     public void addSpecies(SpeciesEntryModel sem, SpeciesEntry se) {
         if (!species.containsKey(sem)) {
             species.put(sem, se);
@@ -231,6 +270,10 @@ public class InpPnlModel extends AbstrModel {
      */
     public Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies() {
         return species;
+    }
+
+    public void setAllSpecies(Map<SpeciesEntryModel, SpeciesEntry> species) {
+        this.species = species;
     }
 
 }

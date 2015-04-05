@@ -3,7 +3,6 @@ package be.samey.internal;
 import java.nio.file.Path;
 import java.util.Observable;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 
 /*
@@ -86,6 +85,7 @@ public class CyModel extends Observable {
     /*--------------------------------------------------------------------------
      Fields to keep track of the networks created by the app
      */
+    private Path settingsPath;
 
     /*--------------------------------------------------------------------------
      Getters and setters
@@ -284,6 +284,14 @@ public class CyModel extends Observable {
      */
     public void setLogPath(Path logPath) {
         this.logPath = logPath;
+    }
+
+    public Path getSettingsPath() {
+        return settingsPath;
+    }
+
+    public void setSettingsPath(Path settingsPath) {
+        this.settingsPath = settingsPath;
     }
 
 }

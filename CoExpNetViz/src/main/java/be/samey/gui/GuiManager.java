@@ -34,17 +34,20 @@ import be.samey.gui.controller.SaveFileTfController;
 import be.samey.gui.controller.BaitFileOrInpController;
 import be.samey.gui.controller.BaitInpTaController;
 import be.samey.gui.controller.CutoffController;
+import be.samey.gui.controller.ProfDelBtnController;
 import be.samey.gui.controller.SaveFileBtnController;
 import be.samey.gui.controller.SpeciesDelController;
 import be.samey.gui.controller.SpeciesFileTfController;
 import be.samey.gui.controller.SpeciesNameTfController;
 import be.samey.gui.controller.TitleTfController;
+import be.samey.gui.controller.ProfLoadBtnController;
+import be.samey.gui.controller.ProfSaveBtnController;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 
@@ -61,10 +64,10 @@ public class GuiManager {
     private final JFrame rootFrame;
 
     private Path lastUsedDirPath;
-    private Path settingsPath;
 
     private InpPnlModel activeModel;
 
+    private SettingsIO sio;
     private List<InpPnlModel> allModels;
 
     public GuiManager(CyAppManager cyAppManager) {
@@ -72,7 +75,15 @@ public class GuiManager {
         this.cyModel = cyAppManager.getCyModel();
 
         lastUsedDirPath = Paths.get(System.getProperty("user.home"));
-        settingsPath = initSettingsPath();
+
+        //load settings
+        sio = new SettingsIO(cyAppManager);
+        allModels = new ArrayList<InpPnlModel>();
+        try {
+            allModels = sio.readAllProfiles();
+        } catch (IOException ex) {
+            //TODO: warn user
+        }
 
         //make GUI
         inpPnl = initGui();
@@ -88,6 +99,11 @@ public class GuiManager {
         InpPnl tempInpPnl = new InpPnl();
 
         //attach controllers
+        //buttons
+        tempInpPnl.profLoadBtn.addActionListener(new ProfLoadBtnController(cyAppManager));
+        tempInpPnl.profSaveBtn.addActionListener(new ProfSaveBtnController(cyAppManager));
+        tempInpPnl.profDelBtn.addActionListener(new ProfDelBtnController(cyAppManager));
+        tempInpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
         //title
         tempInpPnl.titleTf.addFocusListener(new TitleTfController(cyAppManager));
         //baits
@@ -105,9 +121,8 @@ public class GuiManager {
         tempInpPnl.saveFileChb.addActionListener(new SaveFileChbController(cyAppManager));
         tempInpPnl.saveFileTf.addFocusListener(new SaveFileTfController(cyAppManager));
         tempInpPnl.saveFileBtn.addActionListener(new SaveFileBtnController(cyAppManager));
-        //buttons
+        //go
         tempInpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
-        tempInpPnl.resetBtn.addActionListener(new ResetGuiController(cyAppManager));
 
         //make the model for the GUI
         activeModel = makeDefaultModel();
@@ -115,6 +130,12 @@ public class GuiManager {
 
         return tempInpPnl;
 
+    }
+
+    public void showRootFrame() {
+        rootFrame.pack();
+        rootFrame.setVisible(true);
+        activeModel.triggerUpdate();
     }
 
     /**
@@ -142,61 +163,76 @@ public class GuiManager {
         return new InpPnlModel(sem, se);
     }
 
-    private Path initSettingsPath() {
+    public void addCurrentModel() {
+        InpPnlModel ipmToRemove = null;
+        for (InpPnlModel ipm : allModels) {
+            if (ipm.getTitle().equals(activeModel.getTitle())) {
+                ipmToRemove = ipm;
+            }
+        }
+        if (ipmToRemove != null) {
+            allModels.remove(ipmToRemove);
+        }
+        allModels.add(activeModel.copy());
+    }
 
-        Path cyHomePath = Paths.get(System.getProperty("user.dir"));
-        Path cyConfPath = cyHomePath.resolve("CytoscapeConfiguration");
+    public void saveProfiles() throws IOException {
+        sio.writeAllProfiles(allModels);
+        sio.writeAllSpecies(getAllSpeciesEntryModels());
+    }
 
-        Path localSettingsPath;
-
-        //try to get a settings directory in the cytoscape config folder
-        if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
-            localSettingsPath = cyConfPath.resolve(CyModel.APP_NAME + "_settings");
-            //settins folder doesn't exists, so try to make it
-            if (!Files.exists(localSettingsPath)) {
-                try {
-                    Files.createDirectory(localSettingsPath);
-                    return localSettingsPath;
-                } catch (IOException ex) {
-                    System.out.println(ex);
-                    //TODO:warn user somehow
+    public List<SpeciesEntryModel> getAllSpeciesEntryModels() {
+        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
+        for (InpPnlModel ipm : allModels) {
+            for (SpeciesEntryModel sem : ipm.getAllSpecies().keySet()) {
+                if (!sems.contains(sem)) {
+                    sems.add(sem);
                 }
-            } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
-                //settings folder exists, check if I can write there
-                return localSettingsPath;
             }
         }
+        return sems;
+    }
 
-        //if the above attempt failed, then try to get a settings a folder in
-        // the user home directory
-        localSettingsPath = Paths.get(System.getProperty("user.home"));
-        localSettingsPath = localSettingsPath.resolve(CyModel.APP_NAME + "_settings");
-        if (!Files.exists(localSettingsPath)) {
-            //settins folder doesn't exists, so try to make it
-            try {
-                Files.createDirectory(localSettingsPath);
-                return localSettingsPath;
-            } catch (IOException ex) {
-                System.out.println(ex);
-                //TODO:warn user somehow
+    public void loadProfile(String profileName) {
+        InpPnlModel ipmToLoad = null;
+        for (InpPnlModel ipm : allModels) {
+            if (ipm.getTitle().equals(profileName)) {
+                ipmToLoad = ipm.copy();
             }
-        } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
-            //settings folder exists, check if I can write there
-            return localSettingsPath;
         }
-
-        //TODO: handle this better?
-        return null;
+        if (ipmToLoad == null) {
+            throw new IllegalArgumentException("Could not load profile" + profileName);
+        }
+        for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
+            SpeciesEntry se = initSpeciesEntry(sem);
+            ipmToLoad.setSpeciesEntry(sem, se);
+        }
+        setActiveModel(ipmToLoad);
+        ipmToLoad.triggerUpdate();
     }
 
-    private void readProfiles() {
-        //TODO
+    public void delCurrentProfile() {
+        InpPnlModel ipmToRemove = null;
+        for (InpPnlModel ipm : allModels) {
+            if (ipm.getTitle().equals(activeModel.getTitle())) {
+                ipmToRemove = ipm;
+            }
+        }
+        if (ipmToRemove != null) {
+            allModels.remove(ipmToRemove);
+        }
     }
 
-    public void showRootFrame() {
-        rootFrame.pack();
-        rootFrame.setVisible(true);
-        activeModel.triggerUpdate();
+    public String[] getProfileTitles() {
+        List<String> titles = new ArrayList<String>();
+        for (InpPnlModel ipm : allModels) {
+            titles.add(ipm.getTitle());
+        }
+        return titles.toArray(new String[titles.size()]);
+    }
+
+    public List<InpPnlModel> getAllModels() {
+        return allModels;
     }
 
     public InpPnl getInpPnl() {
@@ -215,16 +251,9 @@ public class GuiManager {
         this.lastUsedDirPath = lastUsedDirPath;
     }
 
-    public Path getSettingsPath() {
-        return settingsPath;
-    }
-
-    public void setSettingsPath(Path settingsPath) {
-        this.settingsPath = settingsPath;
-    }
-
     public void setActiveModel(InpPnlModel inpPnlModel) {
         if (inpPnlModel != this.activeModel) {
+            this.activeModel.deleteObserver(inpPnl);
             this.activeModel = inpPnlModel;
             activeModel.addObserver(inpPnl);
         }

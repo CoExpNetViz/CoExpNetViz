@@ -28,6 +28,10 @@ import be.samey.io.CevNetworkReader;
 import be.samey.io.CevTableReader;
 import be.samey.io.CevVizmapReader;
 import be.samey.io.ServerConn;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -53,6 +57,9 @@ public class CyAppManager {
     public CyAppManager(CyModel cyModel, CyServices cyServices) {
         this.cyModel = cyModel;
         this.cyServices = cyServices;
+
+        cyModel.setSettingsPath(initSettingsPath());
+//        System.out.println(cyModel.getSettingsPath());
     }
 
     public void runAnalysis() {
@@ -76,12 +83,86 @@ public class CyAppManager {
 
     /**
      * Convenience method to quickly get a formatted current time string
-     * @return 
+     *
+     * @return
      */
     public static String getTimeStamp() {
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
         return sdf.format(now);
+    }
+
+    private Path initSettingsPath() {
+
+        Path cyHomePath;
+        Path localSettingsPath;
+
+        //attempt 1: try to find CytoscapeConfiguration folder in user.dir
+        cyHomePath = Paths.get(System.getProperty("user.dir"));
+        localSettingsPath = getCyConfFolder(cyHomePath);
+        if (localSettingsPath != null){
+            return localSettingsPath;
+        }
+
+        //attempt 2: try to find CytoscapeConfiguration folder in user.home
+        cyHomePath = Paths.get(System.getProperty("user.home"));
+        localSettingsPath = getCyConfFolder(cyHomePath);
+        if (localSettingsPath != null){
+            return localSettingsPath;
+        }
+
+        //attampt 3: Try to get a settings folder in the user home directory
+        cyHomePath = Paths.get(System.getProperty("user.home"));
+        localSettingsPath = getHomeSettingsFolder(cyHomePath);
+        if (localSettingsPath != null){
+            return localSettingsPath;
+        }
+
+        //TODO: handle this better
+        return null;
+    }
+
+    private Path getCyConfFolder(Path searchPath) {
+
+        Path cyConfPath = searchPath.resolve("CytoscapeConfiguration");
+        Path localSettingsPath;
+
+        //try to get a settings directory in the cytoscape config folder
+        if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
+            localSettingsPath = cyConfPath.resolve(CyModel.APP_NAME + "_settings");
+            //settins folder doesn't exists, so try to make it
+            if (!Files.exists(localSettingsPath)) {
+                try {
+                    Files.createDirectory(localSettingsPath);
+                    return localSettingsPath;
+                }catch (IOException ex) {
+                    System.out.println(ex);
+                    //TODO:warn user somehow
+                }
+            } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
+                //settings folder exists, check if I can write there
+                return localSettingsPath;
+            }
+        }
+        return null;
+    }
+
+    private Path getHomeSettingsFolder(Path searchPath) {
+        Path localSettingsPath = searchPath.resolve(CyModel.APP_NAME + "_settings");
+        if (!Files.exists(localSettingsPath)) {
+            //settins folder doesn't exists, so try to make it
+            try {
+                Files.createDirectory(localSettingsPath);
+                return localSettingsPath;
+            }catch (IOException ex) {
+                System.out.println(ex);
+                //TODO:warn user somehow
+            }
+        } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
+            //settings folder exists, check if I can write there
+            return localSettingsPath;
+        }
+        return null;
     }
 
     /**

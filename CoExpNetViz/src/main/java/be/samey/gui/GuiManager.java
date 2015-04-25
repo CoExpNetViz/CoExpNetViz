@@ -32,6 +32,7 @@ import be.samey.gui.controller.RunAnalysisController;
 import be.samey.gui.controller.BaitFileBtnController;
 import be.samey.gui.controller.SaveFileTfController;
 import be.samey.gui.controller.BaitFileOrInpController;
+import be.samey.gui.controller.BaitInpInfoBtnController;
 import be.samey.gui.controller.BaitInpTaController;
 import be.samey.gui.controller.CutoffController;
 import be.samey.gui.controller.ProfDelBtnController;
@@ -109,6 +110,7 @@ public class GuiManager {
         //baits
         tempInpPnl.baitInpRb.addActionListener(new BaitFileOrInpController(cyAppManager));
         tempInpPnl.baitFileRb.addActionListener(new BaitFileOrInpController(cyAppManager));
+        tempInpPnl.baitInpInfoBtn.addActionListener(new BaitInpInfoBtnController(cyAppManager));
         tempInpPnl.baitInpTa.addFocusListener(new BaitInpTaController(cyAppManager));
         tempInpPnl.baitFileTf.addFocusListener(new BaitFileTfController(cyAppManager));
         tempInpPnl.baitFileBtn.addActionListener(new BaitFileBtnController(cyAppManager));

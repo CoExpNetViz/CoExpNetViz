@@ -23,20 +23,27 @@ package be.samey.gui;
  */
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.gui.model.InpPnlModel;
+import be.samey.internal.CyAppManager;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -71,6 +78,7 @@ public class InpPnl extends JPanel implements Observer {
     JRadioButton baitInpRb;
     JRadioButton baitFileRb;
     JLabel baitInpLbl;
+    JButton baitInpInfoBtn;
     JTextArea baitInpTa;
     JScrollPane inpBaitSp;
     JLabel baitFileLbl;
@@ -131,6 +139,14 @@ public class InpPnl extends JPanel implements Observer {
         inpBaitOrfileBaitBg.add(baitInpRb);
         inpBaitOrfileBaitBg.add(baitFileRb);
         baitInpLbl = new JLabel("Enter bait genes");
+        baitInpInfoBtn = new JButton("ID's");
+        try {
+            ClassLoader classLoader = CyAppManager.class.getClassLoader();
+            Image img = ImageIO.read(classLoader.getResource("icons/help-icon16.png"));
+            baitInpInfoBtn.setIcon(new ImageIcon(img));
+        } catch (IOException ex) {
+            Logger.getLogger(InpPnl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         baitInpTa = new JTextArea();
         baitInpTa.setLineWrap(true);
         baitInpTa.setToolTipText("Enter gene identifiers seperated by whitespace, eg 'Solyc02g04650'");
@@ -228,13 +244,23 @@ public class InpPnl extends JPanel implements Observer {
         add(baitFileRb, c);
         //input baits or choose file
         //input bait genes label
+        c.insets = new Insets(0, 0, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.LAST_LINE_START;
         c.gridx = 0;
         c.gridy = 21;
-        c.gridwidth = 3;
+        c.gridwidth = 1;
         add(baitInpLbl, c);
+        //input bait genes info button
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LAST_LINE_END;
+        c.gridx = 2;
+        c.gridy = 21;
+        c.gridwidth = 1;
+        add(baitInpInfoBtn, c);
         //bait genes text area
-        c.insets = new Insets(0, 0, 0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
         c.weighty = 1.0;
         c.ipady = (160);
         c.gridx = 0;
@@ -353,6 +379,7 @@ public class InpPnl extends JPanel implements Observer {
             baitInpRb.setSelected(!useBaitFile);
             baitFileRb.setSelected(useBaitFile);
             baitInpLbl.setEnabled(!useBaitFile);
+//            baitInpInfoBtn.setEnabled(!useBaitFile);
             baitInpTa.setEnabled(!useBaitFile);
             String baits = inpPnlModel.getBaits();
             baitInpTa.setText(baits);

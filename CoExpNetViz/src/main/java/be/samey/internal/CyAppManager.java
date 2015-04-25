@@ -28,6 +28,7 @@ import be.samey.io.CevNetworkReader;
 import be.samey.io.CevTableReader;
 import be.samey.io.CevVizmapReader;
 import be.samey.io.ServerConn;
+import java.awt.Frame;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,6 +91,25 @@ public class CyAppManager {
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
         return sdf.format(now);
+    }
+
+    /**
+     * Convenience method to get a reference to the Cytoscape desktop window.
+     * Handy for use as a parent for dialog windows
+     * 
+     * @return 
+     */
+    public static Frame getCytoscapeRootFrame() {
+        //TODO: cleaner to use CySwingApplication instead
+        Frame[] frames = Frame.getFrames();
+        Frame csFrame = null;
+        for (Frame frame : frames){
+            String className = frame.getClass().toString();
+            if (className.endsWith("CytoscapeDesktop")) {
+                csFrame = frame;
+            }
+        }
+        return csFrame;
     }
 
     private Path initSettingsPath() {

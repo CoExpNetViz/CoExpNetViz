@@ -22,6 +22,8 @@ package be.samey.cynetw;
  * #L%
  */
 import be.samey.internal.CyAppManager;
+import java.util.Set;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
@@ -50,7 +52,8 @@ public class NetworkEventListener implements
 
     @Override
     public void handleEvent(NetworkAboutToBeDestroyedEvent natbde) {
-
+        Set<CyNetwork> visibleCevNetworks = cyAppManager.getCyModel().getVisibleCevNetworks();
+        visibleCevNetworks.remove(natbde.getNetwork());
     }
 
     @Override

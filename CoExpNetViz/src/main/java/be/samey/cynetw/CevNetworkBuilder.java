@@ -111,6 +111,7 @@ public class CevNetworkBuilder /*implements Observer*/ {
             //which is applying the layout
             cyModel.setLastNoaTable(cevNodeTable);
             cyModel.setLastCnv(cnv);
+            cyModel.getVisibleCevNetworks().add(cn);
 
             cyAppManager.getCyServices().getCyNetworkViewManager().addNetworkView(cnv);
             cyAppManager.getCyServices().getVisualMappingManager().setVisualStyle(getCevStyle(), cnv);

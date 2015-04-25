@@ -29,6 +29,7 @@ import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -57,6 +58,7 @@ public class CyServices {
     private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
     private TaskManager taskManager;
     private UndoSupport undoSupport;
+    private OpenBrowser openBrowser;
 
     public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
         this.cyApplicationManager = cyApplicationManager;
@@ -162,4 +164,13 @@ public class CyServices {
     public UndoSupport getUndoSupport() {
         return undoSupport;
     }
+
+    public void setOpenBrowser(OpenBrowser openBrowser) {
+        this.openBrowser = openBrowser;
+    }
+
+    public OpenBrowser getOpenBrowser() {
+        return openBrowser;
+    }
+
 }

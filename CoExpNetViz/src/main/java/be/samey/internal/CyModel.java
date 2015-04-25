@@ -1,7 +1,9 @@
 package be.samey.internal;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Observable;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
 
@@ -37,11 +39,15 @@ public class CyModel extends Observable {
      */
     public static final String APP_NAME = "CoExpNetViz";
     public static final int MAX_SPECIES_COUNT = 5;
-    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/morph/coexpr/run.php";
-    //Which column to use to group nodes
-    public static final int GROUP_COLUMN = 3;
+    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/run.php";
+    //which column contains the gene families
+    public static final int FAMILIES_COLUMN = 0;
+    //which column contains the genes
+    public static final int GENES_COLUMN = 1;
     //which column contains the species of the baits
     public static final int SPECIES_COLUMN = 2;
+    //Which column to use to group nodes
+    public static final int GROUP_COLUMN = 3;
     //what value indicates a node is a bait in the SPECIES_COLUMN
     public static final String BAIT_GROUP = "#FFFFFF";
     //the name to use for the new layout created by this app
@@ -83,9 +89,10 @@ public class CyModel extends Observable {
     private Path logPath;
 
     /*--------------------------------------------------------------------------
-     Fields to keep track of the networks created by the app
+     Fields to keep track of application state
      */
     private Path settingsPath;
+    private HashSet<CyNetwork> visibleCevNetworks = new HashSet<CyNetwork>();
 
     /*--------------------------------------------------------------------------
      Getters and setters
@@ -292,6 +299,20 @@ public class CyModel extends Observable {
 
     public void setSettingsPath(Path settingsPath) {
         this.settingsPath = settingsPath;
+    }
+
+    /**
+     * @return the visibleCevNetworks
+     */
+    public HashSet<CyNetwork> getVisibleCevNetworks() {
+        return visibleCevNetworks;
+    }
+
+    /**
+     * @param visibleCevNetworks the visibleCevNetworks to set
+     */
+    public void setVisibleCevNetworks(HashSet<CyNetwork> visibleCevNetworks) {
+        this.visibleCevNetworks = visibleCevNetworks;
     }
 
 }

@@ -209,6 +209,12 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.cytoscape</groupId>
+            <artifactId>swing-util-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Dependencies below are required for: compile, runtime and test.
         They are all provided by Cytoscape at runtime. -->
         <dependency>

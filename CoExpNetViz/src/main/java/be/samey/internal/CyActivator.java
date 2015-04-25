@@ -22,11 +22,13 @@ package be.samey.internal;
  * #L%
  */
 
+import be.samey.cynetw.CevNodeViewContextMenuFactory;
 import be.samey.layout.FamLayout;
 import be.samey.cynetw.NetworkEventListener;
 import java.util.Properties;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
@@ -36,6 +38,7 @@ import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -62,6 +65,14 @@ public class CyActivator extends AbstractCyActivator {
     @Override
     public void start(BundleContext context) throws Exception {
 
+        //TODO: I recently discovered the existence of the CySwingAdapter class
+        //      this is a Cytoscape api class that does exactly what is done
+        //      below: wrapping instances of all Cytoscape model classes into
+        //      one object that can easily be passed around.
+        //
+        //      Conclusion: CyServices below can be replaced by CySwingAdapter,
+        //      this will clear a lot of code
+
         //get CytoScape services
         CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
         CyNetworkFactory cyNetworkFactory = getService(context, CyNetworkFactory.class);
@@ -76,6 +87,7 @@ public class CyActivator extends AbstractCyActivator {
         CyLayoutAlgorithmManager cyLayoutAlgorithmManager = getService(context, CyLayoutAlgorithmManager.class);
         TaskManager taskManager = getService(context, TaskManager.class);
         UndoSupport undoSupport = getService(context, UndoSupport.class);
+        OpenBrowser openBrowser = getService(context,OpenBrowser.class);
 
         //create the cyServices, keeps references to all cytoscape core model classes
         CyServices cyServices = new CyServices();
@@ -106,6 +118,7 @@ public class CyActivator extends AbstractCyActivator {
         cyServices.setCyLayoutAlgorithmManager(cyLayoutAlgorithmManager);
         cyServices.setTaskManager(taskManager);
         cyServices.setUndoSupport(undoSupport);
+        cyServices.setOpenBrowser(openBrowser);
 
         //register network event services
         registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
@@ -123,6 +136,12 @@ public class CyActivator extends AbstractCyActivator {
         cgalProperties.setProperty(TITLE, cgal.toString());
         cgalProperties.setProperty(MENU_GRAVITY, "10.65");
         registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
+
+        //register contex menu action
+        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory  = new CevNodeViewContextMenuFactory(cyAppManager);
+		Properties myNodeViewContextMenuFactoryProps = new Properties();
+		myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
+		registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);
 
         //for debugging: print message if the app started succesfully
         System.out.println(CyModel.APP_NAME + " started succesfully");

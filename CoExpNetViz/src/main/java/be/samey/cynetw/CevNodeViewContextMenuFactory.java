@@ -104,7 +104,7 @@ public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFacto
         CyRow row = cn.getRow(node);
 
         String families = row.get(famColumnName, String.class);
-        String genes = row.get(geneColumnName, String.class);
+//        String genes = row.get(geneColumnName, String.class);
 
         Frame parent = CyAppManager.getCytoscapeRootFrame();
 

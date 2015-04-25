@@ -21,7 +21,6 @@ package be.samey.internal;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import be.samey.cynetw.CevNodeViewContextMenuFactory;
 import be.samey.layout.FamLayout;
 import be.samey.cynetw.NetworkEventListener;
@@ -72,7 +71,6 @@ public class CyActivator extends AbstractCyActivator {
         //
         //      Conclusion: CyServices below can be replaced by CySwingAdapter,
         //      this will clear a lot of code
-
         //get CytoScape services
         CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
         CyNetworkFactory cyNetworkFactory = getService(context, CyNetworkFactory.class);
@@ -87,7 +85,7 @@ public class CyActivator extends AbstractCyActivator {
         CyLayoutAlgorithmManager cyLayoutAlgorithmManager = getService(context, CyLayoutAlgorithmManager.class);
         TaskManager taskManager = getService(context, TaskManager.class);
         UndoSupport undoSupport = getService(context, UndoSupport.class);
-        OpenBrowser openBrowser = getService(context,OpenBrowser.class);
+        OpenBrowser openBrowser = getService(context, OpenBrowser.class);
 
         //create the cyServices, keeps references to all cytoscape core model classes
         CyServices cyServices = new CyServices();
@@ -97,7 +95,7 @@ public class CyActivator extends AbstractCyActivator {
 
         //create the CyAppManager
         CyAppManager cyAppManager = new CyAppManager(cyModel, cyServices);
-        
+
         //create the network event listener
         NetworkEventListener networkEventListener = new NetworkEventListener(cyAppManager);
 
@@ -132,16 +130,16 @@ public class CyActivator extends AbstractCyActivator {
         //register cev layout service
         FamLayout cgal = new FamLayout(undoSupport);
         Properties cgalProperties = new Properties();
+        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CyModel.APP_NAME);
         cgalProperties.setProperty("preferredTaskManager", "menu");
         cgalProperties.setProperty(TITLE, cgal.toString());
-        cgalProperties.setProperty(MENU_GRAVITY, "10.65");
         registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
 
         //register contex menu action
-        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory  = new CevNodeViewContextMenuFactory(cyAppManager);
-		Properties myNodeViewContextMenuFactoryProps = new Properties();
-		myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
-		registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);
+        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CevNodeViewContextMenuFactory(cyAppManager);
+        Properties myNodeViewContextMenuFactoryProps = new Properties();
+        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
+        registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);
 
         //for debugging: print message if the app started succesfully
         System.out.println(CyModel.APP_NAME + " started succesfully");

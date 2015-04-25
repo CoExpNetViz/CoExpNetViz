@@ -28,12 +28,6 @@ public class FamLayoutContext {
     /*
     TODO: update documentation and field descriptions
      Layout parameters:
-     - spacingx: Horizontal spacing (on the x-axis) between two partitions in a row.
-     - spacingy: Vertical spacing (on the y-axis) between the largest partitions of two rows.
-     - maxwidth: Maximum width of a row
-     - minrad:   Minimum radius of a partition.
-     - radmult:  The scale of the radius of the partition. Increasing this value
-     will increase the size of the partition proportionally.
     //TODO: improve descriptions
      */
 

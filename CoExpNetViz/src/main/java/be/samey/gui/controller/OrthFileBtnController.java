@@ -21,7 +21,6 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
 import java.awt.event.ActionEvent;
@@ -33,14 +32,14 @@ import java.nio.file.Path;
  * @author sam
  */
 public class OrthFileBtnController extends AbstrBrowseController implements ActionListener {
-    
+
     private OrthEntryModel oem;
-    
+
     public OrthFileBtnController(OrthEntryModel oem, CyAppManager cyAppManager) {
         super(cyAppManager);
         this.oem = oem;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         Path path = showFileChooser(
@@ -48,6 +47,11 @@ public class OrthFileBtnController extends AbstrBrowseController implements Acti
             FILE,
             oem.getOrthEntryPath());
         oem.setOrthEntryPath(path);
+
+        if (oem.getOrthGroupName().trim().isEmpty()) {
+            String name = path.getFileName().toString().split("\\.")[0];
+            oem.setOrthGroupName(name);
+        }
     }
-    
+
 }

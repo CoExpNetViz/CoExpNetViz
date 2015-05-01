@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -41,41 +42,62 @@ import javax.swing.UIManager;
  */
 public class OrthEntry extends JPanel implements Observer {
 
-    JTextField orthTf;
-    JButton orthBrowseBtn;
+    JLabel orthNameLbl;
+    JTextField orthNameTf;
     JButton orthRemoveBtn;
+    JLabel orthPathLbl;
+    JTextField orthPathTf;
+    JButton orthBrowseBtn;
+
 
     public OrthEntry() {
         constructGui();
     }
 
     private void constructGui() {
-        orthTf = new JTextField();
+        orthNameLbl = new JLabel("Name:");
+        orthNameTf = new JTextField();
+        orthRemoveBtn = new JButton("Remove");
+        orthPathLbl = new JLabel("Path:");
+        orthPathTf = new JTextField();
         orthBrowseBtn = new JButton("Browse");
         orthBrowseBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
-        orthRemoveBtn = new JButton("Remove");
 
         setMaximumSize(new Dimension(495, 64));
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weightx = 1.0;
+        //
         c.insets = new Insets(10, 0, 0, 0);
+        c.weightx = 0.05;
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 1;
-        add(orthTf, c);
-        c.weightx = 0.05;
+        add(orthNameLbl, c);
+        c.weightx = 1.0;
         c.gridx = 1;
         c.gridy = 0;
-        add(orthBrowseBtn, c);
-        c.fill = GridBagConstraints.NONE;
+        c.gridwidth = 1;
+        add(orthNameTf, c);
+        c.weightx = 0.05;
+        c.gridx = 2;
+        c.gridy = 0;
+        add(orthRemoveBtn, c);
+        //
         c.insets = new Insets(0, 0, 0, 0);
-        c.weightx = 1.0;
+        c.weightx = 0.05;
         c.gridx = 0;
         c.gridy = 1;
-        add(orthRemoveBtn, c);
+        add(orthPathLbl, c);
+        c.weightx = 1.0;
+        c.gridx = 1;
+        c.gridy = 1;
+        add(orthPathTf, c);
+        c.weightx = 0.05;
+        c.gridx = 2;
+        c.gridy = 1;
+        add(orthBrowseBtn, c);
     }
 
     @Override
@@ -84,9 +106,12 @@ public class OrthEntry extends JPanel implements Observer {
         if (model instanceof OrthEntryModel) {
             OrthEntryModel oem = (OrthEntryModel) model;
 
+            String orthGroupName = oem.getOrthGroupName();
+            orthNameTf.setText(orthGroupName);
+            
             Path orthFilePath = oem.getOrthEntryPath();
-            orthTf.setText(orthFilePath.toString());
-            orthTf.setBackground(
+            orthPathTf.setText(orthFilePath.toString());
+            orthPathTf.setBackground(
                 Files.isRegularFile(orthFilePath) && Files.isReadable(orthFilePath)
                     ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
         }

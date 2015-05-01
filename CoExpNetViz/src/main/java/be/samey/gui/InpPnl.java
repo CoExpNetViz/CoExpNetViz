@@ -220,8 +220,8 @@ public class InpPnl extends JPanel implements Observer {
         OrthNoFilesChosenLbl.setEnabled(false);
         OrthNoFilesChosenLbl.setHorizontalAlignment(SwingConstants.CENTER);
         orthFilesPnl = new JPanel();
-        orthFilesSp = new JScrollPane();
         orthFilesPnl.setLayout(new BoxLayout(orthFilesPnl, BoxLayout.Y_AXIS));
+        orthFilesSp = new JScrollPane();
         orthFilesSp.setViewportView(orthFilesPnl);
         orthFilesSp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         orthFilesSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -394,7 +394,6 @@ public class InpPnl extends JPanel implements Observer {
         saveFilePnl.add(saveFileTf);
         saveFilePnl.add(saveFileBtn);
         tabOnePnl.add(saveFilePnl, cMid);
-        //go button
         //**********************************************************************
         //second tab
         tabTwoPnl.setLayout(new GridBagLayout());
@@ -408,7 +407,7 @@ public class InpPnl extends JPanel implements Observer {
         cOrth.insets = new Insets(0, 0, 0, 0);
         cOrth.gridx = 0;
         cOrth.gridy = 1;
-        cOrth.ipady = 320;
+        cOrth.ipady = 324;
         tabTwoPnl.add(orthFilesSp, cOrth);
         cOrth.insets = new Insets(0, 0, 10, 0);
         cOrth.fill = GridBagConstraints.NONE;
@@ -431,6 +430,7 @@ public class InpPnl extends JPanel implements Observer {
         //SOUTH PANEL
         JPanel botPnl = new JPanel();
         botPnl.setLayout(new BoxLayout(botPnl, BoxLayout.LINE_AXIS));
+        //go button
         botPnl.add(goBtn);
         add(botPnl, BorderLayout.PAGE_END);
     }
@@ -444,12 +444,8 @@ public class InpPnl extends JPanel implements Observer {
      */
     public void update(Observable model, Object obj) {
 
-        //for debugging
-//        System.out.println("InpPanel" + " updated from: " + model);
         if (model instanceof InpPnlModel) {
 
-            //for debugging
-//            System.out.println("InpPanel" + " updated from inputPnlModel");
             InpPnlModel inpPnlModel = (InpPnlModel) model;
 
             //update: string input fields
@@ -460,7 +456,6 @@ public class InpPnl extends JPanel implements Observer {
             baitInpRb.setSelected(!useBaitFile);
             baitFileRb.setSelected(useBaitFile);
             baitInpLbl.setEnabled(!useBaitFile);
-//            baitInpInfoBtn.setEnabled(!useBaitFile);
             baitInpTa.setEnabled(!useBaitFile);
             String baits = inpPnlModel.getBaits();
             baitInpTa.setText(baits);

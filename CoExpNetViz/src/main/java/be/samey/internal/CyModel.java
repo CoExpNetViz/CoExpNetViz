@@ -40,7 +40,7 @@ public class CyModel extends Observable {
     public static final String APP_NAME = "CoExpNetViz";
     public static final int MAX_SPECIES_COUNT = 5;
     public static final int MAX_ORTHGROUP_COUNT = 5;
-    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr";
+    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
     //which column contains the gene families
     public static final int FAMILIES_COLUMN = 0;
     //which column contains the genes
@@ -75,6 +75,7 @@ public class CyModel extends Observable {
     private double nCutoff;
     private double pCutoff;
     private Path saveFilePath;
+    private String[] orthGroupNames;
     private Path[] orthGroupPaths;
     //Node table for last created network
     //this is set by CreateNetworkTask and used by ShowNetworkTask
@@ -188,6 +189,20 @@ public class CyModel extends Observable {
      */
     public Path getSaveFilePath() {
         return saveFilePath;
+    }
+
+    /**
+     * @return the orthGroupNames
+     */
+    public String[] getOrthGroupNames() {
+        return orthGroupNames;
+    }
+
+    /**
+     * @param orthGroupNames the orthGroupNames to set
+     */
+    public void setOrthGroupNames(String[] orthGroupNames) {
+        this.orthGroupNames = orthGroupNames;
     }
 
     /**

@@ -39,6 +39,7 @@ import be.samey.gui.controller.OrthDelController;
 import be.samey.gui.controller.OrthEntryAddBtnController;
 import be.samey.gui.controller.OrthFileBtnController;
 import be.samey.gui.controller.OrthFileTfController;
+import be.samey.gui.controller.OrthNameTfController;
 import be.samey.gui.controller.ProfDelBtnController;
 import be.samey.gui.controller.SaveFileBtnController;
 import be.samey.gui.controller.SpeciesDelController;
@@ -172,9 +173,10 @@ public class GuiManager {
         oem.addObserver(oe);
 
         //add controllers for textfield, browse and remove
-        oe.orthTf.addFocusListener(new OrthFileTfController(oem, cyAppManager));
-        oe.orthBrowseBtn.addActionListener(new OrthFileBtnController(oem, cyAppManager));
+        oe.orthNameTf.addFocusListener(new OrthNameTfController(cyAppManager, oem));
         oe.orthRemoveBtn.addActionListener(new OrthDelController(oem, cyAppManager));
+        oe.orthPathTf.addFocusListener(new OrthFileTfController(oem, cyAppManager));
+        oe.orthBrowseBtn.addActionListener(new OrthFileBtnController(oem, cyAppManager));
 
         return oe;
     }

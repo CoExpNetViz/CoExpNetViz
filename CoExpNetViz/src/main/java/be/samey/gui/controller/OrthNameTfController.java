@@ -21,8 +21,7 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.model.SpeciesEntryModel;
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -31,18 +30,18 @@ import java.awt.event.FocusListener;
  *
  * @author sam
  */
-public class SpeciesNameTfController extends AbstrTfController implements FocusListener{
+public class OrthNameTfController extends AbstrTfController implements FocusListener {
 
-    private final SpeciesEntryModel sem;
+    private final OrthEntryModel oem;
 
-    public SpeciesNameTfController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+    public OrthNameTfController(CyAppManager cyAppManager, OrthEntryModel oem) {
         super(cyAppManager);
-        this.sem = sem;
+        this.oem = oem;
     }
 
     @Override
     public void focusLost(FocusEvent fe) {
-        sem.setSpeciesName(getText(fe));
+        oem.setOrthGroupName(getText(fe));
     }
-    
+
 }

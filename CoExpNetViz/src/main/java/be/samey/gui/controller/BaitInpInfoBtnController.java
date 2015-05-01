@@ -57,6 +57,10 @@ public class BaitInpInfoBtnController extends AbstrController implements ActionL
             + makeListEntry("Oriza sativa", "LOC_Os##g#######")
             + makeListEntry("Solanum tuberosum", "PGSC####DMP#########")
             + "</ul>"
+            + "<br>"
+            + "Any gene ID's are supported if they are also present"
+            + "<br>"
+            + "in user supplied gene family files"
             + "</html>";
 
         JOptionPane.showMessageDialog(getGuiManager().getInpPnl(), message);

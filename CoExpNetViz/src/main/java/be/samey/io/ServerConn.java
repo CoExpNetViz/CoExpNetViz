@@ -103,6 +103,7 @@ public class ServerConn {
             cyModel.getSpeciesPaths(),
             cyModel.getPCutoff(),
             cyModel.getNCutoff(),
+            cyModel.getOrthGroupNames(),
             cyModel.getOrthGroupPaths());
 
         //run the app on the server
@@ -153,12 +154,8 @@ public class ServerConn {
     }
 
     private HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
-        double poscutoff, double negcutoff, Path[] orthPaths)
+        double poscutoff, double negcutoff, String[] orthNames, Path[] orthPaths)
         throws UnsupportedEncodingException {
-
-        //Tim has numbered his form entity names in this order, this could change
-        // change in the future
-        int[] formNames = new int[]{1, 2, 3, 4, 0};
 
         MultipartEntityBuilder mpeb = MultipartEntityBuilder.create();
 
@@ -173,9 +170,7 @@ public class ServerConn {
         //make the species file upload parts
         for (int i = 0; i < CyModel.MAX_SPECIES_COUNT; i++) {
             if (i < names.length && i < filepaths.length) {
-                mpeb.addBinaryBody("matrix" + formNames[i], filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
-            } else {
-                mpeb.addBinaryBody("matrix" + formNames[i], new byte[0], ContentType.APPLICATION_OCTET_STREAM, "");
+                mpeb.addBinaryBody("matrix[]", filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
             }
         }
 
@@ -187,10 +182,8 @@ public class ServerConn {
 
         //make the orthgroup file upload parts
         for (int i = 0; i < CyModel.MAX_ORTHGROUP_COUNT; i++) {
-            if (cyModel.getOrthGroupPaths() != null && i < cyModel.getOrthGroupPaths().length) {
-                mpeb.addBinaryBody("orthologs" + formNames[i], orthPaths[i].toFile(), ContentType.TEXT_PLAIN, "ortholog" + formNames[i]);
-            } else {
-                mpeb.addBinaryBody("orthologs" + formNames[i], new byte[0], ContentType.APPLICATION_OCTET_STREAM, "");
+            if (cyModel.getOrthGroupPaths() != null && i < orthNames.length && i < orthPaths.length) {
+                mpeb.addBinaryBody("orthologs[]", orthPaths[i].toFile(), ContentType.TEXT_PLAIN, orthNames[i]);
             }
         }
 
@@ -204,7 +197,7 @@ public class ServerConn {
         httppost.setEntity(entity);
 
         CloseableHttpResponse response = null;
-        HttpEntity resEntity = null;
+        HttpEntity resEntity;
         try {
             response = httpclient.execute(httppost);
             resEntity = response.getEntity();

@@ -66,6 +66,7 @@ public class CyAppManager {
     public void runAnalysis() {
 
         System.out.println("---Debug output---");
+        System.out.println("url  : " + CyModel.URL);
         System.out.println("title: " + cyModel.getTitle());
         System.out.println("baits: " + cyModel.getBaits());
         System.out.println("names: " + Arrays.toString(cyModel.getSpeciesNames()));
@@ -73,7 +74,8 @@ public class CyAppManager {
         System.out.println("neg c: " + cyModel.getNCutoff());
         System.out.println("pos c: " + cyModel.getPCutoff());
         System.out.println("out d: " + cyModel.getSaveFilePath());
-        System.out.println("orths: " + Arrays.toString(cyModel.getOrthGroupPaths()));
+        System.out.println("orthn: " + Arrays.toString(cyModel.getOrthGroupNames()));
+        System.out.println("orthp: " + Arrays.toString(cyModel.getOrthGroupPaths()));
 
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));
@@ -97,14 +99,14 @@ public class CyAppManager {
     /**
      * Convenience method to get a reference to the Cytoscape desktop window.
      * Handy for use as a parent for dialog windows
-     * 
-     * @return 
+     *
+     * @return
      */
     public static Frame getCytoscapeRootFrame() {
         //TODO: cleaner to use CySwingApplication instead
         Frame[] frames = Frame.getFrames();
         Frame csFrame = null;
-        for (Frame frame : frames){
+        for (Frame frame : frames) {
             String className = frame.getClass().toString();
             if (className.endsWith("CytoscapeDesktop")) {
                 csFrame = frame;
@@ -121,21 +123,21 @@ public class CyAppManager {
         //attempt 1: try to find CytoscapeConfiguration folder in user.dir
         cyHomePath = Paths.get(System.getProperty("user.dir"));
         localSettingsPath = getCyConfFolder(cyHomePath);
-        if (localSettingsPath != null){
+        if (localSettingsPath != null) {
             return localSettingsPath;
         }
 
         //attempt 2: try to find CytoscapeConfiguration folder in user.home
         cyHomePath = Paths.get(System.getProperty("user.home"));
         localSettingsPath = getCyConfFolder(cyHomePath);
-        if (localSettingsPath != null){
+        if (localSettingsPath != null) {
             return localSettingsPath;
         }
 
         //attampt 3: Try to get a settings folder in the user home directory
         cyHomePath = Paths.get(System.getProperty("user.home"));
         localSettingsPath = getHomeSettingsFolder(cyHomePath);
-        if (localSettingsPath != null){
+        if (localSettingsPath != null) {
             return localSettingsPath;
         }
 
@@ -156,7 +158,7 @@ public class CyAppManager {
                 try {
                     Files.createDirectory(localSettingsPath);
                     return localSettingsPath;
-                }catch (IOException ex) {
+                } catch (IOException ex) {
                     System.out.println(ex);
                     //TODO:warn user somehow
                 }
@@ -175,7 +177,7 @@ public class CyAppManager {
             try {
                 Files.createDirectory(localSettingsPath);
                 return localSettingsPath;
-            }catch (IOException ex) {
+            } catch (IOException ex) {
                 System.out.println(ex);
                 //TODO:warn user somehow
             }

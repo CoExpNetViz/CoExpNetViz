@@ -21,7 +21,6 @@ package be.samey.gui.model;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -30,17 +29,31 @@ import java.nio.file.Paths;
  * @author sam
  */
 public class OrthEntryModel extends AbstrModel {
-
+    
+    private String orthGroupName;
     private Path orthEntryPath;
-
+    
     public OrthEntryModel() {
+        orthGroupName = "";
         orthEntryPath = Paths.get("");
     }
-
+    
+    public String getOrthGroupName() {
+        return orthGroupName;
+    }
+    
+    public void setOrthGroupName(String orthGroupName) {
+        if (this.orthGroupName != orthGroupName) {
+            this.orthGroupName = orthGroupName;
+            setChanged();
+            notifyObservers();
+        }
+    }
+    
     public Path getOrthEntryPath() {
         return orthEntryPath;
     }
-
+    
     public void setOrthEntryPath(Path orthEntryPath) {
         if (this.orthEntryPath != orthEntryPath) {
             this.orthEntryPath = orthEntryPath;
@@ -48,5 +61,5 @@ public class OrthEntryModel extends AbstrModel {
             notifyObservers();
         }
     }
-
+    
 }

@@ -21,36 +21,28 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import be.samey.gui.SpeciesEntry;
-import be.samey.gui.model.SpeciesEntryModel;
+
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
-import be.samey.internal.CyModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author sam
  */
-public class SpeciesAddBtnController extends AbstrController implements ActionListener {
-
-    public SpeciesAddBtnController(CyAppManager cyAppManager) {
+public class OrthDelController extends AbstrController implements ActionListener {
+    
+    private OrthEntryModel oem;
+    
+    public OrthDelController(OrthEntryModel oem, CyAppManager cyAppManager) {
         super(cyAppManager);
+        this.oem = oem;
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllSpecies().size() >= CyModel.MAX_SPECIES_COUNT) {
-
-            JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d species are supported", CyModel.MAX_SPECIES_COUNT));
-            return;
-        }
-        SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntry se = getGuiManager().initSpeciesEntry(sem);
-        getActiveModel().addSpecies(sem, se);
+        getActiveModel().removeOrthGroup(oem);
     }
-
+    
 }

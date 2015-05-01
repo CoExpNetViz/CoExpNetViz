@@ -23,6 +23,7 @@ package be.samey.gui;
  */
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.gui.model.InpPnlModel;
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -58,6 +59,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 /**
@@ -111,6 +113,11 @@ public class InpPnl extends JPanel implements Observer {
     JButton goBtn;
     //second tab
     JPanel tabTwoPnl;
+    JLabel orthLbl;
+    JLabel OrthNoFilesChosenLbl;
+    JScrollPane orthFilesSp;
+    JPanel orthFilesPnl;
+    JButton orthAddBtn;
     //tabbed pane
     JTabbedPane tabbedPane;
 
@@ -139,7 +146,7 @@ public class InpPnl extends JPanel implements Observer {
         //title
         titleLbl = new JLabel("Title (optional)");
         titleTf = new JTextField();
-        topPnl =  new JPanel();
+        topPnl = new JPanel();
         //first tab
         tabOnePnl = new JPanel();
         //input bait genes or choose file
@@ -208,6 +215,18 @@ public class InpPnl extends JPanel implements Observer {
         goBtn = new JButton("Run analysis");
         //second tab
         tabTwoPnl = new JPanel();
+        orthLbl = new JLabel("Choose orhtologous groups (optional)");
+        OrthNoFilesChosenLbl = new JLabel("No files chosen");
+        OrthNoFilesChosenLbl.setEnabled(false);
+        OrthNoFilesChosenLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        orthFilesPnl = new JPanel();
+        orthFilesSp = new JScrollPane();
+        orthFilesPnl.setLayout(new BoxLayout(orthFilesPnl, BoxLayout.Y_AXIS));
+        orthFilesSp.setViewportView(orthFilesPnl);
+        orthFilesSp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        orthFilesSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        orthFilesSp.setAlignmentX(JScrollPane.RIGHT_ALIGNMENT);
+        orthAddBtn = new JButton("Add ortholgous groups file");
         //tabbed pane
         tabbedPane = new JTabbedPane();
 
@@ -376,14 +395,34 @@ public class InpPnl extends JPanel implements Observer {
         saveFilePnl.add(saveFileBtn);
         tabOnePnl.add(saveFilePnl, cMid);
         //go button
-//        cMid.fill = GridBagConstraints.NONE;
-//        cMid.insets = new Insets(10, 0, 0, 0);
-//        cMid.gridx = 0;
-//        cMid.gridy = 52;
-//        cMid.gridwidth = 3;
-//        tabOnePnl.add(goBtn, cMid);
         //**********************************************************************
         //second tab
+        tabTwoPnl.setLayout(new GridBagLayout());
+        GridBagConstraints cOrth = new GridBagConstraints();
+        cOrth.anchor = GridBagConstraints.FIRST_LINE_START;
+        cOrth.fill = GridBagConstraints.HORIZONTAL;
+        cOrth.insets = new Insets(10, 0, 0, 0);
+        cOrth.gridx = 0;
+        cOrth.gridy = 0;
+        tabTwoPnl.add(orthLbl, cOrth);
+        cOrth.insets = new Insets(0, 0, 0, 0);
+        cOrth.gridx = 0;
+        cOrth.gridy = 1;
+        cOrth.ipady = 320;
+        tabTwoPnl.add(orthFilesSp, cOrth);
+        cOrth.insets = new Insets(0, 0, 10, 0);
+        cOrth.fill = GridBagConstraints.NONE;
+        cOrth.gridx = 0;
+        cOrth.gridy = 2;
+        cOrth.ipady = 0;
+        tabTwoPnl.add(orthAddBtn, cOrth);
+        cOrth.fill = GridBagConstraints.BOTH;
+        cOrth.weightx = 1.0;
+        cOrth.weighty = 1.0;
+        cOrth.gridx = 0;
+        cOrth.gridy = 100;
+        tabTwoPnl.add(Box.createGlue(), cOrth);
+        //**********************************************************************
         //tabbed pane
         tabbedPane.addTab("General settings", null, tabOnePnl, "Something");
         tabbedPane.addTab("Gene family options", null, tabTwoPnl, "Somethingelse");
@@ -478,6 +517,40 @@ public class InpPnl extends JPanel implements Observer {
                 && !saveFilePath.toString().trim().isEmpty()
                     ? GuiConstants.APPROVE_COLOR : GuiConstants.DISAPPROVE_COLOR);
             saveFileBtn.setEnabled(saveResults);
+
+            //update: orthGroups
+            if (inpPnlModel.getAllOrthGroups().isEmpty()) {
+                orthFilesSp.setViewportView(OrthNoFilesChosenLbl);
+            } else {
+                orthFilesSp.setViewportView(orthFilesPnl);
+
+                //get currently visible orthGroups
+                List<OrthEntry> oeList = new ArrayList<OrthEntry>();
+                for (Component comp : orthFilesPnl.getComponents()) {
+                    if (comp instanceof OrthEntry) {
+                        OrthEntry oe = (OrthEntry) comp;
+                        oeList.add(oe);
+                    }
+                }
+                //remove orthGroups that are not in the model
+                for (OrthEntry oe : oeList) {
+                    if (!inpPnlModel.getAllOrthGroups().values().contains(oe)) {
+                        orthFilesPnl.remove(oe);
+                    }
+                }
+                //add new orthGroups from the model
+                for (OrthEntryModel oem : inpPnlModel.getAllOrthGroups().keySet()) {
+                    OrthEntry oe = inpPnlModel.getOrthEntry(oem);
+                    if (!oeList.contains(oe)) {
+                        oe.setAlignmentX(Component.LEFT_ALIGNMENT);
+                        orthFilesPnl.add(oe);
+                        oem.triggerUpdate();
+                    }
+                }
+            }
+
+            orthFilesPnl.revalidate();
+            orthFilesPnl.repaint();
         }
 
     }

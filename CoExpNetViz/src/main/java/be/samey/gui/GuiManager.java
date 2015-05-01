@@ -35,6 +35,10 @@ import be.samey.gui.controller.BaitFileOrInpController;
 import be.samey.gui.controller.BaitInpInfoBtnController;
 import be.samey.gui.controller.BaitInpTaController;
 import be.samey.gui.controller.CutoffController;
+import be.samey.gui.controller.OrthDelController;
+import be.samey.gui.controller.OrthEntryAddBtnController;
+import be.samey.gui.controller.OrthFileBtnController;
+import be.samey.gui.controller.OrthFileTfController;
 import be.samey.gui.controller.ProfDelBtnController;
 import be.samey.gui.controller.SaveFileBtnController;
 import be.samey.gui.controller.SpeciesDelController;
@@ -43,6 +47,7 @@ import be.samey.gui.controller.SpeciesNameTfController;
 import be.samey.gui.controller.TitleTfController;
 import be.samey.gui.controller.ProfLoadBtnController;
 import be.samey.gui.controller.ProfSaveBtnController;
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
 import java.io.IOException;
@@ -123,6 +128,8 @@ public class GuiManager {
         tempInpPnl.saveFileChb.addActionListener(new SaveFileChbController(cyAppManager));
         tempInpPnl.saveFileTf.addFocusListener(new SaveFileTfController(cyAppManager));
         tempInpPnl.saveFileBtn.addActionListener(new SaveFileBtnController(cyAppManager));
+        //add orth groups file
+        tempInpPnl.orthAddBtn.addActionListener(new OrthEntryAddBtnController(cyAppManager));
         //go
         tempInpPnl.goBtn.addActionListener(new RunAnalysisController(cyAppManager));
 
@@ -157,6 +164,19 @@ public class GuiManager {
         sem.addObserver(se);
 
         return se;
+    }
+
+    public OrthEntry initOrthEntry(OrthEntryModel oem){
+        OrthEntry oe = new OrthEntry();
+
+        oem.addObserver(oe);
+
+        //add controllers for textfield, browse and remove
+        oe.orthTf.addFocusListener(new OrthFileTfController(oem, cyAppManager));
+        oe.orthBrowseBtn.addActionListener(new OrthFileBtnController(oem, cyAppManager));
+        oe.orthRemoveBtn.addActionListener(new OrthDelController(oem, cyAppManager));
+
+        return oe;
     }
 
     public InpPnlModel makeDefaultModel() {

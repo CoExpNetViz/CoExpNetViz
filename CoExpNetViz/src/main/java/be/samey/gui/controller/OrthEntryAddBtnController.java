@@ -21,45 +21,37 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import be.samey.gui.GuiManager;
 import be.samey.gui.OrthEntry;
-import be.samey.gui.SpeciesEntry;
-import be.samey.gui.model.InpPnlModel;
 import be.samey.gui.model.OrthEntryModel;
-import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
-import java.util.Map;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author sam
  */
-public abstract class AbstrController {
+public class OrthEntryAddBtnController extends AbstrController implements ActionListener {
 
-    protected final CyAppManager cyAppManager;
-    protected final CyModel cyModel;
-
-    public AbstrController(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
-        this.cyModel = cyAppManager.getCyModel();
+    public OrthEntryAddBtnController(CyAppManager cyAppManager) {
+        super(cyAppManager);
     }
 
-    protected GuiManager getGuiManager(){
-        return cyAppManager.getGuiManager();
-    }
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        if (getActiveModel().getAllOrthGroups().size() >= CyModel.MAX_ORTHGROUP_COUNT) {
 
-    protected InpPnlModel getActiveModel() {
-        return getGuiManager().getActiveModel();
-    }
-
-    protected Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies(){
-        return getGuiManager().getActiveModel().getAllSpecies();
-    }
-
-    protected Map<OrthEntryModel, OrthEntry> getAllOrthGroups(){
-        return getGuiManager().getActiveModel().getAllOrthGroups();
+            JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
+                String.format("No more than %d orthologous group files are supported", CyModel.MAX_ORTHGROUP_COUNT));
+            return;
+            
+        }
+        OrthEntryModel oem = new OrthEntryModel();
+        OrthEntry oe = getGuiManager().initOrthEntry(oem);
+        getActiveModel().addOrthGroup(oem, oe);
     }
 
 }

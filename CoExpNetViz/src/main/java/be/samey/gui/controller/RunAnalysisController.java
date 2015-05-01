@@ -21,6 +21,7 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.internal.CyAppManager;
 import be.samey.internal.CyModel;
@@ -64,6 +65,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
             sendSpecies(parent);
             sendCutOffs();
             sendSaveFilePath(parent);
+            sendOrthGroups(parent);
         } catch (IllegalArgumentException ex) {
             return;
         }
@@ -215,6 +217,42 @@ public class RunAnalysisController extends AbstrController implements ActionList
         } else {
             cyModel.setSaveFilePath(null);
         }
+    }
+
+    private void sendOrthGroups(JPanel parent) {
+        List<Path> orthPaths = new ArrayList<Path>();
+
+        if (!getAllOrthGroups().isEmpty()) {
+
+            OrthEntryModel[] OrthEntryModels = getAllOrthGroups().keySet().toArray(new OrthEntryModel[getAllSpecies().size()]);
+            for (int i = 0; i < OrthEntryModels.length; i++) {
+                OrthEntryModel oem = OrthEntryModels[i];
+
+                //check if path is correct
+                if (oem.getOrthEntryPath().toString().trim().length() == 0) {
+                    JOptionPane.showMessageDialog(parent,
+                        String.format("No path was given for the %s orthologous group file", numbers[i]),
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                    throw invalidModelException;
+                }
+                Path orthPath;
+                //TODO: better format checking
+                try {
+                    orthPath = oem.getOrthEntryPath().toRealPath();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(parent,
+                        String.format("There was an error while reading the orthologous group file for the %s entry\n"
+                            + "%s", numbers[i], ex.getMessage()),
+                        "Warning",
+                        JOptionPane.ERROR_MESSAGE);
+                    throw invalidModelException;
+                }
+                orthPaths.add(orthPath);
+            }
+
+        }
+        //TODO: send to CyModel
     }
 
 }

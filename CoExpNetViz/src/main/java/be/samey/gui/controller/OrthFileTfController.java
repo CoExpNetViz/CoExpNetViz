@@ -21,36 +21,29 @@ package be.samey.gui.controller;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import be.samey.gui.SpeciesEntry;
-import be.samey.gui.model.SpeciesEntryModel;
+
+import be.samey.gui.model.OrthEntryModel;
 import be.samey.internal.CyAppManager;
-import be.samey.internal.CyModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.nio.file.Paths;
 
 /**
  *
  * @author sam
  */
-public class SpeciesAddBtnController extends AbstrController implements ActionListener {
+public class OrthFileTfController extends AbstrTfController implements FocusListener {
 
-    public SpeciesAddBtnController(CyAppManager cyAppManager) {
+    private OrthEntryModel oem;
+
+    public OrthFileTfController(OrthEntryModel oem, CyAppManager cyAppManager) {
         super(cyAppManager);
+        this.oem = oem;
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllSpecies().size() >= CyModel.MAX_SPECIES_COUNT) {
-
-            JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d species are supported", CyModel.MAX_SPECIES_COUNT));
-            return;
-        }
-        SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntry se = getGuiManager().initSpeciesEntry(sem);
-        getActiveModel().addSpecies(sem, se);
+    public void focusLost(FocusEvent fe) {
+        oem.setOrthEntryPath(Paths.get(getText(fe)));
     }
-
+    
 }

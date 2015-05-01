@@ -22,6 +22,7 @@ package be.samey.gui.model;
  * #L%
  */
 import be.samey.gui.GuiConstants;
+import be.samey.gui.OrthEntry;
 import be.samey.gui.SpeciesEntry;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,6 +47,7 @@ public class InpPnlModel extends AbstrModel {
     private Path saveFilePath;
 
     private Map<SpeciesEntryModel, SpeciesEntry> species;
+    private Map<OrthEntryModel, OrthEntry> orthGroups;
 
     public InpPnlModel(SpeciesEntryModel sem, SpeciesEntry se) {
         title = "";
@@ -58,6 +60,7 @@ public class InpPnlModel extends AbstrModel {
         saveFilePath = Paths.get(System.getProperty("user.home"));
 
         species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
 
         species.put(sem, se);
     }
@@ -73,6 +76,7 @@ public class InpPnlModel extends AbstrModel {
         saveFilePath = Paths.get(System.getProperty("user.home"));
 
         species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
     }
 
     public InpPnlModel copy() {
@@ -91,6 +95,12 @@ public class InpPnlModel extends AbstrModel {
             newSpecies.put(sem, species.get(sem));
         }
         inpPnlModel.setAllSpecies(newSpecies);
+
+        LinkedHashMap<OrthEntryModel, OrthEntry> newOrthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
+        for (OrthEntryModel oem : orthGroups.keySet()) {
+            newOrthGroups.put(oem, orthGroups.get(oem));
+        }
+        inpPnlModel.setAllOrthGroups(newOrthGroups);
 
         return inpPnlModel;
     }
@@ -265,15 +275,46 @@ public class InpPnlModel extends AbstrModel {
         }
     }
 
-    /**
-     * @return the species
-     */
     public Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies() {
         return species;
     }
 
     public void setAllSpecies(Map<SpeciesEntryModel, SpeciesEntry> species) {
         this.species = species;
+    }
+
+    public OrthEntry getOrthEntry(OrthEntryModel oem) {
+        return orthGroups.get(oem);
+    }
+
+    public void setOrthEntry(OrthEntryModel oem, OrthEntry oe) {
+        orthGroups.put(oem, oe);
+        setChanged();
+        notifyObservers();
+    }
+
+    public void addOrthGroup(OrthEntryModel oem, OrthEntry oe) {
+        if (!orthGroups.containsKey(oem)) {
+            orthGroups.put(oem, oe);
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void removeOrthGroup(OrthEntryModel oem) {
+        if (orthGroups.containsKey(oem)) {
+            orthGroups.remove(oem);
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public Map<OrthEntryModel, OrthEntry> getAllOrthGroups() {
+        return orthGroups;
+    }
+
+    public void setAllOrthGroups(LinkedHashMap<OrthEntryModel, OrthEntry> orthGroups) {
+        this.orthGroups = orthGroups;
     }
 
 }

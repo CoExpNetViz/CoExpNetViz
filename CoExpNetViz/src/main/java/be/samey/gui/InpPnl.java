@@ -223,7 +223,7 @@ public class InpPnl extends JPanel implements Observer {
         orthFilesSp = new JScrollPane();
         orthFilesPnl.setLayout(new BoxLayout(orthFilesPnl, BoxLayout.Y_AXIS));
         orthFilesSp.setViewportView(orthFilesPnl);
-        orthFilesSp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        orthFilesSp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         orthFilesSp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         orthFilesSp.setAlignmentX(JScrollPane.RIGHT_ALIGNMENT);
         orthAddBtn = new JButton("Add ortholgous groups file");

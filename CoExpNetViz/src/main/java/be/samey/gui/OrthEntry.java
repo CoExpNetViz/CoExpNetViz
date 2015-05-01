@@ -55,7 +55,7 @@ public class OrthEntry extends JPanel implements Observer {
         orthBrowseBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
         orthRemoveBtn = new JButton("Remove");
 
-        setMaximumSize(new Dimension(500, 64));
+        setMaximumSize(new Dimension(495, 64));
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;

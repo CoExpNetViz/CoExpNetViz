@@ -24,6 +24,7 @@ package be.samey.gui;
 import be.samey.gui.model.SpeciesEntryModel;
 import be.samey.gui.model.InpPnlModel;
 import be.samey.internal.CyAppManager;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -51,6 +52,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -65,7 +67,7 @@ import javax.swing.UIManager;
 public class InpPnl extends JPanel implements Observer {
 
     //settings
-    JPanel botPnl;
+    JPanel settingsPnl;
     JLabel profLbl;
     JButton profLoadBtn;
     JButton profSaveBtn;
@@ -74,6 +76,9 @@ public class InpPnl extends JPanel implements Observer {
     //title
     JLabel titleLbl;
     JTextField titleTf;
+    JPanel topPnl;
+    //first tab: general settings
+    JPanel tabOnePnl;
     //input baits
     JRadioButton baitInpRb;
     JRadioButton baitFileRb;
@@ -104,6 +109,10 @@ public class InpPnl extends JPanel implements Observer {
     JPanel saveFilePnl;
     //buttons
     JButton goBtn;
+    //second tab
+    JPanel tabTwoPnl;
+    //tabbed pane
+    JTabbedPane tabbedPane;
 
     private ButtonGroup inpBaitOrfileBaitBg;
     private SpinnerModel nCutoffSm;
@@ -120,8 +129,8 @@ public class InpPnl extends JPanel implements Observer {
      */
     private void constructGui() {
         //profiles
-        botPnl = new JPanel();
-        botPnl.setLayout(new BoxLayout(botPnl, BoxLayout.LINE_AXIS));
+        settingsPnl = new JPanel();
+        settingsPnl.setLayout(new BoxLayout(settingsPnl, BoxLayout.LINE_AXIS));
         profLbl = new JLabel("Settings: ");
         profLoadBtn = new JButton("Load");
         profSaveBtn = new JButton("Save");
@@ -130,6 +139,9 @@ public class InpPnl extends JPanel implements Observer {
         //title
         titleLbl = new JLabel("Title (optional)");
         titleTf = new JTextField();
+        topPnl =  new JPanel();
+        //first tab
+        tabOnePnl = new JPanel();
         //input bait genes or choose file
         baitInpRb = new JRadioButton("Input bait genes");
         baitInpRb.setName("baitInpRb");
@@ -194,128 +206,151 @@ public class InpPnl extends JPanel implements Observer {
         saveFileBtn.setIcon(UIManager.getIcon("FileView.directoryIcon"));
         //buttons
         goBtn = new JButton("Run analysis");
+        //second tab
+        tabTwoPnl = new JPanel();
+        //tabbed pane
+        tabbedPane = new JTabbedPane();
 
-        //create gridbaglayout and add components to it
-        setPreferredSize(new Dimension(500, 640));
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        //create the borderlayout
+        setPreferredSize(new Dimension(500, 700));
+        setLayout(new BorderLayout());
+        //======================================================================
+        //NORTH PANEL
+        //create topPnl gridbaglayout and add components to it
+        topPnl.setLayout(new GridBagLayout());
+        GridBagConstraints cTop = new GridBagConstraints();
+        cTop.anchor = GridBagConstraints.FIRST_LINE_START;
+        cTop.weightx = 0.5;
+        cTop.fill = GridBagConstraints.HORIZONTAL;
         //----------------------------------------------------------------------
         //settings
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 00;
-        c.gridwidth = 2;
-        botPnl.add(profLbl);
-        botPnl.add(profLoadBtn);
-        botPnl.add(profSaveBtn);
-        botPnl.add(profDelBtn);
-        add(botPnl, c);
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 2;
-        c.gridy = 00;
-        c.gridwidth = 1;
-        add(resetBtn, c);
+        cTop.insets = new Insets(0, 0, 0, 0);
+        cTop.gridx = 0;
+        cTop.gridy = 00;
+        cTop.gridwidth = 2;
+        settingsPnl.add(profLbl);
+        settingsPnl.add(profLoadBtn);
+        settingsPnl.add(profSaveBtn);
+        settingsPnl.add(profDelBtn);
+        topPnl.add(settingsPnl, cTop);
+        cTop.fill = GridBagConstraints.NONE;
+        cTop.anchor = GridBagConstraints.LAST_LINE_END;
+        cTop.insets = new Insets(0, 0, 0, 0);
+        cTop.gridx = 2;
+        cTop.gridy = 00;
+        cTop.gridwidth = 1;
+        resetBtn.setMaximumSize(new Dimension(32, 32));
+        topPnl.add(resetBtn, cTop);
         //----------------------------------------------------------------------
         //title
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 10;
-        c.gridwidth = 1;
-        add(titleLbl, c);
-        c.insets = new Insets(00, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 11;
-        c.gridwidth = 3;
-        add(titleTf, c);
+        cTop.anchor = GridBagConstraints.FIRST_LINE_START;
+        cTop.fill = GridBagConstraints.HORIZONTAL;
+        cTop.insets = new Insets(10, 0, 0, 0);
+        cTop.gridx = 0;
+        cTop.gridy = 10;
+        cTop.gridwidth = 1;
+        topPnl.add(titleLbl, cTop);
+        cTop.insets = new Insets(00, 0, 0, 0);
+        cTop.gridx = 0;
+        cTop.gridy = 11;
+        cTop.gridwidth = 3;
+        topPnl.add(titleTf, cTop);
+        add(topPnl, BorderLayout.PAGE_START);
+        //======================================================================
+        //CENTRAL PANEL
+        //**********************************************************************
+        //first tab
+        tabOnePnl.setLayout(new GridBagLayout());
+        GridBagConstraints cMid = new GridBagConstraints();
+        cMid.anchor = GridBagConstraints.FIRST_LINE_START;
+        cMid.weightx = 0.5;
+        cMid.fill = GridBagConstraints.HORIZONTAL;
         //----------------------------------------------------------------------
         //input bait genes
         //top two radio buttons (input bait genes or file)
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 20;
-        c.gridwidth = 1;
-        add(baitInpRb, c);
-        c.gridx = 1;
-        c.gridy = 20;
-        c.gridwidth = 1;
-        add(baitFileRb, c);
+        cMid.insets = new Insets(10, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 20;
+        cMid.gridwidth = 1;
+        tabOnePnl.add(baitInpRb, cMid);
+        cMid.gridx = 1;
+        cMid.gridy = 20;
+        cMid.gridwidth = 1;
+        tabOnePnl.add(baitFileRb, cMid);
         //input baits or choose file
         //input bait genes label
-        c.insets = new Insets(0, 0, 0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        c.gridx = 0;
-        c.gridy = 21;
-        c.gridwidth = 1;
-        add(baitInpLbl, c);
+        cMid.insets = new Insets(0, 0, 0, 0);
+        cMid.fill = GridBagConstraints.HORIZONTAL;
+        cMid.anchor = GridBagConstraints.LAST_LINE_START;
+        cMid.gridx = 0;
+        cMid.gridy = 21;
+        cMid.gridwidth = 1;
+        tabOnePnl.add(baitInpLbl, cMid);
         //input bait genes info button
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LAST_LINE_END;
-        c.gridx = 2;
-        c.gridy = 21;
-        c.gridwidth = 1;
-        add(baitInpInfoBtn, c);
+        cMid.fill = GridBagConstraints.NONE;
+        cMid.anchor = GridBagConstraints.LAST_LINE_END;
+        cMid.gridx = 2;
+        cMid.gridy = 21;
+        cMid.gridwidth = 1;
+        tabOnePnl.add(baitInpInfoBtn, cMid);
         //bait genes text area
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weighty = 1.0;
-        c.ipady = (160);
-        c.gridx = 0;
-        c.gridy = 22;
-        c.gridwidth = 3;
-        add(inpBaitSp, c);
+        cMid.fill = GridBagConstraints.HORIZONTAL;
+        cMid.anchor = GridBagConstraints.FIRST_LINE_START;
+        cMid.weighty = 1.0;
+        cMid.ipady = (160);
+        cMid.gridx = 0;
+        cMid.gridy = 22;
+        cMid.gridwidth = 3;
+        tabOnePnl.add(inpBaitSp, cMid);
         //choose bait genes file label
-        c.weighty = 0.0;
-        c.ipady = 0;
-        c.gridx = 0;
-        c.gridy = 23;
-        c.gridwidth = 3;
-        add(baitFileLbl, c);
+        cMid.weighty = 0.0;
+        cMid.ipady = 0;
+        cMid.gridx = 0;
+        cMid.gridy = 23;
+        cMid.gridwidth = 3;
+        tabOnePnl.add(baitFileLbl, cMid);
         //bait genes file textfield and button
-        c.gridx = 0;
-        c.gridy = 24;
-        c.gridwidth = 3;
+        cMid.gridx = 0;
+        cMid.gridy = 24;
+        cMid.gridwidth = 3;
         fileBaitPnl.add(baitFileTf);
         fileBaitPnl.add(baitFileBtn);
-        add(fileBaitPnl, c);
+        tabOnePnl.add(fileBaitPnl, cMid);
         //----------------------------------------------------------------------
         //choose species
         //choose species label
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 30;
-        c.gridwidth = 3;
-        add(chooseSpeciesLbl, c);
+        cMid.insets = new Insets(10, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 30;
+        cMid.gridwidth = 3;
+        tabOnePnl.add(chooseSpeciesLbl, cMid);
         //choose species scrollpane
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 31;
-        c.ipady = (160);
-        c.gridwidth = 3;
-        add(chooseSpeciesSp, c);
+        cMid.insets = new Insets(0, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 31;
+        cMid.ipady = (160);
+        cMid.gridwidth = 3;
+        tabOnePnl.add(chooseSpeciesSp, cMid);
         //add species button
-        c.insets = new Insets(0, 0, 0, 90);
-        c.gridx = 0;
-        c.gridy = 32;
-        c.ipady = (0);
-        c.gridwidth = 1;
-        add(addSpeciesBtn, c);
+        cMid.insets = new Insets(0, 0, 0, 90);
+        cMid.gridx = 0;
+        cMid.gridy = 32;
+        cMid.ipady = (0);
+        cMid.gridwidth = 1;
+        tabOnePnl.add(addSpeciesBtn, cMid);
         //----------------------------------------------------------------------
         //choose cutoffs
         //choose cutoff label
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 40;
-        c.gridwidth = 3;
-        add(chooseCutoffLbl, c);
+        cMid.insets = new Insets(10, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 40;
+        cMid.gridwidth = 3;
+        tabOnePnl.add(chooseCutoffLbl, cMid);
         //cutoff labels and spinners
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 41;
-        c.gridwidth = 3;
+        cMid.insets = new Insets(0, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 41;
+        cMid.gridwidth = 3;
         cutoffPnl.add(nCutoffLbl);
         cutoffPnl.add(Box.createRigidArea(new Dimension(5, 0))); //spacer
         cutoffPnl.add(nCutoffSp);
@@ -323,35 +358,42 @@ public class InpPnl extends JPanel implements Observer {
         cutoffPnl.add(pCutoffLbl);
         cutoffPnl.add(Box.createRigidArea(new Dimension(5, 0)));
         cutoffPnl.add(pCutoffSp);
-        add(cutoffPnl, c);
+        tabOnePnl.add(cutoffPnl, cMid);
         //----------------------------------------------------------------------
         //save file
         //checkbox
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 50;
-        c.gridwidth = 1;
-        add(saveFileChb, c);
+        cMid.insets = new Insets(10, 0, 0, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 50;
+        cMid.gridwidth = 1;
+        tabOnePnl.add(saveFileChb, cMid);
         //save file textfield and button
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 51;
-        c.gridwidth = 3;
+        cMid.insets = new Insets(0, 0, 10, 0);
+        cMid.gridx = 0;
+        cMid.gridy = 51;
+        cMid.gridwidth = 3;
         saveFilePnl.add(saveFileTf);
         saveFilePnl.add(saveFileBtn);
-        add(saveFilePnl, c);
-        //go and clear buttons
-        c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(10, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 52;
-        c.gridwidth = 3;
-        add(goBtn, c);
-//        c.anchor = GridBagConstraints.FIRST_LINE_END;
-//        c.gridx = 2;
-//        c.gridy = 42;
-//        c.gridwidth = 1;
-//        add(resetBtn, c);
+        tabOnePnl.add(saveFilePnl, cMid);
+        //go button
+//        cMid.fill = GridBagConstraints.NONE;
+//        cMid.insets = new Insets(10, 0, 0, 0);
+//        cMid.gridx = 0;
+//        cMid.gridy = 52;
+//        cMid.gridwidth = 3;
+//        tabOnePnl.add(goBtn, cMid);
+        //**********************************************************************
+        //second tab
+        //tabbed pane
+        tabbedPane.addTab("General settings", null, tabOnePnl, "Something");
+        tabbedPane.addTab("Gene family options", null, tabTwoPnl, "Somethingelse");
+        add(tabbedPane, BorderLayout.CENTER);
+        //======================================================================
+        //SOUTH PANEL
+        JPanel botPnl = new JPanel();
+        botPnl.setLayout(new BoxLayout(botPnl, BoxLayout.LINE_AXIS));
+        botPnl.add(goBtn);
+        add(botPnl, BorderLayout.PAGE_END);
     }
 
     @Override

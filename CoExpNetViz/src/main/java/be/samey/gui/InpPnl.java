@@ -424,8 +424,8 @@ public class InpPnl extends JPanel implements Observer {
         tabTwoPnl.add(Box.createGlue(), cOrth);
         //**********************************************************************
         //tabbed pane
-        tabbedPane.addTab("General settings", null, tabOnePnl, "Something");
-        tabbedPane.addTab("Gene family options", null, tabTwoPnl, "Somethingelse");
+        tabbedPane.addTab("General settings", tabOnePnl);
+        tabbedPane.addTab("Gene family options", tabTwoPnl);
         add(tabbedPane, BorderLayout.CENTER);
         //======================================================================
         //SOUTH PANEL

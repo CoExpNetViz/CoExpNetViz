@@ -102,7 +102,8 @@ public class ServerConn {
             cyModel.getSpeciesNames(),
             cyModel.getSpeciesPaths(),
             cyModel.getPCutoff(),
-            cyModel.getNCutoff());
+            cyModel.getNCutoff(),
+            cyModel.getOrthGroupPaths());
 
         //run the app on the server
         executeAppOnSever(CyModel.URL, postEntity, archivePath);
@@ -152,7 +153,7 @@ public class ServerConn {
     }
 
     private HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
-        double poscutoff, double negcutoff)
+        double poscutoff, double negcutoff, Path[] orthPaths)
         throws UnsupportedEncodingException {
 
         //Tim has numbered his form entity names in this order, this could change
@@ -161,11 +162,15 @@ public class ServerConn {
 
         MultipartEntityBuilder mpeb = MultipartEntityBuilder.create();
 
+        //make hidden form fields, to the server knows to use the api
+        mpeb.addPart("__controller", new StringBody("api"));
+        mpeb.addPart("__action", new StringBody("execute_job"));
+
         //make the bait part
         StringBody baitspart = new StringBody(baits, ContentType.TEXT_PLAIN);
         mpeb.addPart("baits", baitspart);
 
-        //make the file upload parts
+        //make the species file upload parts
         for (int i = 0; i < CyModel.MAX_SPECIES_COUNT; i++) {
             if (i < names.length && i < filepaths.length) {
                 mpeb.addBinaryBody("matrix" + formNames[i], filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
@@ -179,6 +184,15 @@ public class ServerConn {
         mpeb.addPart("positive_correlation", poscpart);
         StringBody negcpart = new StringBody(Double.toString(negcutoff));
         mpeb.addPart("negative_correlation", negcpart);
+
+        //make the orthgroup file upload parts
+        for (int i = 0; i < CyModel.MAX_ORTHGROUP_COUNT; i++) {
+            if (cyModel.getOrthGroupPaths() != null && i < cyModel.getOrthGroupPaths().length) {
+                mpeb.addBinaryBody("orthologs" + formNames[i], orthPaths[i].toFile(), ContentType.TEXT_PLAIN, "ortholog" + formNames[i]);
+            } else {
+                mpeb.addBinaryBody("orthologs" + formNames[i], new byte[0], ContentType.APPLICATION_OCTET_STREAM, "");
+            }
+        }
 
         return mpeb.build();
     }

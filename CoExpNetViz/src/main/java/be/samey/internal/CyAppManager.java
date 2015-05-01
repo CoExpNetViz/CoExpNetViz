@@ -73,6 +73,7 @@ public class CyAppManager {
         System.out.println("neg c: " + cyModel.getNCutoff());
         System.out.println("pos c: " + cyModel.getPCutoff());
         System.out.println("out d: " + cyModel.getSaveFilePath());
+        System.out.println("orths: " + Arrays.toString(cyModel.getOrthGroupPaths()));
 
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));

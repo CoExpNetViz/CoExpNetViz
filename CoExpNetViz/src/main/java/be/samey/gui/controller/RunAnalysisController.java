@@ -42,14 +42,14 @@ import javax.swing.JPanel;
  * @author sam
  */
 public class RunAnalysisController extends AbstrController implements ActionListener {
-
+    
     private final String[] numbers = new String[]{"first", "second", "third", "fourth", "fith"};
     private final IllegalArgumentException invalidModelException = new IllegalArgumentException("RunAnalysisController: GuiModel has invalid fields");
-
+    
     public RunAnalysisController(CyAppManager cyAppManager) {
         super(cyAppManager);
     }
-
+    
     @Override
     /**
      * Invoked when the user clicks the "Run analysis" button. All fields from
@@ -58,7 +58,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
      */
     public void actionPerformed(ActionEvent ae) {
         JPanel parent = getGuiManager().getInpPnl();
-
+        
         try {
             sendTitle();
             sendBaits(parent);
@@ -73,7 +73,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
         //if all checks were ok, we can run the analysis
         cyAppManager.runAnalysis();
     }
-
+    
     private void sendTitle() {
         if (getActiveModel().getTitle().trim().isEmpty()) {
             cyModel.setTitle(CyModel.APP_NAME + "_" + CyAppManager.getTimeStamp());
@@ -139,7 +139,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
     private void sendSpecies(JPanel parent) {
         List<String> speciesNames = new ArrayList<String>();
         List<Path> speciesPaths = new ArrayList<Path>();
-
+        
         SpeciesEntryModel[] SpeciesEntryModels = getAllSpecies().keySet().toArray(new SpeciesEntryModel[getAllSpecies().size()]);
         for (int i = 0; i < SpeciesEntryModels.length; i++) {
             SpeciesEntryModel sem = SpeciesEntryModels[i];
@@ -176,7 +176,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
             }
             speciesPaths.add(speciesPath);
         }
-
+        
         cyModel.setSpeciesNames(speciesNames.toArray(new String[speciesNames.size()]));
         cyModel.setSpeciesPaths(speciesPaths.toArray(new Path[speciesPaths.size()]));
     }
@@ -218,12 +218,12 @@ public class RunAnalysisController extends AbstrController implements ActionList
             cyModel.setSaveFilePath(null);
         }
     }
-
+    
     private void sendOrthGroups(JPanel parent) {
         List<Path> orthPaths = new ArrayList<Path>();
-
+        
         if (!getAllOrthGroups().isEmpty()) {
-
+            
             OrthEntryModel[] OrthEntryModels = getAllOrthGroups().keySet().toArray(new OrthEntryModel[getAllSpecies().size()]);
             for (int i = 0; i < OrthEntryModels.length; i++) {
                 OrthEntryModel oem = OrthEntryModels[i];
@@ -250,9 +250,12 @@ public class RunAnalysisController extends AbstrController implements ActionList
                 }
                 orthPaths.add(orthPath);
             }
-
+            
+            cyModel.setOrthGroupPaths(orthPaths.toArray(new Path[orthPaths.size()]));
+        } else {
+            cyModel.setOrthGroupPaths(null);
         }
-        //TODO: send to CyModel
+        
     }
-
+    
 }

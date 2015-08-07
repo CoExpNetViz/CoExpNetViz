@@ -92,8 +92,8 @@ public class CevTableReaderTest {
         CyTable ct = ctr.readNOA(noaPath, cn);
 
         //check result
-        assertEquals(2162, ct.getRowCount());
-        assertEquals(String.class, ct.getColumn("Species").getType());
+        assertEquals(1440, ct.getRowCount());
+        assertEquals(String.class, ct.getColumn("species").getType());
     }
 
     /**
@@ -125,7 +125,7 @@ public class CevTableReaderTest {
         CyTable ct = ctr.readEDA(edaPath, cn);
 
         //check result
-        assertEquals(4334, ct.getRowCount());
+        assertEquals(2814, ct.getRowCount());
         assertEquals(Double.class, ct.getColumn("r_value").getType());
     }
 

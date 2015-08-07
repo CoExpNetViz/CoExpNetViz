@@ -82,8 +82,8 @@ public class CevNetworkReaderTest {
         cnr.readSIF(sifPath, cn);
 
         //check result
-        assertEquals(2162, cn.getNodeCount());
-        assertEquals(4334, cn.getEdgeCount());
+        assertEquals(1440, cn.getNodeCount());
+        assertEquals(2814, cn.getEdgeCount());
     }
 
 }

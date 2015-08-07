@@ -80,6 +80,7 @@ public class CevTableReader {
                 cevNodeTable.createColumn(attrColumnName, tableMap.attrTypes[i], false);
             }
         }
+        
         //add node Degree column
         String colName = "Degree";
         if (cevNodeTable.getColumn(colName) == null) {

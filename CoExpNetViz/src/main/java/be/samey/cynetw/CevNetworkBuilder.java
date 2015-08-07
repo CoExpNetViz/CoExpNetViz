@@ -37,7 +37,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
  *
  * @author sam
  */
-public class CevNetworkBuilder /*implements Observer*/ {
+public class CevNetworkBuilder {
 
     private final CyAppManager cyAppManager;
     private final CyServices cyServices;

@@ -70,13 +70,13 @@ public class CyModel extends Observable {
     private String title;
     //sent to server
     private String baits;
-    private String[] speciesNames;
-    private Path[] speciesPaths;
+    private String[] speciesNames; // names of matrices
+    private Path[] speciesPaths; // paths to matrices; corresponds to speciesNames
     private double nCutoff;
     private double pCutoff;
     private Path saveFilePath;
-    private String[] orthGroupNames;
-    private Path[] orthGroupPaths;
+    private String[] orthGroupNames; // Name of each ortholog-families file 
+    private Path[] orthGroupPaths; // Paths to ortholog-families files; corresponds to orthGroupNames
     //Node table for last created network
     //this is set by CreateNetworkTask and used by ShowNetworkTask
     private CyTable lastNoaTable;

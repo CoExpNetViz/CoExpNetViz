@@ -32,7 +32,7 @@ public class FamLayoutContext {
      */
 
     @Tunable(description = "Which column to use to group baits")
-    public String speciesAttribute = "Species";
+    public String speciesAttribute = "species";
     @Tunable(description = "Horizontal spacing between two unconnected nodes")
     public double nspacingx = 80.0;
     @Tunable(description = "Vertical spacing between two unconnected nodes")

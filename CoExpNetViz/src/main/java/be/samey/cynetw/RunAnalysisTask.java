@@ -61,7 +61,6 @@ public class RunAnalysisTask extends AbstractTask {
      */
     @Override
     public void run(TaskMonitor tm) throws Exception {
-
         tm.setTitle(CyModel.PROG_TITLE);
 
         try {
@@ -72,11 +71,9 @@ public class RunAnalysisTask extends AbstractTask {
             //TODO: if any exception occured, roll back whatever has changed
             throw e; //doing this shows the exceptoin to the user in the gui
         }
-
     }
 
     void runOnServer(TaskMonitor tm) throws Exception {
-
         tm.setStatusMessage(CyModel.PROG_TITLE);
 
         sc = cyAppManager.getServerConn();
@@ -111,19 +108,15 @@ public class RunAnalysisTask extends AbstractTask {
 
         //this will throw the child thread's exceptions if there were any
         futureResult.get();
-
     }
 
     void createNetwork(TaskMonitor tm) throws Exception {
-
         tm.setProgress(CyModel.PROG_CONN_COMPLETE);
         tm.setStatusMessage("Creating network");
         cyAppManager.getCevNetworkBuilder().createNetworkView();
-
     }
 
     void applyLayout(TaskMonitor tm) {
-
         tm.setProgress(CyModel.PROG_NETW_COMPLETE);
         tm.setStatusMessage("Applying layout");
         FamLayout layout = (FamLayout) cyAppManager.getCyServices().
@@ -137,7 +130,6 @@ public class RunAnalysisTask extends AbstractTask {
             groupColumnName,
             speciesColumnName);
         insertTasksAfterCurrentTask(ti);
-
     }
 
 }

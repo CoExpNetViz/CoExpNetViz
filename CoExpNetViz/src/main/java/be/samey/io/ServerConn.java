@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.commons.io.IOUtils;
 import org.rauschig.jarchivelib.ArchiveEntry;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.ArchiveStream;
@@ -47,7 +48,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.EntityUtils;
 
 /**
@@ -118,8 +118,6 @@ public class ServerConn {
 
         //run the app on the server
         executeAppOnSever(CyModel.URL, postEntity, archivePath);
-        
-        // TODO 
 
         /*----------------------------------------------------------------------
          4) Handle response: Unpack files to temp dir; or if return is error response, interpret the error.
@@ -169,37 +167,35 @@ public class ServerConn {
         double poscutoff, double negcutoff, String[] orthNames, Path[] orthPaths)
         throws UnsupportedEncodingException {
 
-        MultipartEntityBuilder mpeb = MultipartEntityBuilder.create();
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
 
         //make hidden form fields, to the server knows to use the api
-        mpeb.addPart("__controller", new StringBody("api"));
-        mpeb.addPart("__action", new StringBody("execute_job"));
+        entityBuilder.addTextBody("__controller", "api");
+        entityBuilder.addTextBody("__action", "execute_job");
 
         //make the bait part
-        StringBody baitspart = new StringBody(baits, ContentType.TEXT_PLAIN);
-        mpeb.addPart("baits", baitspart);
+        entityBuilder.addTextBody("baits", baits);
 
         //make the species file upload parts
         for (int i = 0; i < CyModel.MAX_SPECIES_COUNT; i++) {
             if (i < names.length && i < filepaths.length) {
-                mpeb.addBinaryBody("matrix[]", filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
+                entityBuilder.addBinaryBody("matrix[]", filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
             }
         }
 
         //make the cutoff parts
-        StringBody poscpart = new StringBody(Double.toString(poscutoff));
-        mpeb.addPart("positive_correlation", poscpart);
-        StringBody negcpart = new StringBody(Double.toString(negcutoff));
-        mpeb.addPart("negative_correlation", negcpart);
+        entityBuilder.addTextBody("positive_correlation", Double.toString(poscutoff));
+        entityBuilder.addTextBody("negative_correlation", Double.toString(negcutoff));
 
         //make the orthgroup file upload parts
+        entityBuilder.addTextBody("orthologs_source", "plaza"); // 'custom' otherwise
         for (int i = 0; i < CyModel.MAX_ORTHGROUP_COUNT; i++) {
             if (cyModel.getOrthGroupPaths() != null && i < orthNames.length && i < orthPaths.length) {
-                mpeb.addBinaryBody("orthologs[]", orthPaths[i].toFile(), ContentType.TEXT_PLAIN, orthNames[i]);
+                entityBuilder.addBinaryBody("orthologs[]", orthPaths[i].toFile(), ContentType.TEXT_PLAIN, orthNames[i]);
             }
         }
 
-        return mpeb.build();
+        return entityBuilder.build();
     }
 
     private void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws IOException, ServerException {
@@ -222,9 +218,9 @@ public class ServerConn {
             	throw new ServerException("Server http response has no body");
             }
             
-            // Save response TODO with mime type
+            // Save response if tgz, show error otherwise 
             String contentType = responseEntity.getContentType().getValue();
-            if ("??".equals(contentType)) {
+            if ("application/x-gtar".equals(contentType)) {
             	// Archive with the actual result
             	saveResponse(responseEntity.getContent(), archivePath);
             }
@@ -254,19 +250,15 @@ public class ServerConn {
      * @param destination
      * @throws IOException
      */
-    private void saveResponse(final InputStream input, Path destination) throws IOException {
-        OutputStream out = Files.newOutputStream(destination);
+    private void saveResponse(final InputStream in, Path destination) throws IOException {
+    	OutputStream out = null;
         try {
-            final byte[] buffer = new byte[1024];
-            while (true) {
-                final int len = input.read(buffer);
-                if (len < 0) {
-                    break;
-                }
-                out.write(buffer, 0, len);
-            }
+        	out = Files.newOutputStream(destination);
+            IOUtils.copy(in, out);
         } finally {
-            out.close();
+            if (out != null) {
+            	out.close();
+            }
         }
     }
 }

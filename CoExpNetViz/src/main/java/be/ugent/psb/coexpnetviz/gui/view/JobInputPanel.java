@@ -1,8 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.view;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
-import be.ugent.psb.coexpnetviz.gui.OrthEntry;
-import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 
 /*
  * #%L
@@ -29,7 +28,6 @@ import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -167,7 +165,7 @@ public class JobInputPanel extends JPanel implements Observer {
         baitInputLabel = new JLabel("Enter bait genes");
         baitInputInfoButton = new JButton("ID's");
         try {
-            ClassLoader classLoader = CyAppManager.class.getClassLoader();
+            ClassLoader classLoader = CENVApplication.class.getClassLoader();
             Image img = ImageIO.read(classLoader.getResource("icons/help-icon16.png"));
             baitInputInfoButton.setIcon(new ImageIcon(img));
         } catch (IOException ex) {
@@ -486,7 +484,7 @@ public class JobInputPanel extends JPanel implements Observer {
             titleTextField.setText(inpPnlModel.getTitle());
 
             //update: baits
-            boolean useBaitFile = inpPnlModel.isUseBaitFile();
+            boolean useBaitFile = inpPnlModel.isUseBaitsFile();
             baitInputRadioButton.setSelected(!useBaitFile);
             baitFileRadioButton.setSelected(useBaitFile);
             baitInputLabel.setEnabled(!useBaitFile);
@@ -495,7 +493,7 @@ public class JobInputPanel extends JPanel implements Observer {
             baitInputTextArea.setText(baits);
             baitFileLabel.setEnabled(useBaitFile);
             baitFileTextField.setEnabled(useBaitFile);
-            Path baitFilePath = inpPnlModel.getBaitFilePath();
+            Path baitFilePath = inpPnlModel.getBaitsFilePath();
             baitFileTextField.setText(baitFilePath.toString());
             baitFileTextField.setBackground(
                 Files.isRegularFile(baitFilePath) && Files.isReadable(baitFilePath)
@@ -504,22 +502,22 @@ public class JobInputPanel extends JPanel implements Observer {
 
             //update: species
             //get currently visible species
-            List<SpeciesEntry> seList = new ArrayList<SpeciesEntry>();
+            List<SpeciesEntryPanel> seList = new ArrayList<SpeciesEntryPanel>();
             for (Component comp : chooseSpeciesPanel.getComponents()) {
-                if (comp instanceof SpeciesEntry) {
-                    SpeciesEntry se = (SpeciesEntry) comp;
+                if (comp instanceof SpeciesEntryPanel) {
+                    SpeciesEntryPanel se = (SpeciesEntryPanel) comp;
                     seList.add(se);
                 }
             }
             //remove species that are not in the model
-            for (SpeciesEntry se : seList) {
+            for (SpeciesEntryPanel se : seList) {
                 if (!inpPnlModel.getAllSpecies().values().contains(se)) {
                     chooseSpeciesPanel.remove(se);
                 }
             }
             //add new species from the model
             for (SpeciesEntryModel sem : inpPnlModel.getAllSpecies().keySet()) {
-                SpeciesEntry se = inpPnlModel.getAllSpecies().get(sem);
+                SpeciesEntryPanel se = inpPnlModel.getAllSpecies().get(sem);
                 if (!seList.contains(se)) {
                     se.setAlignmentX(Component.LEFT_ALIGNMENT);
                     chooseSpeciesPanel.add(se);
@@ -554,22 +552,22 @@ public class JobInputPanel extends JPanel implements Observer {
                 orthFilesScrollPane.setViewportView(orthFilesPanel);
 
                 //get currently visible orthGroups
-                List<OrthEntry> oeList = new ArrayList<OrthEntry>();
+                List<OrthEntryPanel> oeList = new ArrayList<OrthEntryPanel>();
                 for (Component comp : orthFilesPanel.getComponents()) {
-                    if (comp instanceof OrthEntry) {
-                        OrthEntry oe = (OrthEntry) comp;
+                    if (comp instanceof OrthEntryPanel) {
+                        OrthEntryPanel oe = (OrthEntryPanel) comp;
                         oeList.add(oe);
                     }
                 }
                 //remove orthGroups that are not in the model
-                for (OrthEntry oe : oeList) {
+                for (OrthEntryPanel oe : oeList) {
                     if (!inpPnlModel.getAllOrthGroups().values().contains(oe)) {
                         orthFilesPanel.remove(oe);
                     }
                 }
                 //add new orthGroups from the model
                 for (OrthEntryModel oem : inpPnlModel.getAllOrthGroups().keySet()) {
-                    OrthEntry oe = inpPnlModel.getOrthEntry(oem);
+                    OrthEntryPanel oe = inpPnlModel.getOrthEntry(oem);
                     if (!oeList.contains(oe)) {
                         oe.setAlignmentX(Component.LEFT_ALIGNMENT);
                         orthFilesPanel.add(oe);

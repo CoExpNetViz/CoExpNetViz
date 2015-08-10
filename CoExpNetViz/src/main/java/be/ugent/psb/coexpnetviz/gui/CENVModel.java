@@ -1,11 +1,14 @@
-package be.ugent.psb.coexpnetviz.internal;
+package be.ugent.psb.coexpnetviz.gui;
 
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Observable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
+
+import be.ugent.psb.coexpnetviz.io.JobDescription;
 
 /*
  * #%L
@@ -29,17 +32,14 @@ import org.cytoscape.view.model.CyNetworkView;
  * #L%
  */
 /**
- *
+ * Data class: some constants, global state that perhaps could be made less global
  * @author sam
  */
-public class CyModel extends Observable {
+public class CENVModel extends Observable {
 
-    /*--------------------------------------------------------------------------
-     properties of the app that do not change during execution
-     */
     public static final String APP_NAME = "CoExpNetViz";
-    public static final int MAX_SPECIES_COUNT = 5;
-    public static final int MAX_ORTHGROUP_COUNT = 5;
+    public static final int MAX_SPECIES_COUNT = 5;// TODO rm
+    public static final int MAX_ORTHGROUP_COUNT = 5;// TODO rm
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
     //which column contains the gene families
     public static final int FAMILIES_COLUMN = 0;
@@ -68,15 +68,9 @@ public class CyModel extends Observable {
      */
     //title of the current analysis
     private String title;
-    //sent to server
-    private String baits;
-    private String[] speciesNames; // names of matrices
-    private Path[] speciesPaths; // paths to matrices; corresponds to speciesNames
-    private double nCutoff;
-    private double pCutoff;
-    private Path saveFilePath;
-    private String[] orthGroupNames; // Name of each ortholog-families file 
-    private Path[] orthGroupPaths; // Paths to ortholog-families files; corresponds to orthGroupNames
+    
+    private JobDescription jobDescription; 
+    
     //Node table for last created network
     //this is set by CreateNetworkTask and used by ShowNetworkTask
     private CyTable lastNoaTable;
@@ -88,7 +82,6 @@ public class CyModel extends Observable {
     private Path sifPath;
     private Path noaPath;
     private Path edaPath;
-    private Path vizPath;
     private Path logPath;
 
     /*--------------------------------------------------------------------------
@@ -97,6 +90,10 @@ public class CyModel extends Observable {
     private Path settingsPath;
     private HashSet<CyNetwork> visibleCevNetworks = new HashSet<CyNetwork>();
 
+    public CENVModel() {
+		jobDescription = new JobDescription();
+	}
+    
     /*--------------------------------------------------------------------------
      Getters and setters
      */
@@ -112,118 +109,6 @@ public class CyModel extends Observable {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    /**
-     * @return the baits
-     */
-    public String getBaits() {
-        return baits;
-    }
-
-    /**
-     * @param baits the baits to set
-     */
-    public void setBaits(String baits) {
-        this.baits = baits;
-    }
-
-    /**
-     * @return the speciesNames
-     */
-    public String[] getSpeciesNames() {
-        return speciesNames;
-    }
-
-    /**
-     * @param speciesNames the speciesNames to set
-     */
-    public void setSpeciesNames(String[] speciesNames) {
-        this.speciesNames = speciesNames;
-    }
-
-    /**
-     * @return the speciesPaths
-     */
-    public Path[] getSpeciesPaths() {
-        return speciesPaths;
-    }
-
-    /**
-     * @param speciesPaths the speciesPaths to set
-     */
-    public void setSpeciesPaths(Path[] speciesPaths) {
-        this.speciesPaths = speciesPaths;
-    }
-
-    /**
-     * @return the nCutoff
-     */
-    public double getNCutoff() {
-        return nCutoff;
-    }
-
-    /**
-     * @param nCutoff the nCutoff to set
-     */
-    public void setnCutoff(double nCutoff) {
-        this.nCutoff = nCutoff;
-    }
-
-    /**
-     * @return the pCutoff
-     */
-    public double getPCutoff() {
-        return pCutoff;
-    }
-
-    /**
-     * @param pCutoff the pCutoff to set
-     */
-    public void setpCutoff(double pCutoff) {
-        this.pCutoff = pCutoff;
-    }
-
-    /**
-     * @return the saveFilePath
-     */
-    public Path getSaveFilePath() {
-        return saveFilePath;
-    }
-
-    /**
-     * @return the orthGroupNames
-     */
-    public String[] getOrthGroupNames() {
-        return orthGroupNames;
-    }
-
-    /**
-     * @param orthGroupNames the orthGroupNames to set
-     */
-    public void setOrthGroupNames(String[] orthGroupNames) {
-        this.orthGroupNames = orthGroupNames;
-    }
-
-    /**
-     * @return the orthGroupPaths
-     */
-    public Path[] getOrthGroupPaths() {
-        return orthGroupPaths;
-    }
-
-    /**
-     * @param orthGroupPaths the orthGroupPaths to set
-     */
-    public void setOrthGroupPaths(Path[] orthGroupPaths) {
-        this.orthGroupPaths = orthGroupPaths;
-    }
-
-    /**
-     * @param saveFilePath the saveFilePath to set
-     */
-    public void setSaveFilePath(Path saveFilePath) {
-        this.saveFilePath = saveFilePath;
     }
 
     /**
@@ -300,14 +185,7 @@ public class CyModel extends Observable {
      * @return the vizPath
      */
     public Path getVizPath() {
-        return vizPath;
-    }
-
-    /**
-     * @param vizPath the vizPath to set
-     */
-    public void setVizPath(Path vizPath) {
-        this.vizPath = vizPath;
+        return sifPath.getParent().resolve("CENV_style.xml");
     }
 
     /**
@@ -345,5 +223,68 @@ public class CyModel extends Observable {
     public void setVisibleCevNetworks(HashSet<CyNetwork> visibleCevNetworks) {
         this.visibleCevNetworks = visibleCevNetworks;
     }
+
+	public String getBaits() {
+		return jobDescription.getBaits();
+	}
+
+	public void setBaits(String baits) {
+		jobDescription.setBaits(baits);
+	}
+
+	public Path getBaitsFilePath() {
+		return jobDescription.getBaitsFilePath();
+	}
+
+	public void setBaitsFilePath(Path baitsFilePath) {
+		jobDescription.setBaitsFilePath(baitsFilePath);
+	}
+
+	public Map<String, Path> getExpressionMatrices() {
+		return jobDescription.getExpressionMatrices();
+	}
+
+	public void setExpressionMatrices(Map<String, Path> expression_matrices) {
+		jobDescription.setExpressionMatrices(expression_matrices);
+	}
+
+	public double getNegativeCutoff() {
+		return jobDescription.getNegativeCutoff();
+	}
+
+	public void setNegativeCutoff(double negativeCutoff) {
+		jobDescription.setNegativeCutoff(negativeCutoff);
+	}
+
+	public double getPositiveCutoff() {
+		return jobDescription.getPositiveCutoff();
+	}
+
+	public void setPositiveCutoff(double positiveCutoff) {
+		jobDescription.setPositiveCutoff(positiveCutoff);
+	}
+
+	public Path getSaveFilePath() {
+		return jobDescription.getSaveFilePath();
+	}
+
+	public void setSaveFilePath(Path saveFilePath) {
+		jobDescription.setSaveFilePath(saveFilePath);
+	}
+
+	public Map<String, Path> getGeneFamilies() {
+		return jobDescription.getGeneFamilies();
+	}
+
+	public void setGeneFamilies(Map<String, Path> geneFamilies) {
+		jobDescription.setGeneFamilies(geneFamilies);
+	}
+	
+	/**
+	 * Get job description corresponding to current configuration
+	 */
+	public JobDescription getJobDescription() {
+		return jobDescription;
+	}
 
 }

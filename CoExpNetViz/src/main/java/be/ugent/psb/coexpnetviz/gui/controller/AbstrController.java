@@ -1,5 +1,8 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
+
 /*
  * #%L
  * CoExpNetViz
@@ -22,14 +25,11 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.CENVController;
-import be.ugent.psb.coexpnetviz.gui.OrthEntry;
-import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.view.OrthEntryPanel;
+import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 
 import java.util.Map;
 
@@ -39,27 +39,27 @@ import java.util.Map;
  */
 public abstract class AbstrController {
 
-    protected final CyAppManager cyAppManager;
-    protected final CyModel cyModel;
+    protected final CENVApplication cyAppManager;
+    protected final CENVModel cyModel;
 
-    public AbstrController(CyAppManager cyAppManager) {
+    public AbstrController(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;
         this.cyModel = cyAppManager.getCyModel();
     }
 
-    protected CENVController getGuiManager(){
-        return cyAppManager.getGuiManager();
+    protected GUIController getGuiManager(){
+        return cyAppManager.getGUIController();
     }
 
     protected InputPanelModel getActiveModel() {
         return getGuiManager().getActiveModel();
     }
 
-    protected Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies(){
+    protected Map<SpeciesEntryModel, SpeciesEntryPanel> getAllSpecies(){
         return getGuiManager().getActiveModel().getAllSpecies();
     }
 
-    protected Map<OrthEntryModel, OrthEntry> getAllOrthGroups(){
+    protected Map<OrthEntryModel, OrthEntryPanel> getAllOrthGroups(){
         return getGuiManager().getActiveModel().getAllOrthGroups();
     }
 

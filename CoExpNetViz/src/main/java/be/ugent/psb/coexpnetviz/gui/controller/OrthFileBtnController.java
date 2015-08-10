@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,7 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  */
 
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ public class OrthFileBtnController extends AbstrBrowseController implements Acti
 
     private OrthEntryModel oem;
 
-    public OrthFileBtnController(OrthEntryModel oem, CyAppManager cyAppManager) {
+    public OrthFileBtnController(OrthEntryModel oem, CENVApplication cyAppManager) {
         super(cyAppManager);
         this.oem = oem;
     }

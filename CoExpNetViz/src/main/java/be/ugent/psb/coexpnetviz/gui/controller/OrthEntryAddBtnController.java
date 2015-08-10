@@ -1,5 +1,8 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
+
 /*
  * #%L
  * CoExpNetViz
@@ -22,10 +25,8 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.OrthEntry;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.view.OrthEntryPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,21 +39,21 @@ import javax.swing.JOptionPane;
  */
 public class OrthEntryAddBtnController extends AbstrController implements ActionListener {
 
-    public OrthEntryAddBtnController(CyAppManager cyAppManager) {
+    public OrthEntryAddBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllOrthGroups().size() >= CyModel.MAX_ORTHGROUP_COUNT) {
+        if (getActiveModel().getAllOrthGroups().size() >= CENVModel.MAX_ORTHGROUP_COUNT) {
 
             JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d orthologous group files are supported", CyModel.MAX_ORTHGROUP_COUNT));
+                String.format("No more than %d orthologous group files are supported", CENVModel.MAX_ORTHGROUP_COUNT));
             return;
             
         }
         OrthEntryModel oem = new OrthEntryModel();
-        OrthEntry oe = getGuiManager().initOrthEntry(oem);
+        OrthEntryPanel oe = getGuiManager().initOrthEntry(oem);
         getActiveModel().addOrthGroup(oem, oe);
     }
 

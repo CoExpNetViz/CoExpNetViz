@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz;
+package be.ugent.psb.coexpnetviz.gui.controller;
 
 /*
  * #%L
@@ -22,32 +22,33 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import org.cytoscape.work.FinishStatus;
-import org.cytoscape.work.ObservableTask;
-import org.cytoscape.work.TaskObserver;
+import java.awt.event.ActionEvent;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.AbstractCyAction;
+
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
+ * Creates a new menu item under Apps menu section.
  *
- * @author sam
  */
-public class CevTaskObserver implements TaskObserver {
+public class MenuAction extends AbstractCyAction {
 
-    private final CyAppManager cyAppManager;
+	private static final long serialVersionUID = 1L;
+	
+    private final CENVApplication application;
 
-    public CevTaskObserver(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, CENVApplication application) {
+        super(menuTitle, cyApplicationManager, null, null);
+        setPreferredMenu("Apps");
+        this.application = application;
     }
 
+    // menu clicked
     @Override
-    public void taskFinished(ObservableTask task) {
-
-    }
-
-    @Override
-    public void allFinished(FinishStatus finishStatus) {
-
+    public void actionPerformed(ActionEvent e) {
+    	application.showGUI();
     }
 
 }

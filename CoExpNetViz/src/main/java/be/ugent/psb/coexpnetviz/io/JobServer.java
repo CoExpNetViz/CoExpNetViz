@@ -42,8 +42,8 @@ import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
 import org.yaml.snakeyaml.Yaml;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -58,11 +58,11 @@ import org.apache.http.util.EntityUtils;
  */
 public class JobServer {
 
-    private final CyModel cyModel;
+    private final CENVModel cyModel;
 
     private HttpPost httpPost;
 
-    public JobServer(CyAppManager cyAppManager) {
+    public JobServer(CENVApplication cyAppManager) {
         this.cyModel = cyAppManager.getCyModel();
     }
 
@@ -72,13 +72,13 @@ public class JobServer {
     }
 
     /**
-     * Submit run and store the result in the local file system
+     * Submit run and store the result in the local file system, synchronously
      * 
      * @throws InterruptedException
      * @throws IOException
      * @throws JobServerException 
      */
-    public void connect() throws InterruptedException, IOException, JobServerException {
+    public void runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
 
         /*----------------------------------------------------------------------
          1) create output directory
@@ -101,23 +101,17 @@ public class JobServer {
         //prevent overwriting the same file if the user forgot to change the
         //title
         if (Files.exists(archivePath)) {
-            archivePath = outPath.resolve(archiveName + "_" + CyAppManager.getTimeStamp() + fileExtension);
+            archivePath = outPath.resolve(archiveName + "_" + CENVApplication.getTimeStamp() + fileExtension);
         }
 
         /*----------------------------------------------------------------------
          2) Upload user files and settings, download response
          */
         //make multipart entity with user data and settings
-        HttpEntity postEntity = makeEntity(cyModel.getBaits(),
-            cyModel.getSpeciesNames(),
-            cyModel.getSpeciesPaths(),
-            cyModel.getPCutoff(),
-            cyModel.getNCutoff(),
-            cyModel.getOrthGroupNames(),
-            cyModel.getOrthGroupPaths());
+        HttpEntity postEntity = makeEntity(job);
 
         //run the app on the server
-        executeAppOnSever(CyModel.URL, postEntity, archivePath);
+        executeAppOnSever(CENVModel.URL, postEntity, archivePath);
 
         /*----------------------------------------------------------------------
          4) Handle response: Unpack files to temp dir; or if return is error response, interpret the error.
@@ -163,37 +157,46 @@ public class JobServer {
 
     }
 
-    private HttpEntity makeEntity(String baits, String[] names, Path[] filepaths,
-        double poscutoff, double negcutoff, String[] orthNames, Path[] orthPaths)
+    private HttpEntity makeEntity(JobDescription job)
         throws UnsupportedEncodingException {
 
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
 
-        //make hidden form fields, to the server knows to use the api
+        // Action to request of server
         entityBuilder.addTextBody("__controller", "api");
         entityBuilder.addTextBody("__action", "execute_job");
 
-        //make the bait part
-        entityBuilder.addTextBody("baits", baits);
+        // Baits
+        if (job.isSendBaitsAsFile()) {
+        	entityBuilder.addBinaryBody("baits_file", job.getBaitsFilePath().toFile(), 
+        			ContentType.TEXT_PLAIN, job.getBaitsFilePath().getFileName().toString());
+        }
+        else {
+        	entityBuilder.addTextBody("baits", job.getBaits());
+        }
+        
+        // Cutoffs
+        entityBuilder.addTextBody("positive_correlation", Double.toString(job.getPositiveCutoff()));
+        entityBuilder.addTextBody("negative_correlation", Double.toString(job.getNegativeCutoff()));
 
-        //make the species file upload parts
-        for (int i = 0; i < CyModel.MAX_SPECIES_COUNT; i++) {
-            if (i < names.length && i < filepaths.length) {
-                entityBuilder.addBinaryBody("matrix[]", filepaths[i].toFile(), ContentType.TEXT_PLAIN, names[i]);
-            }
+        // Expression matrices
+        for (Map.Entry<String, Path> entry : job.getExpressionMatrices().entrySet()) {
+            entityBuilder.addBinaryBody("matrix[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
         }
 
-        //make the cutoff parts
-        entityBuilder.addTextBody("positive_correlation", Double.toString(poscutoff));
-        entityBuilder.addTextBody("negative_correlation", Double.toString(negcutoff));
-
-        //make the orthgroup file upload parts
-        entityBuilder.addTextBody("orthologs_source", "plaza"); // 'custom' otherwise
-        for (int i = 0; i < CyModel.MAX_ORTHGROUP_COUNT; i++) {
-            if (cyModel.getOrthGroupPaths() != null && i < orthNames.length && i < orthPaths.length) {
-                entityBuilder.addBinaryBody("orthologs[]", orthPaths[i].toFile(), ContentType.TEXT_PLAIN, orthNames[i]);
+        // Ortholog families
+        String orthologsSource;
+        if (job.getGeneFamilies().isEmpty()) {
+        	orthologsSource = "plaza";
+        }
+        else {
+        	orthologsSource = "custom";
+        	for (Map.Entry<String, Path> entry : job.getGeneFamilies().entrySet()) {
+                entityBuilder.addBinaryBody("orthologs[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
             }
         }
+        entityBuilder.addTextBody("orthologs_source", orthologsSource);
+        
 
         return entityBuilder.build();
     }

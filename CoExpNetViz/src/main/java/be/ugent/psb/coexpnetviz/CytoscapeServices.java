@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.internal;
+package be.ugent.psb.coexpnetviz;
 
 /*
  * #%L
@@ -38,12 +38,11 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 /**
- * this class creates an easy way to share the cytoscape services with any class
- * in this application.
+ * References to all single-instance objects of Cytoscape 'services'
  * 
  * @author sam
  */
-public class CyServices {
+public class CytoscapeServices {
 
     private CyApplicationManager cyApplicationManager;
     private CyNetworkFactory cyNetworkFactory;

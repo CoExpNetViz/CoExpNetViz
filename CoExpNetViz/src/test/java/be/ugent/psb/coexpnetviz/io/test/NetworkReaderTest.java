@@ -22,11 +22,10 @@ package be.ugent.psb.coexpnetviz.io.test;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
-import be.ugent.psb.coexpnetviz.internal.CyServices;
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.CytoscapeServices;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 import be.ugent.psb.coexpnetviz.io.NetworkReader;
-import be.ugent.psb.coexpnetviz.io.TableReader;
 
 import java.io.File;
 import java.net.URL;
@@ -46,9 +45,12 @@ import static org.junit.Assert.*;
  *
  * @author sam
  */
-public class CevTableReaderTest {
+public class NetworkReaderTest {
 
-    public CevTableReaderTest() {
+	private NetworkReader cnr;
+	private CyNetwork cn;
+
+    public NetworkReaderTest() {
     }
 
     @BeforeClass
@@ -67,6 +69,23 @@ public class CevTableReaderTest {
     public void tearDown() {
     }
 
+    public void readSIF() throws Exception {
+    	URL sifURL = getClass().getClassLoader().getResource("testdata/network.sif");
+        Path sifPath = new File(sifURL.toURI()).toPath();
+        
+        NetworkTestSupport nts = new NetworkTestSupport();
+        CyNetworkTableManager cntm = nts.getNetworkTableManager();
+        CytoscapeServices cs = new CytoscapeServices();
+        cs.setCyNetworkTableManager(cntm);
+        CENVApplication cam = new CENVApplication(cs);
+        cn = nts.getNetwork();
+        cnr = new NetworkReader(cam, cn);
+        cnr.readSIF(sifPath);
+        
+        assertEquals(1440, cn.getNodeCount());
+        assertEquals(2814, cn.getEdgeCount());
+    }
+    
     /**
      * Test of readNOA method, of class CevTableReader.
      * @throws java.lang.Exception
@@ -75,27 +94,12 @@ public class CevTableReaderTest {
     public void testReadNOA() throws Exception {
         System.out.println("readNOA");
 
-        //get test resources
         URL noaURL = getClass().getClassLoader().getResource("testdata/network.node.attr");
         Path noaPath = new File(noaURL.toURI()).toPath();
-        URL sifURL = getClass().getClassLoader().getResource("testdata/network.sif");
-        Path sifPath = new File(sifURL.toURI()).toPath();
 
-        //make instances
-        NetworkTestSupport nts = new NetworkTestSupport();
-        CyNetworkTableManager cntm = nts.getNetworkTableManager();
-        CyServices cs = new CyServices();
-        cs.setCyNetworkTableManager(cntm);
-        CyAppManager cam = new CyAppManager(new CyModel(), cs);
-        CyNetwork cn = nts.getNetwork();
-        NetworkReader cnr = new NetworkReader(cam);
-        cnr.readSIF(sifPath, cn);
+        readSIF();        
+        CyTable ct = cnr.readNodeAttributes(noaPath);
 
-        //use method
-        TableReader ctr = new TableReader(cam);
-        CyTable ct = ctr.readNOA(noaPath, cn);
-
-        //check result
         assertEquals(1440, ct.getRowCount());
         assertEquals(String.class, ct.getColumn("species").getType());
     }
@@ -108,27 +112,12 @@ public class CevTableReaderTest {
     public void testReadEDA() throws Exception {
         System.out.println("readEDA");
 
-        //get test resources
         URL noaURL = getClass().getClassLoader().getResource("testdata/network.edge.attr");
         Path edaPath = new File(noaURL.toURI()).toPath();
-        URL sifURL = getClass().getClassLoader().getResource("testdata/network.sif");
-        Path sifPath = new File(sifURL.toURI()).toPath();
 
-        //make instances
-        NetworkTestSupport nts = new NetworkTestSupport();
-        CyNetworkTableManager cntm = nts.getNetworkTableManager();
-        CyServices cs = new CyServices();
-        cs.setCyNetworkTableManager(cntm);
-        CyAppManager cam = new CyAppManager(new CyModel(), cs);
-        CyNetwork cn = nts.getNetwork();
-        NetworkReader cnr = new NetworkReader(cam);
-        cnr.readSIF(sifPath, cn);
+        readSIF();
+        CyTable ct = cnr.readEdgeAttributes(edaPath);
 
-        //use method
-        TableReader ctr = new TableReader(cam);
-        CyTable ct = ctr.readEDA(edaPath, cn);
-
-        //check result
         assertEquals(2814, ct.getRowCount());
         assertEquals(Double.class, ct.getColumn("r_value").getType());
     }

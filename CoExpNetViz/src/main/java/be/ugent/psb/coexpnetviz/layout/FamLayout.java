@@ -32,7 +32,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 public class FamLayout extends AbstractLayoutAlgorithm {
 
@@ -41,7 +41,7 @@ public class FamLayout extends AbstractLayoutAlgorithm {
      * @param undo
      */
     public FamLayout(UndoSupport undo) {
-        super(CyModel.COMP_LAYOUT_NAME, CyModel.HUMAN_LAYOUT_NAME, undo);
+        super(CENVModel.COMP_LAYOUT_NAME, CENVModel.HUMAN_LAYOUT_NAME, undo);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {

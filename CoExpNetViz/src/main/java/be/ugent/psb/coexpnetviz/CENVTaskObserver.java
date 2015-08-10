@@ -1,6 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
-
-import be.ugent.psb.coexpnetviz.CENVApplication;
+package be.ugent.psb.coexpnetviz;
 
 /*
  * #%L
@@ -24,27 +22,30 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import org.cytoscape.work.FinishStatus;
+import org.cytoscape.work.ObservableTask;
+import org.cytoscape.work.TaskObserver;
 
 /**
  *
  * @author sam
  */
-public class SpeciesNameTfController extends AbstrTfController implements FocusListener{
+public class CENVTaskObserver implements TaskObserver {
 
-    private final SpeciesEntryModel sem;
+    private final CENVApplication cyAppManager;
 
-    public SpeciesNameTfController(CENVApplication cyAppManager, SpeciesEntryModel sem) {
-        super(cyAppManager);
-        this.sem = sem;
+    public CENVTaskObserver(CENVApplication cyAppManager) {
+        this.cyAppManager = cyAppManager;
     }
 
     @Override
-    public void focusLost(FocusEvent fe) {
-        sem.setSpeciesName(getText(fe));
+    public void taskFinished(ObservableTask task) {
+
     }
-    
+
+    @Override
+    public void allFinished(FinishStatus finishStatus) {
+
+    }
+
 }

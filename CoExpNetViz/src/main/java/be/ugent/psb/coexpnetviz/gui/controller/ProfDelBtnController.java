@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -36,7 +36,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class ProfDelBtnController extends AbstrController implements ActionListener {
 
-    public ProfDelBtnController(CyAppManager cyAppManager) {
+    public ProfDelBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

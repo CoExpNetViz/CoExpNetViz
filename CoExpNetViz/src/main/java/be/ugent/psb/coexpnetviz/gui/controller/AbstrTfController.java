@@ -26,7 +26,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.text.JTextComponent;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -34,7 +34,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public abstract class AbstrTfController extends AbstrController implements FocusListener {
 
-    public AbstrTfController(CyAppManager cyAppManager) {
+    public AbstrTfController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

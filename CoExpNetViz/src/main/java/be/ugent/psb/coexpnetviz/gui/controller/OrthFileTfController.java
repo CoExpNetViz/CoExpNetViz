@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,7 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  */
 
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -37,7 +38,7 @@ public class OrthFileTfController extends AbstrTfController implements FocusList
 
     private OrthEntryModel oem;
 
-    public OrthFileTfController(OrthEntryModel oem, CyAppManager cyAppManager) {
+    public OrthFileTfController(OrthEntryModel oem, CENVApplication cyAppManager) {
         super(cyAppManager);
         this.oem = oem;
     }

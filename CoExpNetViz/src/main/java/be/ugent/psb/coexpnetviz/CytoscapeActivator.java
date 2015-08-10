@@ -1,4 +1,7 @@
-package be.ugent.psb.coexpnetviz.internal;
+package be.ugent.psb.coexpnetviz;
+
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
+import be.ugent.psb.coexpnetviz.gui.CENVNodeViewContextMenuFactory;
 
 /*
  * #%L
@@ -22,8 +25,7 @@ package be.ugent.psb.coexpnetviz.internal;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.CevNodeViewContextMenuFactory;
-import be.ugent.psb.coexpnetviz.NetworkEventListener;
+import be.ugent.psb.coexpnetviz.gui.controller.MenuAction;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
 
 import java.util.Properties;
@@ -54,26 +56,28 @@ import org.osgi.framework.BundleContext;
 import static org.cytoscape.work.ServiceProperties.*;
 
 /**
- * This is the entry point for the CoExpNetViz plugin for Cytoscape 3. Here the
- * necessary services are called and bundled into the {@link Model} to be used
- * throughout the app. The services this app offers are created here and
- * registered within the {@link BundleContext}.
+ * Activates CENV plugin in Cytoscape.
  *
  * @author Sam De Meyer
  */
-public class CyActivator extends AbstractCyActivator {
+public class CytoscapeActivator extends AbstractCyActivator {
 
+	/**
+	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
+	 * classes with those of Cytoscape, by adding Cytoscape menu items, attaching
+	 * listeners to Cytoscape events, ...
+	 */
     @Override
     public void start(BundleContext context) throws Exception {
 
+    	//get CytoScape services
         //TODO: I recently discovered the existence of the CySwingAdapter class
         //      this is a Cytoscape api class that does exactly what is done
         //      below: wrapping instances of all Cytoscape model classes into
         //      one object that can easily be passed around.
         //
-        //      Conclusion: CyServices below can be replaced by CySwingAdapter,
+        //      Conclusion: CyServices below can be replaced by CySwingAppAdapter,
         //      this will clear a lot of code
-        //get CytoScape services
         CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
         CyNetworkFactory cyNetworkFactory = getService(context, CyNetworkFactory.class);
         CyNetworkManager cyNetworkManager = getService(context, CyNetworkManager.class);
@@ -90,21 +94,7 @@ public class CyActivator extends AbstractCyActivator {
         OpenBrowser openBrowser = getService(context, OpenBrowser.class);
 
         //create the cyServices, keeps references to all cytoscape core model classes
-        CyServices cyServices = new CyServices();
-
-        //create the cyModel, keeps track of application state
-        CyModel cyModel = new CyModel();
-
-        //create the CyAppManager
-        CyAppManager cyAppManager = new CyAppManager(cyModel, cyServices);
-
-        //create the network event listener
-        NetworkEventListener networkEventListener = new NetworkEventListener(cyAppManager);
-
-        //create the menu action (menu entry for the app)
-        MenuAction action = new MenuAction(cyApplicationManager, CyModel.APP_NAME, cyAppManager);
-
-        //add the CytoScape service references to cyServices
+        CytoscapeServices cyServices = new CytoscapeServices();
         cyServices.setCyApplicationManager(cyApplicationManager);
         cyServices.setCyNetworkFactory(cyNetworkFactory);
         cyServices.setCyNetworkManager(cyNetworkManager);
@@ -120,30 +110,30 @@ public class CyActivator extends AbstractCyActivator {
         cyServices.setUndoSupport(undoSupport);
         cyServices.setOpenBrowser(openBrowser);
 
-        //register network event services
-        registerService(context, networkEventListener, NetworkAboutToBeDestroyedListener.class, new Properties());
-        registerService(context, networkEventListener, NetworkAddedListener.class, new Properties());
-        registerService(context, networkEventListener, NetworkViewAddedListener.class, new Properties());
-        registerService(context, networkEventListener, VisualStyleSetListener.class, new Properties());
+        //create the cyModel, keeps track of application state
+        CENVApplication cyAppManager = new CENVApplication(cyServices);
 
-        //register menu action in OSGi services
-        registerAllServices(context, action, new Properties());
+        // Listen to Cytoscape events
+        registerService(context, new NetworkEventListener(cyAppManager), NetworkAboutToBeDestroyedListener.class, new Properties());
 
-        //register cev layout service
+        // Add our menu action in OSGi services
+        registerAllServices(context, new MenuAction(cyApplicationManager, CENVModel.APP_NAME, cyAppManager), new Properties());
+
+        // Add our layout
         FamLayout cgal = new FamLayout(undoSupport);
         Properties cgalProperties = new Properties();
-        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CyModel.APP_NAME);
+        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVModel.APP_NAME);
         cgalProperties.setProperty("preferredTaskManager", "menu");
         cgalProperties.setProperty(TITLE, cgal.toString());
         registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
 
         //register contex menu action
-        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CevNodeViewContextMenuFactory(cyAppManager);
+        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CENVNodeViewContextMenuFactory(cyAppManager);
         Properties myNodeViewContextMenuFactoryProps = new Properties();
         myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
         registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);
 
         //for debugging: print message if the app started succesfully
-        System.out.println(CyModel.APP_NAME + " started succesfully");
+        System.out.println(CENVModel.APP_NAME + " started succesfully");
     }
 }

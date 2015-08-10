@@ -1,4 +1,6 @@
-package be.ugent.psb.coexpnetviz.internal;
+package be.ugent.psb.coexpnetviz;
+
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /*
  * #%L
@@ -22,13 +24,9 @@ package be.ugent.psb.coexpnetviz.internal;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.CevNetworkBuilder;
-import be.ugent.psb.coexpnetviz.RunAnalysisTask;
-import be.ugent.psb.coexpnetviz.gui.CENVController;
+import be.ugent.psb.coexpnetviz.gui.RunAnalysisTask;
+import be.ugent.psb.coexpnetviz.gui.controller.GUIController;
 import be.ugent.psb.coexpnetviz.io.JobServer;
-import be.ugent.psb.coexpnetviz.io.NetworkReader;
-import be.ugent.psb.coexpnetviz.io.TableReader;
-import be.ugent.psb.coexpnetviz.io.VizmapReader;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -36,59 +34,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import org.cytoscape.work.TaskIterator;
 
 /**
- *
- * @author sam
+ * Global application configuration, references to Cytoscape 'services' 
+ * and references to any of our own single-instances 
  */
-public class CyAppManager {
+public class CENVApplication {
 
-    private final CyModel cyModel;
-    private final CyServices cyServices;
+    private final CENVModel cyModel;
+    private final CytoscapeServices cyServices;
 
-    private CENVController guiManager;
-
-    private CevNetworkBuilder cevNetworkBuilder;
-    private NetworkReader cevNetworkReader;
-    private TableReader cevTableReader;
-    private VizmapReader cevVizmapReader;
+    private GUIController guiController;
     private JobServer serverConn;
 
-    public CyAppManager(CyModel cyModel, CyServices cyServices) {
-        this.cyModel = cyModel;
+    public CENVApplication(CytoscapeServices cyServices) {
+        this.cyModel = new CENVModel();
         this.cyServices = cyServices;
 
         cyModel.setSettingsPath(initSettingsPath());
-//        System.out.println(cyModel.getSettingsPath());
     }
 
     public void runAnalysis() {
-
-        System.out.println("---Debug output---");
-        System.out.println("url  : " + CyModel.URL);
-        System.out.println("title: " + cyModel.getTitle());
-        System.out.println("baits: " + cyModel.getBaits());
-        System.out.println("names: " + Arrays.toString(cyModel.getSpeciesNames()));
-        System.out.println("files: " + Arrays.toString(cyModel.getSpeciesPaths()));
-        System.out.println("neg c: " + cyModel.getNCutoff());
-        System.out.println("pos c: " + cyModel.getPCutoff());
-        System.out.println("out d: " + cyModel.getSaveFilePath());
-        System.out.println("orthn: " + Arrays.toString(cyModel.getOrthGroupNames()));
-        System.out.println("orthp: " + Arrays.toString(cyModel.getOrthGroupPaths()));
-
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));
-
-        //execute() forks a new thread and returns immediatly
-        cyServices.getTaskManager().execute(ti);
-
+        cyServices.getTaskManager().execute(ti); // asynchronous method
     }
 
     /**
-     * Convenience method to quickly get a formatted current time string
+     * Get a formatted current time string
      *
      * @return
      */
@@ -99,7 +74,8 @@ public class CyAppManager {
     }
 
     /**
-     * Convenience method to get a reference to the Cytoscape desktop window.
+     * Get a reference to the Cytoscape desktop window.
+     * 
      * Handy for use as a parent for dialog windows
      *
      * @return
@@ -118,7 +94,6 @@ public class CyAppManager {
     }
 
     private Path initSettingsPath() {
-
         Path cyHomePath;
         Path localSettingsPath;
 
@@ -148,13 +123,12 @@ public class CyAppManager {
     }
 
     private Path getCyConfFolder(Path searchPath) {
-
         Path cyConfPath = searchPath.resolve("CytoscapeConfiguration");
         Path localSettingsPath;
 
         //try to get a settings directory in the cytoscape config folder
         if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
-            localSettingsPath = cyConfPath.resolve(CyModel.APP_NAME + "_settings");
+            localSettingsPath = cyConfPath.resolve(CENVModel.APP_NAME + "_settings");
             //settins folder doesn't exists, so try to make it
             if (!Files.exists(localSettingsPath)) {
                 try {
@@ -173,7 +147,7 @@ public class CyAppManager {
     }
 
     private Path getHomeSettingsFolder(Path searchPath) {
-        Path localSettingsPath = searchPath.resolve(CyModel.APP_NAME + "_settings");
+        Path localSettingsPath = searchPath.resolve(CENVModel.APP_NAME + "_settings");
         if (!Files.exists(localSettingsPath)) {
             //settins folder doesn't exists, so try to make it
             try {
@@ -193,57 +167,22 @@ public class CyAppManager {
     /**
      * @return the cyModel
      */
-    public CyModel getCyModel() {
+    public CENVModel getCyModel() {
         return cyModel;
     }
 
     /**
      * @return the cyServices
      */
-    public CyServices getCyServices() {
+    public CytoscapeServices getCytoscapeApplication() {
         return cyServices;
     }
 
     /**
      * @return the guiManager
      */
-    public CENVController getGuiManager() {
-        return guiManager;
-    }
-
-    /**
-     * @param guiManager the guiManager to set
-     */
-    public void setGuiManager(CENVController guiManager) {
-        this.guiManager = guiManager;
-    }
-
-    public CevNetworkBuilder getCevNetworkBuilder() {
-        if (cevNetworkBuilder == null) {
-            cevNetworkBuilder = new CevNetworkBuilder(this);
-        }
-        return cevNetworkBuilder;
-    }
-
-    public NetworkReader getCevNetworkreader() {
-        if (cevNetworkReader == null) {
-            cevNetworkReader = new NetworkReader(this);
-        }
-        return cevNetworkReader;
-    }
-
-    public TableReader getCevTablereader() {
-        if (cevTableReader == null) {
-            cevTableReader = new TableReader(this);
-        }
-        return cevTableReader;
-    }
-
-    public VizmapReader getCevVizmapReader() {
-        if (cevVizmapReader == null) {
-            cevVizmapReader = new VizmapReader(this);
-        }
-        return cevVizmapReader;
+    public GUIController getGUIController() {
+        return guiController;
     }
 
     public JobServer getServerConn() {
@@ -252,5 +191,15 @@ public class CyAppManager {
         }
         return serverConn;
     }
+
+	public void showGUI() {
+        if (guiController == null) {
+            //create the Gui
+            guiController = new GUIController(this);
+        }
+
+        //pack and show the gui in a window
+        guiController.showRootFrame();
+	}
 
 }

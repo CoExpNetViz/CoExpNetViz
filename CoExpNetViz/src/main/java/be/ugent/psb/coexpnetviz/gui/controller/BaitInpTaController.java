@@ -25,7 +25,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -33,7 +33,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class BaitInpTaController extends AbstrTfController implements FocusListener {
 
-    public BaitInpTaController(CyAppManager cyAppManager) {
+    public BaitInpTaController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

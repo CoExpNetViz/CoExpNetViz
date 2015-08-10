@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui;
+package be.ugent.psb.coexpnetviz.gui.view;
 
 /*
  * #%L
@@ -36,22 +36,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
 
 /**
  *
  * @author sam
  */
-public class SpeciesEntry extends JPanel implements Observer {
+public class SpeciesEntryPanel extends JPanel implements Observer {
 
-    JLabel speciesLbl;
-    JTextField speciesNameTf;
-    JButton removeBtn;
-    JLabel speciesPathLbl;
-    JTextField speciesFileTf;
-    JButton browseBtn;
+	private static final long serialVersionUID = 1L;
+	
+	// TODO private + getter, rename
+    public JLabel speciesLbl;
+    public JTextField speciesNameTf;
+    public JButton removeBtn;
+    public JLabel speciesPathLbl;
+    public JTextField speciesFileTf;
+    public JButton browseBtn;
 
-    public SpeciesEntry() {
+    public SpeciesEntryPanel() {
         constructGui();
     }
 

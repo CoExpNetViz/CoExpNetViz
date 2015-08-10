@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz;
+package be.ugent.psb.coexpnetviz.gui;
 
 /*
  * #%L
@@ -59,14 +59,13 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
  * @author sam
  */
-public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
+public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
     String plazaMonocotKey = "Plaza Monocots";
     String plazaMonocotRegex = "ORTHO\\d+M\\d+";
@@ -74,11 +73,11 @@ public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFacto
     String plazaDicotKey = "Plaza Dicots";
     String plazaDicotRegex = "ORTHO\\d+D\\d+";
 
-    public CevNodeViewContextMenuFactory(CyAppManager cyAppManager) {
+    public CENVNodeViewContextMenuFactory(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 
-    private CyAppManager cyAppManager;
+    private CENVApplication cyAppManager;
 
     private CyNetworkView cnv;
     private View<CyNode> view;
@@ -87,7 +86,7 @@ public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFacto
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(CyModel.APP_NAME);
+        JMenuItem menuItem = new JMenuItem(CENVModel.APP_NAME);
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;
@@ -95,20 +94,20 @@ public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFacto
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyServices().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCytoscapeApplication().getCyNetworkTableManager();
 
         CyNetwork cn = cnv.getModel();
         CyNode node = view.getModel();
         CyTable cevNodeTable = cyNetworkTableManager.getTable(cn, CyNode.class, CyNetwork.LOCAL_ATTRS);
         ArrayList<CyColumn> columnList = (ArrayList) cevNodeTable.getColumns();
-        String famColumnName = columnList.get(4 + CyModel.FAMILIES_COLUMN).getName();
-        String geneColumnName = columnList.get(4 + CyModel.GENES_COLUMN).getName();
+        String famColumnName = columnList.get(4 + CENVModel.FAMILIES_COLUMN).getName();
+        String geneColumnName = columnList.get(4 + CENVModel.GENES_COLUMN).getName();
         CyRow row = cn.getRow(node);
 
         String families = row.get(famColumnName, String.class);
 //        String genes = row.get(geneColumnName, String.class);
 
-        Frame parent = CyAppManager.getCytoscapeRootFrame();
+        Frame parent = CENVApplication.getCytoscapeRootFrame();
 
         NodeJDialog dialog = new NodeJDialog(parent, "Node info", parseFamilies(families));
     }
@@ -215,7 +214,7 @@ public class CevNodeViewContextMenuFactory implements CyNodeViewContextMenuFacto
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                cyAppManager.getCyServices().getOpenBrowser().openURL(url);
+                cyAppManager.getCytoscapeApplication().getOpenBrowser().openURL(url);
             }
 
         }

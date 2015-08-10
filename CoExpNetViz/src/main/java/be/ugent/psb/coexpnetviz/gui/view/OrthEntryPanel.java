@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui;
+package be.ugent.psb.coexpnetviz.gui.view;
 
 /*
  * #%L
@@ -36,23 +36,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 
 /**
  *
  * @author sam
  */
-public class OrthEntry extends JPanel implements Observer {
+public class OrthEntryPanel extends JPanel implements Observer {
 
-    JLabel orthNameLbl;
-    JTextField orthNameTf;
-    JButton orthRemoveBtn;
-    JLabel orthPathLbl;
-    JTextField orthPathTf;
-    JButton orthBrowseBtn;
+	private static final long serialVersionUID = 1L;
+	
+	// TODO private + getter, rename
+	public JLabel orthNameLbl;
+    public JTextField orthNameTf;
+    public JButton orthRemoveBtn;
+    public JLabel orthPathLbl;
+    public JTextField orthPathTf;
+    public JButton orthBrowseBtn;
 
-
-    public OrthEntry() {
+    public OrthEntryPanel() {
         constructGui();
     }
 

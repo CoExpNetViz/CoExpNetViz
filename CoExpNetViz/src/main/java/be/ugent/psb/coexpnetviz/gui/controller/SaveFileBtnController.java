@@ -24,7 +24,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.ActionEvent;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -32,7 +32,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class SaveFileBtnController extends AbstrBrowseController {
 
-    public SaveFileBtnController(CyAppManager cyAppManager) {
+    public SaveFileBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

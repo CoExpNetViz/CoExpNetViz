@@ -28,8 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
-import be.ugent.psb.coexpnetviz.gui.OrthEntry;
-import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
+import be.ugent.psb.coexpnetviz.gui.view.OrthEntryPanel;
+import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 
 /**
  *
@@ -40,65 +40,65 @@ import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 public class InputPanelModel extends AbstrModel {
 
     private String title;
-    private boolean useBaitFile;
+    private boolean useBaitsFile;
     private String baits;
-    private Path baitFilePath;
+    private Path baitsFilePath;
     private double negCutoff;
     private double posCutoff;
     private boolean saveResults;
     private Path saveFilePath;
 
-    private Map<SpeciesEntryModel, SpeciesEntry> species;
-    private Map<OrthEntryModel, OrthEntry> orthGroups;
+    private Map<SpeciesEntryModel, SpeciesEntryPanel> species;
+    private Map<OrthEntryModel, OrthEntryPanel> orthGroups;
 
-    public InputPanelModel(SpeciesEntryModel sem, SpeciesEntry se) {
+    public InputPanelModel(SpeciesEntryModel sem, SpeciesEntryPanel se) {
         title = "";
-        useBaitFile = false;
+        useBaitsFile = false;
         baits = "";
-        baitFilePath = Paths.get("");
+        baitsFilePath = Paths.get("");
         negCutoff = GUIConstants.DEFAULT_NEG_CUTOFF;
         posCutoff = GUIConstants.DEFAULT_POS_CUTOFF;
         saveResults = false;
         saveFilePath = Paths.get(System.getProperty("user.home"));
 
-        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
-        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
+        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntryPanel>();
+        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntryPanel>();
 
         species.put(sem, se);
     }
 
     public InputPanelModel() {
         title = "";
-        useBaitFile = false;
+        useBaitsFile = false;
         baits = "";
-        baitFilePath = Paths.get("");
+        baitsFilePath = Paths.get("");
         negCutoff = GUIConstants.DEFAULT_NEG_CUTOFF;
         posCutoff = GUIConstants.DEFAULT_POS_CUTOFF;
         saveResults = false;
         saveFilePath = Paths.get(System.getProperty("user.home"));
 
-        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
-        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
+        species = new LinkedHashMap<SpeciesEntryModel, SpeciesEntryPanel>();
+        orthGroups = new LinkedHashMap<OrthEntryModel, OrthEntryPanel>();
     }
 
     public InputPanelModel copy() {
         InputPanelModel inpPnlModel = new InputPanelModel();
         inpPnlModel.setTitle(title);
-        inpPnlModel.setUseBaitFile(useBaitFile);
+        inpPnlModel.setUseBaitsFile(useBaitsFile);
         inpPnlModel.setBaits(baits);
-        inpPnlModel.setBaitFilePath(baitFilePath);
+        inpPnlModel.setBaitsFilePath(baitsFilePath);
         inpPnlModel.setNegCutoff(negCutoff);
         inpPnlModel.setPosCutoff(posCutoff);
         inpPnlModel.setSaveResults(saveResults);
         inpPnlModel.setSaveFilePath(saveFilePath);
 
-        LinkedHashMap<SpeciesEntryModel, SpeciesEntry> newSpecies = new LinkedHashMap<SpeciesEntryModel, SpeciesEntry>();
+        LinkedHashMap<SpeciesEntryModel, SpeciesEntryPanel> newSpecies = new LinkedHashMap<SpeciesEntryModel, SpeciesEntryPanel>();
         for (SpeciesEntryModel sem : species.keySet()) {
             newSpecies.put(sem, species.get(sem));
         }
         inpPnlModel.setAllSpecies(newSpecies);
 
-        LinkedHashMap<OrthEntryModel, OrthEntry> newOrthGroups = new LinkedHashMap<OrthEntryModel, OrthEntry>();
+        LinkedHashMap<OrthEntryModel, OrthEntryPanel> newOrthGroups = new LinkedHashMap<OrthEntryModel, OrthEntryPanel>();
         for (OrthEntryModel oem : orthGroups.keySet()) {
             newOrthGroups.put(oem, orthGroups.get(oem));
         }
@@ -128,16 +128,16 @@ public class InputPanelModel extends AbstrModel {
     /**
      * @return the useBaitFile
      */
-    public boolean isUseBaitFile() {
-        return useBaitFile;
+    public boolean isUseBaitsFile() {
+        return useBaitsFile;
     }
 
     /**
      * @param useBaitFile the useBaitFile to set
      */
-    public void setUseBaitFile(boolean useBaitFile) {
-        if (this.useBaitFile != useBaitFile) {
-            this.useBaitFile = useBaitFile;
+    public void setUseBaitsFile(boolean useBaitFile) {
+        if (this.useBaitsFile != useBaitFile) {
+            this.useBaitsFile = useBaitFile;
             setChanged();
             notifyObservers();
         }
@@ -164,16 +164,16 @@ public class InputPanelModel extends AbstrModel {
     /**
      * @return the baitFilePath
      */
-    public Path getBaitFilePath() {
-        return baitFilePath;
+    public Path getBaitsFilePath() {
+        return baitsFilePath;
     }
 
     /**
      * @param baitFilePath the baitFilePath to set
      */
-    public void setBaitFilePath(Path baitFilePath) {
-        if (this.baitFilePath != baitFilePath) {
-            this.baitFilePath = baitFilePath;
+    public void setBaitsFilePath(Path baitFilePath) {
+        if (this.baitsFilePath != baitFilePath) {
+            this.baitsFilePath = baitFilePath;
             setChanged();
             notifyObservers();
         }
@@ -251,17 +251,17 @@ public class InputPanelModel extends AbstrModel {
         }
     }
 
-    public SpeciesEntry getSpeciesEntry(SpeciesEntryModel sem) {
+    public SpeciesEntryPanel getSpeciesEntry(SpeciesEntryModel sem) {
         return species.get(sem);
     }
 
-    public void setSpeciesEntry(SpeciesEntryModel sem, SpeciesEntry se) {
+    public void setSpeciesEntry(SpeciesEntryModel sem, SpeciesEntryPanel se) {
         species.put(sem, se);
         setChanged();
         notifyObservers();
     }
 
-    public void addSpecies(SpeciesEntryModel sem, SpeciesEntry se) {
+    public void addSpecies(SpeciesEntryModel sem, SpeciesEntryPanel se) {
         if (!species.containsKey(sem)) {
             species.put(sem, se);
             setChanged();
@@ -277,25 +277,25 @@ public class InputPanelModel extends AbstrModel {
         }
     }
 
-    public Map<SpeciesEntryModel, SpeciesEntry> getAllSpecies() {
+    public Map<SpeciesEntryModel, SpeciesEntryPanel> getAllSpecies() {
         return species;
     }
 
-    public void setAllSpecies(Map<SpeciesEntryModel, SpeciesEntry> species) {
+    public void setAllSpecies(Map<SpeciesEntryModel, SpeciesEntryPanel> species) {
         this.species = species;
     }
 
-    public OrthEntry getOrthEntry(OrthEntryModel oem) {
+    public OrthEntryPanel getOrthEntry(OrthEntryModel oem) {
         return orthGroups.get(oem);
     }
 
-    public void setOrthEntry(OrthEntryModel oem, OrthEntry oe) {
+    public void setOrthEntry(OrthEntryModel oem, OrthEntryPanel oe) {
         orthGroups.put(oem, oe);
         setChanged();
         notifyObservers();
     }
 
-    public void addOrthGroup(OrthEntryModel oem, OrthEntry oe) {
+    public void addOrthGroup(OrthEntryModel oem, OrthEntryPanel oe) {
         if (!orthGroups.containsKey(oem)) {
             orthGroups.put(oem, oe);
             setChanged();
@@ -311,11 +311,11 @@ public class InputPanelModel extends AbstrModel {
         }
     }
 
-    public Map<OrthEntryModel, OrthEntry> getAllOrthGroups() {
+    public Map<OrthEntryModel, OrthEntryPanel> getAllOrthGroups() {
         return orthGroups;
     }
 
-    public void setAllOrthGroups(LinkedHashMap<OrthEntryModel, OrthEntry> orthGroups) {
+    public void setAllOrthGroups(LinkedHashMap<OrthEntryModel, OrthEntryPanel> orthGroups) {
         this.orthGroups = orthGroups;
     }
 

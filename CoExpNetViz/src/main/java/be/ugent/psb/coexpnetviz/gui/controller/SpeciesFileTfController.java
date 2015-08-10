@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,7 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  */
 
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -37,7 +38,7 @@ public class SpeciesFileTfController extends AbstrTfController implements FocusL
 
     private SpeciesEntryModel sem;
 
-    public SpeciesFileTfController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+    public SpeciesFileTfController(CENVApplication cyAppManager, SpeciesEntryModel sem) {
         super(cyAppManager);
         this.sem = sem;
     }

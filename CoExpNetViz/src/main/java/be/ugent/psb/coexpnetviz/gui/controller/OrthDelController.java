@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,7 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  */
 
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +37,7 @@ public class OrthDelController extends AbstrController implements ActionListener
     
     private OrthEntryModel oem;
     
-    public OrthDelController(OrthEntryModel oem, CyAppManager cyAppManager) {
+    public OrthDelController(OrthEntryModel oem, CENVApplication cyAppManager) {
         super(cyAppManager);
         this.oem = oem;
     }

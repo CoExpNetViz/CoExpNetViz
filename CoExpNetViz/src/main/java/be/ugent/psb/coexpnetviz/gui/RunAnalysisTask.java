@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz;
+package be.ugent.psb.coexpnetviz.gui;
 
 /*
  * #%L
@@ -22,8 +22,7 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
 
@@ -44,13 +43,13 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class RunAnalysisTask extends AbstractTask {
 
-    private final CyAppManager cyAppManager;
-    private JobServer sc;
+    private final CENVApplication application;
+    private JobServer jobServer;
 
     private double progr = 0;
 
-    public RunAnalysisTask(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    public RunAnalysisTask(CENVApplication cyAppManager) {
+        this.application = cyAppManager;
     }
 
     /**
@@ -63,7 +62,7 @@ public class RunAnalysisTask extends AbstractTask {
      */
     @Override
     public void run(TaskMonitor tm) throws Exception {
-        tm.setTitle(CyModel.PROG_TITLE);
+        tm.setTitle(CENVModel.PROG_TITLE);
 
         try {
             runOnServer(tm);
@@ -76,9 +75,9 @@ public class RunAnalysisTask extends AbstractTask {
     }
 
     void runOnServer(TaskMonitor tm) throws Exception {
-        tm.setStatusMessage(CyModel.PROG_TITLE);
+        tm.setStatusMessage(CENVModel.PROG_TITLE);
 
-        sc = cyAppManager.getServerConn();
+        jobServer = application.getServerConn();
 
         //a threadexecuter is used because it can throw Exceptions from the child thread
         ExecutorService threadExecutor = Executors.newSingleThreadExecutor();
@@ -87,7 +86,7 @@ public class RunAnalysisTask extends AbstractTask {
 
             @Override
             public Void call() throws Exception {
-                sc.connect();
+                jobServer.runJob(application.getCyModel().getJobDescription());
                 return null;
             }
         });
@@ -98,12 +97,12 @@ public class RunAnalysisTask extends AbstractTask {
         while (!futureResult.isDone()) {
             Thread.sleep(1000);
             i++;
-            progr = i * 1.0 / (t * CyModel.PROG_CONN_COMPLETE);
-            progr = progr < CyModel.PROG_CONN_COMPLETE ? progr : -1.0;
+            progr = i * 1.0 / (t * CENVModel.PROG_CONN_COMPLETE);
+            progr = progr < CENVModel.PROG_CONN_COMPLETE ? progr : -1.0;
             //TODO: replace fake progress with real progress
             tm.setProgress(progr);
             if (cancelled) {
-                sc.stop();
+                jobServer.stop();
                 return;
             }
         }
@@ -113,20 +112,20 @@ public class RunAnalysisTask extends AbstractTask {
     }
 
     void createNetwork(TaskMonitor tm) throws Exception {
-        tm.setProgress(CyModel.PROG_CONN_COMPLETE);
+        tm.setProgress(CENVModel.PROG_CONN_COMPLETE);
         tm.setStatusMessage("Creating network");
-        cyAppManager.getCevNetworkBuilder().createNetworkView();
+        new CENVNetworkBuilder(application).createNetworkView();
     }
 
     void applyLayout(TaskMonitor tm) {
-        tm.setProgress(CyModel.PROG_NETW_COMPLETE);
+        tm.setProgress(CENVModel.PROG_NETW_COMPLETE);
         tm.setStatusMessage("Applying layout");
-        FamLayout layout = (FamLayout) cyAppManager.getCyServices().
-            getCyLayoutAlgorithmManager().getLayout(CyModel.COMP_LAYOUT_NAME);
-        ArrayList<CyColumn> columnList = (ArrayList) cyAppManager.getCyModel().getLastNoaTable().getColumns();
-        String groupColumnName = columnList.get(4 + CyModel.GROUP_COLUMN).getName();
-        String speciesColumnName = columnList.get(4 + CyModel.SPECIES_COLUMN).getName();
-        TaskIterator ti = layout.createTaskIterator(cyAppManager.getCyModel().getLastCnv(),
+        FamLayout layout = (FamLayout) application.getCytoscapeApplication().
+            getCyLayoutAlgorithmManager().getLayout(CENVModel.COMP_LAYOUT_NAME);
+        ArrayList<CyColumn> columnList = (ArrayList) application.getCyModel().getLastNoaTable().getColumns();
+        String groupColumnName = columnList.get(4 + CENVModel.GROUP_COLUMN).getName();
+        String speciesColumnName = columnList.get(4 + CENVModel.SPECIES_COLUMN).getName();
+        TaskIterator ti = layout.createTaskIterator(application.getCyModel().getLastCnv(),
             layout.createLayoutContext(),
             CyLayoutAlgorithm.ALL_NODE_VIEWS,
             groupColumnName,

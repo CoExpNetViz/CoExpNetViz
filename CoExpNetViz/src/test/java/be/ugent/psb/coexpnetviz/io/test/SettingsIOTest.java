@@ -1,4 +1,7 @@
-package be.ugent.psb.coexpnetviz.gui.test;
+package be.ugent.psb.coexpnetviz.io.test;
+
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /*
  * #%L
@@ -22,11 +25,9 @@ package be.ugent.psb.coexpnetviz.gui.test;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 import be.ugent.psb.coexpnetviz.io.SettingsIO;
 
 import java.io.File;
@@ -46,22 +47,17 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 
-/**
- *
- * @author sam
- */
 public class SettingsIOTest {
 
-    CyAppManager cam;
+    CENVApplication cam;
     SettingsIO sio;
     InputPanelModel ipm;
     SpeciesEntryModel sem1;
     SpeciesEntryModel sem2;
-    SpeciesEntry se1;
-    SpeciesEntry se2;
+    SpeciesEntryPanel se1;
+    SpeciesEntryPanel se2;
 
-    String baits1 = "\rSolyc03g097500 \t  Solyc02g014730\n Solyc04g011600 AT5G41040\t\t AT5G23190    AT3G11430 ";
-    String[] baitArr = new String[]{"Solyc03g097500", "Solyc02g014730", "Solyc04g011600", "AT5G41040", "AT5G23190", "AT3G11430"};
+    String baits = "\rSolyc03g097500 \t  Solyc02g014730\n Solyc04g011600 AT5G41040\t\t AT5G23190    AT3G11430 ";
     String speciesName1 = "Species name 1";
     String speciesName2 = "Species name 2";
     Path path1 = Paths.get("Path/To/File");
@@ -82,12 +78,12 @@ public class SettingsIOTest {
     @Before
     public void setUp() {
         //get instances
-        cam = new CyAppManager(new CyModel(), null);
+        cam = new CENVApplication(null);
         sio = new SettingsIO(cam);
         sem1 = new SpeciesEntryModel();
         sem2 = new SpeciesEntryModel();
-        se1 = new SpeciesEntry();
-        se2 = new SpeciesEntry();
+        se1 = new SpeciesEntryPanel();
+        se2 = new SpeciesEntryPanel();
         ipm = new InputPanelModel(sem1, se1);
         ipm.addSpecies(sem2, se2);
 
@@ -95,8 +91,8 @@ public class SettingsIOTest {
         ipm.setTitle("The title");
         ipm.setSaveResults(true);
         ipm.setSaveFilePath(Paths.get(""));
-        ipm.setBaits(baits1);
-        ipm.setBaitFilePath(baitFilePath);
+        ipm.setBaits(baits);
+        ipm.setBaitsFilePath(baitFilePath);
         sem1.setSpeciesName(speciesName1);
         sem1.setSpeciesExprDataPath(path1);
         sem2.setSpeciesName(speciesName2);
@@ -117,7 +113,7 @@ public class SettingsIOTest {
 
         //test method
         Map map = sio.inpPnlProfile2Map(ipm);
-        assertArrayEquals(baitArr, (String[]) map.get(SettingsIO.BAITS));
+        assertEquals(baits, (String) map.get(SettingsIO.BAITS));
         assertArrayEquals(new String[]{speciesName1, speciesName2}, (String[]) map.get(SettingsIO.SPECIES_NAMES));
         assertEquals(baitFilePath.toString(), map.get(SettingsIO.BAIT_FILE_PATH));
     }

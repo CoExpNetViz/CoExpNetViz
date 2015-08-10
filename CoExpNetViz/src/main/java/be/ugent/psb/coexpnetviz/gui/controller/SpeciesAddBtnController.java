@@ -1,5 +1,8 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
+
 /*
  * #%L
  * CoExpNetViz
@@ -22,10 +25,8 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.SpeciesEntry;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,20 +39,20 @@ import javax.swing.JOptionPane;
  */
 public class SpeciesAddBtnController extends AbstrController implements ActionListener {
 
-    public SpeciesAddBtnController(CyAppManager cyAppManager) {
+    public SpeciesAddBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllSpecies().size() >= CyModel.MAX_SPECIES_COUNT) {
+        if (getActiveModel().getAllSpecies().size() >= CENVModel.MAX_SPECIES_COUNT) {
 
             JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d species are supported", CyModel.MAX_SPECIES_COUNT));
+                String.format("No more than %d species are supported", CENVModel.MAX_SPECIES_COUNT));
             return;
         }
         SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntry se = getGuiManager().initSpeciesEntry(sem);
+        SpeciesEntryPanel se = getGuiManager().initSpeciesEntry(sem);
         getActiveModel().addSpecies(sem, se);
     }
 

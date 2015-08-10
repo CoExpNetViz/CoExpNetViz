@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -34,7 +34,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class ProfLoadBtnController extends AbstrController implements ActionListener {
 
-    public ProfLoadBtnController(CyAppManager cyAppManager) {
+    public ProfLoadBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

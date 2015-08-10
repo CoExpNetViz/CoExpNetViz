@@ -25,7 +25,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -33,7 +33,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class ResetGuiController extends AbstrController implements ActionListener {
 
-    public ResetGuiController(CyAppManager cyAppManager) {
+    public ResetGuiController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

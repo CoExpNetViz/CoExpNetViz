@@ -29,7 +29,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.FocusEvent;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -37,7 +37,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class TitleTfController extends AbstrTfController {
 
-    public TitleTfController(CyAppManager cyAppManager) {
+    public TitleTfController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

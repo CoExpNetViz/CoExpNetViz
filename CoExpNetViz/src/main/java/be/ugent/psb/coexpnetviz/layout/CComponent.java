@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.cytoscape.model.CyNode;
 
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /**
  *
@@ -68,7 +68,7 @@ class CComponent<T extends Comparable<T>, U extends Comparable<U>> implements Co
             // this will eventually be classified as target
             invalidNodes.add(node);
 
-        } else if (group.equals(CyModel.BAIT_GROUP)) {
+        } else if (group.equals(CENVModel.BAIT_GROUP)) {
             //this node is a bait
             List<CyNode> baitgroup = baitsMap.get(species);
 

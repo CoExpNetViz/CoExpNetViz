@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,7 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  */
 
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ public class SpeciesFileBtnController extends AbstrBrowseController implements A
 
     private SpeciesEntryModel sem;
 
-    public SpeciesFileBtnController(CyAppManager cyAppManager, SpeciesEntryModel sem) {
+    public SpeciesFileBtnController(CENVApplication cyAppManager, SpeciesEntryModel sem) {
         super(cyAppManager);
         this.sem = sem;
     }

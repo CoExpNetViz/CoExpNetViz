@@ -25,7 +25,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import java.awt.event.FocusEvent;
 import java.nio.file.Paths;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -33,7 +33,7 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class SaveFileTfController extends AbstrTfController {
 
-    public SaveFileTfController(CyAppManager cyAppManager) {
+    public SaveFileTfController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

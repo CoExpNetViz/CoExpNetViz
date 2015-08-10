@@ -1,4 +1,7 @@
-package be.ugent.psb.coexpnetviz.gui;
+package be.ugent.psb.coexpnetviz.gui.controller;
+
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /*
  * #%L
@@ -22,37 +25,13 @@ package be.ugent.psb.coexpnetviz.gui;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.controller.BaitFileBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.BaitFileOrInpController;
-import be.ugent.psb.coexpnetviz.gui.controller.BaitFileTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.BaitInpInfoBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.BaitInpTaController;
-import be.ugent.psb.coexpnetviz.gui.controller.CutoffController;
-import be.ugent.psb.coexpnetviz.gui.controller.OrthDelController;
-import be.ugent.psb.coexpnetviz.gui.controller.OrthEntryAddBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.OrthFileBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.OrthFileTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.OrthNameTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.ProfDelBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.ProfLoadBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.ProfSaveBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.ResetGuiController;
-import be.ugent.psb.coexpnetviz.gui.controller.RunAnalysisController;
-import be.ugent.psb.coexpnetviz.gui.controller.SaveFileBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.SaveFileChbController;
-import be.ugent.psb.coexpnetviz.gui.controller.SaveFileTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.SpeciesAddBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.SpeciesDelController;
-import be.ugent.psb.coexpnetviz.gui.controller.SpeciesFileBtnController;
-import be.ugent.psb.coexpnetviz.gui.controller.SpeciesFileTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.SpeciesNameTfController;
-import be.ugent.psb.coexpnetviz.gui.controller.TitleTfController;
+import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
 import be.ugent.psb.coexpnetviz.gui.view.JobInputPanel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.view.OrthEntryPanel;
+import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 import be.ugent.psb.coexpnetviz.io.SettingsIO;
 
 import java.io.IOException;
@@ -64,11 +43,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- * CENV plugin GUI controller, the root of controllers
+ * CENV plugin GUI controller, the root of (gui) controllers
  */
-public class CENVController {
+public class GUIController {
 
-    private final CyAppManager cyAppManager;
+    private final CENVApplication cyAppManager;
 
     // views
     private final JobInputPanel inputPanel;
@@ -79,7 +58,7 @@ public class CENVController {
     private InputPanelModel activeModel;
     private List<InputPanelModel> allModels;
 
-    public CENVController(CyAppManager cyAppManager) {
+    public GUIController(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;
 
         lastUsedDirPath = Paths.get(System.getProperty("user.home"));
@@ -89,7 +68,7 @@ public class CENVController {
         try {
         	SettingsIO settingsIO = new SettingsIO(cyAppManager);
             allModels = settingsIO.readAllProfiles();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
         	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
         }
 
@@ -107,13 +86,17 @@ public class CENVController {
         JobInputPanel inputPanel = new JobInputPanel();
 
         //attach controllers
+        
+        
         //buttons
         inputPanel.profileLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
         inputPanel.profileSaveButton.addActionListener(new ProfSaveBtnController(cyAppManager));
         inputPanel.profileDeleteButton.addActionListener(new ProfDelBtnController(cyAppManager));
         inputPanel.resetButton.addActionListener(new ResetGuiController(cyAppManager));
+        
         //title
         inputPanel.titleTextField.addFocusListener(new TitleTfController(cyAppManager));
+        
         //baits
         inputPanel.baitInputRadioButton.addActionListener(new BaitFileOrInpController(cyAppManager));
         inputPanel.baitFileRadioButton.addActionListener(new BaitFileOrInpController(cyAppManager));
@@ -121,17 +104,22 @@ public class CENVController {
         inputPanel.baitInputTextArea.addFocusListener(new BaitInpTaController(cyAppManager));
         inputPanel.baitFileTextField.addFocusListener(new BaitFileTfController(cyAppManager));
         inputPanel.baitFileButton.addActionListener(new BaitFileBtnController(cyAppManager));
+        
         //species
         inputPanel.addSpeciesButton.addActionListener(new SpeciesAddBtnController(cyAppManager));
+        
         //cutoffs
         inputPanel.negativeCutoffSpinner.addChangeListener(new CutoffController(cyAppManager));
         inputPanel.positiveCutoffSpinner.addChangeListener(new CutoffController(cyAppManager));
+        
         //save
         inputPanel.saveFileCheckBox.addActionListener(new SaveFileChbController(cyAppManager));
         inputPanel.saveFileTextField.addFocusListener(new SaveFileTfController(cyAppManager));
         inputPanel.saveFileButton.addActionListener(new SaveFileBtnController(cyAppManager));
+        
         //add orth groups file
         inputPanel.orthAddButton.addActionListener(new OrthEntryAddBtnController(cyAppManager));
+        
         //go
         inputPanel.goButton.addActionListener(new RunAnalysisController(cyAppManager));
 
@@ -155,8 +143,8 @@ public class CENVController {
      * @param sem
      * @return
      */
-    public SpeciesEntry initSpeciesEntry(SpeciesEntryModel sem) {
-        SpeciesEntry se = new SpeciesEntry();
+    public SpeciesEntryPanel initSpeciesEntry(SpeciesEntryModel sem) {
+        SpeciesEntryPanel se = new SpeciesEntryPanel();
 
         se.speciesNameTf.addFocusListener(new SpeciesNameTfController(cyAppManager, sem));
         se.speciesFileTf.addFocusListener(new SpeciesFileTfController(cyAppManager, sem));
@@ -168,8 +156,8 @@ public class CENVController {
         return se;
     }
 
-    public OrthEntry initOrthEntry(OrthEntryModel oem){
-        OrthEntry oe = new OrthEntry();
+    public OrthEntryPanel initOrthEntry(OrthEntryModel oem){
+        OrthEntryPanel oe = new OrthEntryPanel();
 
         oem.addObserver(oe);
 
@@ -184,7 +172,7 @@ public class CENVController {
 
     public InputPanelModel makeDefaultModel() {
         SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntry se = initSpeciesEntry(sem);
+        SpeciesEntryPanel se = initSpeciesEntry(sem);
         return new InputPanelModel(sem, se);
     }
 
@@ -230,7 +218,7 @@ public class CENVController {
             throw new IllegalArgumentException("Could not load profile" + profileName);
         }
         for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
-            SpeciesEntry se = initSpeciesEntry(sem);
+            SpeciesEntryPanel se = initSpeciesEntry(sem);
             ipmToLoad.setSpeciesEntry(sem, se);
         }
         setActiveModel(ipmToLoad);

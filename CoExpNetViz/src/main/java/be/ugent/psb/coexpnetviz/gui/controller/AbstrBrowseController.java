@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -38,7 +38,7 @@ public abstract class AbstrBrowseController extends AbstrController implements A
     protected static final int DIRECTORY = JFileChooser.DIRECTORIES_ONLY;
     protected static final int FILE = JFileChooser.FILES_ONLY;
 
-    public AbstrBrowseController(CyAppManager cyAppManager) {
+    public AbstrBrowseController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 

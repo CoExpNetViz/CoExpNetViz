@@ -26,8 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /**
  *
@@ -35,7 +35,7 @@ import be.ugent.psb.coexpnetviz.internal.CyModel;
  */
 public class BaitFileOrInpController extends AbstrController implements ActionListener {
 
-    public BaitFileOrInpController(CyAppManager cyAppManager) {
+    public BaitFileOrInpController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
@@ -47,19 +47,19 @@ public class BaitFileOrInpController extends AbstrController implements ActionLi
 
             if (jtb.getName().equals("baitFileRb")) {
                 boolean useBaitFile = jtb.isSelected();
-                getActiveModel().setUseBaitFile(useBaitFile);
+                getActiveModel().setUseBaitsFile(useBaitFile);
                 return;
             }
 
             if (jtb.getName().equals("baitInpRb")) {
                 boolean inpBaits = jtb.isSelected();
-                getActiveModel().setUseBaitFile(!inpBaits);
+                getActiveModel().setUseBaitsFile(!inpBaits);
                 return;
             }
         }
 
-        if (cyAppManager.getGuiManager() != null) {
-            System.err.println(CyModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ae.getSource());
+        if (cyAppManager.getGUIController() != null) {
+            System.err.println(CENVModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ae.getSource());
         }
     }
 

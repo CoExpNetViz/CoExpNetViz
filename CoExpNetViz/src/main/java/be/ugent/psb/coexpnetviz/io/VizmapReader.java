@@ -22,38 +22,23 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Set;
-import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
-/**
- *
- * @author sam
- */
 public class VizmapReader {
 
-    private final CyAppManager cyAppManager;
+    private final CENVApplication application;
 
-    public VizmapReader(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    public VizmapReader(CENVApplication cyAppManager) {
+        this.application = cyAppManager;
     }
 
-    public Set<VisualStyle> readVIZ() {
-        ClassLoader classLoader = CyAppManager.class.getClassLoader();
-        InputStream is = classLoader.getResourceAsStream("vizmap/CevStyle.xml");
-
-        //get required services
-        LoadVizmapFileTaskFactory loadVizmapFileTaskFactory = cyAppManager.getCyServices().getLoadVizmapFileTaskFactory();
-
-        //The factory method here already adds the visual styles to the
-        // visualMappingManager. Don't add it again with
-        // visualMappingManager.addVisualStyle() or you will get buggy behaviour
-        Set<VisualStyle> vsSet = loadVizmapFileTaskFactory.loadStyles(is);
-
-        return vsSet;
+    public Set<VisualStyle> readVIZ(Path vizmapPath) {
+        // Note: the factory has already called visualMappingManager.addVisualStyle() for us
+        return application.getCytoscapeApplication().getLoadVizmapFileTaskFactory().loadStyles(vizmapPath.toFile());
     }
 
 }

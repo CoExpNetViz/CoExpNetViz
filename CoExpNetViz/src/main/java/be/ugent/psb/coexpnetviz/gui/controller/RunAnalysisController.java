@@ -1,5 +1,8 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
+
 /*
  * #%L
  * CoExpNetViz
@@ -24,8 +27,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +36,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -45,10 +49,9 @@ import javax.swing.JPanel;
  */
 public class RunAnalysisController extends AbstrController implements ActionListener {
 
-    private final String[] numbers = new String[]{"first", "second", "third", "fourth", "fith"};
     private final IllegalArgumentException invalidModelException = new IllegalArgumentException("RunAnalysisController: GuiModel has invalid fields");
 
-    public RunAnalysisController(CyAppManager cyAppManager) {
+    public RunAnalysisController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
@@ -78,7 +81,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
 
     private void sendTitle() {
         if (getActiveModel().getTitle().trim().isEmpty()) {
-            cyModel.setTitle(CyModel.APP_NAME + "_" + CyAppManager.getTimeStamp());
+            cyModel.setTitle(CENVModel.APP_NAME + "_" + CENVApplication.getTimeStamp());
         } else {
             cyModel.setTitle(getActiveModel().getTitle());
         }
@@ -88,38 +91,17 @@ public class RunAnalysisController extends AbstrController implements ActionList
      * Send baits to CyModel
      */
     private void sendBaits(JPanel parent) throws IllegalArgumentException {
-        if (getActiveModel().isUseBaitFile()) {
+        if (getActiveModel().isUseBaitsFile()) {
             //The user choose to upload a file with bait genes
             //see if the file path is provided
-            if (getActiveModel().getBaitFilePath().toString().trim().length() == 0) {
+            if (getActiveModel().getBaitsFilePath().toString().trim().length() == 0) {
                 JOptionPane.showMessageDialog(parent,
                     "Please enter a baits file or input your baits manually",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
                 throw invalidModelException;
             }
-            //read the baits file
-            try {
-                Path baitPath = getActiveModel().getBaitFilePath().toRealPath();
-                Charset charset = Charset.forName("UTF-8");
-                BufferedReader reader = Files.newBufferedReader(baitPath, charset);
-                StringBuilder sb = new StringBuilder();
-                String line;
-                try {
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                } finally {
-                    reader.close();
-                }
-                cyModel.setBaits(sb.toString());
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(parent,
-                    "There was an error while reading the baits file\n" + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-                throw invalidModelException;
-            }
+            cyModel.setBaitsFilePath(getActiveModel().getBaitsFilePath());
         } else {
             //The user chose to enter the baits manually
             //TODO: better format checking
@@ -139,56 +121,60 @@ public class RunAnalysisController extends AbstrController implements ActionList
      * Send species data to cyModel
      */
     private void sendSpecies(JPanel parent) {
-        List<String> speciesNames = new ArrayList<String>();
-        List<Path> speciesPaths = new ArrayList<Path>();
-
-        SpeciesEntryModel[] SpeciesEntryModels = getAllSpecies().keySet().toArray(new SpeciesEntryModel[getAllSpecies().size()]);
-        for (int i = 0; i < SpeciesEntryModels.length; i++) {
-            SpeciesEntryModel sem = SpeciesEntryModels[i];
-
+        Map<String, Path> expressionMatrices = new HashMap<String, Path>();
+    	SpeciesEntryModel[] SpeciesEntryModels = getAllSpecies().keySet().toArray(new SpeciesEntryModel[getAllSpecies().size()]);
+        for (SpeciesEntryModel matrix : SpeciesEntryModels) {
             //check if species name is given
-            if (sem.getSpeciesName().trim().length() == 0) {
+            String speciesName = matrix.getSpeciesName().trim();
+        	if (speciesName.isEmpty()) {
                 JOptionPane.showMessageDialog(parent,
-                    String.format("No species name was given for the %s species", numbers[i]),
+                    "No species name was given",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
                 throw invalidModelException;
             }
-            speciesNames.add(sem.getSpeciesName());
+            
+            // check whether the name is unique
+            if (expressionMatrices.containsKey(speciesName)) {
+	        	JOptionPane.showMessageDialog(parent,
+	                    String.format("The species name, '%s', is not unique", speciesName),
+	                    "Warning",
+	                    JOptionPane.WARNING_MESSAGE);
+	                throw invalidModelException;
+            }
 
             //check if path is correct
-            if (sem.getSpeciesFilePath().toString().trim().length() == 0) {
+            if (matrix.getSpeciesFilePath().toString().trim().length() == 0) {
                 JOptionPane.showMessageDialog(parent,
-                    String.format("Please specify a path for the %s species", numbers[i]),
+                    String.format("Please specify a path for species '%s'", speciesName),
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
                 throw invalidModelException;
             }
             Path speciesPath;
-            //TODO: better format checking
             try {
-                speciesPath = sem.getSpeciesFilePath().toRealPath();
+                speciesPath = matrix.getSpeciesFilePath().toRealPath(); //TODO: better format checking
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(parent,
-                    String.format("There was an error while reading the gene expression file for the %s species\n"
-                        + "%s", numbers[i], ex.getMessage()),
-                    "Warning",
+                    String.format("Could not read the gene expression file for species '%s'\n"
+                        + "%s", speciesName, ex.getMessage()),
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
                 throw invalidModelException;
             }
-            speciesPaths.add(speciesPath);
+            
+            expressionMatrices.put(speciesName, speciesPath);
         }
 
-        cyModel.setSpeciesNames(speciesNames.toArray(new String[speciesNames.size()]));
-        cyModel.setSpeciesPaths(speciesPaths.toArray(new Path[speciesPaths.size()]));
+        cyModel.setExpressionMatrices(expressionMatrices);
     }
 
     /**
      * Send cutoffs to cyModel
      */
     private void sendCutOffs() {
-        cyModel.setnCutoff(getActiveModel().getNegCutoff());
-        cyModel.setpCutoff(getActiveModel().getPosCutoff());
+        cyModel.setNegativeCutoff(getActiveModel().getNegCutoff());
+        cyModel.setPositiveCutoff(getActiveModel().getPosCutoff());
     }
 
     /**
@@ -222,54 +208,53 @@ public class RunAnalysisController extends AbstrController implements ActionList
     }
 
     private void sendOrthGroups(JPanel parent) {
-        List<String> orthNames = new ArrayList<String>();
-        List<Path> orthPaths = new ArrayList<Path>();
+        Map<String, Path> geneFamilies = new HashMap<String, Path>();
 
-        if (!getAllOrthGroups().isEmpty()) {
-
-            OrthEntryModel[] OrthEntryModels = getAllOrthGroups().keySet().toArray(new OrthEntryModel[getAllOrthGroups().size()]);
-            for (int i = 0; i < OrthEntryModels.length; i++) {
-                OrthEntryModel oem = OrthEntryModels[i];
-
-                //check if orthGroup name is given
-                if (oem.getOrthGroupName().trim().length() == 0) {
-                    JOptionPane.showMessageDialog(parent,
-                        String.format("No name was given for the %s orthologous group file", numbers[i]),
-                        "Warning",
-                        JOptionPane.WARNING_MESSAGE);
-                    throw invalidModelException;
-                }
-                orthNames.add(oem.getOrthGroupName());
-
-                //check if path is correct
-                if (oem.getOrthEntryPath().toString().trim().length() == 0) {
-                    JOptionPane.showMessageDialog(parent,
-                        String.format("No path was given for the %s orthologous group file", numbers[i]),
-                        "Warning",
-                        JOptionPane.WARNING_MESSAGE);
-                    throw invalidModelException;
-                }
-                Path orthPath;
-                //TODO: better format checking
-                try {
-                    orthPath = oem.getOrthEntryPath().toRealPath();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(parent,
-                        String.format("There was an error while reading the orthologous group file for the %s entry\n"
-                            + "%s", numbers[i], ex.getMessage()),
-                        "Warning",
-                        JOptionPane.ERROR_MESSAGE);
-                    throw invalidModelException;
-                }
-                orthPaths.add(orthPath);
+        OrthEntryModel[] orthEntryModels = getAllOrthGroups().keySet().toArray(new OrthEntryModel[getAllOrthGroups().size()]);
+        for (OrthEntryModel oem : orthEntryModels) {
+            //check if orthGroup name is given
+            String name = oem.getOrthGroupName().trim();
+        	if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(parent,
+                    "No name was given for the orthologous group file",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+                throw invalidModelException;
+            }
+        	
+        	// Check for unique name
+        	if (geneFamilies.containsKey(name)) {
+                JOptionPane.showMessageDialog(parent,
+                    String.format("'%s' is not a unique name for the orthologous group file", name),
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+                throw invalidModelException;
             }
 
-            cyModel.setOrthGroupNames(orthNames.toArray(new String[orthNames.size()]));
-            cyModel.setOrthGroupPaths(orthPaths.toArray(new Path[orthPaths.size()]));
-        } else {
-            cyModel.setOrthGroupNames(null);
-            cyModel.setOrthGroupPaths(null);
+            //check if path is correct
+            if (oem.getOrthEntryPath().toString().trim().length() == 0) {
+                JOptionPane.showMessageDialog(parent,
+                    String.format("No path was given for '%s', the orthologous group file", name),
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+                throw invalidModelException;
+            }
+            
+            Path orthPath;
+            try {
+                orthPath = oem.getOrthEntryPath().toRealPath(); //TODO: better format checking
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(parent,
+                    String.format("Could not read orthologous group file, corresponding to '%s'\n"
+                        + "%s", name, ex.getMessage()),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                throw invalidModelException;
+            }
+            geneFamilies.put(name, orthPath);
         }
+
+        cyModel.setGeneFamilies(geneFamilies);
 
     }
 

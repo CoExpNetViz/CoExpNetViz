@@ -26,8 +26,8 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /**
  *
@@ -35,7 +35,7 @@ import be.ugent.psb.coexpnetviz.internal.CyModel;
  */
 public class CutoffController extends AbstrController implements ChangeListener {
 
-    public CutoffController(CyAppManager cyAppManager) {
+    public CutoffController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
@@ -56,8 +56,8 @@ public class CutoffController extends AbstrController implements ChangeListener 
             }
         }
 
-        if (cyAppManager.getGuiManager() != null) {
-            System.err.println(CyModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ce.getSource());
+        if (cyAppManager.getGUIController() != null) {
+            System.err.println(CENVModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ce.getSource());
         }
 
     }

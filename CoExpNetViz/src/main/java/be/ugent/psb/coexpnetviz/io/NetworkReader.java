@@ -33,19 +33,26 @@ import java.util.Map;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
- *
- * @author sam
+ * Load network
  */
 public class NetworkReader {
+	
+	private TableReader tableReader;
+	private CyNetwork network;
 
-    private final CyAppManager cyAppManager;
-
-    public NetworkReader(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    /**
+     * 
+     * @param application
+     * @param network Network to read into
+     */
+	public NetworkReader(CENVApplication application, CyNetwork network) {
+        this.tableReader = new TableReader(application);
+        this.network = network;
     }
 
     /**
@@ -57,7 +64,7 @@ public class NetworkReader {
      * will be added
      * @throws IOException if the network file could not be accessed
      */
-    public void readSIF(Path sifPath, CyNetwork network) throws IOException {
+    public void readSIF(Path sifPath) throws IOException {
         //open file
         Charset charset = Charset.forName("UTF-8");
         BufferedReader reader = Files.newBufferedReader(sifPath, charset);
@@ -91,7 +98,15 @@ public class NetworkReader {
         }
     }
     
-    /// Gets node by name and creates it if it doesn't exist
+    public CyTable readNodeAttributes(Path nodeAttributesFile) throws IOException {
+		return tableReader.readNodeAttributes(nodeAttributesFile, network);
+	}
+
+	public CyTable readEdgeAttributes(Path edgeAttributesFile) throws IOException {
+		return tableReader.readEdgeAttributes(edgeAttributesFile, network);
+	}
+
+	/// Gets node by name and creates it if it doesn't exist
     class Nodes
     {
 		private Map<String, CyNode> nodes; // names -> nodes

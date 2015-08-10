@@ -25,7 +25,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import java.awt.event.FocusEvent;
 import java.nio.file.Paths;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -33,13 +33,13 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class BaitFileTfController extends AbstrTfController {
 
-    public BaitFileTfController(CyAppManager cyAppManager) {
+    public BaitFileTfController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void focusLost(FocusEvent fe) {
-        getActiveModel().setBaitFilePath(Paths.get(getText(fe)));
+        getActiveModel().setBaitsFilePath(Paths.get(getText(fe)));
     }
 
 }

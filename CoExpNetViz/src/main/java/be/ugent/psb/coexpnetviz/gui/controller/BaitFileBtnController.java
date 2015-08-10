@@ -24,7 +24,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.ActionEvent;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
  *
@@ -32,16 +32,16 @@ import be.ugent.psb.coexpnetviz.internal.CyAppManager;
  */
 public class BaitFileBtnController extends AbstrBrowseController {
 
-    public BaitFileBtnController(CyAppManager cyAppManager) {
+    public BaitFileBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        getActiveModel().setBaitFilePath(showFileChooser(
+        getActiveModel().setBaitsFilePath(showFileChooser(
             "Choose file with bait genes",
             FILE,
-            getActiveModel().getBaitFilePath()));
+            getActiveModel().getBaitsFilePath()));
     }
 
 }

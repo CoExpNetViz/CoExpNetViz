@@ -37,18 +37,14 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
+import be.ugent.psb.coexpnetviz.CENVApplication;
 
-/**
- *
- * @author sam
- */
-public class TableReader {
+class TableReader {
 
-    private final CyAppManager cyAppManager;
+    private final CENVApplication application;
 
-    public TableReader(CyAppManager cyAppManager) {
-        this.cyAppManager = cyAppManager;
+    public TableReader(CENVApplication cyAppManager) {
+        this.application = cyAppManager;
     }
 
     /**
@@ -66,10 +62,10 @@ public class TableReader {
      * @return the node attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public CyTable readNOA(Path noaPath, CyNetwork network) throws IOException {
+    public CyTable readNodeAttributes(Path noaPath, CyNetwork network) throws IOException {
 
         //get the required service for this method
-        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyServices().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = application.getCytoscapeApplication().getCyNetworkTableManager();
 
         //read the file in a TableMap
         TableMap tableMap = makeTableMap(noaPath);
@@ -121,10 +117,10 @@ public class TableReader {
      * @return the edge attributes table
      * @throws IOException it the attribute file could not be accessed
      */
-    public CyTable readEDA(Path edaPath, CyNetwork network) throws IOException {
+    public CyTable readEdgeAttributes(Path edaPath, CyNetwork network) throws IOException {
 
         //get the required service for this method
-        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyServices().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = application.getCytoscapeApplication().getCyNetworkTableManager();
 
         //read the file in a TableMap
         TableMap tableMap = makeTableMap(edaPath);

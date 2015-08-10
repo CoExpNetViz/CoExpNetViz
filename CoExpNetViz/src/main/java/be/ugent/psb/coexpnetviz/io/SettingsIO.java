@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.io;
 
+import be.ugent.psb.coexpnetviz.CENVApplication;
+
 /*
  * #%L
  * CoExpNetViz
@@ -24,7 +26,6 @@ package be.ugent.psb.coexpnetviz.io;
 
 import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-import be.ugent.psb.coexpnetviz.internal.CyAppManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,8 +46,9 @@ import static java.nio.file.StandardOpenOption.*;
  */
 public class SettingsIO {
 
-    private final CyAppManager cyAppManager;
+    private final CENVApplication cyAppManager;
 
+    // YAML attribute names
     public static final String TITLE = "title";
     public static final String USE_BAIT_FILE = "useBaitFile";
     public static final String BAITS = "baits";
@@ -60,11 +62,12 @@ public class SettingsIO {
     public static final String PROFILE_FILE_NAME = "profiles";
     public static final String SPECIES_FILE_NAME = "species";
 
-    public SettingsIO(CyAppManager cyAppManager) {
+    public SettingsIO(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 
     public void writeAllProfiles(List<InputPanelModel> allModels) throws IOException {
+    	// TODO use typed read/write https://bitbucket.org/asomov/snakeyaml/wiki/Documentation#markdown-header-type-safe-collections
         Map<String, Map> allProfilesMap = new LinkedHashMap<String, Map>();
         for (InputPanelModel ipm : allModels) {
             allProfilesMap.put(ipm.getTitle(), inpPnlProfile2Map(ipm));
@@ -85,9 +88,9 @@ public class SettingsIO {
         }
 
         Map<String, Object> profileMap = new LinkedHashMap<String, Object>();
-        profileMap.put(USE_BAIT_FILE, inpPnlModel.isUseBaitFile());
-        profileMap.put(BAITS, inpPnlModel.getBaits().trim().split("\\s+"));
-        profileMap.put(BAIT_FILE_PATH, inpPnlModel.getBaitFilePath().toString());
+        profileMap.put(USE_BAIT_FILE, inpPnlModel.isUseBaitsFile());
+        profileMap.put(BAITS, inpPnlModel.getBaits());
+        profileMap.put(BAIT_FILE_PATH, inpPnlModel.getBaitsFilePath().toString());
         profileMap.put(SPECIES_NAMES, speciesNames.toArray(new String[speciesNames.size()]));
         profileMap.put(NEGCUTOFF, inpPnlModel.getNegCutoff());
         profileMap.put(POSCUTOFF, inpPnlModel.getPosCutoff());
@@ -128,18 +131,18 @@ public class SettingsIO {
 
             //set fields/values etc
             InputPanelModel ipm = new InputPanelModel();
-            ipm.setTitle(profileName.toString());
-            ipm.setUseBaitFile((Boolean) profileMap.get(USE_BAIT_FILE));
-            ipm.setBaits(combine((ArrayList) profileMap.get(BAITS), " "));
-            ipm.setBaitFilePath(Paths.get(profileMap.get(BAIT_FILE_PATH).toString()));
+            ipm.setTitle((String) profileName);
+            ipm.setUseBaitsFile((Boolean) profileMap.get(USE_BAIT_FILE));
+            ipm.setBaits((String) profileMap.get(BAITS));
+            ipm.setBaitsFilePath(Paths.get((String) profileMap.get(BAIT_FILE_PATH)));
             ipm.setNegCutoff((Double) profileMap.get(NEGCUTOFF));
             ipm.setPosCutoff((Double) profileMap.get(POSCUTOFF));
             ipm.setSaveResults((Boolean) profileMap.get(SAVE_RESULTS));
-            ipm.setSaveFilePath(Paths.get(profileMap.get(SAVE_FILE_PATH).toString()));
+            ipm.setSaveFilePath(Paths.get((String) profileMap.get(SAVE_FILE_PATH)));
 
             //add species to model
             ArrayList<String> speciesForThisModel;
-            speciesForThisModel = (ArrayList) profileMap.get(SPECIES_NAMES);
+            speciesForThisModel = (ArrayList<String>) profileMap.get(SPECIES_NAMES);
             for (String speciesName : speciesForThisModel) {
                 if (speciesMap.containsKey(speciesName)) {
                     SpeciesEntryModel sem = new SpeciesEntryModel();
@@ -171,16 +174,4 @@ public class SettingsIO {
 
     }
 
-    String combine(ArrayList<String> s, String glue) {
-        int k = s.size();
-        if (k == 0) {
-            return "";
-        }
-        StringBuilder out = new StringBuilder();
-        out.append(s.get(0));
-        for (int i = 1; i < k; ++i) {
-            out.append(glue).append(s.get(i));
-        }
-        return out.toString();
-    }
 }

@@ -42,7 +42,7 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.ugent.psb.coexpnetviz.internal.CyModel;
+import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 public class FamLayoutTask extends AbstractLayoutTask {
 
@@ -73,8 +73,8 @@ public class FamLayoutTask extends AbstractLayoutTask {
         this.taskMonitor = taskMonitor;
         this.network = networkView.getModel();
 
-        taskMonitor.setProgress(CyModel.PROG_NETW_COMPLETE);
-        taskMonitor.setStatusMessage(CyModel.PROG_LAYT);
+        taskMonitor.setProgress(CENVModel.PROG_NETW_COMPLETE);
+        taskMonitor.setStatusMessage(CENVModel.PROG_LAYT);
 
         if (layoutAttribute == null || layoutAttribute.equals("(none)")) {
             throw new NullPointerException("Attribute is null.  This is required for this layout.");

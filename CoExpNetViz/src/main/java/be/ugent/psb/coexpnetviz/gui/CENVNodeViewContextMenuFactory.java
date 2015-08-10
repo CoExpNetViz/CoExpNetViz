@@ -67,11 +67,11 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  */
 public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
-    String plazaMonocotKey = "Plaza Monocots";
-    String plazaMonocotRegex = "ORTHO\\d+M\\d+";
+    private String plazaMonocotKey = "Plaza Monocots";
+    private String plazaMonocotRegex = "ORTHO\\d+M\\d+";
 
-    String plazaDicotKey = "Plaza Dicots";
-    String plazaDicotRegex = "ORTHO\\d+D\\d+";
+    private String plazaDicotKey = "Plaza Dicots";
+    private String plazaDicotRegex = "ORTHO\\d+D\\d+";
 
     public CENVNodeViewContextMenuFactory(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;

@@ -52,12 +52,6 @@ public class CENVNetworkBuilder {
         this.cyModel = cyAppManager.getCyModel();
     }
 
-    private CyNetwork createNetwork() {
-        CyNetwork network = application.getCytoscapeApplication().getCyNetworkFactory().createNetwork();
-        network.getRow(network).set(CyNetwork.NAME, cyModel.getTitle());
-        return network;
-    }
-
     private VisualStyle getStyle(String name) {
     	for (VisualStyle vs : application.getCytoscapeApplication().getVisualMappingManager().getAllVisualStyles()) {
             if (vs.getTitle().equals(name)) {
@@ -85,36 +79,35 @@ public class CENVNetworkBuilder {
      * networks nodeTable and view to the coremodel.
      *
      * @throws java.lang.Exception
+     * @param networkDir Directory with the sif and attr files
      */
-    public void createNetworkView() throws Exception {
-        try {
-
-            //read files
-            CyNetwork network = createNetwork();
-            NetworkReader networkReader = new NetworkReader(application, network);
-            networkReader.readSIF(cyModel.getSifPath());
-            CyTable nodeTable = networkReader.readNodeAttributes(cyModel.getNoaPath());
-            networkReader.readEdgeAttributes(cyModel.getEdaPath());
-
-            //add the network
-            application.getCytoscapeApplication().getCyNetworkManager().addNetwork(network);
-            CyNetworkView cnv = application.getCytoscapeApplication().getCyNetworkViewFactory().createNetworkView(network);
-
-            //add this data to the corestatus to pass it on to the next task
-            //which is applying the layout
-            cyModel.setLastNoaTable(nodeTable);
-            cyModel.setLastCnv(cnv);
-            cyModel.getVisibleCevNetworks().add(network);
-
-            application.getCytoscapeApplication().getCyNetworkViewManager().addNetworkView(cnv);
-            application.getCytoscapeApplication().getVisualMappingManager().setVisualStyle(getStyle(CENVModel.APP_NAME, cyModel.getVizPath()), cnv);
-
+    public void createNetworkView(Path networkDir) throws Exception {
+    	CyNetwork network;
+    	try {
+            // Read network
+            NetworkReader networkReader = new NetworkReader(application);
+            networkReader.readSIF(networkDir.resolve("network.sif"));
+            cyModel.setLastNoaTable(networkReader.readNodeAttributes(networkDir.resolve("network.node.attr"))); // Note: lastNoaTable is simply passed on to the next task TODO
+            networkReader.readEdgeAttributes(networkDir.resolve("network.edge.attr"));
+            network = networkReader.getNetwork();
         } catch (IOException ex) {
             //when executed in a Task, this message will be shown to the user
             // (see documentation for org.cytoscape.work.Task)
             throw new Exception(String.format("An error ocurred while reading the network files%n%s%n", ex), ex);
         }
 
+        // Add the network
+        application.getCytoscapeApplication().getCyNetworkManager().addNetwork(network);
+        
+        // Add view
+        CyNetworkView networkView = application.getCytoscapeApplication().getCyNetworkViewFactory().createNetworkView(network);
+        application.getCytoscapeApplication().getCyNetworkViewManager().addNetworkView(networkView);
+        application.getCytoscapeApplication().getVisualMappingManager().setVisualStyle(getStyle(CENVModel.APP_NAME, networkDir.resolve("cenv_style.xml")), networkView);
+
+        //add this data to the corestatus to pass it on to the next task
+        //which is applying the layout
+        cyModel.setLastCnv(networkView);
+        cyModel.getVisibleCevNetworks().add(network);
     }
 
 }

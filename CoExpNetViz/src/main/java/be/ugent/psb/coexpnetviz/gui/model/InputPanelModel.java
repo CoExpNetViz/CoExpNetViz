@@ -251,10 +251,6 @@ public class InputPanelModel extends AbstrModel {
         }
     }
 
-    public SpeciesEntryPanel getSpeciesEntry(SpeciesEntryModel sem) {
-        return species.get(sem);
-    }
-
     public void setSpeciesEntry(SpeciesEntryModel sem, SpeciesEntryPanel se) {
         species.put(sem, se);
         setChanged();
@@ -287,12 +283,6 @@ public class InputPanelModel extends AbstrModel {
 
     public OrthEntryPanel getOrthEntry(OrthEntryModel oem) {
         return orthGroups.get(oem);
-    }
-
-    public void setOrthEntry(OrthEntryModel oem, OrthEntryPanel oe) {
-        orthGroups.put(oem, oe);
-        setChanged();
-        notifyObservers();
     }
 
     public void addOrthGroup(OrthEntryModel oem, OrthEntryPanel oe) {

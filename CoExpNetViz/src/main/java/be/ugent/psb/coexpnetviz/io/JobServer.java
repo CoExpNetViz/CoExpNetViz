@@ -72,89 +72,36 @@ public class JobServer {
     }
 
     /**
-     * Submit run and store the result in the local file system, synchronously
+     * Submit run and store the unpacked result in the local file system, synchronously
      * 
      * @throws InterruptedException
      * @throws IOException
-     * @throws JobServerException 
+     * @throws JobServerException
+     * @return Path to unpacked result  
      */
-    public void runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
-
-        /*----------------------------------------------------------------------
-         1) create output directory
-         */
-        //if the user clicked the checkbox to save the output, then the archive
-        //downloaded from the server is saved in the directory specified by the
-        //user. If the user does not want to save the output, then the archive
-        //is downloaded to a temp folder.
-        Path outPath;
-        if (cyModel.getSaveFilePath() == null) {
-            outPath = Files.createTempDirectory("Cev_archive");
-        } else {
-            outPath = cyModel.getSaveFilePath();
-        }
-
-        String fileExtension = ".tgz";
+    public Path runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
+        // Post request and retrieve result
+        Path downloadDirectory = Files.createTempDirectory("cenv_archive");
         String archiveName = cyModel.getTitle();
-
-        Path archivePath = outPath.resolve(archiveName + fileExtension);
-        //prevent overwriting the same file if the user forgot to change the
-        //title
-        if (Files.exists(archivePath)) {
-            archivePath = outPath.resolve(archiveName + "_" + CENVApplication.getTimeStamp() + fileExtension);
-        }
-
-        /*----------------------------------------------------------------------
-         2) Upload user files and settings, download response
-         */
-        //make multipart entity with user data and settings
+        Path archivePath = downloadDirectory.resolve(archiveName + "_" + CENVApplication.getTimeStamp() + ".tgz");
+        
         HttpEntity postEntity = makeEntity(job);
-
-        //run the app on the server
         executeAppOnSever(CENVModel.URL, postEntity, archivePath);
 
-        /*----------------------------------------------------------------------
-         4) Handle response: Unpack files to temp dir; or if return is error response, interpret the error.
-         */
-        //create a temp folder to store the network files
-        Path unpackPath = Files.createTempDirectory("Cev_netw");
-        //unpack the network files
-        Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
-        File archive = archivePath.toFile();
-        ArchiveStream stream = archiver.stream(archive);
-        ArchiveEntry entry;
-
-        Path sifPath = null;
-        Path noaPath = null;
-        Path edaPath = null;
-        Path logPath = null;
-        File netwFile;
-        while ((entry = stream.getNextEntry()) != null) {
-            netwFile = entry.extract(unpackPath.toFile());
-            if (netwFile.toString().endsWith(".sif")) {
-                sifPath = netwFile.toPath();
-            }
-            if (netwFile.toString().endsWith(".node.attr")) {
-                noaPath = netwFile.toPath();
-            }
-            if (netwFile.toString().endsWith(".edge.attr")) {
-                edaPath = netwFile.toPath();
-            }
-            if (netwFile.toString().endsWith("_log")) {
-                logPath = netwFile.toPath();
-            }
+        // Decide where to unpack
+        Path unpackPath;
+        if (cyModel.getSaveFilePath() == null) {
+        	unpackPath = Files.createTempDirectory("cenv_network");
         }
-        stream.close();
+        else {
+        	unpackPath = cyModel.getSaveFilePath();
+        }
 
-        /*----------------------------------------------------------------------
-         5) update corestatus with network paths
-         */
-        //TODO: sanity checks
-        cyModel.setSifPath(sifPath);
-        cyModel.setNoaPath(noaPath);
-        cyModel.setEdaPath(edaPath);
-        cyModel.setLogPath(logPath);
+        // Unpack the archive
+        Archiver archiver = ArchiverFactory.createArchiver(archivePath.toFile());
+        archiver.extract(archivePath.toFile(), unpackPath.toFile());
 
+        return unpackPath;
     }
 
     private HttpEntity makeEntity(JobDescription job)

@@ -38,10 +38,11 @@ import org.cytoscape.model.CyTable;
 import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /**
- * Load network
+ * Reader of networks, can read up to one network
  */
 public class NetworkReader {
 	
+	private CENVApplication application;
 	private TableReader tableReader;
 	private CyNetwork network;
 
@@ -50,10 +51,21 @@ public class NetworkReader {
      * @param application
      * @param network Network to read into
      */
-	public NetworkReader(CENVApplication application, CyNetwork network) {
-        this.tableReader = new TableReader(application);
-        this.network = network;
+	public NetworkReader(CENVApplication application) {
+        this.application = application;
+		this.tableReader = new TableReader(application);
+        this.network = createNetwork();
     }
+	
+	private CyNetwork createNetwork() {
+        CyNetwork network = application.getCytoscapeApplication().getCyNetworkFactory().createNetwork();
+        network.getRow(network).set(CyNetwork.NAME, application.getCyModel().getTitle());
+        return network;
+    }
+	
+	public CyNetwork getNetwork() {
+		return network;
+	}
 
     /**
      * Adds nodes and edges from a .sif file to a new network. The .sif file
@@ -107,7 +119,7 @@ public class NetworkReader {
 	}
 
 	/// Gets node by name and creates it if it doesn't exist
-    class Nodes
+    private class Nodes
     {
 		private Map<String, CyNode> nodes; // names -> nodes
 		private CyNetwork network;

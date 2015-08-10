@@ -77,9 +77,10 @@ public class NetworkReaderTest {
         CyNetworkTableManager cntm = nts.getNetworkTableManager();
         CytoscapeServices cs = new CytoscapeServices();
         cs.setCyNetworkTableManager(cntm);
+        cs.setCyNetworkFactory(nts.getNetworkFactory());
         CENVApplication cam = new CENVApplication(cs);
-        cn = nts.getNetwork();
-        cnr = new NetworkReader(cam, cn);
+        cnr = new NetworkReader(cam);
+        cn = cnr.getNetwork();
         cnr.readSIF(sifPath);
         
         assertEquals(1440, cn.getNodeCount());

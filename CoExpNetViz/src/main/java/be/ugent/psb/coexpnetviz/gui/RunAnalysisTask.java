@@ -26,6 +26,7 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -46,8 +47,6 @@ public class RunAnalysisTask extends AbstractTask {
     private final CENVApplication application;
     private JobServer jobServer;
 
-    private double progr = 0;
-
     public RunAnalysisTask(CENVApplication cyAppManager) {
         this.application = cyAppManager;
     }
@@ -62,11 +61,11 @@ public class RunAnalysisTask extends AbstractTask {
      */
     @Override
     public void run(TaskMonitor tm) throws Exception {
-        tm.setTitle(CENVModel.PROG_TITLE);
+        tm.setTitle("Running CoExpNetViz");
 
         try {
-            runOnServer(tm);
-            createNetwork(tm);
+            Path networkDirectory = runOnServer(tm);
+            createNetwork(tm, networkDirectory);
             applyLayout(tm);
         } catch (Exception e) {
             //TODO: if any exception occured, roll back whatever has changed
@@ -74,47 +73,40 @@ public class RunAnalysisTask extends AbstractTask {
         }
     }
 
-    void runOnServer(TaskMonitor tm) throws Exception {
-        tm.setStatusMessage(CENVModel.PROG_TITLE);
+    Path runOnServer(TaskMonitor tm) throws Exception {
+        tm.setStatusMessage("Running CoExpNetViz");
+        tm.setProgress(-1.0); // We don't know, so set it to indefinite
 
         jobServer = application.getServerConn();
 
         //a threadexecuter is used because it can throw Exceptions from the child thread
+        
         ExecutorService threadExecutor = Executors.newSingleThreadExecutor();
 
-        Future<Void> futureResult = threadExecutor.submit(new Callable<Void>() {
-
+        Future<Path> futureResult = threadExecutor.submit(new Callable<Path>() {
             @Override
-            public Void call() throws Exception {
-                jobServer.runJob(application.getCyModel().getJobDescription());
-                return null;
+            public Path call() throws Exception {
+                return jobServer.runJob(application.getCyModel().getJobDescription());
             }
         });
 
-        int i = 0;
-        int t = 60;
-
         while (!futureResult.isDone()) {
             Thread.sleep(1000);
-            i++;
-            progr = i * 1.0 / (t * CENVModel.PROG_CONN_COMPLETE);
-            progr = progr < CENVModel.PROG_CONN_COMPLETE ? progr : -1.0;
-            //TODO: replace fake progress with real progress
-            tm.setProgress(progr);
+            
             if (cancelled) {
                 jobServer.stop();
-                return;
+                throw new InterruptedException("Task cancelled");
             }
         }
 
         //this will throw the child thread's exceptions if there were any
-        futureResult.get();
+        return futureResult.get();
     }
 
-    void createNetwork(TaskMonitor tm) throws Exception {
+    void createNetwork(TaskMonitor tm, Path networkDirectory) throws Exception {
         tm.setProgress(CENVModel.PROG_CONN_COMPLETE);
         tm.setStatusMessage("Creating network");
-        new CENVNetworkBuilder(application).createNetworkView();
+        new CENVNetworkBuilder(application).createNetworkView(networkDirectory);
     }
 
     void applyLayout(TaskMonitor tm) {

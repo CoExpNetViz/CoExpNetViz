@@ -55,9 +55,6 @@ public class CENVModel extends Observable {
     public static final String COMP_LAYOUT_NAME = "fam-layout";
     public static final String HUMAN_LAYOUT_NAME = "Family node Layout";
     //status messages for the analysis task
-    public static final String PROG_TITLE = "Running " + APP_NAME;
-    public static final String PROG_SERV = "Running analysis on server";
-    public static final String PROG_NETW = "Creating network";
     public static final String PROG_LAYT = "Applying " + HUMAN_LAYOUT_NAME;
     public static final double PROG_CONN_COMPLETE = 0.8;
     public static final double PROG_NETW_COMPLETE = 0.9;
@@ -77,12 +74,6 @@ public class CENVModel extends Observable {
     //Network view for last created network
     //this is set by CreateNetworkTask and used by ShowNetworkTask
     private CyNetworkView lastCnv;
-    //paths to network files for last created network
-    //these are set by runAnalysistask and then used by CreateNetworkTask
-    private Path sifPath;
-    private Path noaPath;
-    private Path edaPath;
-    private Path logPath;
 
     /*--------------------------------------------------------------------------
      Fields to keep track of application state
@@ -137,69 +128,6 @@ public class CENVModel extends Observable {
      */
     public void setLastCnv(CyNetworkView lastCnv) {
         this.lastCnv = lastCnv;
-    }
-
-    /**
-     * @return the sifPath
-     */
-    public Path getSifPath() {
-        return sifPath;
-    }
-
-    /**
-     * @param sifPath the sifPath to set
-     */
-    public void setSifPath(Path sifPath) {
-        this.sifPath = sifPath;
-    }
-
-    /**
-     * @return the noaPath
-     */
-    public Path getNoaPath() {
-        return noaPath;
-    }
-
-    /**
-     * @param noaPath the noaPath to set
-     */
-    public void setNoaPath(Path noaPath) {
-        this.noaPath = noaPath;
-    }
-
-    /**
-     * @return the edaPath
-     */
-    public Path getEdaPath() {
-        return edaPath;
-    }
-
-    /**
-     * @param edaPath the edaPath to set
-     */
-    public void setEdaPath(Path edaPath) {
-        this.edaPath = edaPath;
-    }
-
-    /**
-     * @return the vizPath
-     */
-    public Path getVizPath() {
-        return sifPath.getParent().resolve("CENV_style.xml");
-    }
-
-    /**
-     * @return the logPath
-     */
-    public Path getLogPath() {
-        return logPath;
-    }
-
-    /**
-     * @param logPath the logPath to set
-     */
-    public void setLogPath(Path logPath) {
-        this.logPath = logPath;
     }
 
     public Path getSettingsPath() {

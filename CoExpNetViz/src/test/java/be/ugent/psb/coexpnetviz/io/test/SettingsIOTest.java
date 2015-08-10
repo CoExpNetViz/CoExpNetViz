@@ -105,20 +105,6 @@ public class SettingsIOTest {
     }
 
     /**
-     * Test of inpPnlProfile2Map method, of class SettingsIO.
-     */
-    @Test
-    public void testInpPnlProfile2Map() {
-        System.out.println("inpPnlProfile2Map");
-
-        //test method
-        Map map = sio.inpPnlProfile2Map(ipm);
-        assertEquals(baits, (String) map.get(SettingsIO.BAITS));
-        assertArrayEquals(new String[]{speciesName1, speciesName2}, (String[]) map.get(SettingsIO.SPECIES_NAMES));
-        assertEquals(baitFilePath.toString(), map.get(SettingsIO.BAIT_FILE_PATH));
-    }
-
-    /**
      * Test of readAllProfiles method, of class SettingsIO. This is for for
      * for convenience when testing new values in the inpPnlModel
      */

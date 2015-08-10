@@ -49,18 +49,17 @@ public class SettingsIO {
     private final CENVApplication cyAppManager;
 
     // YAML attribute names
-    public static final String TITLE = "title";
-    public static final String USE_BAIT_FILE = "useBaitFile";
-    public static final String BAITS = "baits";
-    public static final String BAIT_FILE_PATH = "baitFilePath";
-    public static final String SPECIES_NAMES = "speciesNames";
-    public static final String NEGCUTOFF = "negCutoff";
-    public static final String POSCUTOFF = "posCutoff";
-    public static final String SAVE_RESULTS = "saveResults";
-    public static final String SAVE_FILE_PATH = "saveFilePath";
-
-    public static final String PROFILE_FILE_NAME = "profiles";
-    public static final String SPECIES_FILE_NAME = "species";
+    private static final String TITLE = "title";
+    private static final String USE_BAIT_FILE = "useBaitFile";
+    private static final String BAITS = "baits";
+    private static final String BAIT_FILE_PATH = "baitFilePath";
+    private static final String SPECIES_NAMES = "speciesNames";
+    private static final String NEGCUTOFF = "negCutoff";
+    private static final String POSCUTOFF = "posCutoff";
+    private static final String SAVE_RESULTS = "saveResults";
+    private static final String SAVE_FILE_PATH = "saveFilePath";
+    private static final String PROFILE_FILE_NAME = "profiles";
+    private static final String SPECIES_FILE_NAME = "species";
 
     public SettingsIO(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;

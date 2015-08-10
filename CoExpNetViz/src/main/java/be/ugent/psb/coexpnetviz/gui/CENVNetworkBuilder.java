@@ -26,14 +26,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
-import be.ugent.psb.coexpnetviz.CytoscapeServices;
 import be.ugent.psb.coexpnetviz.io.NetworkReader;
 import be.ugent.psb.coexpnetviz.io.VizmapReader;
 
@@ -102,7 +98,7 @@ public class CENVNetworkBuilder {
         // Add view
         CyNetworkView networkView = application.getCytoscapeApplication().getCyNetworkViewFactory().createNetworkView(network);
         application.getCytoscapeApplication().getCyNetworkViewManager().addNetworkView(networkView);
-        application.getCytoscapeApplication().getVisualMappingManager().setVisualStyle(getStyle(CENVModel.APP_NAME, networkDir.resolve("cenv_style.xml")), networkView);
+        application.getCytoscapeApplication().getVisualMappingManager().setVisualStyle(getStyle(CENVApplication.APP_NAME, networkDir.resolve("cenv_style.xml")), networkView);
 
         //add this data to the corestatus to pass it on to the next task
         //which is applying the layout

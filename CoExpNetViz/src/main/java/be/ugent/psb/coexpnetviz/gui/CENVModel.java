@@ -31,14 +31,12 @@ import be.ugent.psb.coexpnetviz.io.JobDescription;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 /**
  * Data class: some constants, global state that perhaps could be made less global
- * @author sam
  */
 public class CENVModel extends Observable {
 
-    public static final String APP_NAME = "CoExpNetViz";
-    public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
     //which column contains the gene families
     public static final int FAMILIES_COLUMN = 0;
     //which column contains the genes

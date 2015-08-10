@@ -117,12 +117,12 @@ public class CytoscapeActivator extends AbstractCyActivator {
         registerService(context, new NetworkEventListener(cyAppManager), NetworkAboutToBeDestroyedListener.class, new Properties());
 
         // Add our menu action in OSGi services
-        registerAllServices(context, new MenuAction(cyApplicationManager, CENVModel.APP_NAME, cyAppManager), new Properties());
+        registerAllServices(context, new MenuAction(cyApplicationManager, CENVApplication.APP_NAME, cyAppManager), new Properties());
 
         // Add our layout
         FamLayout cgal = new FamLayout(undoSupport);
         Properties cgalProperties = new Properties();
-        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVModel.APP_NAME);
+        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVApplication.APP_NAME);
         cgalProperties.setProperty("preferredTaskManager", "menu");
         cgalProperties.setProperty(TITLE, cgal.toString());
         registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
@@ -134,6 +134,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
         registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);
 
         //for debugging: print message if the app started succesfully
-        System.out.println(CENVModel.APP_NAME + " started succesfully");
+        System.out.println(CENVApplication.APP_NAME + " started succesfully");
     }
 }

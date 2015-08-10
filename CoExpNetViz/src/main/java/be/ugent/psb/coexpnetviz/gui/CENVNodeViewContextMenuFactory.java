@@ -86,7 +86,7 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(CENVModel.APP_NAME);
+        JMenuItem menuItem = new JMenuItem(CENVApplication.APP_NAME);
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;

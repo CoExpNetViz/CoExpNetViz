@@ -43,6 +43,8 @@ import org.cytoscape.work.TaskIterator;
  */
 public class CENVApplication {
 
+	public static final String APP_NAME = "CoExpNetViz";
+	
     private final CENVModel cyModel;
     private final CytoscapeServices cyServices;
 
@@ -67,7 +69,7 @@ public class CENVApplication {
      *
      * @return
      */
-    public static String getTimeStamp() {
+    public static String getTimeStamp() { // TODO throw into an Util class
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
         return sdf.format(now);
@@ -128,7 +130,7 @@ public class CENVApplication {
 
         //try to get a settings directory in the cytoscape config folder
         if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
-            localSettingsPath = cyConfPath.resolve(CENVModel.APP_NAME + "_settings");
+            localSettingsPath = cyConfPath.resolve(APP_NAME + "_settings");
             //settins folder doesn't exists, so try to make it
             if (!Files.exists(localSettingsPath)) {
                 try {
@@ -147,7 +149,7 @@ public class CENVApplication {
     }
 
     private Path getHomeSettingsFolder(Path searchPath) {
-        Path localSettingsPath = searchPath.resolve(CENVModel.APP_NAME + "_settings");
+        Path localSettingsPath = searchPath.resolve(APP_NAME + "_settings");
         if (!Files.exists(localSettingsPath)) {
             //settins folder doesn't exists, so try to make it
             try {

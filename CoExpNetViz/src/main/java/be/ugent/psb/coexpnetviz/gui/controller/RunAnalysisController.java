@@ -81,7 +81,7 @@ public class RunAnalysisController extends AbstrController implements ActionList
 
     private void sendTitle() {
         if (getActiveModel().getTitle().trim().isEmpty()) {
-            cyModel.setTitle(CENVModel.APP_NAME + "_" + CENVApplication.getTimeStamp());
+            cyModel.setTitle(CENVApplication.APP_NAME + "_" + CENVApplication.getTimeStamp());
         } else {
             cyModel.setTitle(getActiveModel().getTitle());
         }

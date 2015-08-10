@@ -59,7 +59,7 @@ public class BaitFileOrInpController extends AbstrController implements ActionLi
         }
 
         if (cyAppManager.getGUIController() != null) {
-            System.err.println(CENVModel.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ae.getSource());
+            System.err.println(CENVApplication.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ae.getSource());
         }
     }
 

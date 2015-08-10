@@ -58,6 +58,8 @@ import org.apache.http.util.EntityUtils;
  */
 public class JobServer {
 
+	private static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
+	
     private final CENVModel cyModel;
 
     private HttpPost httpPost;
@@ -86,7 +88,7 @@ public class JobServer {
         Path archivePath = downloadDirectory.resolve(archiveName + "_" + CENVApplication.getTimeStamp() + ".tgz");
         
         HttpEntity postEntity = makeEntity(job);
-        executeAppOnSever(CENVModel.URL, postEntity, archivePath);
+        executeAppOnSever(postEntity, archivePath);
 
         // Decide where to unpack
         Path unpackPath;
@@ -148,9 +150,9 @@ public class JobServer {
         return entityBuilder.build();
     }
 
-    private void executeAppOnSever(String url, HttpEntity entity, Path archivePath) throws IOException, JobServerException {
+    private void executeAppOnSever(HttpEntity entity, Path archivePath) throws IOException, JobServerException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        httpPost = new HttpPost(url);
+        httpPost = new HttpPost(URL);
         httpPost.setEntity(entity);
 
         CloseableHttpResponse response = null;

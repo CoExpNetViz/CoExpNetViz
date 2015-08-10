@@ -45,12 +45,6 @@ public class SpeciesAddBtnController extends AbstrController implements ActionLi
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllSpecies().size() >= CENVModel.MAX_SPECIES_COUNT) {
-
-            JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d species are supported", CENVModel.MAX_SPECIES_COUNT));
-            return;
-        }
         SpeciesEntryModel sem = new SpeciesEntryModel();
         SpeciesEntryPanel se = getGuiManager().initSpeciesEntry(sem);
         getActiveModel().addSpecies(sem, se);

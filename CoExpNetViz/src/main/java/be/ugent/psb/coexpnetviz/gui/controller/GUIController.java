@@ -118,7 +118,7 @@ public class GUIController {
         inputPanel.saveFileButton.addActionListener(new SaveFileBtnController(cyAppManager));
         
         //add orth groups file
-        inputPanel.orthAddButton.addActionListener(new OrthEntryAddBtnController(cyAppManager));
+        inputPanel.orthAddButton.addActionListener(new OrthAddBtnController(cyAppManager));
         
         //go
         inputPanel.goButton.addActionListener(new RunAnalysisController(cyAppManager));

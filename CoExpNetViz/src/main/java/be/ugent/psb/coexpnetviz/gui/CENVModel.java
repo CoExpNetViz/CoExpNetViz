@@ -38,8 +38,6 @@ import be.ugent.psb.coexpnetviz.io.JobDescription;
 public class CENVModel extends Observable {
 
     public static final String APP_NAME = "CoExpNetViz";
-    public static final int MAX_SPECIES_COUNT = 5;// TODO rm
-    public static final int MAX_ORTHGROUP_COUNT = 5;// TODO rm
     public static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
     //which column contains the gene families
     public static final int FAMILIES_COLUMN = 0;

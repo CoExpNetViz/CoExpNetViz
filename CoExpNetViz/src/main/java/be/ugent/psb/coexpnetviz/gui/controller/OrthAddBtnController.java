@@ -37,21 +37,14 @@ import javax.swing.JOptionPane;
  *
  * @author sam
  */
-public class OrthEntryAddBtnController extends AbstrController implements ActionListener {
+public class OrthAddBtnController extends AbstrController implements ActionListener {
 
-    public OrthEntryAddBtnController(CENVApplication cyAppManager) {
+    public OrthAddBtnController(CENVApplication cyAppManager) {
         super(cyAppManager);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (getActiveModel().getAllOrthGroups().size() >= CENVModel.MAX_ORTHGROUP_COUNT) {
-
-            JOptionPane.showMessageDialog(((JComponent) ae.getSource()),
-                String.format("No more than %d orthologous group files are supported", CENVModel.MAX_ORTHGROUP_COUNT));
-            return;
-            
-        }
         OrthEntryModel oem = new OrthEntryModel();
         OrthEntryPanel oe = getGuiManager().initOrthEntry(oem);
         getActiveModel().addOrthGroup(oem, oe);

@@ -33,6 +33,8 @@ import be.ugent.psb.coexpnetviz.layout.FamLayoutTask;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,81 +50,21 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
 /**
- *
- * @author sam
+ * Controls running an analysis
+ * 
+ * Similar to RunAnalysisController, but this controls the tasks being run for it, while the other one collects input from the GUI
  */
-public class RunAnalysisTask extends AbstractTask {
-
-    private static final double PROG_CONN_COMPLETE = 0.8;
-    private static final double PROG_NETW_COMPLETE = 0.9;
+public class RunAnalysisTaskController extends AbstractTask implements Observer {
     
     private final CENVApplication application;
-    private Task subTask;
+    private int stage; // what stage of the analysis we're at
+    private TaskIterator taskIterator;
+    private RunJobTask runJobTask;
 
-    public RunAnalysisTask(CENVApplication cyAppManager) {
+    public RunAnalysisTaskController(CENVApplication cyAppManager) {
         this.application = cyAppManager;
-        this.subTask = null;
-    }
-    
-    private void pollCancelled() throws InterruptedException {
-    	if (cancelled)
-        	throw new InterruptedException("Task cancelled");
-    }
-    
-    @Override
-    public void cancel() {
-    	if (this.subTask != null)
-    		this.subTask.cancel(); // TODO this might throw null pointer due to race condition
-    	super.cancel();
-    }
-    
-    private void runSubTask(Task subTask, TaskMonitor tm) throws Exception {
-    	this.subTask = subTask;
-    	subTask.run(tm);
-    	this.subTask = null;
-    }
-
-    /**
-     * Does all work and shows the resulting network to the user in the
-     * appropriate layout. (Exceptions thrown during execution are automatically
-     * handled by cytoscape and shown in the gui)
-     *
-     * @param tm
-     * @throws Exception
-     */
-    @Override
-    public void run(TaskMonitor tm) throws Exception {
-        tm.setTitle("Running CoExpNetViz");
-
-    	tm.setProgress(-1.0); // start progress as indefinite
-        Path networkDirectory = runOnServer(tm);
-        pollCancelled();
-        tm.setProgress(PROG_CONN_COMPLETE);
-        CyNetworkView networkView = createNetwork(tm, networkDirectory);
-        pollCancelled();
-        tm.setProgress(PROG_NETW_COMPLETE);
-        applyLayout(tm, networkView);
-    }
-
-    Path runOnServer(TaskMonitor tm) throws Exception {
-        tm.setStatusMessage("Running CoExpNetViz");
-        RunJobTask task = new RunJobTask(new JobServer(application), application.getCyModel().getJobDescription());
-        runSubTask(task, tm);
-        return task.getUnpackedResult();
-    }
-
-    CyNetworkView createNetwork(TaskMonitor tm, Path networkDirectory) throws Exception {
-        tm.setStatusMessage("Creating network");
-        return createNetworkView(networkDirectory); // TODO tasks in here are never cancelled
-    }
-
-    void applyLayout(TaskMonitor tm, CyNetworkView networkView) throws Exception {
-    	tm.setStatusMessage("Applying layout");
-    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
-        TaskIterator tasks = layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species");
-        while (tasks.hasNext()) {
-        	runSubTask(tasks.next(), tm);
-        }
+        stage = 0;
+        taskIterator = new TaskIterator();
     }
     
     private VisualStyle getStyle(String name) {
@@ -184,5 +126,36 @@ public class RunAnalysisTask extends AbstractTask {
         
         return networkView;
     }
+
+	@Override
+	public void update(Observable o, Object notificationTask) {
+		Task[] newTasks = 
+		switch (stage) {
+		case 0:
+			// Run job on server, download response
+	    	RunJobTask runJobTask = new RunJobTask(new JobServer(application), application.getCyModel().getJobDescription());
+	    	taskIterator.append(runJobTask);
+	    	break;
+	    	
+		case 1:
+	        return createNetworkView(runJobTask.getUnpackedResult()); // TODO tasks in here are never cancelled
+	        
+		case 2:
+		}
+		stage++;
+		
+		taskIterator.append(notificationTask);
+		
+        
+        
+        
+        applyLayout(tm, networkView);
+        tm.setStatusMessage("Applying layout");
+    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
+        TaskIterator tasks = layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species");
+        while (tasks.hasNext()) {
+        	runSubTask(tasks.next(), tm);
+        }
+	}
 
 }

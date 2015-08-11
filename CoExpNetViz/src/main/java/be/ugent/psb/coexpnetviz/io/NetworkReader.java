@@ -22,18 +22,14 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.work.TaskIterator;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
 
@@ -54,13 +50,7 @@ public class NetworkReader {
 	public NetworkReader(CENVApplication application) {
         this.application = application;
 		this.tableReader = new TableReader(application);
-        this.network = createNetwork();
-    }
-	
-	private CyNetwork createNetwork() {
-        CyNetwork network = application.getCytoscapeApplication().getCyNetworkFactory().createNetwork();
-        network.getRow(network).set(CyNetwork.NAME, application.getCyModel().getTitle());
-        return network;
+        this.network = null;
     }
 	
 	public CyNetwork getNetwork() {
@@ -77,68 +67,18 @@ public class NetworkReader {
      * @throws IOException if the network file could not be accessed
      */
     public void readSIF(Path sifPath) throws IOException {
-        //open file
-        Charset charset = Charset.forName("UTF-8");
-        BufferedReader reader = Files.newBufferedReader(sifPath, charset);
-
-        try {
-        	// Gets node by name and creates it if it doesn't exist
-        	Nodes nodes = new Nodes(network);
-        	
-            //iterate over the file
-            String line;
-            while ((line = reader.readLine()) != null) {
-                //parse line
-            	String[] lineSplit = line.split("\\s+");
-            	String nodeName = lineSplit[0];
-            	String linkType = lineSplit[1];
-            	String[] neighbourNames = Arrays.copyOfRange(lineSplit, 2, lineSplit.length);
-
-                //add first node to node map if needed
-            	CyNode node = nodes.get(nodeName);
-
-                // Add edge to each neighbour
-                for (String neighbourName : neighbourNames) {
-                    //make the edge
-                    CyEdge edge = network.addEdge(node, nodes.get(neighbourName), true);
-                    network.getRow(edge).set(CyNetwork.NAME, String.format("%s (%s) %s", nodeName, linkType, neighbourName));
-                    network.getRow(edge).set(CyEdge.INTERACTION, linkType);
-                }
-            }
-        } finally {
-            reader.close();
-        }
+        CyNetworkReader networkReader = application.getCyNetworkReaderManager().getReader(sifPath.toUri(), null);
+        application.getSynchronousTaskManager().execute(new TaskIterator(networkReader));
+        assert networkReader.getNetworks().length == 1;
+        this.network = networkReader.getNetworks()[0];
     }
     
     public CyTable readNodeAttributes(Path nodeAttributesFile) throws IOException {
-		return tableReader.readNodeAttributes(nodeAttributesFile, network);
+		return tableReader.readAttributes(nodeAttributesFile, CyNode.class, network);
 	}
 
 	public CyTable readEdgeAttributes(Path edgeAttributesFile) throws IOException {
-		return tableReader.readEdgeAttributes(edgeAttributesFile, network);
-	}
-
-	/// Gets node by name and creates it if it doesn't exist
-    private class Nodes
-    {
-		private Map<String, CyNode> nodes; // names -> nodes
-		private CyNetwork network;
-		
-		public Nodes(CyNetwork network) {
-			nodes = new HashMap<String, CyNode>();
-			this.network = network;
-		}
-		
-		public CyNode get(String name) {
-			if (!nodes.containsKey(name)) {
-	        	//the node is not in the map, which means it is also not in the network
-	            //thus create the node
-	            CyNode node = network.addNode();
-	            network.getRow(node).set(CyNetwork.NAME, name);
-	            nodes.put(name, node);
-	        }
-	        return nodes.get(name);
-		}
+		return tableReader.readAttributes(edgeAttributesFile, CyEdge.class, network);
 	}
 
 }

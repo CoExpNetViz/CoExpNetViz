@@ -14,3 +14,4 @@ Getting started:
 
 - [http://wiki.cytoscape.org/Cytoscape\_3/AppDeveloper/](Cytoscape Plugin documentation)
 - [http://wiki.cytoscape.org/Cytoscape\_3/AppDeveloper/Cytoscape\_3\_App\_Cookbook](Cytoscape Plugin cookbook)
+- [https://github.com/cytoscape/cytoscape-impl](Cytoscape Github) for when the documentation isn't clear.

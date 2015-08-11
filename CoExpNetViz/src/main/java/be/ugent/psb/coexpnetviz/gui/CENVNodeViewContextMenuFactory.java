@@ -61,10 +61,7 @@ import org.cytoscape.view.model.View;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
 
-/**
- *
- * @author sam
- */
+//TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
 public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
     private String plazaMonocotKey = "Plaza Monocots";
@@ -94,22 +91,19 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCytoscapeApplication().getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyNetworkTableManager();
 
         CyNetwork cn = cnv.getModel();
         CyNode node = view.getModel();
         CyTable cevNodeTable = cyNetworkTableManager.getTable(cn, CyNode.class, CyNetwork.LOCAL_ATTRS);
-        ArrayList<CyColumn> columnList = (ArrayList) cevNodeTable.getColumns();
-        String famColumnName = columnList.get(4 + CENVModel.FAMILIES_COLUMN).getName();
-        String geneColumnName = columnList.get(4 + CENVModel.GENES_COLUMN).getName();
+        String famColumnName = "family";
         CyRow row = cn.getRow(node);
 
         String families = row.get(famColumnName, String.class);
-//        String genes = row.get(geneColumnName, String.class);
 
         Frame parent = CENVApplication.getCytoscapeRootFrame();
 
-        NodeJDialog dialog = new NodeJDialog(parent, "Node info", parseFamilies(families));
+        new NodeJDialog(parent, "Node info", parseFamilies(families));
     }
 
     public Map<String, List<String>> parseFamilies(String families) { // not sure if supposed to be public
@@ -214,7 +208,7 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                cyAppManager.getCytoscapeApplication().getOpenBrowser().openURL(url);
+                cyAppManager.getOpenBrowser().openURL(url);
             }
 
         }

@@ -48,9 +48,8 @@ public class FamLayoutTask extends AbstractLayoutTask {
 
     private static Logger logger = LoggerFactory.getLogger(FamLayoutTask.class);
 
-    private TaskMonitor taskMonitor;
     private CyNetwork network;
-    private String speciesAttribute;
+    private String speciesAttribute; // node attribute to group baits by
 
     private FamLayoutContext context;
 
@@ -70,11 +69,7 @@ public class FamLayoutTask extends AbstractLayoutTask {
 
     @Override
     final protected void doLayout(final TaskMonitor taskMonitor) {
-        this.taskMonitor = taskMonitor;
         this.network = networkView.getModel();
-
-        taskMonitor.setProgress(CENVModel.PROG_NETW_COMPLETE);
-        taskMonitor.setStatusMessage(CENVModel.PROG_LAYT);
 
         if (layoutAttribute == null || layoutAttribute.equals("(none)")) {
             throw new NullPointerException("Attribute is null.  This is required for this layout.");
@@ -87,17 +82,6 @@ public class FamLayoutTask extends AbstractLayoutTask {
             }
         }
 
-        construct();
-    }
-
-    /**
-     * Pseudo-procedure:
-     *
-     * TODO: document this, because I will never remember how I did this
-     *
-     */
-    private void construct() {
-
         if (layoutAttribute == null) {
             logger.warn("Attribute name is not defined.");
             return;
@@ -107,14 +91,10 @@ public class FamLayoutTask extends AbstractLayoutTask {
         Class<?> klass = dataTable.getColumn(layoutAttribute).getType();
         Class<?> qlass = dataTable.getColumn(speciesAttribute).getType();
 
-        if (Comparable.class.isAssignableFrom(klass) && Comparable.class.isAssignableFrom(qlass)) {
-            Class<Comparable> kasted = (Class<Comparable>) klass;
-            Class<Comparable> qasted = (Class<Comparable>) qlass;
-            doConstruct(kasted, qasted);
-        } else {
-            /* FIXME Error. */
-        }
-
+        assert Comparable.class.isAssignableFrom(klass) && Comparable.class.isAssignableFrom(qlass);
+        Class<Comparable> kasted = (Class<Comparable>) klass;
+        Class<Comparable> qasted = (Class<Comparable>) qlass;
+        doConstruct(kasted, qasted);
     }
 
     /**
@@ -181,7 +161,7 @@ public class FamLayoutTask extends AbstractLayoutTask {
 
                 //baits are placed around the targets in a large circle
                 if (baitsList != null) {
-                    ccradius = encirclebaits(ccstarty, offsety, baitsList);
+                    ccradius = encircleBaits(ccstarty, offsety, baitsList);
                 } else {
                     ccradius = 0.0;
                 }
@@ -280,7 +260,7 @@ public class FamLayoutTask extends AbstractLayoutTask {
         return radius;
     }
 
-    private double encirclebaits(double ccstarty, double offsety, List<List<CyNode>> baitsList) {
+    private double encircleBaits(double ccstarty, double offsety, List<List<CyNode>> baitsList) {
 
         double centerx = context.maxwidth / 2;
         double centery = (ccstarty - offsety) / 2;

@@ -22,7 +22,6 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,12 +33,8 @@ import java.util.Map;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.commons.io.IOUtils;
-import org.rauschig.jarchivelib.ArchiveEntry;
-import org.rauschig.jarchivelib.ArchiveFormat;
-import org.rauschig.jarchivelib.ArchiveStream;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
-import org.rauschig.jarchivelib.CompressionType;
 import org.yaml.snakeyaml.Yaml;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
@@ -54,13 +49,13 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 
 /**
- * Communication with CoExpNetViz server that handles jobs (in reality, this may be an intermediate)
+ * Manages a single request to the CoExpNetViz server
  */
 public class JobServer {
 
 	private static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
 	
-    private final CENVModel cyModel;
+    private final CENVModel cyModel; // TODO get rid of this dependency
 
     private HttpPost httpPost;
 
@@ -68,9 +63,8 @@ public class JobServer {
         this.cyModel = cyAppManager.getCyModel();
     }
 
-    public void stop() throws Exception {
+    public void abort() {
         httpPost.abort();
-        throw new Exception("The http request was aborted"); // TODO clearly aborting is exactly according to contract, so shouldn't throw
     }
 
     /**

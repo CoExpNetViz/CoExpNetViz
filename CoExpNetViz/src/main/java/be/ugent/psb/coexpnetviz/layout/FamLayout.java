@@ -36,12 +36,15 @@ import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 public class FamLayout extends AbstractLayoutAlgorithm {
 
+	public static final String NAME = "fam-layout";
+    public static final String HUMAN_FRIENDLY_NAME = "Family node Layout";
+    
     /**
      * Creates a new GroupAttributesLayout object.
      * @param undo
      */
     public FamLayout(UndoSupport undo) {
-        super(CENVModel.COMP_LAYOUT_NAME, CENVModel.HUMAN_LAYOUT_NAME, undo);
+        super(NAME, HUMAN_FRIENDLY_NAME, undo);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {

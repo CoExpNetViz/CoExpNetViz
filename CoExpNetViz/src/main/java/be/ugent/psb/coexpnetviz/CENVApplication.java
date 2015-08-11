@@ -35,7 +35,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.task.edit.ImportDataTableTaskFactory;
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * Global application configuration, references to Cytoscape 'services' 
@@ -46,22 +65,38 @@ public class CENVApplication {
 	public static final String APP_NAME = "CoExpNetViz";
 	
     private final CENVModel cyModel;
-    private final CytoscapeServices cyServices;
 
     private GUIController guiController;
-    private JobServer serverConn;
+    
+    // Cytoscape 'services'
+    private CyApplicationManager cyApplicationManager;
+    private CyNetworkReaderManager cyNetworkReaderManager;
+    private CyNetworkFactory cyNetworkFactory;
+    private CyNetworkManager cyNetworkManager;
+    private CyRootNetworkManager cyRootNetworkManager;
+    private CyTableFactory cyTableFactory;
+    private CyNetworkTableManager cyNetworkTableManager;
+    private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
+    private VisualMappingManager visualMappingManager;
+    private CyNetworkViewFactory cyNetworkViewFactory;
+    private CyNetworkViewManager cyNetworkViewManager;
+    private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
+    private ImportDataTableTaskFactory importDataTableTaskFactory;
+    private SynchronousTaskManager synchronousTaskManager;
+    private TaskManager taskManager;
+    private UndoSupport undoSupport;
+    private OpenBrowser openBrowser;
+    private CyTableReaderManager cyTableReaderManager;
 
-    public CENVApplication(CytoscapeServices cyServices) {
+    public CENVApplication() {
         this.cyModel = new CENVModel();
-        this.cyServices = cyServices;
-
         cyModel.setSettingsPath(initSettingsPath());
     }
 
-    public void runAnalysis() {
+    public void runAnalysis() { // TODO move to more local place
         TaskIterator ti = new TaskIterator();
         ti.append(new RunAnalysisTask(this));
-        cyServices.getTaskManager().execute(ti); // asynchronous method
+        getTaskManager().execute(ti); // asynchronous method
     }
 
     /**
@@ -174,24 +209,10 @@ public class CENVApplication {
     }
 
     /**
-     * @return the cyServices
-     */
-    public CytoscapeServices getCytoscapeApplication() {
-        return cyServices;
-    }
-
-    /**
      * @return the guiManager
      */
     public GUIController getGUIController() {
         return guiController;
-    }
-
-    public JobServer getServerConn() {
-        if (serverConn == null) {
-            serverConn = new JobServer(this);
-        }
-        return serverConn;
     }
 
 	public void showGUI() {
@@ -202,6 +223,151 @@ public class CENVApplication {
 
         //pack and show the gui in a window
         guiController.showRootFrame();
+	}
+
+	public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
+        this.cyApplicationManager = cyApplicationManager;
+    }
+
+    public CyApplicationManager getCyApplicationManager() {
+        return cyApplicationManager;
+    }
+
+    public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
+        this.cyNetworkFactory = cyNetworkFactory;
+    }
+
+    public CyNetworkFactory getCyNetworkFactory() {
+        return cyNetworkFactory;
+    }
+
+    public void setCyNetworkManager(CyNetworkManager cyNetworkManager) {
+        this.cyNetworkManager = cyNetworkManager;
+    }
+
+    public CyNetworkManager getCyNetworkManager() {
+        return cyNetworkManager;
+    }
+
+    public void setCyRootNetworkManager(CyRootNetworkManager cyRootNetworkManager) {
+        this.cyRootNetworkManager = cyRootNetworkManager;
+    }
+
+    public CyRootNetworkManager getCyRootNetworkManager() {
+        return cyRootNetworkManager;
+    }
+
+    public void setCyTableFactory(CyTableFactory cyTableFactory) {
+        this.cyTableFactory = cyTableFactory;
+    }
+
+    public CyTableFactory getCyTableFactory() {
+        return cyTableFactory;
+    }
+
+    public void setCyNetworkTableManager(CyNetworkTableManager cyNetworkTableManager) {
+        this.cyNetworkTableManager = cyNetworkTableManager;
+    }
+
+    public CyNetworkTableManager getCyNetworkTableManager() {
+        return cyNetworkTableManager;
+    }
+
+    public void setLoadVizmapFileTaskFactory(LoadVizmapFileTaskFactory loadVizmapFileTaskFactory) {
+        this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
+    }
+
+    public LoadVizmapFileTaskFactory getLoadVizmapFileTaskFactory() {
+        return loadVizmapFileTaskFactory;
+    }
+
+    public void setVisualMappingManager(VisualMappingManager visualMappingManager) {
+        this.visualMappingManager = visualMappingManager;
+    }
+
+    public VisualMappingManager getVisualMappingManager() {
+        return visualMappingManager;
+    }
+
+    public void setCyNetworkViewFactory(CyNetworkViewFactory cyNetworkViewFactory) {
+        this.cyNetworkViewFactory = cyNetworkViewFactory;
+    }
+
+    public CyNetworkViewFactory getCyNetworkViewFactory() {
+        return cyNetworkViewFactory;
+    }
+
+    public void setCyNetworkViewManager(CyNetworkViewManager cyNetworkViewManager) {
+        this.cyNetworkViewManager = cyNetworkViewManager;
+    }
+
+    public CyNetworkViewManager getCyNetworkViewManager() {
+        return cyNetworkViewManager;
+    }
+
+    public void setCyLayoutAlgorithmManager(CyLayoutAlgorithmManager cyLayoutAlgorithmManager) {
+        this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
+    }
+
+    public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
+        return cyLayoutAlgorithmManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
+    }
+
+    public void setUndoSupport(UndoSupport UndoSupport) {
+        this.undoSupport = UndoSupport;
+
+    }
+
+    public UndoSupport getUndoSupport() {
+        return undoSupport;
+    }
+
+    public void setOpenBrowser(OpenBrowser openBrowser) {
+        this.openBrowser = openBrowser;
+    }
+
+    public OpenBrowser getOpenBrowser() {
+        return openBrowser;
+    }
+    
+    public CyTableReaderManager getCyTableReaderManager() {
+		return cyTableReaderManager;
+	}
+    
+    public void setCyTableReaderManager(CyTableReaderManager cyTableReaderManager) {
+		this.cyTableReaderManager = cyTableReaderManager;
+	}
+
+	public SynchronousTaskManager getSynchronousTaskManager() {
+		return synchronousTaskManager;
+	}
+
+	public void setSynchronousTaskManager(SynchronousTaskManager synchronousTaskManager) {
+		this.synchronousTaskManager = synchronousTaskManager;
+	}
+
+	public CyNetworkReaderManager getCyNetworkReaderManager() {
+		return cyNetworkReaderManager;
+	}
+
+	public void setCyNetworkReaderManager(CyNetworkReaderManager cyNetworkReaderManager) {
+		this.cyNetworkReaderManager = cyNetworkReaderManager;
+	}
+
+	public ImportDataTableTaskFactory getImportDataTableTaskFactory() {
+		return importDataTableTaskFactory;
+	}
+
+	public void setImportDataTableTaskFactory(ImportDataTableTaskFactory importDataTableTaskFactory) {
+		this.importDataTableTaskFactory = importDataTableTaskFactory;
 	}
 
 }

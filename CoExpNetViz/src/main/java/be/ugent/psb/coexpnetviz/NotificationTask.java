@@ -1,4 +1,10 @@
-package be.ugent.psb.coexpnetviz.io;
+package be.ugent.psb.coexpnetviz;
+
+import java.util.Observable;
+import java.util.Observer;
+
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
 /*
  * #%L
@@ -22,23 +28,28 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-import java.nio.file.Path;
-import java.util.Set;
-import org.cytoscape.view.vizmap.VisualStyle;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
 
-public class VizmapReader {
+/**
+ * Task that simply notifies an observer when run.
+ * 
+ * Useful to notify when all previous tasks have completed. 
+ * You may be tempted to use a TaskObserver instead, but that 
+ * only gets notified when ObservableTasks finish, not when regular Tasks finish.
+ */
+public class NotificationTask extends AbstractTask {
 
-    private final CENVApplication application;
+	private Observer observer;
+	
+	public NotificationTask(Observer observer) {
+		super();
+		this.observer = observer;
+	}
 
-    public VizmapReader(CENVApplication cyAppManager) {
-        this.application = cyAppManager;
-    }
-
-    public Set<VisualStyle> readVIZ(Path vizmapPath) {
-        // Note: the factory has already called visualMappingManager.addVisualStyle() for us
-        return application.getLoadVizmapFileTaskFactory().loadStyles(vizmapPath.toFile());
-    }
-
+	@Override
+	public void run(TaskMonitor tm) throws Exception {
+		if (!cancelled)
+			observer.update(null, this);
+	}
+	
 }

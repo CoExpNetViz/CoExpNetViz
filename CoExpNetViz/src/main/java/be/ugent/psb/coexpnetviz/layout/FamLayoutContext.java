@@ -25,12 +25,6 @@ package be.ugent.psb.coexpnetviz.layout;
 import org.cytoscape.work.Tunable;
 
 public class FamLayoutContext {
-    /*
-    TODO: update documentation and field descriptions
-     Layout parameters:
-    //TODO: improve descriptions
-     */
-
     @Tunable(description = "Which column to use to group baits")
     public String speciesAttribute = "species";
     @Tunable(description = "Horizontal spacing between two unconnected nodes")

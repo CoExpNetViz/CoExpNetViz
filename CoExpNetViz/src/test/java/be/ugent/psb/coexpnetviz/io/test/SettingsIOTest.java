@@ -1,7 +1,6 @@
 package be.ugent.psb.coexpnetviz.io.test;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /*
  * #%L
@@ -45,7 +44,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 public class SettingsIOTest {
 
@@ -78,7 +76,7 @@ public class SettingsIOTest {
     @Before
     public void setUp() {
         //get instances
-        cam = new CENVApplication(null);
+        cam = new CENVApplication();
         sio = new SettingsIO(cam);
         sem1 = new SpeciesEntryModel();
         sem2 = new SpeciesEntryModel();

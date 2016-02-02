@@ -24,7 +24,6 @@ import be.ugent.psb.coexpnetviz.gui.CENVModel;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.RunAnalysisTask;
 import be.ugent.psb.coexpnetviz.gui.controller.GUIController;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 
@@ -91,12 +90,6 @@ public class CENVApplication {
     public CENVApplication() {
         this.cyModel = new CENVModel();
         cyModel.setSettingsPath(initSettingsPath());
-    }
-
-    public void runAnalysis() { // TODO move to more local place
-        TaskIterator ti = new TaskIterator();
-        ti.append(new RunAnalysisTask(this));
-        getTaskManager().execute(ti); // asynchronous method
     }
 
     /**

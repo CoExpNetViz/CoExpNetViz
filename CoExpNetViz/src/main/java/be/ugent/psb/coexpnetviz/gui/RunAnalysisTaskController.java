@@ -23,49 +23,107 @@ package be.ugent.psb.coexpnetviz.gui;
  */
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.NotificationTask;
 import be.ugent.psb.coexpnetviz.io.JobServer;
-import be.ugent.psb.coexpnetviz.io.NetworkReader;
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
-import be.ugent.psb.coexpnetviz.io.VizmapReader;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
-import be.ugent.psb.coexpnetviz.layout.FamLayoutTask;
-
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import org.cytoscape.io.read.CyNetworkReader;
+import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyIdentifiable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskMonitor;
 
 /**
  * Controls running an analysis
  * 
  * Similar to RunAnalysisController, but this controls the tasks being run for it, while the other one collects input from the GUI
  */
-public class RunAnalysisTaskController extends AbstractTask implements Observer {
+public class RunAnalysisTaskController implements Observer {
     
     private final CENVApplication application;
-    private int stage; // what stage of the analysis we're at
+    private int step; // what stage of the analysis we're at
     private TaskIterator taskIterator;
     private RunJobTask runJobTask;
+    private CyNetworkReader networkReader;
+    private CyTableReader nodeTableReader;
+    private CyTableReader edgeTableReader;
 
     public RunAnalysisTaskController(CENVApplication cyAppManager) {
         this.application = cyAppManager;
-        stage = 0;
+        step = 0;
         taskIterator = new TaskIterator();
+        update(null, null); // fake update to initialise
+        application.getTaskManager().execute(taskIterator);
     }
+    
+    @Override
+	public void update(Observable o, Object notificationTask) {
+		switch (step++) {
+		case 0:
+			// Run job on server, download response
+	    	runJobTask = new RunJobTask(new JobServer(application), application.getCyModel().getJobDescription());
+	    	taskIterator.append(runJobTask);
+	    	break;
+	    	
+		case 1:
+			// Load network
+			networkReader = addReadNetworkTask();
+	        break;
+	        
+		case 2:
+			// Load tables and apply them to the network
+	        nodeTableReader = addReadTableTask(getExtractedFile("network.node.attr"), CyNode.class);
+	        edgeTableReader = addReadTableTask(getExtractedFile("network.edge.attr"), CyEdge.class);
+	        
+	        break;
+	        
+		case 3:
+			// Add the network
+			getNetwork().getRow(getNetwork()).set(CyNetwork.NAME, application.getCyModel().getTitle());
+	        application.getCyNetworkManager().addNetwork(getNetwork());
+	        
+	        // Apply tables to network
+	        addApplyTableTask(nodeTableReader, CyNode.class, getNetwork());
+	        addApplyTableTask(edgeTableReader, CyEdge.class, getNetwork());
+	        
+	        break;
+	        
+		case 4:
+	        // Add network view
+	        CyNetworkView networkView = application.getCyNetworkViewFactory().createNetworkView(getNetwork());
+	        application.getCyNetworkViewManager().addNetworkView(networkView);
+	        
+	        // Apply network style
+	        application.getVisualMappingManager().setVisualStyle(getStyle(CENVApplication.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
+
+	        //add this data to the corestatus to pass it on to the next task
+	        //which is applying the layout
+	        application.getCyModel().getVisibleCevNetworks().add(getNetwork()); // TODO is this needed?
+	        
+	        // Apply layout
+	    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
+	    	taskIterator.append(layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species"));
+	        
+	    	return; // return on the last step to skip adding another notification task
+			
+		default:
+			assert false;
+		}
+		
+		taskIterator.append(new NotificationTask(this));
+	}
     
     private VisualStyle getStyle(String name) {
     	for (VisualStyle vs : application.getVisualMappingManager().getAllVisualStyles()) {
@@ -84,78 +142,49 @@ public class RunAnalysisTaskController extends AbstractTask implements Observer 
     private VisualStyle getStyle(String name, Path stylePath) {
     	// Add the visual style no sooner than when it's needed and add it only once, To prevent cluttering the Style menu.
     	if (getStyle(name) == null) {
-            new VizmapReader(application).readVIZ(stylePath);
+    		// Load vizmap file
+    		application.getLoadVizmapFileTaskFactory().loadStyles(stylePath.toFile());
         }
     	return getStyle(name);
     }
-
+    
     /**
-     * reads the network files and creates a view. Applies Style. Adds the
-     * networks nodeTable and view to the coremodel.
-     *
-     * @throws java.lang.Exception
-     * @param networkDir Directory with the sif and attr files
+     * Load table from file
      */
-    public CyNetworkView createNetworkView(Path networkDir) throws Exception {
-    	CyNetwork network;
-    	try {
-            // Read network
-            NetworkReader networkReader = new NetworkReader(application);
-            networkReader.readSIF(networkDir.resolve("network.sif"));
-            networkReader.readNodeAttributes(networkDir.resolve("network.node.attr"));
-            networkReader.readEdgeAttributes(networkDir.resolve("network.edge.attr"));
-            network = networkReader.getNetwork();
-        } catch (IOException ex) {
-            //when executed in a Task, this message will be shown to the user
-            // (see documentation for org.cytoscape.work.Task)
-            throw new Exception(String.format("An error ocurred while reading the network files%n%s%n", ex), ex);
-        }
-
-        // Add the network
-    	network.getRow(network).set(CyNetwork.NAME, application.getCyModel().getTitle());
-        application.getCyNetworkManager().addNetwork(network);
-        
-        // Add view
-        CyNetworkView networkView = application.getCyNetworkViewFactory().createNetworkView(network);
-        application.getCyNetworkViewManager().addNetworkView(networkView);
-        application.getVisualMappingManager().setVisualStyle(getStyle(CENVApplication.APP_NAME, networkDir.resolve("cenv_style.xml")), networkView);
-
-        //add this data to the corestatus to pass it on to the next task
-        //which is applying the layout
-        application.getCyModel().getVisibleCevNetworks().add(network);
-        
-        return networkView;
+    private CyTableReader addReadTableTask(Path tablePath, Class<? extends CyIdentifiable> type) {
+    	CyTableReader tableReader = application.getCyTableReaderManager().getReader(tablePath.toUri(), null);
+    	taskIterator.append(tableReader);
+    	return tableReader;
+    }
+    
+    /**
+     * Apply table to a network
+     */
+    private void addApplyTableTask(CyTableReader tableReader, Class<? extends CyIdentifiable> type, CyNetwork network) {
+    	assert(tableReader.getTables().length == 1);
+    	CyColumn joinColumn = network.getTable(type, CyNetwork.LOCAL_ATTRS).getPrimaryKey();
+    	CyTable table = tableReader.getTables()[0];
+    	CyRootNetwork rootNetwork = application.getCyRootNetworkManager().getRootNetwork(network);
+    	TaskIterator tasks = application.getImportDataTableTaskFactory().createTaskIterator(
+    			table, false, false, Collections.singletonList(network), rootNetwork, joinColumn, type
+    	);
+    	taskIterator.append(tasks);
     }
 
-	@Override
-	public void update(Observable o, Object notificationTask) {
-		Task[] newTasks = 
-		switch (stage) {
-		case 0:
-			// Run job on server, download response
-	    	RunJobTask runJobTask = new RunJobTask(new JobServer(application), application.getCyModel().getJobDescription());
-	    	taskIterator.append(runJobTask);
-	    	break;
-	    	
-		case 1:
-	        return createNetworkView(runJobTask.getUnpackedResult()); // TODO tasks in here are never cancelled
-	        
-		case 2:
-		}
-		stage++;
-		
-		taskIterator.append(notificationTask);
-		
-        
-        
-        
-        applyLayout(tm, networkView);
-        tm.setStatusMessage("Applying layout");
-    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
-        TaskIterator tasks = layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species");
-        while (tasks.hasNext()) {
-        	runSubTask(tasks.next(), tm);
-        }
+	private CyNetworkReader addReadNetworkTask() {
+		CyNetworkReader networkReader = application.getCyNetworkReaderManager().getReader(getExtractedFile("network.sif").toUri(), null);
+		taskIterator.append(networkReader);
+		return networkReader;
+	}
+
+	private Path getExtractedFile(String fileName) {
+		return runJobTask.getUnpackedResult().resolve(fileName);
+	}
+
+	private CyNetwork getNetwork() {
+		assert networkReader.getNetworks().length == 1;
+		CyNetwork network = networkReader.getNetworks()[0];
+		return network;
 	}
 
 }

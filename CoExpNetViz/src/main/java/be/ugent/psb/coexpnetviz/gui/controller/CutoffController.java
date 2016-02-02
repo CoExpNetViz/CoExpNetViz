@@ -56,7 +56,7 @@ public class CutoffController extends AbstrController implements ChangeListener 
             }
         }
 
-        if (cyAppManager.getGUIController() != null) {
+        if (application.getGUIController() != null) {
             System.err.println(CENVApplication.APP_NAME + ": Failed to update " + getActiveModel() + " from " + ce.getSource());
         }
 

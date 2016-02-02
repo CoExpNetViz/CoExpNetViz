@@ -39,16 +39,16 @@ import java.util.Map;
  */
 public abstract class AbstrController {
 
-    protected final CENVApplication cyAppManager;
+    protected final CENVApplication application;
     protected final CENVModel cyModel;
 
     public AbstrController(CENVApplication cyAppManager) {
-        this.cyAppManager = cyAppManager;
+        this.application = cyAppManager;
         this.cyModel = cyAppManager.getCyModel();
     }
 
     protected GUIController getGuiManager(){
-        return cyAppManager.getGUIController();
+        return application.getGUIController();
     }
 
     protected InputPanelModel getActiveModel() {

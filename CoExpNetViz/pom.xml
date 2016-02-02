@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>be.ugent.psb</groupId>
     <artifactId>CoExpNetViz</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>${bundle.symbolicName} [${bundle.namespace}]</name>
 	
@@ -28,8 +28,8 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-        <!-- Cytoscape requires Java 1.6 -->
         <plugins>
+        	<!-- Java 6 (i.e. 1.6) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -62,6 +62,8 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+            
+            <!-- Testing plugins -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -70,7 +72,8 @@
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
-            <!--  Add licenses -->
+            
+            <!--  Add license -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -112,6 +115,7 @@
                     </execution>
                 </executions>
             </plugin>
+            
             <!-- Generates the OSGi metadata based on the osgi.bnd file. -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -122,8 +126,8 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>${bundle.namespace}.*</Export-Package>
-                        <Private-Package>${bundle.namespace}.internal.*</Private-Package> <!-- TODO what's the privateness of OSGI bundles? -->
+                        <Export-Package>${bundle.namespace}.*</Export-Package>  <!-- OSGi interfaces -->
+                        <Private-Package>${bundle.namespace}.internal.*</Private-Package> <!-- and their implementations, etc -->
                         <Bundle-Activator>${bundle.namespace}.CytoscapeActivator</Bundle-Activator>
                         <Embed-Dependency>*;scope=!provided|test</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
@@ -134,7 +138,7 @@
         </plugins>
     </build>
 
-    <!-- Links to the Cytoscape Maven repositories. -->
+    <!-- Cytoscape Maven repositories. -->
     <repositories>
         <repository>
             <id>cytoscape_snapshots</id>
@@ -159,14 +163,7 @@
     </repositories>
 
     <dependencies>
-        <!-- Dependencies needed to compile this project. -->
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Cytoscape modules -->
+        <!-- Cytoscape -->
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
@@ -215,8 +212,6 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Dependencies below are required for: compile, runtime and test.
-        They are all provided by Cytoscape at runtime. -->
         <dependency>
             <groupId>org.cytoscape</groupId>    
             <artifactId>model-impl</artifactId>    
@@ -261,6 +256,12 @@
         </dependency>
 
 		<!-- Various -->
+		<dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

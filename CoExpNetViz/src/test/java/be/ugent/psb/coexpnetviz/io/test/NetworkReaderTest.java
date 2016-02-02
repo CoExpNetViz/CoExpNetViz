@@ -23,7 +23,6 @@ package be.ugent.psb.coexpnetviz.io.test;
  */
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
-import be.ugent.psb.coexpnetviz.io.NetworkReader;
 
 import java.io.File;
 import java.net.URL;
@@ -40,13 +39,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author sam
- */
 public class NetworkReaderTest {
 
-	private NetworkReader cnr;
 	private CyNetwork cn;
 
     public NetworkReaderTest() {
@@ -69,7 +63,8 @@ public class NetworkReaderTest {
     }
 
     public void readSIF() throws Exception {
-    	URL sifURL = getClass().getClassLoader().getResource("testdata/network.sif");
+    	assert false;
+    	/*URL sifURL = getClass().getClassLoader().getResource("testdata/network.sif");
         Path sifPath = new File(sifURL.toURI()).toPath();
         
         NetworkTestSupport nts = new NetworkTestSupport();
@@ -82,7 +77,7 @@ public class NetworkReaderTest {
         cnr.readSIF(sifPath);
         
         assertEquals(1440, cn.getNodeCount());
-        assertEquals(2814, cn.getEdgeCount());
+        assertEquals(2814, cn.getEdgeCount());*/
     }
     
     /**
@@ -92,6 +87,8 @@ public class NetworkReaderTest {
     @Ignore
     @Test
     public void testReadNOA() throws Exception {
+    	assert false;
+    	/*
         System.out.println("readNOA");
 
         URL noaURL = getClass().getClassLoader().getResource("testdata/network.node.attr");
@@ -101,7 +98,7 @@ public class NetworkReaderTest {
         CyTable ct = cnr.readNodeAttributes(noaPath);
 
         assertEquals(1440, ct.getRowCount());
-        assertEquals(String.class, ct.getColumn("species").getType());
+        assertEquals(String.class, ct.getColumn("species").getType());*/
     }
 
     /**
@@ -111,7 +108,8 @@ public class NetworkReaderTest {
     @Ignore
     @Test
     public void testReadEDA() throws Exception {
-        System.out.println("readEDA");
+    	assert false;
+        /*System.out.println("readEDA");
 
         URL noaURL = getClass().getClassLoader().getResource("testdata/network.edge.attr");
         Path edaPath = new File(noaURL.toURI()).toPath();
@@ -120,7 +118,7 @@ public class NetworkReaderTest {
         CyTable ct = cnr.readEdgeAttributes(edaPath);
 
         assertEquals(2814, ct.getRowCount());
-        assertEquals(Double.class, ct.getColumn("r_value").getType());
+        assertEquals(Double.class, ct.getColumn("r_value").getType());*/
     }
 
 }

@@ -2,6 +2,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import be.ugent.psb.coexpnetviz.CENVApplication;
 import be.ugent.psb.coexpnetviz.gui.CENVModel;
+import be.ugent.psb.coexpnetviz.gui.RunAnalysisTaskController;
 
 /*
  * #%L
@@ -43,6 +44,8 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.cytoscape.work.TaskIterator;
+
 /**
  *
  * @author sam
@@ -75,8 +78,8 @@ public class RunAnalysisController extends AbstrController implements ActionList
             return;
         }
 
-        //if all checks were ok, we can run the analysis
-        cyAppManager.runAnalysis();
+        // Run the analysis
+        new RunAnalysisTaskController(application);
     }
 
     private void sendTitle() {

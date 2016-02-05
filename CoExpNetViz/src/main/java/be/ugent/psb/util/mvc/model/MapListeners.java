@@ -1,6 +1,11 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util.mvc.model;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.common.collect.MapDifference;
+
+import java.util.Set;
 
 /*
  * #%L
@@ -24,27 +29,27 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
+public class MapListeners<K, V> {
+	
+	private Set<MapListener<K,V>> listeners;
+	private Map<K, V> source;
+	
+	public MapListeners(Map<K,V> source) {
+		this.source = source;
+	}
+	
+	public void add(MapListener<K,V> l) {
+		listeners.add(l);
+	}
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-/**
- *
- * @author sam
- */
-public class OrthNameTfController extends AbstrTfController implements FocusListener {
-
-    private final OrthEntryModel oem;
-
-    public OrthNameTfController(CENVApplication cyAppManager, OrthEntryModel oem) {
-        super(cyAppManager);
-        this.oem = oem;
-    }
-
-    @Override
-    public void focusLost(FocusEvent fe) {
-        oem.setOrthGroupName(getText(fe));
-    }
+	public void remove(MapListener<K,V> l) {
+		listeners.remove(l);
+	}
+	
+	public void	fireChanged(Map<K,V> entriesInserted, Map<K, MapDifference.ValueDifference<V>> entriesChanged, Map<K,V> entriesRemoved) {
+		for (MapListener<K,V> listener : listeners) {
+			listener.mapChanged(source, entriesInserted, entriesChanged, entriesRemoved);
+		}
+	}
 
 }

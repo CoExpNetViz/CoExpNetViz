@@ -28,9 +28,6 @@ public class GUIConstants {
     public static final String ROOT_FRAME_TITLE = "Co-expression Network Visualization Tool";
     public static final String MESSAGE_DIALOG_TITLE = "Co-expression Network Visualization Tool";
 
-    public static final double DEFAULT_NEG_CUTOFF = -1.0;
-    public static final double DEFAULT_POS_CUTOFF = 0.8;
-
     public static final Color APPROVE_COLOR = Color.white;
     public static final Color DISAPPROVE_COLOR = Color.pink;
 }

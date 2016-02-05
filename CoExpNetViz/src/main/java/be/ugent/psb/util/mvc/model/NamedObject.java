@@ -1,10 +1,10 @@
-package be.ugent.psb.coexpnetviz.gui.model;
+package be.ugent.psb.util.mvc.model;
 
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,17 +21,29 @@ package be.ugent.psb.coexpnetviz.gui.model;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import java.util.Observable;
 
-/**
- *
- * @author sam
- */
-public abstract class AbstrModel extends Observable {
+public class NamedObject<E> {
 
-    public void triggerUpdate() {
-        setChanged();
-        notifyObservers();
-    }
-
+    private String name;
+    private E object;
+    
+	public NamedObject(String name, E object) {
+		super();
+		this.name = name;
+		this.object = object;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public E getObject() {
+		return object;
+	}
+    
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }

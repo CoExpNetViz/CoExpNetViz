@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util.mvc.model;
 
 /*
  * #%L
@@ -22,24 +22,31 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import java.awt.event.FocusEvent;
-import java.nio.file.Paths;
-
-import be.ugent.psb.coexpnetviz.CENVApplication;
-
 /**
- *
- * @author sam
+ * Model of a value
+ * 
+ * Basically makes a value observable and provides it as a mutable object.
+ * Observers are passed the last value as arg to update.
  */
-public class BaitFileTfController extends AbstrTfController {
+public class DefaultValueModel<E> extends AbstractValueModel<E> {
+	
+	E value;
+	
+	public DefaultValueModel() {
+	}
+	
+	public DefaultValueModel(E value) {
+		this.value = value;
+	}
 
-    public BaitFileTfController(CENVApplication cyAppManager) {
-        super(cyAppManager);
-    }
+	@Override
+	public E get() {
+		return value;
+	}
 
-    @Override
-    public void focusLost(FocusEvent fe) {
-        getActiveModel().setBaitsFilePath(Paths.get(getText(fe)));
-    }
+	@Override
+	protected void _set(E value) {
+		this.value = value;
+	}
 
 }

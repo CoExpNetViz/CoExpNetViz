@@ -24,7 +24,7 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
 import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 import be.ugent.psb.coexpnetviz.io.SettingsIO;
@@ -49,7 +49,7 @@ public class SettingsIOTest {
 
     CENVApplication cam;
     SettingsIO sio;
-    InputPanelModel ipm;
+    JobInputModel ipm;
     SpeciesEntryModel sem1;
     SpeciesEntryModel sem2;
     SpeciesEntryPanel se1;
@@ -82,7 +82,7 @@ public class SettingsIOTest {
         sem2 = new SpeciesEntryModel();
         se1 = new SpeciesEntryPanel();
         se2 = new SpeciesEntryPanel();
-        ipm = new InputPanelModel(sem1, se1);
+        ipm = new JobInputModel(sem1, se1);
         ipm.addSpecies(sem2, se2);
 
         //set some values
@@ -112,10 +112,10 @@ public class SettingsIOTest {
         System.out.println("writeAllProfiles");
 
         //set some values
-        List<InputPanelModel> inpPnlModels = new ArrayList<InputPanelModel>();
-        InputPanelModel ipmOne = ipm.copy();
+        List<JobInputModel> inpPnlModels = new ArrayList<JobInputModel>();
+        JobInputModel ipmOne = ipm.copy();
         ipmOne.setTitle("title one");
-        InputPanelModel ipmTwo = ipm.copy();
+        JobInputModel ipmTwo = ipm.copy();
         ipmTwo.setTitle("title two");
         inpPnlModels.add(ipmOne);
         inpPnlModels.add(ipmTwo);
@@ -164,10 +164,10 @@ public class SettingsIOTest {
         cam.getCyModel().setSettingsPath(settingsPath);
 
         //test method
-        List<InputPanelModel> ipms = sio.readAllProfiles();
-        assertEquals("positive cutoff", ((InputPanelModel) ipms.get(0)).getTitle());
-        assertEquals(4, ((InputPanelModel) ipms.get(0)).getAllSpecies().size());
-        assertEquals(1, ((InputPanelModel) ipms.get(2)).getAllSpecies().size());
+        List<JobInputModel> ipms = sio.readAllProfiles();
+        assertEquals("positive cutoff", ((JobInputModel) ipms.get(0)).getTitle());
+        assertEquals(4, ((JobInputModel) ipms.get(0)).getAllSpecies().size());
+        assertEquals(1, ((JobInputModel) ipms.get(2)).getAllSpecies().size());
     }
 
     /**

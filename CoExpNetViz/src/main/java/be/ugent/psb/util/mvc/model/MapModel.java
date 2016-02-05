@@ -1,6 +1,6 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util.mvc.model;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import java.util.Map;
 
 /*
  * #%L
@@ -24,28 +24,12 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.nio.file.Paths;
-
 /**
- *
- * @author sam
+ * A map which can be observed
  */
-public class OrthFileTfController extends AbstrTfController implements FocusListener {
+public interface MapModel<K, V> extends Map<K, V> {
 
-    private OrthEntryModel oem;
-
-    public OrthFileTfController(OrthEntryModel oem, CENVApplication cyAppManager) {
-        super(cyAppManager);
-        this.oem = oem;
-    }
-
-    @Override
-    public void focusLost(FocusEvent fe) {
-        oem.setOrthEntryPath(Paths.get(getText(fe)));
-    }
-    
+	void addListener(MapListener<K,V> l);
+	void removeListener(MapListener<K,V> l);
+	
 }

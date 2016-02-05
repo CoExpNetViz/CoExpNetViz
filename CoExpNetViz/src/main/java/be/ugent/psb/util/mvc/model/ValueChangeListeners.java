@@ -1,4 +1,7 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util.mvc.model;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  * #%L
@@ -22,26 +25,28 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+public class ValueChangeListeners<V> {
+	
+	private Set<ValueChangeListener<V>> listeners;
+	private ValueModel<V> source;
+	
+	public ValueChangeListeners(ValueModel<V> source) {
+		listeners = new HashSet<>();
+		this.source = source;
+	}
+	
+	public void add(ValueChangeListener<V> l) {
+		listeners.add(l);
+	}
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
-
-/**
- *
- * @author sam
- */
-public class ResetGuiController extends AbstrController implements ActionListener {
-
-    public ResetGuiController(CENVApplication cyAppManager) {
-        super(cyAppManager);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        getGuiManager().setActiveModel(getGuiManager().makeDefaultModel());
-        getActiveModel().triggerUpdate();
-    }
-
+	public void remove(ValueChangeListener<V> l) {
+		listeners.remove(l);
+	}
+	
+	public void fireValueChanged(V oldValue) {
+		for (ValueChangeListener<V> listener : listeners) {
+			listener.valueChanged(source, oldValue);
+		}
+	}
 
 }

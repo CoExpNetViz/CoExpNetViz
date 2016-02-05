@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util;
 
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,24 +22,28 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import java.awt.event.FocusEvent;
+import com.google.common.collect.MapDifference;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
-
-/**
- *
- * @author sam
- */
-public class TitleTfController extends AbstrTfController {
-
-    public TitleTfController(CENVApplication cyAppManager) {
-        super(cyAppManager);
-    }
-
-    @Override
-    public void focusLost(FocusEvent fe) {
-        getActiveModel().setTitle(getText(fe));
-    }
-
-    
+public class DefaultMapValueDifference<V> implements MapDifference.ValueDifference<V> {
+	
+	private V left;
+	private V right;
+	
+	public DefaultMapValueDifference(V left, V right) {
+		this.left = left;
+		this.right = right;
+	}
+	
+	@Override
+	public V leftValue() {
+		return left;
+	}
+	
+	@Override
+	public V rightValue() {
+		return right;
+	}
+	
+	
+	
 }

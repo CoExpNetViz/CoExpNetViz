@@ -48,7 +48,7 @@ public class SpeciesEntryPanel extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO private + getter, rename
-    public JLabel speciesLbl;
+    public JLabel speciesLbl; // TODO use FilePanel in here
     public JTextField speciesNameTf;
     public JButton removeBtn;
     public JLabel speciesPathLbl;

@@ -1,7 +1,15 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import be.ugent.psb.coexpnetviz.CENVApplication;
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 /*
  * #%L
@@ -26,21 +34,19 @@ import be.ugent.psb.coexpnetviz.gui.CENVModel;
  */
 
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
-import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
-import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
-import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.view.JobInputPanel;
-import be.ugent.psb.coexpnetviz.gui.view.OrthEntryPanel;
 import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
 import be.ugent.psb.coexpnetviz.io.SettingsIO;
+import be.ugent.psb.util.mvc.model.DefaultValueModel;
+import be.ugent.psb.util.mvc.model.IndirectedValueModel;
+import be.ugent.psb.util.mvc.model.TransformedValueModel;
+import be.ugent.psb.util.mvc.model.ValueChangeListener;
+import be.ugent.psb.util.mvc.model.ValueModel;
+import be.ugent.psb.util.mvc.view.FilePanel;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+// TODO rm most of util.mvc if Pivot turns out successful
 
 /**
  * CENV plugin GUI controller, the root of (gui) controllers
@@ -54,17 +60,14 @@ public class GUIController {
     private final JFrame rootFrame;
 
     // models
-    private Path lastUsedDirPath;
-    private InputPanelModel activeModel;
-    private List<InputPanelModel> allModels;
+    private JobInputModel activeModel;
+    private List<JobInputModel> allModels;
 
     public GUIController(CENVApplication cyAppManager) {
         this.cyAppManager = cyAppManager;
 
-        lastUsedDirPath = Paths.get(System.getProperty("user.home"));
-
         //load settings
-        allModels = new ArrayList<InputPanelModel>();
+        allModels = new ArrayList<JobInputModel>();
         try {
         	SettingsIO settingsIO = new SettingsIO(cyAppManager);
             allModels = settingsIO.readAllProfiles();
@@ -82,28 +85,166 @@ public class GUIController {
 
     }
 
-    private JobInputPanel createJobInputPanel() {
-        JobInputPanel inputPanel = new JobInputPanel();
+    private JobInputPanel createJobInputPanel() {// TODO extract to another Controller
+    	// Note: The functional style for MVC leads to a lot of boilerplate but we need
+    	// the functional approach in order to have reusable controllers. In Java 8 the
+    	// amount of boiler plate will be far less as there are lambdas.
+    	
+    	// TODO SortedMapModel based on ListModel**2 for (keys x values)
+        
+        // Done:
+        // - Centralise duplicated code
+        // - Inline small non-reusable controllers
+        // - Localise data where possible
+        // - Dethrone GUIController, a god class
+        // TODO check these indeed are done and work
+        // - Single gene families file
+        // - No names for imported files
+        // - Rename profile to preset, replace UI with combo box based one, refactor the underlying controllers into PresetsController
+        // - Percentiles as cutoffs instead of raw correlation values TODO
+        
+        // TODO
+        // 3 options for gene families: radios
+        
+        // TODO
+        // Between runs, by default take last used preset
+        
+        // TODO
+        // baits text area: StringController -> baits
+        // baits file text field + btn: replace by FilePanel, then attach FileController
+        // replace the panel of multi gene fams files with a single panel
+        
+        // TODO for cutoffs, set min max, no need for a model, can store directly in there, though I saw a SpinnerModel. Then validation should check that lower < upper
+        // ChangeListener
+//        @Override
+//        public void stateChanged(ChangeEvent event) {
+//            JSpinner sp = (JSpinner) event.getSource();
+//            double cutOff = (Double) sp.getValue();
+        
+        // TODO rename SaveFile* to OutputDirectory* 
+        
+        // TODO species: ListAnonymousController: Controls a list of anonymous items ordered by first to last added.
+        
+        // TODO cleanup models and unused Components
+        
+    	final ValueModel<JobInputModel> currentJobInput = new DefaultValueModel<JobInputModel>();
+        final JobInputPanel inputPanel = new JobInputPanel();
+        
+        // Presets
+        /*new PresetsController
+        inputPanel.presetLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
+        inputPanel.presetSaveButton.addActionListener(new ProfSaveBtnController(cyAppManager));
+        inputPanel.presetDeleteButton.addActionListener(new PresetsController(cyAppManager));*/
+        
+        // When clear form button, clear form
+        inputPanel.clearFormButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentJobInput.set(new JobInputModel());
+			}
+        });
+        
+        
+        // Sync baitGroupSource with ButtonGroup
+        inputPanel.baitGroupOptionText.setActionCommand(BaitGroupSource.TEXT.toString());
+        inputPanel.baitGroupOptionFile.setActionCommand(BaitGroupSource.FILE.toString());
+		ValueModel<BaitGroupSource> currentBaitGroupSource = new IndirectedValueModel<BaitGroupSource>( // XXX a chained style would look how much better?
+			new TransformedValueModel<JobInputModel, ValueModel<BaitGroupSource>>(currentJobInput) {
+	        	@Override
+				protected ValueModel<BaitGroupSource> transform(JobInputModel value) {
+					return value.getBaitGroupSource();
+				}
 
-        //attach controllers
+				@Override
+				protected JobInputModel transformInverse(ValueModel<BaitGroupSource> value) {
+					throw new UnsupportedOperationException();
+				}
+			}
+		);
+		ValueModel<String> currentBaitGroupSourceString = new TransformedValueModel<BaitGroupSource, String>(currentBaitGroupSource) {
+			@Override
+			protected String transform(BaitGroupSource value) {
+				return value.toString();
+			}
+
+			@Override
+			protected BaitGroupSource transformInverse(String value) {
+				return BaitGroupSource.valueOf(value);
+			}
+		};
+        new ButtonGroupController(currentBaitGroupSourceString, inputPanel.baitGroupOptions);
         
+        // When selected bait group input type changes, show the right input components
+        baitGroupSourceModel.addListener(new ValueChangeListener<String>() {
+			@Override
+			public void valueChanged(ValueModel<String> source_, String oldValue) {
+				BaitGroupSource source = currentJobInput.get().getBaitGroupSource();
+				inputPanel.baitGroupTextArea.setVisible(false);
+				inputPanel.baitFilePanel.setVisible(false);
+				if (source.equals(BaitGroupSource.FILE)) {
+					inputPanel.baitFilePanel.setVisible(true);
+				}
+				else if (source.equals(BaitGroupSource.TEXT)) {
+					inputPanel.baitGroupTextArea.setVisible(true);
+				}
+			}
+		});
         
-        //buttons
-        inputPanel.profileLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
-        inputPanel.profileSaveButton.addActionListener(new ProfSaveBtnController(cyAppManager));
-        inputPanel.profileDeleteButton.addActionListener(new ProfDelBtnController(cyAppManager));
-        inputPanel.resetButton.addActionListener(new ResetGuiController(cyAppManager));
+        // Sync bait group text area
+        TransformedValueModel<String, String> currentBaitGroupText = new TransformedValueModel<String, String>(currentJobInput) {
+        	@Override
+			protected String transform(String value) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			protected String transformInverse(String value) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+        new StringController(currentBaitGroupText, inputPanel.baitGroupTextArea);
         
-        //title
-        inputPanel.titleTextField.addFocusListener(new TitleTfController(cyAppManager));
-        
-        //baits
-        inputPanel.baitInputRadioButton.addActionListener(new BaitFileOrInpController(cyAppManager));
-        inputPanel.baitFileRadioButton.addActionListener(new BaitFileOrInpController(cyAppManager));
-        inputPanel.baitInputInfoButton.addActionListener(new BaitInpInfoBtnController(cyAppManager));
-        inputPanel.baitInputTextArea.addFocusListener(new BaitInpTaController(cyAppManager));
-        inputPanel.baitFileTextField.addFocusListener(new BaitFileTfController(cyAppManager));
+        // Bait file controller + sync
+        inputPanel.baitGroupFileTextField.addFocusListener(new BaitFileTfController(cyAppManager));
         inputPanel.baitFileButton.addActionListener(new BaitFileBtnController(cyAppManager));
+        inputPanel.baitInputInfoButton.addActionListener(new ActionListener() {
+        	@Override
+            public void actionPerformed(ActionEvent ae) {
+                String message
+                    = "<html>"
+                    + "Supported Gene ID symbols:"
+                    + "<br>"
+                    + "<br>"
+                    + "All default Plaza gene ID's are supported, some examples are:"
+                    + "<ul style=\"list-style: none;\">"
+                    + makeListEntry("Arabidopsis thaliana", "AT#G#####")
+                    + makeListEntry("Oriza sativa", "Os##g#######")
+                    + makeListEntry("Solanum lycopersicon", "Solyc##g######")
+                    + makeListEntry("Solanum tuberosum", "Sotub##g######")
+                    + "</ul>"
+                    + "<br>"
+                    + "Other supported ID's are:"
+                    + "<ul style=\"list-style: none;\">"
+                    + makeListEntry("Malus domestica", "MDP##########")
+                    + makeListEntry("Oriza sativa", "LOC_Os##g#######")
+                    + makeListEntry("Solanum tuberosum", "PGSC####DMP#########")
+                    + "</ul>"
+                    + "<br>"
+                    + "Any gene ID's are supported if they are also present"
+                    + "<br>"
+                    + "in user supplied gene family files"
+                    + "</html>";
+
+                JOptionPane.showMessageDialog(inputPanel, message);
+            }
+
+            private String makeListEntry(String species, String pattern) {
+                pattern = pattern.replaceAll("(#+)", "<font color=\"blue\">$1</font>");
+                return String.format("<li><pre><i>%-22s</i>: %s</pre></li>", species, pattern);
+            }
+        });
         
         //species
         inputPanel.addSpeciesButton.addActionListener(new SpeciesAddBtnController(cyAppManager));
@@ -116,9 +257,6 @@ public class GUIController {
         inputPanel.saveFileCheckBox.addActionListener(new SaveFileChbController(cyAppManager));
         inputPanel.saveFileTextField.addFocusListener(new SaveFileTfController(cyAppManager));
         inputPanel.saveFileButton.addActionListener(new SaveFileBtnController(cyAppManager));
-        
-        //add orth groups file
-        inputPanel.orthAddButton.addActionListener(new OrthAddBtnController(cyAppManager));
         
         //go
         inputPanel.goButton.addActionListener(new RunAnalysisController(cyAppManager));
@@ -156,29 +294,26 @@ public class GUIController {
         return se;
     }
 
-    public OrthEntryPanel initOrthEntry(OrthEntryModel oem){
-        OrthEntryPanel oe = new OrthEntryPanel();
+    public static FilePanel createOrthEntry(StringModel oem){
+        FilePanel oe = new FilePanel();
 
         oem.addObserver(oe);
 
         //add controllers for textfield, browse and remove
-        oe.orthNameTf.addFocusListener(new OrthNameTfController(cyAppManager, oem));
-        oe.orthRemoveBtn.addActionListener(new OrthDelController(oem, cyAppManager));
-        oe.orthPathTf.addFocusListener(new OrthFileTfController(oem, cyAppManager));
-        oe.orthBrowseBtn.addActionListener(new OrthFileBtnController(oem, cyAppManager));
+        new FileController(model, oe.getPathTextField(), oe.getBrowseButton());
 
         return oe;
     }
 
-    public InputPanelModel makeDefaultModel() {
+    public JobInputModel makeDefaultModel() {
         SpeciesEntryModel sem = new SpeciesEntryModel();
         SpeciesEntryPanel se = initSpeciesEntry(sem);
-        return new InputPanelModel(sem, se);
+        return new JobInputModel(sem, se);
     }
 
     public void addCurrentModel() {
-        InputPanelModel ipmToRemove = null;
-        for (InputPanelModel ipm : allModels) {
+        JobInputModel ipmToRemove = null;
+        for (JobInputModel ipm : allModels) {
             if (ipm.getTitle().equals(activeModel.getTitle())) {
                 ipmToRemove = ipm;
             }
@@ -197,7 +332,7 @@ public class GUIController {
 
     public List<SpeciesEntryModel> getAllSpeciesEntryModels() {
         List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
-        for (InputPanelModel ipm : allModels) {
+        for (JobInputModel ipm : allModels) {
             for (SpeciesEntryModel sem : ipm.getAllSpecies().keySet()) {
                 if (!sems.contains(sem)) {
                     sems.add(sem);
@@ -208,8 +343,8 @@ public class GUIController {
     }
 
     public void loadProfile(String profileName) {
-        InputPanelModel ipmToLoad = null;
-        for (InputPanelModel ipm : allModels) {
+        JobInputModel ipmToLoad = null;
+        for (JobInputModel ipm : allModels) {
             if (ipm.getTitle().equals(profileName)) {
                 ipmToLoad = ipm.copy();
             }
@@ -226,8 +361,8 @@ public class GUIController {
     }
 
     public void delCurrentProfile() {
-        InputPanelModel ipmToRemove = null;
-        for (InputPanelModel ipm : allModels) {
+        JobInputModel ipmToRemove = null;
+        for (JobInputModel ipm : allModels) {
             if (ipm.getTitle().equals(activeModel.getTitle())) {
                 ipmToRemove = ipm;
             }
@@ -239,13 +374,13 @@ public class GUIController {
 
     public String[] getProfileTitles() {
         List<String> titles = new ArrayList<String>();
-        for (InputPanelModel ipm : allModels) {
+        for (JobInputModel ipm : allModels) {
             titles.add(ipm.getTitle());
         }
         return titles.toArray(new String[titles.size()]);
     }
 
-    public List<InputPanelModel> getAllModels() {
+    public List<JobInputModel> getAllModels() {
         return allModels;
     }
 
@@ -257,15 +392,7 @@ public class GUIController {
         return rootFrame;
     }
 
-    public Path getLastUsedDirPath() {
-        return lastUsedDirPath;
-    }
-
-    public void setLastUsedDirPath(Path lastUsedDirPath) {
-        this.lastUsedDirPath = lastUsedDirPath;
-    }
-
-    public void setActiveModel(InputPanelModel inpPnlModel) {
+    public void setActiveModel(JobInputModel inpPnlModel) {
         if (inpPnlModel != this.activeModel) {
             this.activeModel.deleteObserver(inputPanel);
             this.activeModel = inpPnlModel;
@@ -273,7 +400,7 @@ public class GUIController {
         }
     }
 
-    public InputPanelModel getActiveModel() {
+    public JobInputModel getActiveModel() {
         return activeModel;
     }
 

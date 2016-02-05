@@ -4,7 +4,7 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,34 +24,38 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.util.mvc.model.ValueModel;
 
 /**
- *
- * @author sam
+ * Keep a ValueModel<String> in sync with a JTextComponent.
  */
-public abstract class AbstrTfController extends AbstrController implements FocusListener {
+public class StringController {
 
-    public AbstrTfController(CENVApplication cyAppManager) {
-        super(cyAppManager);
+    public StringController(final ValueModel<String> string, final JTextComponent text_field) {
+    	string.addObserver(new Observer() {
+			@Override
+			public void update(Observable observable, Object arg) {
+				text_field.setText(((ValueModel<String>)observable).get().toString());
+			}
+    	});
+    	
+    	text_field.addFocusListener(new FocusListener() {
+    		@Override
+    	    public void focusLost(FocusEvent fe) {
+    	        string.set(((JTextField)fe.getSource()).getText());
+    	        string.notifyObservers();
+    	    }
+
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
+        });
     }
-
-    protected String getText(FocusEvent fe) {
-
-        String text = "";
-        if (fe.getSource() instanceof JTextComponent) {
-
-            JTextComponent tc = (JTextComponent) fe.getSource();
-            text = tc.getText();
-        }
-        return text;
-    }
-
-    @Override
-    public void focusGained(FocusEvent fe) {
-        //nothing to do here
-    }
-
+    
 }

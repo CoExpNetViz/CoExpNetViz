@@ -1,5 +1,22 @@
 package be.ugent.psb.coexpnetviz.io;
 
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
+
 import be.ugent.psb.coexpnetviz.CENVApplication;
 
 /*
@@ -24,22 +41,7 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
-import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.yaml.snakeyaml.Yaml;
-import static java.nio.file.StandardOpenOption.*;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 
 /**
  * Read/write of CoExpNetViz settings
@@ -65,10 +67,10 @@ public class SettingsIO {
         this.cyAppManager = cyAppManager;
     }
 
-    public void writeAllProfiles(List<InputPanelModel> allModels) throws IOException {
+    public void writeAllProfiles(List<JobInputModel> allModels) throws IOException {
     	// TODO use typed read/write https://bitbucket.org/asomov/snakeyaml/wiki/Documentation#markdown-header-type-safe-collections
         Map<String, Map> allProfilesMap = new LinkedHashMap<String, Map>();
-        for (InputPanelModel ipm : allModels) {
+        for (JobInputModel ipm : allModels) {
             allProfilesMap.put(ipm.getTitle(), inpPnlProfile2Map(ipm));
         }
 
@@ -79,7 +81,7 @@ public class SettingsIO {
         yaml.dump(allProfilesMap, bw);
     }
 
-    public Map inpPnlProfile2Map(InputPanelModel inpPnlModel) {
+    public Map inpPnlProfile2Map(JobInputModel inpPnlModel) {
 
         List<String> speciesNames = new ArrayList<String>();
         for (SpeciesEntryModel sem : inpPnlModel.getAllSpecies().keySet()) {
@@ -111,7 +113,7 @@ public class SettingsIO {
         yaml.dump(speciesModelMap, bw);
     }
 
-    public List<InputPanelModel> readAllProfiles() throws IOException {
+    public List<JobInputModel> readAllProfiles() throws IOException {
 
         Path profilesPath = cyAppManager.getCyModel().getSettingsPath().resolve(PROFILE_FILE_NAME);
         Map profilesMap = new LinkedHashMap();
@@ -124,12 +126,12 @@ public class SettingsIO {
         }
 
         Map<String, String> speciesMap = readAllSpecies();
-        List<InputPanelModel> profiles = new ArrayList<InputPanelModel>();
+        List<JobInputModel> profiles = new ArrayList<JobInputModel>();
         for (Object profileName : profilesMap.keySet()) {
             Map profileMap = (Map) profilesMap.get(profileName);
 
             //set fields/values etc
-            InputPanelModel ipm = new InputPanelModel();
+            JobInputModel ipm = new JobInputModel();
             ipm.setTitle((String) profileName);
             ipm.setUseBaitsFile((Boolean) profileMap.get(USE_BAIT_FILE));
             ipm.setBaits((String) profileMap.get(BAITS));

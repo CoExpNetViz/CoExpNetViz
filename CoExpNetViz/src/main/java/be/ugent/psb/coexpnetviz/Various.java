@@ -1,12 +1,10 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
-
-import be.ugent.psb.coexpnetviz.CENVApplication;
+package be.ugent.psb.coexpnetviz;
 
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,27 +22,13 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
+import java.awt.event.ActionEvent;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import javax.swing.JFileChooser;
 
 /**
- *
- * @author sam
+ * Various functions
  */
-public class SpeciesNameTfController extends AbstrTfController implements FocusListener{
-
-    private final SpeciesEntryModel sem;
-
-    public SpeciesNameTfController(CENVApplication cyAppManager, SpeciesEntryModel sem) {
-        super(cyAppManager);
-        this.sem = sem;
-    }
-
-    @Override
-    public void focusLost(FocusEvent fe) {
-        sem.setSpeciesName(getText(fe));
-    }
+public class Various {
     
 }

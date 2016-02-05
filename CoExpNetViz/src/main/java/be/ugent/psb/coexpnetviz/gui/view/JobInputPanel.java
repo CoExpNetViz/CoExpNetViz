@@ -25,9 +25,10 @@ import be.ugent.psb.coexpnetviz.gui.GUIConstants;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.model.InputPanelModel;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.coexpnetviz.gui.model.OrthEntryModel;
 import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
+import be.ugent.psb.util.mvc.view.FilePanel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -52,6 +53,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -66,34 +68,36 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+//TODO clear form button should be on presets row probably
+
 public class JobInputPanel extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	
-	//settings
-    public JPanel settingsPanel; // TODO private + getter
-    public JLabel profileLabel;
-    public JButton profileLoadButton;
-    public JButton profileSaveButton;
-    public JButton profileDeleteButton;
-    public JButton resetButton;
-    //title
-    public JLabel titleLabel;
-    public JTextField titleTextField;
+	// Presets
+    public JPanel presetsPanel; // TODO private + getter
+    public JLabel presetsLabel;
+    public JComboBox<String> presetComboBox;
+    public JButton presetLoadButton;
+    public JButton presetSaveButton;
+    public JButton presetDeleteButton;
+    public JButton clearFormButton;
+    
+    //
     public JPanel topPanel;
     //first tab: general settings
     public JPanel tabOnePanel;
-    //input baits
-    public JRadioButton baitInputRadioButton;
-    public JRadioButton baitFileRadioButton;
+
+    // Bait group input
+    public JRadioButton baitGroupOptionText;
+    public JRadioButton baitGroupOptionFile;
+    public ButtonGroup baitGroupOptions; // TODO add to group
     public JLabel baitInputLabel;
     public JButton baitInputInfoButton;
-    public JTextArea baitInputTextArea;
+    public JTextArea baitGroupTextArea;
+    public FilePanel baitFilePanel;
     public JScrollPane inputBaitScrollPane;
-    public JLabel baitFileLabel;
-    public JPanel fileBaitPanel;
-    public JTextField baitFileTextField;
-    public JButton baitFileButton;
+    
     //choose species
     public JLabel chooseSpeciesLabel;
     public JScrollPane chooseSpeciesScrollPane;
@@ -119,7 +123,6 @@ public class JobInputPanel extends JPanel implements Observer {
     public JLabel orthNoFilesChosenLabel;
     public JScrollPane orthFilesScrollPane;
     public JPanel orthFilesPanel;
-    public JButton orthAddButton;
     //tabbed pane
     public JTabbedPane tabbedPane;
 
@@ -128,40 +131,29 @@ public class JobInputPanel extends JPanel implements Observer {
     private SpinnerModel positiveCutoffSpinnerModel;
 
     public JobInputPanel() {
-        constructGui();
-    }
-
-    /**
-     * initializes all parts of the gui, this should only be used once and it
-     * should be used only in the constructor to prevent problems with broken
-     * references.
-     */
-    private void constructGui() {
         //profiles
-        settingsPanel = new JPanel();
-        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.LINE_AXIS));
-        profileLabel = new JLabel("Settings: ");
-        profileLoadButton = new JButton("Load");
-        profileSaveButton = new JButton("Save");
-        profileDeleteButton = new JButton("Delete");
-        resetButton = new JButton("Reset form");
+        presetsPanel = new JPanel();
+        presetsPanel.setLayout(new BoxLayout(presetsPanel, BoxLayout.LINE_AXIS)); // XXX flowlayout not good enough?
+        presetsLabel = new JLabel("Presets: ");
+        presetLoadButton = new JButton("Load");
+        presetSaveButton = new JButton("Save");
+        presetDeleteButton = new JButton("Delete current");
+        clearFormButton = new JButton("Clear form");
         
-        //title
-        titleLabel = new JLabel("Title (optional)");
-        titleTextField = new JTextField();
+        //
         topPanel = new JPanel();
         
         //first tab
         tabOnePanel = new JPanel();
         
         //input bait genes or choose file
-        baitInputRadioButton = new JRadioButton("Input bait genes");
-        baitInputRadioButton.setName("baitInpRb");
-        baitFileRadioButton = new JRadioButton("Upload file with bait genes");
-        baitFileRadioButton.setName("baitFileRb");
+        baitGroupOptionText = new JRadioButton("Input bait genes");
+        baitGroupOptionText.setName("baitInpRb");
+        baitGroupOptionFile = new JRadioButton("Upload file with bait genes");
+        baitGroupOptionFile.setName("baitFileRb");
         inputBaitOrfileBaitButtonGroup = new ButtonGroup();
-        inputBaitOrfileBaitButtonGroup.add(baitInputRadioButton);
-        inputBaitOrfileBaitButtonGroup.add(baitFileRadioButton);
+        inputBaitOrfileBaitButtonGroup.add(baitGroupOptionText);
+        inputBaitOrfileBaitButtonGroup.add(baitGroupOptionFile);
         baitInputLabel = new JLabel("Enter bait genes");
         baitInputInfoButton = new JButton("ID's");
         try {
@@ -171,16 +163,16 @@ public class JobInputPanel extends JPanel implements Observer {
         } catch (IOException ex) {
             Logger.getLogger(JobInputPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        baitInputTextArea = new JTextArea();
-        baitInputTextArea.setLineWrap(true);
-        baitInputTextArea.setToolTipText("Enter gene identifiers seperated by whitespace, eg 'Solyc02g04650'");
-        inputBaitScrollPane = new JScrollPane(baitInputTextArea);
+        baitGroupTextArea = new JTextArea();
+        baitGroupTextArea.setLineWrap(true);
+        baitGroupTextArea.setToolTipText("Enter gene identifiers seperated by whitespace, eg 'Solyc02g04650'");
+        inputBaitScrollPane = new JScrollPane(baitGroupTextArea);
         inputBaitScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         baitFileLabel = new JLabel("Choose file with bait genes");
         fileBaitPanel = new JPanel();
         fileBaitPanel.setLayout(new BoxLayout(fileBaitPanel, BoxLayout.LINE_AXIS));
-        baitFileTextField = new JTextField();
-        baitFileTextField.setToolTipText("Path to file with gene identifiers, gene identifiers must be separated by white space");
+        baitGroupFileTextField = new JTextField();
+        baitGroupFileTextField.setToolTipText("Path to file with gene identifiers, gene identifiers must be separated by white space");
         baitFileButton = new JButton("Browse");
         baitFileButton.setIcon(UIManager.getIcon("FileView.directoryIcon"));
         
@@ -261,19 +253,19 @@ public class JobInputPanel extends JPanel implements Observer {
         cTop.gridx = 0;
         cTop.gridy = 00;
         cTop.gridwidth = 2;
-        settingsPanel.add(profileLabel);
-        settingsPanel.add(profileLoadButton);
-        settingsPanel.add(profileSaveButton);
-        settingsPanel.add(profileDeleteButton);
-        topPanel.add(settingsPanel, cTop);
+        presetsPanel.add(presetsLabel);
+        presetsPanel.add(presetLoadButton);
+        presetsPanel.add(profileSaveButton);
+        presetsPanel.add(presetDeleteButton);
+        topPanel.add(presetsPanel, cTop);
         cTop.fill = GridBagConstraints.NONE;
         cTop.anchor = GridBagConstraints.LAST_LINE_END;
         cTop.insets = new Insets(0, 0, 0, 0);
         cTop.gridx = 2;
         cTop.gridy = 00;
         cTop.gridwidth = 1;
-        resetButton.setMaximumSize(new Dimension(32, 32));
-        topPanel.add(resetButton, cTop);
+        clearFormButton.setMaximumSize(new Dimension(32, 32));
+        topPanel.add(clearFormButton, cTop);
         
         //title
         cTop.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -283,7 +275,7 @@ public class JobInputPanel extends JPanel implements Observer {
         cTop.gridy = 10;
         cTop.gridwidth = 1;
         topPanel.add(titleLabel, cTop);
-        cTop.insets = new Insets(00, 0, 0, 0);
+        cTop.insets = new Insets(0, 0, 0, 0);
         cTop.gridx = 0;
         cTop.gridy = 11;
         cTop.gridwidth = 3;
@@ -307,11 +299,11 @@ public class JobInputPanel extends JPanel implements Observer {
         cMid.gridx = 0;
         cMid.gridy = 20;
         cMid.gridwidth = 1;
-        tabOnePanel.add(baitInputRadioButton, cMid);
+        tabOnePanel.add(baitGroupOptionText, cMid);
         cMid.gridx = 1;
         cMid.gridy = 20;
         cMid.gridwidth = 1;
-        tabOnePanel.add(baitFileRadioButton, cMid);
+        tabOnePanel.add(baitGroupOptionFile, cMid);
         
         //input baits or choose file
         //input bait genes label
@@ -353,7 +345,7 @@ public class JobInputPanel extends JPanel implements Observer {
         cMid.gridx = 0;
         cMid.gridy = 24;
         cMid.gridwidth = 3;
-        fileBaitPanel.add(baitFileTextField);
+        fileBaitPanel.add(baitGroupFileTextField);
         fileBaitPanel.add(baitFileButton);
         tabOnePanel.add(fileBaitPanel, cMid);
         
@@ -476,26 +468,26 @@ public class JobInputPanel extends JPanel implements Observer {
      */
     public void update(Observable model, Object obj) {
 
-        if (model instanceof InputPanelModel) {
+        if (model instanceof JobInputModel) {
 
-            InputPanelModel inpPnlModel = (InputPanelModel) model;
+            JobInputModel inpPnlModel = (JobInputModel) model;
 
             //update: string input fields
             titleTextField.setText(inpPnlModel.getTitle());
 
             //update: baits
             boolean useBaitFile = inpPnlModel.isUseBaitsFile();
-            baitInputRadioButton.setSelected(!useBaitFile);
-            baitFileRadioButton.setSelected(useBaitFile);
+            baitGroupOptionText.setSelected(!useBaitFile);
+            baitGroupOptionFile.setSelected(useBaitFile);
             baitInputLabel.setEnabled(!useBaitFile);
-            baitInputTextArea.setEnabled(!useBaitFile);
+            baitGroupTextArea.setEnabled(!useBaitFile);
             String baits = inpPnlModel.getBaits();
-            baitInputTextArea.setText(baits);
+            baitGroupTextArea.setText(baits);
             baitFileLabel.setEnabled(useBaitFile);
-            baitFileTextField.setEnabled(useBaitFile);
+            baitGroupFileTextField.setEnabled(useBaitFile);
             Path baitFilePath = inpPnlModel.getBaitsFilePath();
-            baitFileTextField.setText(baitFilePath.toString());
-            baitFileTextField.setBackground(
+            baitGroupFileTextField.setText(baitFilePath.toString());
+            baitGroupFileTextField.setBackground(
                 Files.isRegularFile(baitFilePath) && Files.isReadable(baitFilePath)
                     ? GUIConstants.APPROVE_COLOR : GUIConstants.DISAPPROVE_COLOR);
             baitFileButton.setEnabled(useBaitFile);
@@ -552,22 +544,22 @@ public class JobInputPanel extends JPanel implements Observer {
                 orthFilesScrollPane.setViewportView(orthFilesPanel);
 
                 //get currently visible orthGroups
-                List<OrthEntryPanel> oeList = new ArrayList<OrthEntryPanel>();
+                List<FilePanel> oeList = new ArrayList<FilePanel>();
                 for (Component comp : orthFilesPanel.getComponents()) {
-                    if (comp instanceof OrthEntryPanel) {
-                        OrthEntryPanel oe = (OrthEntryPanel) comp;
+                    if (comp instanceof FilePanel) {
+                        FilePanel oe = (FilePanel) comp;
                         oeList.add(oe);
                     }
                 }
                 //remove orthGroups that are not in the model
-                for (OrthEntryPanel oe : oeList) {
+                for (FilePanel oe : oeList) {
                     if (!inpPnlModel.getAllOrthGroups().values().contains(oe)) {
                         orthFilesPanel.remove(oe);
                     }
                 }
                 //add new orthGroups from the model
                 for (OrthEntryModel oem : inpPnlModel.getAllOrthGroups().keySet()) {
-                    OrthEntryPanel oe = inpPnlModel.getOrthEntry(oem);
+                    FilePanel oe = inpPnlModel.getOrthEntry(oem);
                     if (!oeList.contains(oe)) {
                         oe.setAlignmentX(Component.LEFT_ALIGNMENT);
                         orthFilesPanel.add(oe);

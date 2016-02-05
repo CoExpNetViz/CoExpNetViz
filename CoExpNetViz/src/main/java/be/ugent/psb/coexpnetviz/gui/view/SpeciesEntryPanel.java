@@ -26,18 +26,14 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
-import be.ugent.psb.coexpnetviz.gui.GUIConstants;
-import be.ugent.psb.coexpnetviz.gui.model.SpeciesEntryModel;
 
 /**
  *
@@ -112,28 +108,29 @@ public class SpeciesEntryPanel extends JPanel implements Observer {
 
     @Override
     public void update(Observable model, Object obj) {
+    	assert false;
 
         //for debugging
 //        System.out.println("SpeciesEntry" + " updated from: " + model);
 
-        if (model instanceof SpeciesEntryModel) {
-
-            //for debugging
-//            System.out.println("SpeciesEntry" + " updated from SpeciesEntryModel");
-
-            SpeciesEntryModel sem = (SpeciesEntryModel) model;
-
-            //update: species Name
-            String speciesName = sem.getSpeciesName();
-            speciesNameTf.setText(speciesName);
-
-            //update: species dataset path
-            Path speciesExprDataPath = sem.getSpeciesFilePath();
-            speciesFileTf.setText(speciesExprDataPath.toString());
-            speciesFileTf.setBackground(
-                Files.isRegularFile(speciesExprDataPath) && Files.isReadable(speciesExprDataPath)
-                    ? GUIConstants.APPROVE_COLOR : GUIConstants.DISAPPROVE_COLOR);
-        }
+//        if (model instanceof SpeciesEntryModel) {
+//
+//            //for debugging
+////            System.out.println("SpeciesEntry" + " updated from SpeciesEntryModel");
+//
+//            SpeciesEntryModel sem = (SpeciesEntryModel) model;
+//
+//            //update: species Name
+//            String speciesName = sem.getSpeciesName();
+//            speciesNameTf.setText(speciesName);
+//
+//            //update: species dataset path
+//            Path speciesExprDataPath = sem.getSpeciesFilePath();
+//            speciesFileTf.setText(speciesExprDataPath.toString());
+//            speciesFileTf.setBackground(
+//                Files.isRegularFile(speciesExprDataPath) && Files.isReadable(speciesExprDataPath)
+//                    ? GUIConstants.APPROVE_COLOR : GUIConstants.DISAPPROVE_COLOR);
+//        }
     }
 
 }

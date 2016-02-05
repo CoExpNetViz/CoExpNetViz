@@ -59,7 +59,7 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.CENVContext;
 
 //TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
 public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
@@ -70,11 +70,11 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
     private String plazaDicotKey = "Plaza Dicots";
     private String plazaDicotRegex = "ORTHO\\d+D\\d+";
 
-    public CENVNodeViewContextMenuFactory(CENVApplication cyAppManager) {
+    public CENVNodeViewContextMenuFactory(CENVContext cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 
-    private CENVApplication cyAppManager;
+    private CENVContext cyAppManager;
 
     private CyNetworkView cnv;
     private View<CyNode> view;
@@ -83,7 +83,7 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(CENVApplication.APP_NAME);
+        JMenuItem menuItem = new JMenuItem(CENVContext.APP_NAME);
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;
@@ -101,7 +101,7 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
 
         String families = row.get(famColumnName, String.class);
 
-        Frame parent = CENVApplication.getCytoscapeRootFrame();
+        Frame parent = CENVContext.getCytoscapeRootFrame();
 
         new NodeJDialog(parent, "Node info", parseFamilies(families));
     }

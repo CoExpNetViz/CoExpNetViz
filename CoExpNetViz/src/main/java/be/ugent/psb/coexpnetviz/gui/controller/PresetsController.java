@@ -36,6 +36,7 @@ import com.google.common.collect.MapDifference.ValueDifference;
 
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.util.JComboBoxes;
+import be.ugent.psb.util.Objects;
 import be.ugent.psb.util.mvc.model.MapListener;
 import be.ugent.psb.util.mvc.model.MapModel;
 import be.ugent.psb.util.mvc.model.NamedObject;
@@ -69,7 +70,7 @@ public class PresetsController { // TODO external controller should save to disk
     	presetComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentInputModel.set(JComboBoxes.getSelectedItem(presetComboBox).getObject().clone_());
+				currentInputModel.set(Objects.clone(JComboBoxes.getSelectedItem(presetComboBox).getObject()));
 			}
 		});
     	
@@ -88,7 +89,7 @@ public class PresetsController { // TODO external controller should save to disk
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String name = JComboBoxes.getSelectedItem(presetComboBox).getName();
-				presets.put(name, currentInputModel.get().clone_());
+				presets.put(name, Objects.clone(currentInputModel.get()));
 			}
 		});
     	
@@ -98,7 +99,7 @@ public class PresetsController { // TODO external controller should save to disk
 			public void actionPerformed(ActionEvent e) {
 				assert false;
 				String name = ""; // TODO show dialog with editable combobox or instead use editable combobox in the whole and add a Load button (the latter is prolly better)
-				presets.put(name, currentInputModel.get().clone_());
+				presets.put(name, Objects.clone(currentInputModel.get()));
 			}
 		});
     	

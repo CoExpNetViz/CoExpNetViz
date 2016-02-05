@@ -24,8 +24,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
@@ -38,24 +36,25 @@ import be.ugent.psb.util.mvc.model.ValueModel;
 public class StringController {
 
     public StringController(final ValueModel<String> string, final JTextComponent text_field) {
-    	string.addObserver(new Observer() {
-			@Override
-			public void update(Observable observable, Object arg) {
-				text_field.setText(((ValueModel<String>)observable).get().toString());
-			}
-    	});
-    	
-    	text_field.addFocusListener(new FocusListener() {
-    		@Override
-    	    public void focusLost(FocusEvent fe) {
-    	        string.set(((JTextField)fe.getSource()).getText());
-    	        string.notifyObservers();
-    	    }
-
-			@Override
-			public void focusGained(FocusEvent e) {
-			}
-        });
+    	assert false;
+//    	string.addObserver(new Observer() {
+//			@Override
+//			public void update(Observable observable, Object arg) {
+//				text_field.setText(((ValueModel<String>)observable).get().toString());
+//			}
+//    	});
+//    	
+//    	text_field.addFocusListener(new FocusListener() {
+//    		@Override
+//    	    public void focusLost(FocusEvent fe) {
+//    	        string.set(((JTextField)fe.getSource()).getText());
+//    	        string.notifyObservers();
+//    	    }
+//
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//			}
+//        });
     }
     
 }

@@ -29,9 +29,9 @@ import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 
 public class NetworkEventListener implements NetworkAboutToBeDestroyedListener {
 
-    private final CENVApplication cyAppManager;
+    private final CENVContext cyAppManager;
 
-    public NetworkEventListener(CENVApplication cyAppManager) {
+    public NetworkEventListener(CENVContext cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 

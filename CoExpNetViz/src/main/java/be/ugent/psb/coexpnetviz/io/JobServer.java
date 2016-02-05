@@ -37,7 +37,7 @@ import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 import org.apache.http.HttpEntity;
@@ -59,7 +59,7 @@ public class JobServer {
 
     private HttpPost httpPost;
 
-    public JobServer(CENVApplication cyAppManager) {
+    public JobServer(CENVContext cyAppManager) {
         this.cyModel = cyAppManager.getCyModel();
     }
 
@@ -79,7 +79,7 @@ public class JobServer {
         // Post request and retrieve result
         Path downloadDirectory = Files.createTempDirectory("cenv_archive");
         String archiveName = cyModel.getTitle();
-        Path archivePath = downloadDirectory.resolve(archiveName + "_" + CENVApplication.getTimeStamp() + ".tgz");
+        Path archivePath = downloadDirectory.resolve(archiveName + "_" + CENVContext.getTimeStamp() + ".tgz");
         
         HttpEntity postEntity = makeEntity(job);
         executeAppOnSever(postEntity, archivePath);

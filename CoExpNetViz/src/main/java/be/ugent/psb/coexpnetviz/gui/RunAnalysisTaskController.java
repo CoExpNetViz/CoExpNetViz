@@ -22,7 +22,7 @@ package be.ugent.psb.coexpnetviz.gui;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.NotificationTask;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
@@ -52,7 +52,7 @@ import org.cytoscape.work.TaskIterator;
  */
 public class RunAnalysisTaskController implements Observer {
     
-    private final CENVApplication application;
+    private final CENVContext application;
     private int step; // what stage of the analysis we're at
     private TaskIterator taskIterator;
     private RunJobTask runJobTask;
@@ -60,7 +60,7 @@ public class RunAnalysisTaskController implements Observer {
     private CyTableReader nodeTableReader;
     private CyTableReader edgeTableReader;
 
-    public RunAnalysisTaskController(CENVApplication cyAppManager) {
+    public RunAnalysisTaskController(CENVContext cyAppManager) {
         this.application = cyAppManager;
         step = 0;
         taskIterator = new TaskIterator();
@@ -106,7 +106,7 @@ public class RunAnalysisTaskController implements Observer {
 	        application.getCyNetworkViewManager().addNetworkView(networkView);
 	        
 	        // Apply network style
-	        application.getVisualMappingManager().setVisualStyle(getStyle(CENVApplication.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
+	        application.getVisualMappingManager().setVisualStyle(getStyle(CENVContext.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
 
 	        //add this data to the corestatus to pass it on to the next task
 	        //which is applying the layout

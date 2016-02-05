@@ -59,7 +59,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * Global application configuration, references to Cytoscape 'services' 
  * and references to any of our own single-instances 
  */
-public class CENVApplication {
+public class CENVContext {
 
 	public static final String APP_NAME = "CoExpNetViz";
 	
@@ -87,7 +87,7 @@ public class CENVApplication {
     private OpenBrowser openBrowser;
     private CyTableReaderManager cyTableReaderManager;
 
-    public CENVApplication() {
+    public CENVContext() {
         this.cyModel = new CENVModel();
         cyModel.setSettingsPath(initSettingsPath());
     }

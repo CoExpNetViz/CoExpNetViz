@@ -1,15 +1,10 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import be.ugent.psb.coexpnetviz.CENVApplication;
+import be.ugent.psb.coexpnetviz.CENVContext;
 
 /*
  * #%L
@@ -35,16 +30,14 @@ import be.ugent.psb.coexpnetviz.CENVApplication;
 
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.view.JobInputPanel;
-import be.ugent.psb.coexpnetviz.gui.view.SpeciesEntryPanel;
-import be.ugent.psb.coexpnetviz.io.SettingsIO;
-import be.ugent.psb.util.mvc.model.DefaultValueModel;
-import be.ugent.psb.util.mvc.model.IndirectedValueModel;
-import be.ugent.psb.util.mvc.model.TransformedValueModel;
-import be.ugent.psb.util.mvc.model.ValueChangeListener;
 import be.ugent.psb.util.mvc.model.ValueModel;
 import be.ugent.psb.util.mvc.view.FilePanel;
+
+// TODO
+// - does it run? What does it show?
+// - Test we can show Pivot in here: http://forum.worldwindcentral.com/showthread.php?27833-Apache-Pivot-amp-WWJ-same-app&highlight=apache%20pivot
+// - Implement using Pivot
 
 // TODO rm most of util.mvc if Pivot turns out successful
 
@@ -53,27 +46,22 @@ import be.ugent.psb.util.mvc.view.FilePanel;
  */
 public class GUIController {
 
-    private final CENVApplication cyAppManager;
+    private final CENVContext context;
 
     // views
     private final JobInputPanel inputPanel;
     private final JFrame rootFrame;
 
-    // models
-    private JobInputModel activeModel;
-    private List<JobInputModel> allModels;
+    public GUIController(CENVContext context) {
+        this.context = context;
 
-    public GUIController(CENVApplication cyAppManager) {
-        this.cyAppManager = cyAppManager;
-
-        //load settings
-        allModels = new ArrayList<JobInputModel>();
-        try {
-        	SettingsIO settingsIO = new SettingsIO(cyAppManager);
-            allModels = settingsIO.readAllProfiles();
-        } catch (Exception ex) {
-        	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
-        }
+        //load settings: presets
+//        try {
+//        	SettingsIO settingsIO = new SettingsIO(context);
+//            allModels = settingsIO.readAllProfiles();
+//        } catch (Exception ex) {
+//        	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+//        }
 
         //make GUI
         inputPanel = createJobInputPanel();
@@ -89,8 +77,6 @@ public class GUIController {
     	// Note: The functional style for MVC leads to a lot of boilerplate but we need
     	// the functional approach in order to have reusable controllers. In Java 8 the
     	// amount of boiler plate will be far less as there are lambdas.
-    	
-    	// TODO SortedMapModel based on ListModel**2 for (keys x values)
         
         // Done:
         // - Centralise duplicated code
@@ -127,143 +113,175 @@ public class GUIController {
         
         // TODO cleanup models and unused Components
         
-    	final ValueModel<JobInputModel> currentJobInput = new DefaultValueModel<JobInputModel>();
+//    	final ValueModel<JobInputModel> currentJobInput = new DefaultValueModel<JobInputModel>();
         final JobInputPanel inputPanel = new JobInputPanel();
-        
-        // Presets
-        /*new PresetsController
-        inputPanel.presetLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
-        inputPanel.presetSaveButton.addActionListener(new ProfSaveBtnController(cyAppManager));
-        inputPanel.presetDeleteButton.addActionListener(new PresetsController(cyAppManager));*/
-        
-        // When clear form button, clear form
-        inputPanel.clearFormButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				currentJobInput.set(new JobInputModel());
-			}
-        });
-        
-        
-        // Sync baitGroupSource with ButtonGroup
-        inputPanel.baitGroupOptionText.setActionCommand(BaitGroupSource.TEXT.toString());
-        inputPanel.baitGroupOptionFile.setActionCommand(BaitGroupSource.FILE.toString());
-		ValueModel<BaitGroupSource> currentBaitGroupSource = new IndirectedValueModel<BaitGroupSource>( // XXX a chained style would look how much better?
-			new TransformedValueModel<JobInputModel, ValueModel<BaitGroupSource>>(currentJobInput) {
-	        	@Override
-				protected ValueModel<BaitGroupSource> transform(JobInputModel value) {
-					return value.getBaitGroupSource();
-				}
-
-				@Override
-				protected JobInputModel transformInverse(ValueModel<BaitGroupSource> value) {
-					throw new UnsupportedOperationException();
-				}
-			}
-		);
-		ValueModel<String> currentBaitGroupSourceString = new TransformedValueModel<BaitGroupSource, String>(currentBaitGroupSource) {
-			@Override
-			protected String transform(BaitGroupSource value) {
-				return value.toString();
-			}
-
-			@Override
-			protected BaitGroupSource transformInverse(String value) {
-				return BaitGroupSource.valueOf(value);
-			}
-		};
-        new ButtonGroupController(currentBaitGroupSourceString, inputPanel.baitGroupOptions);
-        
-        // When selected bait group input type changes, show the right input components
-        baitGroupSourceModel.addListener(new ValueChangeListener<String>() {
-			@Override
-			public void valueChanged(ValueModel<String> source_, String oldValue) {
-				BaitGroupSource source = currentJobInput.get().getBaitGroupSource();
-				inputPanel.baitGroupTextArea.setVisible(false);
-				inputPanel.baitFilePanel.setVisible(false);
-				if (source.equals(BaitGroupSource.FILE)) {
-					inputPanel.baitFilePanel.setVisible(true);
-				}
-				else if (source.equals(BaitGroupSource.TEXT)) {
-					inputPanel.baitGroupTextArea.setVisible(true);
-				}
-			}
-		});
-        
-        // Sync bait group text area
-        TransformedValueModel<String, String> currentBaitGroupText = new TransformedValueModel<String, String>(currentJobInput) {
-        	@Override
-			protected String transform(String value) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			protected String transformInverse(String value) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
-        new StringController(currentBaitGroupText, inputPanel.baitGroupTextArea);
-        
-        // Bait file controller + sync
-        inputPanel.baitGroupFileTextField.addFocusListener(new BaitFileTfController(cyAppManager));
-        inputPanel.baitFileButton.addActionListener(new BaitFileBtnController(cyAppManager));
-        inputPanel.baitInputInfoButton.addActionListener(new ActionListener() {
-        	@Override
-            public void actionPerformed(ActionEvent ae) {
-                String message
-                    = "<html>"
-                    + "Supported Gene ID symbols:"
-                    + "<br>"
-                    + "<br>"
-                    + "All default Plaza gene ID's are supported, some examples are:"
-                    + "<ul style=\"list-style: none;\">"
-                    + makeListEntry("Arabidopsis thaliana", "AT#G#####")
-                    + makeListEntry("Oriza sativa", "Os##g#######")
-                    + makeListEntry("Solanum lycopersicon", "Solyc##g######")
-                    + makeListEntry("Solanum tuberosum", "Sotub##g######")
-                    + "</ul>"
-                    + "<br>"
-                    + "Other supported ID's are:"
-                    + "<ul style=\"list-style: none;\">"
-                    + makeListEntry("Malus domestica", "MDP##########")
-                    + makeListEntry("Oriza sativa", "LOC_Os##g#######")
-                    + makeListEntry("Solanum tuberosum", "PGSC####DMP#########")
-                    + "</ul>"
-                    + "<br>"
-                    + "Any gene ID's are supported if they are also present"
-                    + "<br>"
-                    + "in user supplied gene family files"
-                    + "</html>";
-
-                JOptionPane.showMessageDialog(inputPanel, message);
-            }
-
-            private String makeListEntry(String species, String pattern) {
-                pattern = pattern.replaceAll("(#+)", "<font color=\"blue\">$1</font>");
-                return String.format("<li><pre><i>%-22s</i>: %s</pre></li>", species, pattern);
-            }
-        });
-        
-        //species
-        inputPanel.addSpeciesButton.addActionListener(new SpeciesAddBtnController(cyAppManager));
-        
-        //cutoffs
-        inputPanel.negativeCutoffSpinner.addChangeListener(new CutoffController(cyAppManager));
-        inputPanel.positiveCutoffSpinner.addChangeListener(new CutoffController(cyAppManager));
-        
-        //save
-        inputPanel.saveFileCheckBox.addActionListener(new SaveFileChbController(cyAppManager));
-        inputPanel.saveFileTextField.addFocusListener(new SaveFileTfController(cyAppManager));
-        inputPanel.saveFileButton.addActionListener(new SaveFileBtnController(cyAppManager));
-        
-        //go
-        inputPanel.goButton.addActionListener(new RunAnalysisController(cyAppManager));
-
-        //make the model for the GUI
-        activeModel = makeDefaultModel();
-        activeModel.addObserver(inputPanel);
+//        
+//        // Presets
+//        /*new PresetsController
+//        inputPanel.presetLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
+//        inputPanel.presetSaveButton.addActionListener(new ProfSaveBtnController(cyAppManager));
+//        inputPanel.presetDeleteButton.addActionListener(new PresetsController(cyAppManager));*/
+//        
+//        // When clear form button, clear form
+//        inputPanel.clearFormButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				currentJobInput.set(new JobInputModel());
+//			}
+//        });
+//        
+//        
+//        // Sync baitGroupSource with ButtonGroup
+//        inputPanel.baitGroupOptionText.setActionCommand(BaitGroupSource.TEXT.toString());
+//        inputPanel.baitGroupOptionFile.setActionCommand(BaitGroupSource.FILE.toString());
+//		ValueModel<BaitGroupSource> currentBaitGroupSource = new IndirectedValueModel<BaitGroupSource>( // XXX a chained style would look how much better?
+//			new TransformedValueModel<JobInputModel, ValueModel<BaitGroupSource>>(currentJobInput) {
+//	        	@Override
+//				protected ValueModel<BaitGroupSource> transform(JobInputModel value) {
+//					return value.getBaitGroupSource();
+//				}
+//
+//				@Override
+//				protected JobInputModel transformInverse(ValueModel<BaitGroupSource> value) {
+//					throw new UnsupportedOperationException();
+//				}
+//			}
+//		);
+//		ValueModel<String> currentBaitGroupSourceString = new TransformedValueModel<BaitGroupSource, String>(currentBaitGroupSource) {
+//			@Override
+//			protected String transform(BaitGroupSource value) {
+//				return value.toString();
+//			}
+//
+//			@Override
+//			protected BaitGroupSource transformInverse(String value) {
+//				return BaitGroupSource.valueOf(value);
+//			}
+//		};
+//        new ButtonGroupController(currentBaitGroupSourceString, inputPanel.baitGroupOptions);
+//        
+//        // When selected bait group input type changes, show the right input components
+//        baitGroupSourceModel.addListener(new ValueChangeListener<String>() {
+//			@Override
+//			public void valueChanged(ValueModel<String> source_, String oldValue) {
+//				BaitGroupSource source = currentJobInput.get().getBaitGroupSource();
+//				inputPanel.baitGroupTextArea.setVisible(false);
+//				inputPanel.baitFilePanel.setVisible(false);
+//				if (source.equals(BaitGroupSource.FILE)) {
+//					inputPanel.baitFilePanel.setVisible(true);
+//				}
+//				else if (source.equals(BaitGroupSource.TEXT)) {
+//					inputPanel.baitGroupTextArea.setVisible(true);
+//				}
+//			}
+//		});
+//        
+//        // Sync bait group text area
+//        TransformedValueModel<String, String> currentBaitGroupText = new TransformedValueModel<String, String>(currentJobInput) {
+//        	@Override
+//			protected String transform(String value) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//
+//			@Override
+//			protected String transformInverse(String value) {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//		};
+//        new StringController(currentBaitGroupText, inputPanel.baitGroupTextArea);
+//        
+//        // Bait file controller + sync
+//        inputPanel.baitGroupFileTextField.addFocusListener(new BaitFileTfController(context));
+//        inputPanel.baitFileButton.addActionListener(new BaitFileBtnController(context));
+//        inputPanel.baitInputInfoButton.addActionListener(new ActionListener() {
+//        	@Override
+//            public void actionPerformed(ActionEvent ae) {
+//                String message
+//                    = "<html>"
+//                    + "Supported Gene ID symbols:"
+//                    + "<br>"
+//                    + "<br>"
+//                    + "All default Plaza gene ID's are supported, some examples are:"
+//                    + "<ul style=\"list-style: none;\">"
+//                    + makeListEntry("Arabidopsis thaliana", "AT#G#####")
+//                    + makeListEntry("Oriza sativa", "Os##g#######")
+//                    + makeListEntry("Solanum lycopersicon", "Solyc##g######")
+//                    + makeListEntry("Solanum tuberosum", "Sotub##g######")
+//                    + "</ul>"
+//                    + "<br>"
+//                    + "Other supported ID's are:"
+//                    + "<ul style=\"list-style: none;\">"
+//                    + makeListEntry("Malus domestica", "MDP##########")
+//                    + makeListEntry("Oriza sativa", "LOC_Os##g#######")
+//                    + makeListEntry("Solanum tuberosum", "PGSC####DMP#########")
+//                    + "</ul>"
+//                    + "<br>"
+//                    + "Any gene ID's are supported if they are also present"
+//                    + "<br>"
+//                    + "in user supplied gene family files"
+//                    + "</html>";
+//
+//                JOptionPane.showMessageDialog(inputPanel, message);
+//            }
+//
+//            private String makeListEntry(String species, String pattern) {
+//                pattern = pattern.replaceAll("(#+)", "<font color=\"blue\">$1</font>");
+//                return String.format("<li><pre><i>%-22s</i>: %s</pre></li>", species, pattern);
+//            }
+//        });
+//        
+//        //species
+//        inputPanel.addSpeciesButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				assert false;
+////				SpeciesEntryModel sem = new SpeciesEntryModel();
+////		        SpeciesEntryPanel se = getGuiManager().initSpeciesEntry(sem);
+////		        getActiveModel().addSpecies(sem, se);
+//			}
+//		});
+//        
+//        //cutoffs
+//        inputPanel.negativeCutoffSpinner.addChangeListener(new CutoffController(context));
+//        inputPanel.positiveCutoffSpinner.addChangeListener(new CutoffController(context));
+//        
+//        //save
+//        inputPanel.saveFileCheckBox.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				assert false;
+////				if (ae.getSource() instanceof JToggleButton) {
+////		            boolean saveResults = ((JToggleButton) ae.getSource()).isSelected();
+////		            getActiveModel().setSaveResults(saveResults);
+////		        }
+//			}
+//		});
+//        inputPanel.saveFileTextField.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				assert false;
+////				getActiveModel().setSaveFilePath(Paths.get(getText(fe)));
+//			}
+//			
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//			}
+//		});
+//        inputPanel.saveFileButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				assert false;
+////				getActiveModel().setSaveFilePath(showFileChooser(
+////			            "Choose output directory",
+////			            DIRECTORY,
+////			            getActiveModel().getSaveFilePath()));
+//			}
+//		});
+//        
+//        //go
+//        inputPanel.goButton.addActionListener(new RunAnalysisController(context));
 
         return inputPanel;
 
@@ -272,117 +290,124 @@ public class GUIController {
     public void showRootFrame() {
         rootFrame.pack();
         rootFrame.setVisible(true);
-        activeModel.triggerUpdate();
+//        activeModel.triggerUpdate(); TODO
     }
 
-    /**
-     * Create speciesEntry with controllers that updates sem
-     *
-     * @param sem
-     * @return
-     */
-    public SpeciesEntryPanel initSpeciesEntry(SpeciesEntryModel sem) {
-        SpeciesEntryPanel se = new SpeciesEntryPanel();
+//    /**
+//     * Create speciesEntry with controllers that updates sem
+//     *
+//     * @param sem
+//     * @return
+//     */
+//    public SpeciesEntryPanel initSpeciesEntry(SpeciesEntryModel sem) {
+//        SpeciesEntryPanel se = new SpeciesEntryPanel();
+//
+//        assert false;
+////        se.speciesFileTf.addFocusListener(new SpeciesFileTfController(context, sem));
+////        se.browseBtn.addActionListener(new SpeciesFileBtnController(context, sem));
+//        se.removeBtn.addActionListener(new ActionListener() {
+////        	private final SpeciesEntryModel sem;
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//            	assert false;
+////                if (getActiveModel().getAllSpecies().size() == 1) {
+////                    JOptionPane.showMessageDialog(getGuiManager().getInpPnl(),
+////                        "You must use at least one dataset");
+////                    return;
+////                }
+////                getActiveModel().removeSpecies(sem);
+//            }
+//		});
+//        
+//
+//        sem.addObserver(se);
+//
+//        return se;
+//    }
 
-        se.speciesNameTf.addFocusListener(new SpeciesNameTfController(cyAppManager, sem));
-        se.speciesFileTf.addFocusListener(new SpeciesFileTfController(cyAppManager, sem));
-        se.removeBtn.addActionListener(new SpeciesDelController(cyAppManager, sem));
-        se.browseBtn.addActionListener(new SpeciesFileBtnController(cyAppManager, sem));
-
-        sem.addObserver(se);
-
-        return se;
-    }
-
-    public static FilePanel createOrthEntry(StringModel oem){
+    public FilePanel createOrthEntry(ValueModel<String> oem){
         FilePanel oe = new FilePanel();
 
-        oem.addObserver(oe);
-
         //add controllers for textfield, browse and remove
-        new FileController(model, oe.getPathTextField(), oe.getBrowseButton());
+        new FileController("TODO", oem, oe.getPathTextField(), oe.getBrowseButton(), inputPanel);
 
         return oe;
     }
 
-    public JobInputModel makeDefaultModel() {
-        SpeciesEntryModel sem = new SpeciesEntryModel();
-        SpeciesEntryPanel se = initSpeciesEntry(sem);
-        return new JobInputModel(sem, se);
+    public JobInputModel makeDefaultModel() { // TODO
+        return new JobInputModel();
     }
 
     public void addCurrentModel() {
-        JobInputModel ipmToRemove = null;
-        for (JobInputModel ipm : allModels) {
-            if (ipm.getTitle().equals(activeModel.getTitle())) {
-                ipmToRemove = ipm;
-            }
-        }
-        if (ipmToRemove != null) {
-            allModels.remove(ipmToRemove);
-        }
-        allModels.add(activeModel.copy());
+    	assert false;
+//        JobInputModel ipmToRemove = null;
+//        for (JobInputModel ipm : allModels) {
+//            if (ipm.getTitle().equals(activeModel.getTitle())) {
+//                ipmToRemove = ipm;
+//            }
+//        }
+//        if (ipmToRemove != null) {
+//            allModels.remove(ipmToRemove);
+//        }
+//        allModels.add(activeModel.copy());
     }
 
     public void saveProfiles() throws IOException {
-    	SettingsIO settingsIO = new SettingsIO(cyAppManager);
-        settingsIO.writeAllProfiles(allModels);
-        settingsIO.writeAllSpecies(getAllSpeciesEntryModels());
+    	assert false;
+//    	SettingsIO settingsIO = new SettingsIO(context);
+//        settingsIO.writeAllProfiles(allModels);
+//        settingsIO.writeAllSpecies(getAllSpeciesEntryModels());
     }
 
-    public List<SpeciesEntryModel> getAllSpeciesEntryModels() {
-        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
-        for (JobInputModel ipm : allModels) {
-            for (SpeciesEntryModel sem : ipm.getAllSpecies().keySet()) {
-                if (!sems.contains(sem)) {
-                    sems.add(sem);
-                }
-            }
-        }
-        return sems;
-    }
+//    public List<SpeciesEntryModel> getAllSpeciesEntryModels() {
+//        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
+//        for (JobInputModel ipm : allModels) {
+//            for (SpeciesEntryModel sem : ipm.getAllSpecies().keySet()) {
+//                if (!sems.contains(sem)) {
+//                    sems.add(sem);
+//                }
+//            }
+//        }
+//        return sems;
+//    }
 
-    public void loadProfile(String profileName) {
-        JobInputModel ipmToLoad = null;
-        for (JobInputModel ipm : allModels) {
-            if (ipm.getTitle().equals(profileName)) {
-                ipmToLoad = ipm.copy();
-            }
-        }
-        if (ipmToLoad == null) {
-            throw new IllegalArgumentException("Could not load profile" + profileName);
-        }
-        for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
-            SpeciesEntryPanel se = initSpeciesEntry(sem);
-            ipmToLoad.setSpeciesEntry(sem, se);
-        }
-        setActiveModel(ipmToLoad);
-        ipmToLoad.triggerUpdate();
-    }
-
-    public void delCurrentProfile() {
-        JobInputModel ipmToRemove = null;
-        for (JobInputModel ipm : allModels) {
-            if (ipm.getTitle().equals(activeModel.getTitle())) {
-                ipmToRemove = ipm;
-            }
-        }
-        if (ipmToRemove != null) {
-            allModels.remove(ipmToRemove);
-        }
-    }
-
-    public String[] getProfileTitles() {
-        List<String> titles = new ArrayList<String>();
-        for (JobInputModel ipm : allModels) {
-            titles.add(ipm.getTitle());
-        }
-        return titles.toArray(new String[titles.size()]);
-    }
-
-    public List<JobInputModel> getAllModels() {
-        return allModels;
-    }
+//    public void loadProfile(String profileName) {
+//        JobInputModel ipmToLoad = null;
+//        for (JobInputModel ipm : allModels) {
+//            if (ipm.getTitle().equals(profileName)) {
+//                ipmToLoad = ipm.copy();
+//            }
+//        }
+//        if (ipmToLoad == null) {
+//            throw new IllegalArgumentException("Could not load profile" + profileName);
+//        }
+//        for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
+//            SpeciesEntryPanel se = initSpeciesEntry(sem);
+//            ipmToLoad.setSpeciesEntry(sem, se);
+//        }
+//        setActiveModel(ipmToLoad);
+//        ipmToLoad.triggerUpdate();
+//    }
+//
+//    public void delCurrentProfile() {
+//        JobInputModel ipmToRemove = null;
+//        for (JobInputModel ipm : allModels) {
+//            if (ipm.getTitle().equals(activeModel.getTitle())) {
+//                ipmToRemove = ipm;
+//            }
+//        }
+//        if (ipmToRemove != null) {
+//            allModels.remove(ipmToRemove);
+//        }
+//    }
+//
+//    public String[] getProfileTitles() {
+//        List<String> titles = new ArrayList<String>();
+//        for (JobInputModel ipm : allModels) {
+//            titles.add(ipm.getTitle());
+//        }
+//        return titles.toArray(new String[titles.size()]);
+//    }
 
     public JobInputPanel getInpPnl() {
         return inputPanel;
@@ -390,18 +415,6 @@ public class GUIController {
 
     public JFrame getRootFrame() {
         return rootFrame;
-    }
-
-    public void setActiveModel(JobInputModel inpPnlModel) {
-        if (inpPnlModel != this.activeModel) {
-            this.activeModel.deleteObserver(inputPanel);
-            this.activeModel = inpPnlModel;
-            activeModel.addObserver(inputPanel);
-        }
-    }
-
-    public JobInputModel getActiveModel() {
-        return activeModel;
     }
 
 }

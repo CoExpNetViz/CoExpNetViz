@@ -30,14 +30,14 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
-import be.ugent.psb.coexpnetviz.gui.model.StringModel;
+import be.ugent.psb.util.mvc.model.ValueModel;
 
 /**
  * Controls text field with path and browse button to browse for a file
  */
 public class FileController {
 
-    public FileController(final String browseDialogTitle, final StringModel path, final JTextField path_text_field, final JButton browse_button, final Component dialogParent) {
+    public FileController(final String browseDialogTitle, final ValueModel<String> path, final JTextField path_text_field, final JButton browse_button, final Component dialogParent) {
     	new StringController(path, path_text_field);
         
         browse_button.addActionListener(new ActionListener() {
@@ -49,7 +49,6 @@ public class FileController {
         		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         		if (fileChooser.showOpenDialog(dialogParent) == JFileChooser.APPROVE_OPTION) {
         			path.set(fileChooser.getSelectedFile().toString());
-        			path.notifyObservers();
         		}
             }
         });

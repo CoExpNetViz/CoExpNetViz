@@ -1,16 +1,10 @@
 package be.ugent.psb.coexpnetviz.gui.controller;
 
-import java.io.IOException;
-
-import javax.swing.JFrame;
-
-import be.ugent.psb.coexpnetviz.CENVContext;
-
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,15 +22,26 @@ import be.ugent.psb.coexpnetviz.CENVContext;
  * #L%
  */
 
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import org.apache.pivot.wtk.ApplicationContext;
+import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.Window;
+
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.coexpnetviz.gui.view.JobInputPanel;
+import be.ugent.psb.util.PivotApplicationContext;
+import be.ugent.psb.util.TCCLRunnable;
 import be.ugent.psb.util.mvc.model.ValueModel;
 import be.ugent.psb.util.mvc.view.FilePanel;
 
 // TODO
-// - does it run? What does it show?
-// - Test we can show Pivot in here: http://forum.worldwindcentral.com/showthread.php?27833-Apache-Pivot-amp-WWJ-same-app&highlight=apache%20pivot
+// - Test we can show Pivot in here: 
 // - Implement using Pivot
 
 // TODO rm most of util.mvc if Pivot turns out successful
@@ -50,7 +55,7 @@ public class GUIController {
 
     // views
     private final JobInputPanel inputPanel;
-    private final JFrame rootFrame;
+    private JFrame rootFrame;
 
     public GUIController(CENVContext context) {
         this.context = context;
@@ -63,16 +68,59 @@ public class GUIController {
 //        	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
 //        }
 
-        //make GUI
-        inputPanel = createJobInputPanel();
-
-        //put the GUI in a new Frame
-        rootFrame = new JFrame(GUIConstants.ROOT_FRAME_TITLE);
+        inputPanel = null;
+    }
+    
+    /**
+     * Create frame if it does not exist yet
+     * 
+     * Only call this on the Swing event thread
+     */
+    private void ensureFrameIsInitialised() {
+    	if (rootFrame != null)
+    		return;
+    	
+    	rootFrame = new JFrame(GUIConstants.ROOT_FRAME_TITLE);
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        rootFrame.setContentPane(inputPanel);
+        rootFrame.setSize(850, 360);
+        
+    	new TCCLRunnable() {
+			@Override
+			protected void runInner() {
+		        ApplicationContext.DisplayHost displayHost = new ApplicationContext.DisplayHost();
+		        PivotApplicationContext.init(displayHost.getDisplay());
+		        rootFrame.getContentPane().add(displayHost);
+		        
+		        // Load the Pivot window
+//		        BXMLSerializer bxmlSerializer = new BXMLSerializer();
+//		        Window window;
+//		        try {
+//		            // To get the following line to work, I put the .bxml file in the
+//		            //    same directory as my .java file.
+//		        	window = (Window)bxmlSerializer.readObject(getClass(), "/be/ugent/psb/coexpnetviz/view/input_panel.bxml");
+//		        } catch (IOException exception) {
+//		            throw new RuntimeException(exception);
+//		        } catch (SerializationException exception) {
+//		            throw new RuntimeException(exception);
+//		        }
 
+		        Window window = new Window();
+		        Label label = new Label();
+		        label.setText("Hello World!");
+		        window.setContent(label);
+//		        window.setMaximized(true);
+		        window.open(displayHost.getDisplay());
+			}
+		}.run();
     }
 
+    public void showRootFrame() {
+    	ensureFrameIsInitialised();
+        rootFrame.pack();
+        rootFrame.setVisible(true);
+//        activeModel.triggerUpdate(); TODO
+    }
+    
     private JobInputPanel createJobInputPanel() {// TODO extract to another Controller
     	// Note: The functional style for MVC leads to a lot of boilerplate but we need
     	// the functional approach in order to have reusable controllers. In Java 8 the
@@ -287,12 +335,6 @@ public class GUIController {
 
     }
 
-    public void showRootFrame() {
-        rootFrame.pack();
-        rootFrame.setVisible(true);
-//        activeModel.triggerUpdate(); TODO
-    }
-
 //    /**
 //     * Create speciesEntry with controllers that updates sem
 //     *
@@ -411,10 +453,6 @@ public class GUIController {
 
     public JobInputPanel getInpPnl() {
         return inputPanel;
-    }
-
-    public JFrame getRootFrame() {
-        return rootFrame;
     }
 
 }

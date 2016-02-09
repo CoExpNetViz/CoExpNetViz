@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <properties>
-        <bundle.symbolicName>be.ugent.psb.coexpnetviz</bundle.symbolicName>
-        <bundle.namespace>be.ugent.psb.coexpnetviz</bundle.namespace>
+        <bundle.symbolicName>coexpnetviz</bundle.symbolicName>
+        <bundle.namespace>be.ugent.psb</bundle.namespace>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,7 +29,7 @@
             </resource>
         </resources>
         <plugins>
-        	<!-- Set java version -->
+        	<!-- Set java version and compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -119,7 +119,10 @@
                 </executions>
             </plugin>
             
-            <!-- Generates the OSGi metadata based on the osgi.bnd file. -->
+            <!-- Bundle as OSGi plugin with metadata and embed dependencies
+            
+            	 You either embed X or import X. Importing implies it will be fetched from another bundle, 
+            	 but that means it should be in a separate bundle and embedded in this one.  -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -129,10 +132,11 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>${bundle.namespace}.*</Export-Package>  <!-- OSGi interfaces -->
-                        <Private-Package>${bundle.namespace}.internal.*</Private-Package> <!-- and their implementations, etc -->
-                        <Bundle-Activator>${bundle.namespace}.CytoscapeActivator</Bundle-Activator>
-                        <Embed-Dependency>*;scope=!provided|test</Embed-Dependency>
+                        
+                        <Private-Package>${bundle.namespace}.*</Private-Package> <!-- and their implementations, etc -->
+                        <Bundle-Activator>${bundle.namespace}.coexpnetviz.CytoscapeActivator</Bundle-Activator> <!-- XXX make internal.CytoscapeActivator -->
+                        
+                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Import-Package>*;resolution:=optional</Import-Package>
                     </instructions>
@@ -340,6 +344,21 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+        <dependency>
+			<groupId>org.apache.pivot</groupId>
+			<artifactId>pivot-core</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+        <dependency>
+			<groupId>org.apache.pivot</groupId>
+			<artifactId>pivot-wtk</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pivot</groupId>
+			<artifactId>pivot-wtk-terra</artifactId>
+			<version>2.0.4</version>
+		</dependency>
     </dependencies>
 
 </project>

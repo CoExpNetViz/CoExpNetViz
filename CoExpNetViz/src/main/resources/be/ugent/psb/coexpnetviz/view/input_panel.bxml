@@ -1,7 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window title="Hello stuff!" maximized="true"
-    xmlns:bxml="http://pivot.apache.org/bxml"
-    xmlns="org.apache.pivot.wtk">
-    
-    <Label>Hello again!</Label>
+<Window xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk" maximized="true">
+<!-- // Done:
+        // - Centralise duplicated code
+        // - Inline small non-reusable controllers
+        // - Localise data where possible
+        // - Dethrone GUIController, a god class
+        // TODO check these indeed are done and work
+        // - Single gene families file
+        // - No names for imported files
+        // - Rename profile to preset, replace UI with combo box based one, refactor the underlying controllers into PresetsController
+        // - Percentiles as cutoffs instead of raw correlation values TODO
+        
+        // TODO
+        // 3 options for gene families: radios
+        
+        // TODO
+        // Between runs, by default take last used preset
+        
+        // TODO
+        // baits text area: StringController -> baits
+        // baits file text field + btn: replace by FilePanel, then attach FileController
+        // replace the panel of multi gene fams files with a single panel
+        
+        // TODO for cutoffs, set min max, no need for a model, can store directly in there, though I saw a SpinnerModel. Then validation should check that lower < upper
+        // ChangeListener
+//        @Override
+//        public void stateChanged(ChangeEvent event) {
+//            JSpinner sp = (JSpinner) event.getSource();
+//            double cutOff = (Double) sp.getValue();
+        
+        // TODO rename SaveFile* to OutputDirectory*  
+        -->
+        <!-- TODO the text shows up so small -->
+		<Form styles='{fill: true}'>
+			<Form.Section>
+				<TablePane Form.label='Presets' styles='{horizontalSpacing: 6'>
+					<columns>
+						<TablePane.Column/>
+						<TablePane.Column/>
+						<TablePane.Column/>
+						<TablePane.Column width='1*'/>
+						<TablePane.Column/>
+					</columns>
+					<TablePane.Row>
+						<PushButton buttonData='Save'/>
+						<PushButton buttonData='Load'/>
+						<PushButton buttonData='Delete'/>
+						<TablePane.Filler/>	
+						<PushButton buttonData='Clear form'/>
+					</TablePane.Row>
+				</TablePane>
+			</Form.Section>
+			<Form.Section>
+				<Label text='for cutoffs, set min max, no need for a model, can store directly in there, though I saw a SpinnerModel. Then validation should check that lower upper'/>
+			</Form.Section>
+		</Form>
 </Window>

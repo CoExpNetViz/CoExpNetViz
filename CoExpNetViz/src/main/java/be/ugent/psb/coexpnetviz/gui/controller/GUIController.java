@@ -25,24 +25,17 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
+import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.serialization.SerializationException;
 import org.apache.pivot.wtk.ApplicationContext;
-import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Window;
 
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.coexpnetviz.gui.view.JobInputPanel;
 import be.ugent.psb.util.PivotApplicationContext;
 import be.ugent.psb.util.TCCLRunnable;
-import be.ugent.psb.util.mvc.model.ValueModel;
-import be.ugent.psb.util.mvc.view.FilePanel;
-
-// TODO
-// - Test we can show Pivot in here: 
-// - Implement using Pivot
 
 // TODO rm most of util.mvc if Pivot turns out successful
 
@@ -54,7 +47,6 @@ public class GUIController {
     private final CENVContext context;
 
     // views
-    private final JobInputPanel inputPanel;
     private JFrame rootFrame;
 
     public GUIController(CENVContext context) {
@@ -67,8 +59,6 @@ public class GUIController {
 //        } catch (Exception ex) {
 //        	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
 //        }
-
-        inputPanel = null;
     }
     
     /**
@@ -82,7 +72,6 @@ public class GUIController {
     	
     	rootFrame = new JFrame(GUIConstants.ROOT_FRAME_TITLE);
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        rootFrame.setSize(850, 360);
         
     	new TCCLRunnable() {
 			@Override
@@ -90,25 +79,18 @@ public class GUIController {
 		        ApplicationContext.DisplayHost displayHost = new ApplicationContext.DisplayHost();
 		        PivotApplicationContext.init(displayHost.getDisplay());
 		        rootFrame.getContentPane().add(displayHost);
+		        displayHost.setScale(1.1); // TODO check whether it isn't oversized on other systems (maybe it's only mine that shows it tiny) 
 		        
-		        // Load the Pivot window
-//		        BXMLSerializer bxmlSerializer = new BXMLSerializer();
-//		        Window window;
-//		        try {
-//		            // To get the following line to work, I put the .bxml file in the
-//		            //    same directory as my .java file.
-//		        	window = (Window)bxmlSerializer.readObject(getClass(), "/be/ugent/psb/coexpnetviz/view/input_panel.bxml");
-//		        } catch (IOException exception) {
-//		            throw new RuntimeException(exception);
-//		        } catch (SerializationException exception) {
-//		            throw new RuntimeException(exception);
-//		        }
-
-		        Window window = new Window();
-		        Label label = new Label();
-		        label.setText("Hello World!");
-		        window.setContent(label);
-//		        window.setMaximized(true);
+		        // Load input panel GUI
+		        BXMLSerializer bxmlSerializer = new BXMLSerializer();
+		        Window window;
+		        try {
+		        	window = (Window)bxmlSerializer.readObject(getClass(), "/be/ugent/psb/coexpnetviz/view/input_panel.bxml");
+		        } catch (IOException exception) {
+		            throw new RuntimeException(exception);
+		        } catch (SerializationException exception) {
+		            throw new RuntimeException(exception);
+		        }
 		        window.open(displayHost.getDisplay());
 			}
 		}.run();
@@ -121,7 +103,7 @@ public class GUIController {
 //        activeModel.triggerUpdate(); TODO
     }
     
-    private JobInputPanel createJobInputPanel() {// TODO extract to another Controller
+//    private JobInputPanel createJobInputPanel() {// TODO extract to another Controller
     	// Note: The functional style for MVC leads to a lot of boilerplate but we need
     	// the functional approach in order to have reusable controllers. In Java 8 the
     	// amount of boiler plate will be far less as there are lambdas.
@@ -162,7 +144,7 @@ public class GUIController {
         // TODO cleanup models and unused Components
         
 //    	final ValueModel<JobInputModel> currentJobInput = new DefaultValueModel<JobInputModel>();
-        final JobInputPanel inputPanel = new JobInputPanel();
+//        final JobInputPanel inputPanel = new JobInputPanel();
 //        
 //        // Presets
 //        /*new PresetsController
@@ -331,9 +313,9 @@ public class GUIController {
 //        //go
 //        inputPanel.goButton.addActionListener(new RunAnalysisController(context));
 
-        return inputPanel;
+//        return inputPanel;
 
-    }
+//    }
 
 //    /**
 //     * Create speciesEntry with controllers that updates sem
@@ -367,14 +349,14 @@ public class GUIController {
 //        return se;
 //    }
 
-    public FilePanel createOrthEntry(ValueModel<String> oem){
-        FilePanel oe = new FilePanel();
-
-        //add controllers for textfield, browse and remove
-        new FileController("TODO", oem, oe.getPathTextField(), oe.getBrowseButton(), inputPanel);
-
-        return oe;
-    }
+//    public FilePanel createOrthEntry(ValueModel<String> oem){
+//        FilePanel oe = new FilePanel();
+//
+//        //add controllers for textfield, browse and remove
+//        new FileController("TODO", oem, oe.getPathTextField(), oe.getBrowseButton(), inputPanel);
+//
+//        return oe;
+//    }
 
     public JobInputModel makeDefaultModel() { // TODO
         return new JobInputModel();
@@ -451,8 +433,8 @@ public class GUIController {
 //        return titles.toArray(new String[titles.size()]);
 //    }
 
-    public JobInputPanel getInpPnl() {
-        return inputPanel;
-    }
+//    public JobInputPanel getInpPnl() {
+//        return inputPanel;
+//    }
 
 }

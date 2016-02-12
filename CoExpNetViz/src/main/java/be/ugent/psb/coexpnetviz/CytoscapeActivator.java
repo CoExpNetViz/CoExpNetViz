@@ -1,7 +1,32 @@
 package be.ugent.psb.coexpnetviz;
 
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
-import be.ugent.psb.coexpnetviz.gui.CENVNodeViewContextMenuFactory;
+import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
+import static org.cytoscape.work.ServiceProperties.TITLE;
+
+import java.util.Properties;
+
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.io.read.CyNetworkReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.task.edit.ImportDataTableTaskFactory;
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.SynchronousTaskManager;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
+import org.osgi.framework.BundleContext;
 
 /*
  * #%L
@@ -28,43 +53,9 @@ import be.ugent.psb.coexpnetviz.gui.CENVNodeViewContextMenuFactory;
 import be.ugent.psb.coexpnetviz.gui.controller.MenuAction;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Properties;
-
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
-import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
-import org.cytoscape.service.util.AbstractCyActivator;
-import org.cytoscape.task.edit.ImportDataTableTaskFactory;
-import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
-import org.cytoscape.util.swing.OpenBrowser;
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.model.events.NetworkViewAddedListener;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.events.VisualStyleSetListener;
-import org.cytoscape.work.SynchronousTaskManager;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.undo.UndoSupport;
-import org.osgi.framework.BundleContext;
-
-import static org.cytoscape.work.ServiceProperties.*;
-
+// With declarative services we wouldn't need glue code like this http://www.eclipsezone.com/eclipse/forums/t97690.rhtml
 /**
  * Activates CENV plugin in Cytoscape.
- *
- * @author Sam De Meyer
  */
 public class CytoscapeActivator extends AbstractCyActivator {
 

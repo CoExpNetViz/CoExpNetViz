@@ -26,16 +26,17 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import org.apache.pivot.beans.BXMLSerializer;
-import org.apache.pivot.serialization.SerializationException;
-import org.apache.pivot.wtk.ApplicationContext;
-import org.apache.pivot.wtk.Window;
-
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.util.PivotApplicationContext;
-import be.ugent.psb.util.TCCLRunnable;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
 
 // TODO rm most of util.mvc if Pivot turns out successful
 
@@ -70,31 +71,32 @@ public class GUIController {
     	if (rootFrame != null)
     		return;
     	
+    	// This method is invoked on the EDT thread
     	rootFrame = new JFrame(GUIConstants.ROOT_FRAME_TITLE);
         rootFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        
-    	new TCCLRunnable() {
-			@Override
-			protected void runInner() {
-		        ApplicationContext.DisplayHost displayHost = new ApplicationContext.DisplayHost();
-		        PivotApplicationContext.init(displayHost.getDisplay());
-		        rootFrame.getContentPane().add(displayHost);
-		        displayHost.setScale(1.1); // TODO check whether it isn't oversized on other systems (maybe it's only mine that shows it tiny) 
-		        
-		        // Load input panel GUI
-		        BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		        Window window;
-		        try {
-		        	window = (Window)bxmlSerializer.readObject(getClass(), "/be/ugent/psb/coexpnetviz/view/input_panel.bxml");
-		        } catch (IOException exception) {
-		            throw new RuntimeException(exception);
-		        } catch (SerializationException exception) {
-		            throw new RuntimeException(exception);
-		        }
-		        window.open(displayHost.getDisplay());
-			}
-		}.run();
+        final JFXPanel fxPanel = new JFXPanel();
+        rootFrame.getContentPane().add(fxPanel);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+            	Group  root  =  new  Group();
+                Scene  scene  =  new  Scene(root, Color.ALICEBLUE);
+                Text  text  =  new  Text();
+                
+                text.setX(40);
+                text.setY(100);
+                text.setFont(new Font(25));
+                text.setText("Welcome JavaFX!");
+
+                root.getChildren().add(text);
+
+                fxPanel.setScene(scene);
+            }
+        });
     }
+
+    // There is the Swing event dispatcher thread (SwingUtils.run*) and the JavaFX thread (Platform.run*). Be careful to run the right things on the right thread
 
     public void showRootFrame() {
     	ensureFrameIsInitialised();

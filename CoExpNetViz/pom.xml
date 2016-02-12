@@ -132,13 +132,19 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
+                        <Bundle-Activator>${bundle.namespace}.coexpnetviz.CytoscapeActivator</Bundle-Activator>
                         
-                        <Private-Package>${bundle.namespace}.*</Private-Package> <!-- and their implementations, etc -->
-                        <Bundle-Activator>${bundle.namespace}.coexpnetviz.CytoscapeActivator</Bundle-Activator> <!-- XXX make internal.CytoscapeActivator -->
-                        
-                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency>
+                        <!-- TODO when testing java-7-jdk with scope=provided, this did not work in Cytoscape
+                        	 When JavaFX from java-7-jdk was embedded (scope=compile) it did work. But then 
+                        	 when starting under Java 8 the old JavaFX would break due to backwards incompatible
+                        	 changes in other parts of Java.
+                        	 1. Why does Cytoscape find JavaFX under Java 8, but not Java 7, when scope=provided (should ask on mailing list)
+                        	 2. We could work around it if we could embed both JavaFX 2 and JavaFX 8 and import 
+                        	    the right one based on the java version (maybe java.lang has a version attrib)-->
+                        <Export-Package></Export-Package> <!-- export nothing, everything is private -->
+                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency> <!-- Simply include jars with packages. You can use these packages only if they're also imported by Import-Package -->
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>*;resolution:=optional</Import-Package>
+                        <Import-Package>*;resolution:=optional</Import-Package> <!-- When a package is not imported, we cannot use it in our code. * indicates we import everything we use -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -344,21 +350,11 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
-        <dependency>
-			<groupId>org.apache.pivot</groupId>
-			<artifactId>pivot-core</artifactId>
-			<version>2.0.4</version>
-		</dependency>
-        <dependency>
-			<groupId>org.apache.pivot</groupId>
-			<artifactId>pivot-wtk</artifactId>
-			<version>2.0.4</version>
-		</dependency>
 		<dependency>
-			<groupId>org.apache.pivot</groupId>
-			<artifactId>pivot-wtk-terra</artifactId>
-			<version>2.0.4</version>
+			<groupId>com.oracle.javafx</groupId>
+			<artifactId>javafx</artifactId>
+			<version>[2.0,)</version>
+			<scope>provided</scope>
 		</dependency>
     </dependencies>
-
 </project>

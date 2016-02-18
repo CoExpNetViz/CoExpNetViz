@@ -29,10 +29,10 @@ import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.util.TCCLRunnable;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import jfxtras.labs.scene.control.ToggleGroupValue;
 
@@ -67,6 +67,15 @@ public class JobInput extends GridPane {
 	@FXML
 	private RadioButton radioCorrelationMethodMutualInformation;
 	
+	@FXML
+	private CardPane<BaitGroupSource> baitGroupCardPane;
+	
+	@FXML
+	private TextArea baitGroupTextArea;
+	
+	@FXML
+	private FileInput baitGroupFileInput;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -95,6 +104,10 @@ public class JobInput extends GridPane {
 		correlationMethodGroup = new ToggleGroupValue<>();
 		correlationMethodGroup.add(radioCorrelationMethodPearson, CorrelationMethod.PEARSON);
 		correlationMethodGroup.add(radioCorrelationMethodMutualInformation, CorrelationMethod.MUTUAL_INFORMATION);
+		
+		// User data
+		baitGroupTextArea.setUserData(BaitGroupSource.TEXT);
+		baitGroupFileInput.setUserData(BaitGroupSource.FILE);
     }
 	
 	public void init(JobInputModel model) {
@@ -104,6 +117,9 @@ public class JobInput extends GridPane {
 		baitGroupSourceGroup.valueProperty().bindBidirectional(model.getBaitGroupSourceProperty());
 		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
 		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());
+		
+		// Bind other bits
+		baitGroupCardPane.shownCardDataProperty().bind(model.getBaitGroupSourceProperty());
 	}
 
 }

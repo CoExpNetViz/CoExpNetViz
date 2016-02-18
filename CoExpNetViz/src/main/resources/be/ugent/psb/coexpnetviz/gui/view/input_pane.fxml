@@ -3,8 +3,9 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
-<?import javafx.scene.layout.*?>
 <?import java.net.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
 <?import jfxtras.labs.scene.control.ToggleGroupValue?>
 <?import be.ugent.psb.coexpnetviz.gui.view.*?>
 <?import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.*?>
@@ -117,10 +118,12 @@
        <RadioButton text="File" fx:id='radioBaitGroupSourceFile' />
      </HBox>
      
-     <StackPane GridPane.rowIndex="2" GridPane.columnIndex="1">
-       <TextArea wrapText='true' prefRowCount='8' />
-       <FileInput/>
-     </StackPane>
+     <CardPane GridPane.rowIndex="2" GridPane.columnIndex="1" fx:id='baitGroupCardPane'>
+       <FXCollections fx:factory="observableArrayList">
+         <TextArea wrapText='true' prefRowCount='8' fx:id='baitGroupTextArea' />
+         <FileInput fx:id='baitGroupFileInput' />
+       </FXCollections>
+     </CardPane>
      
      <Label styleClass='form-label' text="Gene families:" GridPane.rowIndex="3" />
      <VBox spacing="$spacing" GridPane.rowIndex="3" GridPane.columnIndex="1" >

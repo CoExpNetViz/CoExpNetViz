@@ -22,106 +22,86 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
-import com.google.common.collect.MapDifference.ValueDifference;
-
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.util.JComboBoxes;
-import be.ugent.psb.util.Objects;
-import be.ugent.psb.util.mvc.model.MapListener;
-import be.ugent.psb.util.mvc.model.MapModel;
-import be.ugent.psb.util.mvc.model.NamedObject;
-import be.ugent.psb.util.mvc.model.ValueModel;
-
 /**
  * Controls set of presets, including loading from and saving to current form input
  */
 public class PresetsController { // TODO external controller should save to disk when presets change
 
-    public PresetsController(final ValueModel<JobInputModel> currentInputModel, final MapModel<String, JobInputModel> presets, 
-    		final JComboBox<NamedObject<JobInputModel>> presetComboBox, final JButton saveButton, final JButton saveAsButton, 
-    		final JButton deleteButton) {
-    	
-    	// When presets change, update combo box
-    	presets.addListener(new MapListener<String, JobInputModel>() {
-			@Override
-			public void mapChanged(Map<String, JobInputModel> source, Map<String, JobInputModel> entriesInserted,
-					Map<String, ValueDifference<JobInputModel>> entriesChanged, Map<String, JobInputModel> entriesRemoved)
-			{
-				Object selected = presetComboBox.getSelectedItem();
-				presetComboBox.removeAllItems();
-				for (Entry<String, JobInputModel> entry : presets.entrySet()) {
-					presetComboBox.addItem(new NamedObject<>(entry.getKey(), entry.getValue()));
-				}
-				presetComboBox.setSelectedItem(selected);
-			}
-		});
-    	
-    	// When user selects in combo box, load selected preset 
-    	presetComboBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				currentInputModel.set(Objects.clone(JComboBoxes.getSelectedItem(presetComboBox).getObject()));
-			}
-		});
-    	
-    	// When combo box selection changes, update buttons
-    	presetComboBox.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent event) {
-			    boolean hasSelection = presetComboBox.getSelectedItem() == null;
-			    saveButton.setEnabled(hasSelection);
-			    deleteButton.setEnabled(hasSelection);
-			}
-    	});
-    	
-    	// When save pressed, save current model to current preset
-    	saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String name = JComboBoxes.getSelectedItem(presetComboBox).getName();
-				presets.put(name, Objects.clone(currentInputModel.get()));
-			}
-		});
-    	
-    	// When save as pressed, save current model to a new preset
-    	saveAsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				assert false;
-				String name = ""; // TODO show dialog with editable combobox or instead use editable combobox in the whole and add a Load button (the latter is prolly better)
-				presets.put(name, Objects.clone(currentInputModel.get()));
-			}
-		});
-    	
-    	// When delete pressed, delete current preset and clear selection
-    	deleteButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String name = JComboBoxes.getSelectedItem(presetComboBox).getName();
-				presets.remove(name);
-			}
-		});
-    	
-    	// old stuff  TODO rm
-//	            getGuiManager().delCurrentProfile();
-//	            try {        
-//    	          getGuiManager().saveProfiles();
-//	            } catch (IOException ex) {
-//	                JOptionPane.showMessageDialog(getGuiManager().getInpPnl(),
-//	                    "There was an error while saving the profile\n" + ex.getMessage(),
-//	                    "Error",
-//	                    JOptionPane.ERROR_MESSAGE);
-//	            }
-    }
+//    public PresetsController(final ValueModel<JobInputModel> currentInputModel, final MapModel<String, JobInputModel> presets, 
+//    		final JComboBox<NamedObject<JobInputModel>> presetComboBox, final JButton saveButton, final JButton saveAsButton, 
+//    		final JButton deleteButton) {
+//    	
+//    	// When presets change, update combo box
+//    	presets.addListener(new MapListener<String, JobInputModel>() {
+//			@Override
+//			public void mapChanged(Map<String, JobInputModel> source, Map<String, JobInputModel> entriesInserted,
+//					Map<String, ValueDifference<JobInputModel>> entriesChanged, Map<String, JobInputModel> entriesRemoved)
+//			{
+//				Object selected = presetComboBox.getSelectedItem();
+//				presetComboBox.removeAllItems();
+//				for (Entry<String, JobInputModel> entry : presets.entrySet()) {
+//					presetComboBox.addItem(new NamedObject<>(entry.getKey(), entry.getValue()));
+//				}
+//				presetComboBox.setSelectedItem(selected);
+//			}
+//		});
+//    	
+//    	// When user selects in combo box, load selected preset 
+//    	presetComboBox.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				currentInputModel.set(Objects.clone(JComboBoxes.getSelectedItem(presetComboBox).getObject()));
+//			}
+//		});
+//    	
+//    	// When combo box selection changes, update buttons
+//    	presetComboBox.addItemListener(new ItemListener() {
+//			@Override
+//			public void itemStateChanged(ItemEvent event) {
+//			    boolean hasSelection = presetComboBox.getSelectedItem() == null;
+//			    saveButton.setEnabled(hasSelection);
+//			    deleteButton.setEnabled(hasSelection);
+//			}
+//    	});
+//    	
+//    	// When save pressed, save current model to current preset
+//    	saveButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				String name = JComboBoxes.getSelectedItem(presetComboBox).getName();
+//				presets.put(name, Objects.clone(currentInputModel.get()));
+//			}
+//		});
+//    	
+//    	// When save as pressed, save current model to a new preset
+//    	saveAsButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				assert false;
+//				String name = ""; // TODO show dialog with editable combobox or instead use editable combobox in the whole and add a Load button (the latter is prolly better)
+//				presets.put(name, Objects.clone(currentInputModel.get()));
+//			}
+//		});
+//    	
+//    	// When delete pressed, delete current preset and clear selection
+//    	deleteButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				String name = JComboBoxes.getSelectedItem(presetComboBox).getName();
+//				presets.remove(name);
+//			}
+//		});
+//    	
+//    	// old stuff  TODO rm
+////	            getGuiManager().delCurrentProfile();
+////	            try {        
+////    	          getGuiManager().saveProfiles();
+////	            } catch (IOException ex) {
+////	                JOptionPane.showMessageDialog(getGuiManager().getInpPnl(),
+////	                    "There was an error while saving the profile\n" + ex.getMessage(),
+////	                    "Error",
+////	                    JOptionPane.ERROR_MESSAGE);
+////	            }
+//    }
     
 }

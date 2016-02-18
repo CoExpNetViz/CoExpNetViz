@@ -22,37 +22,27 @@ package be.ugent.psb.coexpnetviz.gui.controller;
  * #L%
  */
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JTextField;
-
-import be.ugent.psb.util.mvc.model.ValueModel;
-
 /**
  * Controls text field with path and browse button to browse for a file
  */
 public class FileController {
 
-    public FileController(final String browseDialogTitle, final ValueModel<String> path, final JTextField path_text_field, final JButton browse_button, final Component dialogParent) {
-//    	new StringController(path, path_text_field);
-        
-        browse_button.addActionListener(new ActionListener() {
-        	@Override
-            public void actionPerformed(ActionEvent event) {
-        		JFileChooser fileChooser = new JFileChooser(path.get());
-        		fileChooser.setDialogTitle(browseDialogTitle);
-        		fileChooser.setMultiSelectionEnabled(false);
-        		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        		if (fileChooser.showOpenDialog(dialogParent) == JFileChooser.APPROVE_OPTION) {
-        			path.set(fileChooser.getSelectedFile().toString());
-        		}
-            }
-        });
-    }
+//    public FileController(final String browseDialogTitle, final ValueModel<String> path, final JTextField path_text_field, final JButton browse_button, final Component dialogParent) {
+////    	new StringController(path, path_text_field);
+//        
+//        browse_button.addActionListener(new ActionListener() {
+//        	@Override
+//            public void actionPerformed(ActionEvent event) {
+//        		JFileChooser fileChooser = new JFileChooser(path.get());
+//        		fileChooser.setDialogTitle(browseDialogTitle);
+//        		fileChooser.setMultiSelectionEnabled(false);
+//        		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//        		if (fileChooser.showOpenDialog(dialogParent) == JFileChooser.APPROVE_OPTION) {
+//        			path.set(fileChooser.getSelectedFile().toString());
+//        		}
+//            }
+//        });
+//    }
     
     // TODO add validation to path, icon goes on the text field.
     //      It must be a file, it must exist, it should be plain text and have read permissions (Files.isRegularFile(orthFilePath) && Files.isReadable(orthFilePath))

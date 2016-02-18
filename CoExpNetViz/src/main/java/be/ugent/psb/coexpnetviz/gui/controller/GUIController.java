@@ -29,12 +29,11 @@ import javax.swing.JFrame;
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
+import be.ugent.psb.coexpnetviz.gui.view.JobInput;
 import be.ugent.psb.util.TCCLRunnable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 
 
 // TODO rm most of util.mvc if Pivot turns out successful
@@ -79,13 +78,7 @@ public class GUIController {
         Platform.runLater(new TCCLRunnable() {
             @Override
             public void runInner() {
-            	Pane pane;
-				try {
-					pane = (Pane)FXMLLoader.load(getClass().getResource("/be/ugent/psb/coexpnetviz/gui/view/input_pane.fxml"));
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-                Scene scene = new Scene(pane);
+                Scene scene = new Scene(new JobInput());
                 fxPanel.setScene(scene);
             }
         });

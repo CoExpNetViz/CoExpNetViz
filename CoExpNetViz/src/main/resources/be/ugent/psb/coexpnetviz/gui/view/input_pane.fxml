@@ -70,7 +70,7 @@
         -->
         <!-- TODO the text shows up so small -->
 
-<GridPane hgap="20" vgap="20" prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="javafx.scene.layout.GridPane" hgap="20" vgap="20" prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1">
 
   <fx:define>
     <Double fx:id='spacing' fx:value="10"/>
@@ -154,5 +154,4 @@
      
      <Button mnemonicParsing="false" text="Run" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
   </children>
-  
-</GridPane>
+</fx:root>

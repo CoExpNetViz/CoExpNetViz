@@ -29,13 +29,12 @@ import javax.swing.JFrame;
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.GUIConstants;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
+import be.ugent.psb.util.TCCLRunnable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.layout.Pane;
 
 
 // TODO rm most of util.mvc if Pivot turns out successful
@@ -77,20 +76,16 @@ public class GUIController {
         final JFXPanel fxPanel = new JFXPanel();
         rootFrame.getContentPane().add(fxPanel);
 
-        Platform.runLater(new Runnable() {
+        Platform.runLater(new TCCLRunnable() {
             @Override
-            public void run() {
-            	Group  root  =  new  Group();
-                Scene  scene  =  new  Scene(root, Color.ALICEBLUE);
-                Text  text  =  new  Text();
-                
-                text.setX(40);
-                text.setY(100);
-                text.setFont(new Font(25));
-                text.setText("Welcome JavaFX!");
-
-                root.getChildren().add(text);
-
+            public void runInner() {
+            	Pane pane;
+				try {
+					pane = (Pane)FXMLLoader.load(getClass().getResource("/be/ugent/psb/coexpnetviz/gui/view/input_pane.fxml"));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+                Scene scene = new Scene(pane);
                 fxPanel.setScene(scene);
             }
         });

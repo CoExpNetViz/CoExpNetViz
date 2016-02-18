@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.*?>
+<?import be.ugent.psb.coexpnetviz.gui.view.*?>
+
+<!-- Binding notes:
+     - onEvent='#controllerEventHandler' to easily attach event handler;
+     - text='${model.name}' binds a property with a binding expression (it can also contain some -+! and such), when controller is set you can use ${controller.yerProp};
+     - UI controls have properties, you can bind these to your own with property.bindBidirectional or bind (=unidirectional)
+     - properties are javafx.beans.property, everything needed to bind is in there
+
+     FileInput simply binds TextField to a String model, and ties the Browse button to the String model using a subcontroller (make a separate class for it)
+
+     Use a TableView with a Path column and a col for a Browse button. Path 
+     column needs to be double clicked to be edited. Multi select allowed.
+     Browse button controls the Path value, it's the same controller as used in FileInput.
+     
+     Make a CRUD widget that works on a list model with a selection model on it.
+     Remove enabled iff selection. Tooltip upon disabled should tell user to first select something.
+     Add always enabled.
+     It doesn't care what kind of view is used for the list.
+     
+     (http://docs.oracle.com/javase/8/javafx/user-interface-tutorial/table-view.htm#CJAGAAEE)
+     and provide Add/Remove buttons below with checkboxes for selection on the left. We can always change it later 
+     
+     XXX use labelFor
+     -->
+     
+<!-- XXX extract a form class from this
+     But with sections to help keep things flat.
+     -*2 section -*many
+     Like Pivot's form layout
+     
+     TODO don't use separators that way, instead use GridPane
+     
+     add tooltips using help text from website
+     -->
+
+<!-- // Done:
+        // - Centralise duplicated code
+        // - Inline small non-reusable controllers
+        // - Localise data where possible
+        // - Dethrone GUIController, a god class
+        // TODO check these indeed are done and work
+        // - Single gene families file
+        // - No names for imported files
+        // - Rename profile to preset, replace UI with combo box based one, refactor the underlying controllers into PresetsController
+        // - Percentiles as cutoffs instead of raw correlation values TODO
+        
+        // TODO
+        // Between runs, by default take last used preset
+        
+        // TODO
+        // baits text area: StringController -> baits
+        // baits file text field + btn: replace by FilePanel, then attach FileController
+        // replace the panel of multi gene fams files with a single panel
+        
+        // TODO for cutoffs, set min max, no need for a model, can store directly in there, though I saw a SpinnerModel. Then validation should check that lower < upper
+        // ChangeListener
+//        @Override
+//        public void stateChanged(ChangeEvent event) {
+//            JSpinner sp = (JSpinner) event.getSource();
+//            double cutOff = (Double) sp.getValue();
+        
+        // TODO rename SaveFile* to OutputDirectory*  
+        -->
+        <!-- TODO the text shows up so small -->
+
+<GridPane hgap="20" vgap="20" prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1">
+
+  <fx:define>
+    <Double fx:id='spacing' fx:value="10"/>
+    <ToggleGroup fx:id='baitGroupSourceGroup' />
+    <ToggleGroup fx:id='geneFamiliesSourceGroup' />
+    <ToggleGroup fx:id='correlationMethodGroup' />
+  </fx:define>
+  
+  <columnConstraints>
+    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+  </rowConstraints>
+  <padding>
+     <Insets bottom="15" left="15" right="15" top="15" />
+  </padding>
+  <stylesheets>
+    <URL value='@style.css' />
+  </stylesheets>
+  
+  <children>
+     <Label styleClass='form-label' text="Presets:" />
+     <HBox spacing="$spacing" GridPane.columnIndex="1" >
+       <ComboBox prefWidth="200" editable='true' />
+       <Button mnemonicParsing="false" text="Load" />
+       <Button mnemonicParsing="false" text="Save" />
+       <Button mnemonicParsing="false" text="Delete" />
+       <Separator prefWidth="10" HBox.hgrow="SOMETIMES" />
+       <Button mnemonicParsing="false" text="Clear form" />
+     </HBox>
+     
+     <Label styleClass='form-label' text="Bait group:" GridPane.rowIndex="1" />
+     <HBox spacing="$spacing" GridPane.columnIndex="1" GridPane.rowIndex="1">
+       <Label text="Input method:" />
+       <RadioButton text="Text area" toggleGroup='$baitGroupSourceGroup' />
+       <RadioButton text="File" toggleGroup='$baitGroupSourceGroup' />
+     </HBox>
+     
+     <StackPane GridPane.rowIndex="2" GridPane.columnIndex="1">
+       <TextArea wrapText='true' prefRowCount='8' />
+       <FileInput/>
+     </StackPane>
+     
+     <Label styleClass='form-label' text="Gene families:" GridPane.rowIndex="3" />
+     <VBox spacing="$spacing" GridPane.rowIndex="3" GridPane.columnIndex="1" >
+       <RadioButton text="Plaza families (monocots + dicots)" toggleGroup='$geneFamiliesSourceGroup' />
+       <RadioButton text="Custom families" toggleGroup='$geneFamiliesSourceGroup' />
+       <RadioButton text="No families" toggleGroup='$geneFamiliesSourceGroup' />
+     </VBox>
+     
+     <Label styleClass='form-label' text="Expression matrices:" GridPane.rowIndex="4" />
+     <GridPane hgap='$spacing' vgap="$spacing" GridPane.rowIndex="4" GridPane.columnIndex="1">
+        <FileInput GridPane.hgrow="SOMETIMES" />
+        <Button text="Remove" GridPane.columnIndex="1" />
+        <Button text="Add" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+     </GridPane>
+     
+     <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="5" />
+     <HBox spacing="$spacing" GridPane.rowIndex="5" GridPane.columnIndex="1">
+        <Label text="Lower percentile rank" />
+        <TextField />
+        <Separator prefWidth="10" />
+        <Label text="Upper percentile rank" />
+        <TextField />
+     </HBox>
+     
+     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="6" />
+     <HBox spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="6">
+        <RadioButton text="Pearson product-moment correlation coefficient (Pearson r)" toggleGroup='$correlationMethodGroup' />
+        <RadioButton text="Mutual information" toggleGroup='$correlationMethodGroup' />
+     </HBox>
+     
+     <Button mnemonicParsing="false" text="Run" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+  </children>
+  
+</GridPane>

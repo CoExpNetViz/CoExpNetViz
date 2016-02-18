@@ -62,6 +62,9 @@ import org.cytoscape.view.model.View;
 import be.ugent.psb.coexpnetviz.CENVContext;
 
 //TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
+/**
+ * Context menus on CENV network/graph nodes
+ */
 public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
     private String plazaMonocotKey = "Plaza Monocots";

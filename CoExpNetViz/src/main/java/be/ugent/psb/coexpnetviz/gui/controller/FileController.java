@@ -38,7 +38,7 @@ import be.ugent.psb.util.mvc.model.ValueModel;
 public class FileController {
 
     public FileController(final String browseDialogTitle, final ValueModel<String> path, final JTextField path_text_field, final JButton browse_button, final Component dialogParent) {
-    	new StringController(path, path_text_field);
+//    	new StringController(path, path_text_field);
         
         browse_button.addActionListener(new ActionListener() {
         	@Override

@@ -67,12 +67,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
     @Override
     public void start(BundleContext context) throws Exception {
     	CENVContext application = new CENVContext();
-        
-    	try {
-    		System.out.println(context.getBundle().loadClass("org.apache.pivot.wtk.Window")); // <-- this works. Pivot should simply use this!!
-    	} catch (ClassNotFoundException e) {
-			System.out.println("Nope nope nope 1");
-		}
     	
     	// Get CytoScape services
         application.setCyApplicationManager(getService(context, CyApplicationManager.class));

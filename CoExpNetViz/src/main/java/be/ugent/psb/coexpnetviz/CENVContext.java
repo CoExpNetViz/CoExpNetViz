@@ -68,7 +68,7 @@ public class CENVContext {
     private GUIController guiController;
     
     // Cytoscape 'services'
-    private CyApplicationManager cyApplicationManager;
+    private CyApplicationManager cyApplicationManager; // TODO remove unused
     private CyNetworkReaderManager cyNetworkReaderManager;
     private CyNetworkFactory cyNetworkFactory;
     private CyNetworkManager cyNetworkManager;

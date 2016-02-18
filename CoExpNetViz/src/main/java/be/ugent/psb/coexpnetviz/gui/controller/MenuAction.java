@@ -34,8 +34,6 @@ import be.ugent.psb.coexpnetviz.CENVContext;
  *
  */
 public class MenuAction extends AbstractCyAction {
-
-	private static final long serialVersionUID = 1L;
 	
     private final CENVContext application;
 

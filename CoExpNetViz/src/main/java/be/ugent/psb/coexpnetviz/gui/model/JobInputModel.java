@@ -43,6 +43,7 @@ public class JobInputModel implements Cloneable { // TODO rename -> JobInput
     private ValueModel<Integer> upperPercentile;
     private ValueModel<Boolean> saveOutput;
     private ValueModel<String> outputDirectory;
+    //correlationMethod
 
     public JobInputModel() {
         baitGroupSource = new DefaultValueModel<>(BaitGroupSource.FILE);

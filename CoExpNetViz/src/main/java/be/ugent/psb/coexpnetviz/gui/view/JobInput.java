@@ -24,14 +24,48 @@ package be.ugent.psb.coexpnetviz.gui.view;
 
 import java.io.IOException;
 
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.util.TCCLRunnable;
+import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.RadioButton;
 import javafx.scene.layout.GridPane;
+import jfxtras.labs.scene.control.ToggleGroupValue;
 
 /**
  * File input control: a text field with a browse button
  */
 public class JobInput extends GridPane {
+	
+	private JobInputModel model;
+	private ToggleGroupValue<JobInputModel.BaitGroupSource> baitGroupSourceGroup;
+	private ToggleGroupValue<JobInputModel.GeneFamiliesSource> geneFamiliesSourceGroup;
+	private ToggleGroupValue<JobInputModel.CorrelationMethod> correlationMethodGroup;
+	
+	@FXML
+	private RadioButton radioBaitGroupSourceText;
+	
+	@FXML
+	private RadioButton radioBaitGroupSourceFile;
+	
+	@FXML
+	private RadioButton radioGeneFamiliesSourcePlaza;
+	
+	@FXML
+	private RadioButton radioGeneFamiliesSourceCustom;
+	
+	@FXML
+	private RadioButton radioGeneFamiliesSourceNone;
+	
+	@FXML
+	private RadioButton radioCorrelationMethodPearson;
+	
+	@FXML
+	private RadioButton radioCorrelationMethodMutualInformation;
 	
 	public JobInput() {
 		new TCCLRunnable() {
@@ -47,6 +81,29 @@ public class JobInput extends GridPane {
 		        }
 			};
 		}.run();
+		
+		// Create radio groups
+		baitGroupSourceGroup = new ToggleGroupValue<>();
+		baitGroupSourceGroup.add(radioBaitGroupSourceText, BaitGroupSource.TEXT);
+		baitGroupSourceGroup.add(radioBaitGroupSourceFile, BaitGroupSource.FILE);
+		
+		geneFamiliesSourceGroup = new ToggleGroupValue<>();
+		geneFamiliesSourceGroup.add(radioGeneFamiliesSourcePlaza, GeneFamiliesSource.PLAZA);
+		geneFamiliesSourceGroup.add(radioGeneFamiliesSourceCustom, GeneFamiliesSource.CUSTOM);
+		geneFamiliesSourceGroup.add(radioGeneFamiliesSourceNone, GeneFamiliesSource.NONE);
+		
+		correlationMethodGroup = new ToggleGroupValue<>();
+		correlationMethodGroup.add(radioCorrelationMethodPearson, CorrelationMethod.PEARSON);
+		correlationMethodGroup.add(radioCorrelationMethodMutualInformation, CorrelationMethod.MUTUAL_INFORMATION);
     }
+	
+	public void init(JobInputModel model) {
+		this.model = model;
+		
+		// Bind radio groups
+		baitGroupSourceGroup.valueProperty().bindBidirectional(model.getBaitGroupSourceProperty());
+		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
+		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());
+	}
 
 }

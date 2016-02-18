@@ -22,46 +22,54 @@ package be.ugent.psb.coexpnetviz.gui.model;
  * #L%
  */
 
-import java.util.ArrayList;
-
 import be.ugent.psb.util.Objects;
-import be.ugent.psb.util.mvc.model.DefaultValueModel;
-import be.ugent.psb.util.mvc.model.ValueModel;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 /**
  * State of a job input form
  */
-public class JobInputModel implements Cloneable { // TODO rename -> JobInput
+public class JobInputModel implements Cloneable {
 
-    private ValueModel<BaitGroupSource> baitGroupSource;
-    private ValueModel<String> baitGroupText;
-    private ValueModel<String> baitGroupFile;
-    private ArrayList<String> expressionMatrices;
-    private ValueModel<GeneFamiliesSource> geneFamiliesSource;
-    private ValueModel<String> geneFamiliesFile;
-    private ValueModel<Integer> lowerPercentile;
-    private ValueModel<Integer> upperPercentile;
-    private ValueModel<Boolean> saveOutput;
-    private ValueModel<String> outputDirectory;
-    //correlationMethod
+    private ObjectProperty<BaitGroupSource> baitGroupSource;
+    private StringProperty baitGroupText;
+    private StringProperty baitGroupPath;
+    private ListProperty<String> expressionMatrixPaths;
+    private ObjectProperty<GeneFamiliesSource> geneFamiliesSource;
+    private StringProperty geneFamiliesPath;
+    private DoubleProperty lowerPercentile;
+    private DoubleProperty upperPercentile;
+    private BooleanProperty saveOutput;
+    private StringProperty outputPath;
+    private ObjectProperty<CorrelationMethod> correlationMethod;
 
     public JobInputModel() {
-        baitGroupSource = new DefaultValueModel<>(BaitGroupSource.FILE);
-        baitGroupText = new DefaultValueModel<>("");
-        baitGroupFile = new DefaultValueModel<>("");
-        expressionMatrices = new ArrayList<String>();
-        geneFamiliesSource = new DefaultValueModel<>(GeneFamiliesSource.PLAZA);
-        geneFamiliesFile = new DefaultValueModel<>("");
-        lowerPercentile = new DefaultValueModel<>(5);
-        upperPercentile = new DefaultValueModel<>(95);
-        saveOutput = new DefaultValueModel<>(false);
-        outputDirectory = new DefaultValueModel<>(System.getProperty("user.home"));
+        baitGroupSource = new SimpleObjectProperty<>(BaitGroupSource.FILE);
+        baitGroupText = new SimpleStringProperty("");
+        baitGroupPath = new SimpleStringProperty("");
+        expressionMatrixPaths = new SimpleListProperty<String>();
+        geneFamiliesSource = new SimpleObjectProperty<>(GeneFamiliesSource.PLAZA);
+        geneFamiliesPath = new SimpleStringProperty("");
+        lowerPercentile = new SimpleDoubleProperty(5);
+        upperPercentile = new SimpleDoubleProperty(95);
+        saveOutput = new SimpleBooleanProperty(false);
+        outputPath = new SimpleStringProperty(System.getProperty("user.home"));
+        correlationMethod = new SimpleObjectProperty<>(CorrelationMethod.PEARSON);
     }
 
     public Object clone() throws CloneNotSupportedException {
-    	// TODO clone all models
+    	// TODO clone deeply
     	JobInputModel clone_ = Objects.clone(this);
-    	clone_.expressionMatrices = Objects.clone(expressionMatrices);
+//    	clone_.expressionMatrixPaths = Objects.clone(expressionMatrixPaths);
     	return clone_;
     }
 
@@ -87,53 +95,150 @@ public class JobInputModel implements Cloneable { // TODO rename -> JobInput
 //            notifyObservers();
 //        }
 //    }
-    
-	public ValueModel<BaitGroupSource> getBaitGroupSource() {
+
+	public BaitGroupSource getBaitGroupSource() {
+		return baitGroupSource.get();
+	}
+
+	public void setBaitGroupSource(BaitGroupSource baitGroupSource) {
+		this.baitGroupSource.set(baitGroupSource);
+	}
+	
+	public ObjectProperty<BaitGroupSource> getBaitGroupSourceProperty() {
 		return baitGroupSource;
 	}
 
-	public ValueModel<String> getBaitGroupText() {
+	public String getBaitGroupText() {
+		return baitGroupText.get();
+	}
+
+	public void setBaitGroupText(String baitGroupText) {
+		this.baitGroupText.set(baitGroupText);
+	}
+	
+	public StringProperty getBaitGroupTextProperty() {
 		return baitGroupText;
 	}
 
-	public ValueModel<String> getBaitGroupFile() {
-		return baitGroupFile;
+
+	public ObservableList<String> getExpressionMatrixPaths() {
+		return expressionMatrixPaths.get();
 	}
 
-	public ArrayList<String> getExpressionMatrices() {
-		return expressionMatrices;
+	public void setExpressionMatrixPaths(ObservableList<String> expressionMatrixPaths) {
+		this.expressionMatrixPaths.set(expressionMatrixPaths);
 	}
 
-	public ValueModel<GeneFamiliesSource> getGeneFamiliesSource() {
+	public ListProperty<String> getExpressionMatrixPathsProperty() {
+		return expressionMatrixPaths;
+	}
+	
+	public GeneFamiliesSource getGeneFamiliesSource() {
+		return geneFamiliesSource.get();
+	}
+
+	public void setGeneFamiliesSource(GeneFamiliesSource geneFamiliesSource) {
+		this.geneFamiliesSource.set(geneFamiliesSource);
+	}
+	
+	public ObjectProperty<GeneFamiliesSource> getGeneFamiliesSourceProperty() {
 		return geneFamiliesSource;
 	}
 
-	public ValueModel<String> getGeneFamiliesFile() {
-		return geneFamiliesFile;
+	public String getGeneFamiliesPath() {
+		return geneFamiliesPath.get();
 	}
 
-	public ValueModel<Integer> getLowerPercentile() {
+	public void setGeneFamiliesPath(String geneFamiliesPath) {
+		this.geneFamiliesPath.set(geneFamiliesPath);
+	}
+	
+	public StringProperty getGeneFamiliesPathProperty() {
+		return geneFamiliesPath;
+	}
+
+	public double getLowerPercentile() {
+		return lowerPercentile.get();
+	}
+
+	public void setLowerPercentile(double lowerPercentile) {
+		this.lowerPercentile.set(lowerPercentile);
+	}
+	
+	public DoubleProperty getLowerPercentileProperty() {
 		return lowerPercentile;
 	}
 
-	public ValueModel<Integer> getUpperPercentile() {
+	public double getUpperPercentile() {
+		return upperPercentile.get();
+	}
+
+	public void setUpperPercentile(double upperPercentile) {
+		this.upperPercentile.set(upperPercentile);
+	}
+	
+	public DoubleProperty getUpperPercentileProperty() {
 		return upperPercentile;
 	}
 
-	public ValueModel<Boolean> getSaveOutput() {
+	public boolean getSaveOutput() {
+		return saveOutput.get();
+	}
+
+	public void setSaveOutput(boolean saveOutput) {
+		this.saveOutput.set(saveOutput);
+	}
+	
+	public BooleanProperty getSaveOutputProperty() {
 		return saveOutput;
 	}
 
-	public ValueModel<String> getOutputDirectory() {
-		return outputDirectory;
+	public String getOutputPath() {
+		return outputPath.get();
 	}
 
-	public enum BaitGroupSource {
+	public void setOutputPath(String outputPath) {
+		this.outputPath.set(outputPath);
+	}
+	
+	public StringProperty getOutputPathProperty() {
+		return outputPath;
+	}
+
+	public CorrelationMethod getCorrelationMethod() {
+		return correlationMethod.get();
+	}
+
+	public void setCorrelationMethod(CorrelationMethod correlationMethod) {
+		this.correlationMethod.set(correlationMethod);
+	}
+	
+	public ObjectProperty<CorrelationMethod> getCorrelationMethodProperty() {
+		return correlationMethod;
+	}
+	
+	public String getBaitGroupPath() {
+		return baitGroupPath.get();
+	}
+
+	public void setBaitGroupPath(String baitGroupPath) {
+		this.baitGroupPath.set(baitGroupPath);
+	}
+	
+	public StringProperty getBaitGroupPathProperty() {
+		return baitGroupPath;
+	}
+
+	public static enum BaitGroupSource {
     	FILE, TEXT
     }
     
-    public enum GeneFamiliesSource {
+    public static enum GeneFamiliesSource {
     	PLAZA, CUSTOM, NONE
+    }
+    
+    public static enum CorrelationMethod {
+    	PEARSON, MUTUAL_INFORMATION
     }
 
 }

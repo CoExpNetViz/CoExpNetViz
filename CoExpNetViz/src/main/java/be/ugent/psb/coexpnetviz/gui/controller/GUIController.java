@@ -78,7 +78,9 @@ public class GUIController {
         Platform.runLater(new TCCLRunnable() {
             @Override
             public void runInner() {
-                Scene scene = new Scene(new JobInput());
+            	JobInput jobInputPane = new JobInput();
+            	jobInputPane.init(new JobInputModel());
+            	Scene scene = new Scene(jobInputPane);
                 fxPanel.setScene(scene);
             }
         });

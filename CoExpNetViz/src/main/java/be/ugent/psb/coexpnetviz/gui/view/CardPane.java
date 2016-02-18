@@ -32,7 +32,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 
 /**
  * Pane that only shows one of its 'cards'.
@@ -45,7 +45,7 @@ import javafx.scene.layout.Pane;
  * T: userData type
  */
 @DefaultProperty("cards")
-public class CardPane<T> extends Pane {
+public class CardPane<T> extends Region {
 	
 	private ObjectProperty<T> shownCardData; // userData of the shown card
 	private ListProperty<Node> cards;
@@ -90,6 +90,15 @@ public class CardPane<T> extends Pane {
 	
 	public ListProperty<Node> cardsProperty() {
 		return cards;
+	}
+	
+	@Override
+	protected void layoutChildren() {
+		// Note: if this turns out a bit broken, use layoutInArea and refer to javafx source for an example as it's not really documented http://grepcode.com/file/repo1.maven.org/maven2/net.java.openjfx.backport/openjfx-78-backport/1.8.0-ea-b96.1/javafx/scene/layout/GridPane.java#GridPane.layoutChildren%28%29
+		if (!getChildren().isEmpty()) {
+			Node child = getChildren().get(0);
+			child.resizeRelocate(0, 0, getWidth(), getHeight());
+		}
 	}
 
 }

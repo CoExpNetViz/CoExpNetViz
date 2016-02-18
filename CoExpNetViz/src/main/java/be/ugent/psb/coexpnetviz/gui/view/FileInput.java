@@ -25,13 +25,23 @@ package be.ugent.psb.coexpnetviz.gui.view;
 import java.io.IOException;
 
 import be.ugent.psb.util.TCCLRunnable;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 /**
  * File input control: a text field with a browse button
  */
 public class FileInput extends HBox {
+	
+	@FXML
+	private TextField textField;
+	
+	@FXML
+	private Button browseButton;
 	
 	public FileInput() {
 		new TCCLRunnable() {
@@ -48,5 +58,13 @@ public class FileInput extends HBox {
 			};
 		}.run();
     }
+	
+	public TextField getTextField() {
+		return textField;
+	}
+	
+	public Button getBrowseButton() {
+		return browseButton;
+	}
 
 }

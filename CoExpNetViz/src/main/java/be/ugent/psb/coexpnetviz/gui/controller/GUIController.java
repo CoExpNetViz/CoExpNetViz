@@ -79,9 +79,9 @@ public class GUIController {
             @Override
             public void runInner() {
             	JobInput jobInputPane = new JobInput();
-            	jobInputPane.init(new JobInputModel());
             	Scene scene = new Scene(jobInputPane);
-                fxPanel.setScene(scene);
+            	jobInputPane.init(new JobInputModel(), scene.getWindow());
+            	fxPanel.setScene(scene);
             }
         });
     }
@@ -112,32 +112,15 @@ public class GUIController {
         // - Percentiles as cutoffs instead of raw correlation values TODO
         
         // TODO
-        // 3 options for gene families: radios
-        
-        // TODO
         // Between runs, by default take last used preset
         
-        // TODO
-        // baits text area: StringController -> baits
-        // baits file text field + btn: replace by FilePanel, then attach FileController
-        // replace the panel of multi gene fams files with a single panel
-        
-        // TODO for cutoffs, set min max, no need for a model, can store directly in there, though I saw a SpinnerModel. Then validation should check that lower < upper
+        // TODO for cutoffs, set min max. Then validation should check that lower < upper
         // ChangeListener
 //        @Override
 //        public void stateChanged(ChangeEvent event) {
 //            JSpinner sp = (JSpinner) event.getSource();
 //            double cutOff = (Double) sp.getValue();
-        
-        // TODO rename SaveFile* to OutputDirectory* 
-        
-        // TODO species: ListAnonymousController: Controls a list of anonymous items ordered by first to last added.
-        
-        // TODO cleanup models and unused Components
-        
-//    	final ValueModel<JobInputModel> currentJobInput = new DefaultValueModel<JobInputModel>();
-//        final JobInputPanel inputPanel = new JobInputPanel();
-//        
+                
 //        // Presets
 //        /*new PresetsController
 //        inputPanel.presetLoadButton.addActionListener(new ProfLoadBtnController(cyAppManager));
@@ -152,71 +135,7 @@ public class GUIController {
 //			}
 //        });
 //        
-//        
-//        // Sync baitGroupSource with ButtonGroup
-//        inputPanel.baitGroupOptionText.setActionCommand(BaitGroupSource.TEXT.toString());
-//        inputPanel.baitGroupOptionFile.setActionCommand(BaitGroupSource.FILE.toString());
-//		ValueModel<BaitGroupSource> currentBaitGroupSource = new IndirectedValueModel<BaitGroupSource>( // XXX a chained style would look how much better?
-//			new TransformedValueModel<JobInputModel, ValueModel<BaitGroupSource>>(currentJobInput) {
-//	        	@Override
-//				protected ValueModel<BaitGroupSource> transform(JobInputModel value) {
-//					return value.getBaitGroupSource();
-//				}
-//
-//				@Override
-//				protected JobInputModel transformInverse(ValueModel<BaitGroupSource> value) {
-//					throw new UnsupportedOperationException();
-//				}
-//			}
-//		);
-//		ValueModel<String> currentBaitGroupSourceString = new TransformedValueModel<BaitGroupSource, String>(currentBaitGroupSource) {
-//			@Override
-//			protected String transform(BaitGroupSource value) {
-//				return value.toString();
-//			}
-//
-//			@Override
-//			protected BaitGroupSource transformInverse(String value) {
-//				return BaitGroupSource.valueOf(value);
-//			}
-//		};
-//        new ButtonGroupController(currentBaitGroupSourceString, inputPanel.baitGroupOptions);
-//        
-//        // When selected bait group input type changes, show the right input components
-//        baitGroupSourceModel.addListener(new ValueChangeListener<String>() {
-//			@Override
-//			public void valueChanged(ValueModel<String> source_, String oldValue) {
-//				BaitGroupSource source = currentJobInput.get().getBaitGroupSource();
-//				inputPanel.baitGroupTextArea.setVisible(false);
-//				inputPanel.baitFilePanel.setVisible(false);
-//				if (source.equals(BaitGroupSource.FILE)) {
-//					inputPanel.baitFilePanel.setVisible(true);
-//				}
-//				else if (source.equals(BaitGroupSource.TEXT)) {
-//					inputPanel.baitGroupTextArea.setVisible(true);
-//				}
-//			}
-//		});
-//        
-//        // Sync bait group text area
-//        TransformedValueModel<String, String> currentBaitGroupText = new TransformedValueModel<String, String>(currentJobInput) {
-//        	@Override
-//			protected String transform(String value) {
-//				// TODO Auto-generated method stub
-//				return null;
-//			}
-//
-//			@Override
-//			protected String transformInverse(String value) {
-//				// TODO Auto-generated method stub
-//				return null;
-//			}
-//		};
-//        new StringController(currentBaitGroupText, inputPanel.baitGroupTextArea);
-//        
 //        // Bait file controller + sync
-//        inputPanel.baitGroupFileTextField.addFocusListener(new BaitFileTfController(context));
-//        inputPanel.baitFileButton.addActionListener(new BaitFileBtnController(context));
 //        inputPanel.baitInputInfoButton.addActionListener(new ActionListener() {
 //        	@Override
 //            public void actionPerformed(ActionEvent ae) {

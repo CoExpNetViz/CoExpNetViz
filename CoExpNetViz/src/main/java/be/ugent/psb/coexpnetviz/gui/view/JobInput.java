@@ -24,6 +24,7 @@ package be.ugent.psb.coexpnetviz.gui.view;
 
 import java.io.IOException;
 
+import be.ugent.psb.coexpnetviz.gui.controller.BrowseButtonHandler;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
@@ -34,6 +35,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Window;
 import jfxtras.labs.scene.control.ToggleGroupValue;
 
 /**
@@ -110,7 +112,7 @@ public class JobInput extends GridPane {
 		baitGroupFileInput.setUserData(BaitGroupSource.FILE);
     }
 	
-	public void init(JobInputModel model) {
+	public void init(JobInputModel model, Window window) {
 		this.model = model;
 		
 		// Bind radio groups
@@ -120,6 +122,9 @@ public class JobInput extends GridPane {
 		
 		// Bind other bits
 		baitGroupCardPane.shownCardDataProperty().bind(model.getBaitGroupSourceProperty());
+		baitGroupTextArea.textProperty().bindBidirectional(model.getBaitGroupTextProperty());
+		baitGroupFileInput.getTextField().textProperty().bindBidirectional(model.getBaitGroupPathProperty());
+		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.getBaitGroupPathProperty(), window));
 	}
 
 }

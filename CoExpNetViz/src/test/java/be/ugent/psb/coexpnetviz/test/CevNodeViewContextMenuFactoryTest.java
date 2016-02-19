@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import be.ugent.psb.coexpnetviz.gui.CENVNodeViewContextMenuFactory;
+import be.ugent.psb.coexpnetviz.gui.NodeViewContextMenuFactory;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -68,7 +68,7 @@ public class CevNodeViewContextMenuFactoryTest {
     public void testParseFamilies() {
         System.out.println("parseFamilies");
 
-        CENVNodeViewContextMenuFactory instance = new CENVNodeViewContextMenuFactory(null);
+        NodeViewContextMenuFactory instance = new NodeViewContextMenuFactory(null);
 
         String families
             = "From PGSC - ITAG mapping: "

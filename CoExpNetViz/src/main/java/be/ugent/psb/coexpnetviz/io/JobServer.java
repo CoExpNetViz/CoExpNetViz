@@ -37,7 +37,7 @@ import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.Context;
 import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 import org.apache.http.HttpEntity;
@@ -49,7 +49,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 
 /**
- * Manages a single request to the CoExpNetViz server
+ * Allows posting jobs to the CoExpNetViz server sequentially
  */
 public class JobServer {
 
@@ -59,7 +59,7 @@ public class JobServer {
 
     private HttpPost httpPost;
 
-    public JobServer(CENVContext cyAppManager) {
+    public JobServer(Context cyAppManager) {
         this.cyModel = cyAppManager.getCyModel();
     }
 
@@ -79,7 +79,7 @@ public class JobServer {
         // Post request and retrieve result
         Path downloadDirectory = Files.createTempDirectory("cenv_archive");
         String archiveName = cyModel.getTitle();
-        Path archivePath = downloadDirectory.resolve(archiveName + "_" + CENVContext.getTimeStamp() + ".tgz");
+        Path archivePath = downloadDirectory.resolve(archiveName + "_" + Context.getTimeStamp() + ".tgz");
         
         HttpEntity postEntity = makeEntity(job);
         executeAppOnSever(postEntity, archivePath);

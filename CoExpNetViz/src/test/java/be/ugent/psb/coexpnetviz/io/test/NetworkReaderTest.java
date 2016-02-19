@@ -22,7 +22,7 @@ package be.ugent.psb.coexpnetviz.io.test;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.Context;
 
 import java.io.File;
 import java.net.URL;

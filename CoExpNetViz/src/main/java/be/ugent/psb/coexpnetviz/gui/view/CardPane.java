@@ -44,7 +44,7 @@ import javafx.scene.layout.Region;
  * 
  * T: userData type
  */
-@DefaultProperty("cards")
+@DefaultProperty("cards") // TODO move this class and FileInput and file_input.fxml to util. They're reusable
 public class CardPane<T> extends Region {
 	
 	private ObjectProperty<T> shownCardData; // userData of the shown card

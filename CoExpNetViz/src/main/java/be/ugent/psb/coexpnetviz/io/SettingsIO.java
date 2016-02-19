@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.Context;
 
 /*
  * #%L
@@ -48,7 +48,7 @@ import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
  */
 public class SettingsIO {
 
-    private final CENVContext cyAppManager;
+    private final Context cyAppManager;
 
     // YAML attribute names
     private static final String TITLE = "title";
@@ -63,7 +63,7 @@ public class SettingsIO {
     private static final String PROFILE_FILE_NAME = "profiles";
     private static final String SPECIES_FILE_NAME = "species";
 
-    public SettingsIO(CENVContext cyAppManager) {
+    public SettingsIO(Context cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 

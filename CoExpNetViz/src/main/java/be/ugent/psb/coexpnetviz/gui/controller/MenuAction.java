@@ -27,7 +27,7 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.Context;
 
 /**
  * Creates a new menu item under Apps menu section.
@@ -35,9 +35,9 @@ import be.ugent.psb.coexpnetviz.CENVContext;
  */
 public class MenuAction extends AbstractCyAction {
 	
-    private final CENVContext application;
+    private final Context application;
 
-    public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, CENVContext application) {
+    public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, Context application) {
         super(menuTitle, cyApplicationManager, null, null);
         setPreferredMenu("Apps");
         this.application = application;

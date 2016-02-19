@@ -117,6 +117,9 @@ public class JobInput extends GridPane {
 	@FXML
 	private TextField upperPercentileRankInput;
 	
+	@FXML
+	private Button runButton;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -213,6 +216,15 @@ public class JobInput extends GridPane {
 		lowerPercentileRankInput.textProperty().bindBidirectional(model.lowerPercentileProperty(), doubleStringConverter);
 		upperPercentileRankInput.textProperty().bindBidirectional(model.upperPercentileProperty(), doubleStringConverter);
 		correlationMethodGroup.valueProperty().bindBidirectional(model.correlationMethodProperty());
+		
+		// Run button
+		runButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				;
+			};
+		});
+		
+		// Note: in a brighter future we will only need to support Java 8 and this library becomes available with good validation widgets http://fxexperience.com/controlsfx/features/#decorationvalidation
 	}
 
 }

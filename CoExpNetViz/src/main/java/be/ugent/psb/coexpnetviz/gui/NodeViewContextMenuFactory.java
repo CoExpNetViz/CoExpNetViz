@@ -59,13 +59,13 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.Context;
 
 //TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
 /**
  * Context menus on CENV network/graph nodes
  */
-public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
+public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
     private String plazaMonocotKey = "Plaza Monocots";
     private String plazaMonocotRegex = "ORTHO\\d+M\\d+";
@@ -73,11 +73,11 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
     private String plazaDicotKey = "Plaza Dicots";
     private String plazaDicotRegex = "ORTHO\\d+D\\d+";
 
-    public CENVNodeViewContextMenuFactory(CENVContext cyAppManager) {
+    public NodeViewContextMenuFactory(Context cyAppManager) {
         this.cyAppManager = cyAppManager;
     }
 
-    private CENVContext cyAppManager;
+    private Context cyAppManager;
 
     private CyNetworkView cnv;
     private View<CyNode> view;
@@ -86,7 +86,7 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(CENVContext.APP_NAME);
+        JMenuItem menuItem = new JMenuItem(Context.APP_NAME);
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;
@@ -104,9 +104,9 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
 
         String families = row.get(famColumnName, String.class);
 
-        Frame parent = CENVContext.getCytoscapeRootFrame();
+        Frame parent = Context.getCytoscapeRootFrame();
 
-        new NodeJDialog(parent, "Node info", parseFamilies(families));
+        new NodeDialog(parent, "Node info", parseFamilies(families));
     }
 
     public Map<String, List<String>> parseFamilies(String families) { // not sure if supposed to be public
@@ -138,9 +138,9 @@ public class CENVNodeViewContextMenuFactory implements CyNodeViewContextMenuFact
         return fams;
     }
 
-    private class NodeJDialog extends JDialog {
+    private class NodeDialog extends JDialog {
 
-        public NodeJDialog(Frame parent, String title, Map<String, List<String>> famsMap) {
+        public NodeDialog(Frame parent, String title, Map<String, List<String>> famsMap) {
             super(parent, title);
             // set the position of the window
             Point p = MouseInfo.getPointerInfo().getLocation();

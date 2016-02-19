@@ -24,7 +24,7 @@ import be.ugent.psb.coexpnetviz.gui.CENVModel;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.controller.GUIController;
+import be.ugent.psb.coexpnetviz.gui.controller.JobInputFrame;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 
 import java.awt.Frame;
@@ -56,16 +56,15 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 /**
- * Global application configuration, references to Cytoscape 'services' 
- * and references to any of our own single-instances 
+ * CoExpNetViz app context, provides refereences to what would otherwise be globals.
  */
-public class CENVContext {
+public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
 	
     private final CENVModel cyModel;
 
-    private GUIController guiController;
+    private JobInputFrame guiController;
     
     // Cytoscape 'services'
     private CyApplicationManager cyApplicationManager; // TODO remove unused
@@ -87,7 +86,7 @@ public class CENVContext {
     private OpenBrowser openBrowser;
     private CyTableReaderManager cyTableReaderManager;
 
-    public CENVContext() {
+    public Context() {
         this.cyModel = new CENVModel();
         cyModel.setSettingsPath(initSettingsPath());
     }
@@ -204,18 +203,18 @@ public class CENVContext {
     /**
      * @return the guiManager
      */
-    public GUIController getGUIController() {
+    public JobInputFrame getGUIController() {
         return guiController;
     }
 
 	public void showGUI() {
         if (guiController == null) {
             //create the Gui
-            guiController = new GUIController(this);
+            guiController = new JobInputFrame(this);
         }
 
         //pack and show the gui in a window
-        guiController.showRootFrame();
+        guiController.show();
 	}
 
 	public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {

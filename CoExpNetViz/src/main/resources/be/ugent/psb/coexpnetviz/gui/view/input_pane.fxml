@@ -139,11 +139,13 @@
      </CardPane>
      
      <Label styleClass='form-label' text="Expression matrices:" GridPane.rowIndex="5" />
-     <GridPane hgap='$spacing' vgap="$spacing" GridPane.rowIndex="5" GridPane.columnIndex="1">
-        <FileInput GridPane.hgrow="SOMETIMES" />
-        <Button text="Remove" GridPane.columnIndex="1" />
-        <Button text="Add" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-     </GridPane>
+     <VBox spacing='$spacing' GridPane.rowIndex="5" GridPane.columnIndex="1">
+        <TableView editable='true' fx:id='expressionMatricesTableView' />
+        <HBox spacing='$spacing'>
+          <Button text="Add" />
+          <Button text="Remove" />
+        </HBox>
+     </VBox>
      
      <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="6" />
      <HBox spacing="$spacing" GridPane.rowIndex="6" GridPane.columnIndex="1">

@@ -43,8 +43,12 @@ public class BrowseButtonHandler implements EventHandler<ActionEvent> {
 	private Window window;
 	
     public BrowseButtonHandler(String browseDialogTitle, StringProperty pathProperty, Window window) {
-		this.browseDialogTitle = browseDialogTitle;
+		this(browseDialogTitle, window);
 		this.pathProperty = pathProperty;
+	}
+    
+    public BrowseButtonHandler(String browseDialogTitle, Window window) {
+		this.browseDialogTitle = browseDialogTitle;
 		this.window = window;
 	}
 
@@ -56,6 +60,10 @@ public class BrowseButtonHandler implements EventHandler<ActionEvent> {
 		if (path != null) {
 			pathProperty.set(path.toString());
 		}
+	}
+	
+	public void setPathProperty(StringProperty pathProperty) {
+		this.pathProperty = pathProperty;
 	}
     
     // TODO add validation to path (but put it elsewhere), validation icon goes on the text field.

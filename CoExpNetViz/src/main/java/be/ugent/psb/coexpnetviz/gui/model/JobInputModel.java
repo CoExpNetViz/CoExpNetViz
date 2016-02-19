@@ -1,5 +1,7 @@
 package be.ugent.psb.coexpnetviz.gui.model;
 
+import java.util.ArrayList;
+
 /*
  * #%L
  * CoExpNetViz
@@ -43,7 +45,7 @@ public class JobInputModel implements Cloneable {
     private ObjectProperty<BaitGroupSource> baitGroupSource;
     private StringProperty baitGroupText;
     private StringProperty baitGroupPath;
-    private ListProperty<String> expressionMatrixPaths;
+    private ListProperty<StringProperty> expressionMatrixPaths;
     private ObjectProperty<GeneFamiliesSource> geneFamiliesSource;
     private StringProperty geneFamiliesPath;
     private DoubleProperty lowerPercentile;
@@ -56,7 +58,7 @@ public class JobInputModel implements Cloneable {
         baitGroupSource = new SimpleObjectProperty<>(BaitGroupSource.FILE);
         baitGroupText = new SimpleStringProperty("");
         baitGroupPath = new SimpleStringProperty("");
-        expressionMatrixPaths = new SimpleListProperty<String>();
+        expressionMatrixPaths = new SimpleListProperty<>(javafx.collections.FXCollections.observableList(new ArrayList<StringProperty>()));
         geneFamiliesSource = new SimpleObjectProperty<>(GeneFamiliesSource.PLAZA);
         geneFamiliesPath = new SimpleStringProperty("");
         lowerPercentile = new SimpleDoubleProperty(5);
@@ -120,16 +122,15 @@ public class JobInputModel implements Cloneable {
 		return baitGroupText;
 	}
 
-
-	public ObservableList<String> getExpressionMatrixPaths() {
+	public ObservableList<StringProperty> getExpressionMatrixPaths() {
 		return expressionMatrixPaths.get();
 	}
 
-	public void setExpressionMatrixPaths(ObservableList<String> expressionMatrixPaths) {
+	public void setExpressionMatrixPaths(ObservableList<StringProperty> expressionMatrixPaths) {
 		this.expressionMatrixPaths.set(expressionMatrixPaths);
 	}
 
-	public ListProperty<String> getExpressionMatrixPathsProperty() {
+	public ListProperty<StringProperty> getExpressionMatrixPathsProperty() {
 		return expressionMatrixPaths;
 	}
 	

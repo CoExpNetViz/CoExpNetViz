@@ -30,12 +30,22 @@ import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.util.TCCLRunnable;
+import be.ugent.psb.util.javafx.BrowseButtonTableCell;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import jfxtras.labs.scene.control.ToggleGroupValue;
 
 /**
@@ -84,6 +94,9 @@ public class JobInput extends GridPane {
 	@FXML
 	private FileInput geneFamiliesFileInput;
 	
+	@FXML
+	private TableView<StringProperty> expressionMatricesTableView;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -120,7 +133,7 @@ public class JobInput extends GridPane {
 		geneFamiliesFileInput.setUserData(GeneFamiliesSource.CUSTOM);
     }
 	
-	public void init(JobInputModel model, Window window) {
+	public void init(final JobInputModel model, final Window window) {
 		this.model = model;
 		
 		// Bait group
@@ -133,6 +146,36 @@ public class JobInput extends GridPane {
 		// Gene families
 		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
 		geneFamiliesCardPane.shownCardDataProperty().bind(model.getGeneFamiliesSourceProperty());
+		
+		// Expression matrices: Add columns
+		Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>> idCellValueFactory = new Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<StringProperty,String> cellData) {
+				return cellData.getValue();
+			};
+		};
+		
+		TableColumn<StringProperty, String> pathColumn = new TableColumn<>("Path");
+		pathColumn.setCellValueFactory(idCellValueFactory);
+//		pathColumn.setEditable(true);
+		pathColumn.setCellFactory(TextFieldTableCell.<StringProperty>forTableColumn());
+		expressionMatricesTableView.getColumns().add(pathColumn);
+		
+		TableColumn<StringProperty, String> browseColumn = new TableColumn<>();
+		browseColumn.setCellValueFactory(idCellValueFactory);
+		browseColumn.setCellFactory(new Callback<TableColumn<StringProperty, String>, TableCell<StringProperty, String>>() {
+			public TableCell<StringProperty, String> call(TableColumn<StringProperty, String> column) {
+				return new BrowseButtonTableCell("Select gene expression matrix", window);
+			};
+		});
+		expressionMatricesTableView.getColumns().add(browseColumn);
+		
+		// Expression matrices: Maximise first column
+		pathColumn.prefWidthProperty().bind(expressionMatricesTableView.widthProperty().subtract(browseColumn.prefWidthProperty()).subtract(8)); // magic 8 is for the distance between columns
+		
+		// Expression matrices: Bind paths
+		expressionMatricesTableView.setItems(model.getExpressionMatrixPaths());
+		model.getExpressionMatrixPaths().add(new SimpleStringProperty("test1"));
+		model.getExpressionMatrixPaths().add(new SimpleStringProperty("test2"));
 		
 		// ...
 		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());

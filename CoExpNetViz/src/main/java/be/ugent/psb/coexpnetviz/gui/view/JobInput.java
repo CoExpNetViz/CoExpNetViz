@@ -23,6 +23,7 @@ package be.ugent.psb.coexpnetviz.gui.view;
  */
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import be.ugent.psb.coexpnetviz.gui.controller.BrowseButtonHandler;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
@@ -47,10 +48,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
 import javafx.util.Callback;
+import javafx.util.converter.NumberStringConverter;
 import jfxtras.labs.scene.control.ToggleGroupValue;
 
 /**
@@ -107,6 +110,12 @@ public class JobInput extends GridPane {
 	
 	@FXML
 	private Button expressionMatricesRemoveButton;
+	
+	@FXML
+	private TextField lowerPercentileRankInput;
+	
+	@FXML
+	private TextField upperPercentileRankInput;
 	
 	public JobInput() {
 		new TCCLRunnable() {
@@ -200,6 +209,9 @@ public class JobInput extends GridPane {
 		expressionMatricesRemoveButton.disableProperty().bind(Bindings.isEmpty(expressionMatricesTableView.getSelectionModel().getSelectedItems()));
 		
 		// Bind last bits
+		NumberStringConverter doubleStringConverter  = new NumberStringConverter(new DecimalFormat());
+		lowerPercentileRankInput.textProperty().bindBidirectional(model.lowerPercentileProperty(), doubleStringConverter);
+		upperPercentileRankInput.textProperty().bindBidirectional(model.upperPercentileProperty(), doubleStringConverter);
 		correlationMethodGroup.valueProperty().bindBidirectional(model.correlationMethodProperty());
 	}
 

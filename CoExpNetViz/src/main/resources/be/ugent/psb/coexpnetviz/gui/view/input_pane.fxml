@@ -150,10 +150,10 @@
      <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="6" />
      <HBox spacing="$spacing" GridPane.rowIndex="6" GridPane.columnIndex="1">
         <Label text="Lower percentile rank" />
-        <TextField />
+        <TextField fx:id="lowerPercentileRankInput" />
         <Separator prefWidth="10" />
         <Label text="Upper percentile rank" />
-        <TextField />
+        <TextField fx:id="upperPercentileRankInput" />
      </HBox>
      
      <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="7" />

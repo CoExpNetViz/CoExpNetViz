@@ -106,7 +106,7 @@ public class JobInputModel implements Cloneable {
 		this.baitGroupSource.set(baitGroupSource);
 	}
 	
-	public ObjectProperty<BaitGroupSource> getBaitGroupSourceProperty() {
+	public ObjectProperty<BaitGroupSource> baitGroupSourceProperty() {
 		return baitGroupSource;
 	}
 
@@ -118,7 +118,7 @@ public class JobInputModel implements Cloneable {
 		this.baitGroupText.set(baitGroupText);
 	}
 	
-	public StringProperty getBaitGroupTextProperty() {
+	public StringProperty baitGroupTextProperty() {
 		return baitGroupText;
 	}
 
@@ -130,7 +130,7 @@ public class JobInputModel implements Cloneable {
 		this.expressionMatrixPaths.set(expressionMatrixPaths);
 	}
 
-	public ListProperty<StringProperty> getExpressionMatrixPathsProperty() {
+	public ListProperty<StringProperty> expressionMatrixPathsProperty() {
 		return expressionMatrixPaths;
 	}
 	
@@ -142,7 +142,7 @@ public class JobInputModel implements Cloneable {
 		this.geneFamiliesSource.set(geneFamiliesSource);
 	}
 	
-	public ObjectProperty<GeneFamiliesSource> getGeneFamiliesSourceProperty() {
+	public ObjectProperty<GeneFamiliesSource> geneFamiliesSourceProperty() {
 		return geneFamiliesSource;
 	}
 
@@ -154,7 +154,7 @@ public class JobInputModel implements Cloneable {
 		this.geneFamiliesPath.set(geneFamiliesPath);
 	}
 	
-	public StringProperty getGeneFamiliesPathProperty() {
+	public StringProperty geneFamiliesPathProperty() {
 		return geneFamiliesPath;
 	}
 
@@ -166,7 +166,7 @@ public class JobInputModel implements Cloneable {
 		this.lowerPercentile.set(lowerPercentile);
 	}
 	
-	public DoubleProperty getLowerPercentileProperty() {
+	public DoubleProperty lowerPercentileProperty() {
 		return lowerPercentile;
 	}
 
@@ -178,7 +178,7 @@ public class JobInputModel implements Cloneable {
 		this.upperPercentile.set(upperPercentile);
 	}
 	
-	public DoubleProperty getUpperPercentileProperty() {
+	public DoubleProperty upperPercentileProperty() {
 		return upperPercentile;
 	}
 
@@ -190,7 +190,7 @@ public class JobInputModel implements Cloneable {
 		this.saveOutput.set(saveOutput);
 	}
 	
-	public BooleanProperty getSaveOutputProperty() {
+	public BooleanProperty saveOutputProperty() {
 		return saveOutput;
 	}
 
@@ -202,7 +202,7 @@ public class JobInputModel implements Cloneable {
 		this.outputPath.set(outputPath);
 	}
 	
-	public StringProperty getOutputPathProperty() {
+	public StringProperty outputPathProperty() {
 		return outputPath;
 	}
 
@@ -214,7 +214,7 @@ public class JobInputModel implements Cloneable {
 		this.correlationMethod.set(correlationMethod);
 	}
 	
-	public ObjectProperty<CorrelationMethod> getCorrelationMethodProperty() {
+	public ObjectProperty<CorrelationMethod> correlationMethodProperty() {
 		return correlationMethod;
 	}
 	
@@ -226,7 +226,7 @@ public class JobInputModel implements Cloneable {
 		this.baitGroupPath.set(baitGroupPath);
 	}
 	
-	public StringProperty getBaitGroupPathProperty() {
+	public StringProperty baitGroupPathProperty() {
 		return baitGroupPath;
 	}
 

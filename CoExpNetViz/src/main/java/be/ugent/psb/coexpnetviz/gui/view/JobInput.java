@@ -148,15 +148,15 @@ public class JobInput extends GridPane {
 		this.model = model;
 		
 		// Bait group
-		baitGroupSourceGroup.valueProperty().bindBidirectional(model.getBaitGroupSourceProperty());
-		baitGroupCardPane.shownCardDataProperty().bind(model.getBaitGroupSourceProperty());
-		baitGroupTextArea.textProperty().bindBidirectional(model.getBaitGroupTextProperty());
-		baitGroupFileInput.getTextField().textProperty().bindBidirectional(model.getBaitGroupPathProperty());
-		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.getBaitGroupPathProperty(), window));
+		baitGroupSourceGroup.valueProperty().bindBidirectional(model.baitGroupSourceProperty());
+		baitGroupCardPane.shownCardDataProperty().bind(model.baitGroupSourceProperty());
+		baitGroupTextArea.textProperty().bindBidirectional(model.baitGroupTextProperty());
+		baitGroupFileInput.getTextField().textProperty().bindBidirectional(model.baitGroupPathProperty());
+		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.baitGroupPathProperty(), window));
 		
 		// Gene families
-		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
-		geneFamiliesCardPane.shownCardDataProperty().bind(model.getGeneFamiliesSourceProperty());
+		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.geneFamiliesSourceProperty());
+		geneFamiliesCardPane.shownCardDataProperty().bind(model.geneFamiliesSourceProperty());
 		
 		// Expression matrices: Add columns
 		Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>> idCellValueFactory = new Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>>() {
@@ -199,8 +199,8 @@ public class JobInput extends GridPane {
 		});
 		expressionMatricesRemoveButton.disableProperty().bind(Bindings.isEmpty(expressionMatricesTableView.getSelectionModel().getSelectedItems()));
 		
-		// ...
-		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());
+		// Bind last bits
+		correlationMethodGroup.valueProperty().bindBidirectional(model.correlationMethodProperty());
 	}
 
 }

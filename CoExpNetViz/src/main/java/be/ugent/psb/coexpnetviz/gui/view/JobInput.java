@@ -31,12 +31,17 @@ import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.util.TCCLRunnable;
 import be.ugent.psb.util.javafx.BrowseButtonTableCell;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -97,6 +102,12 @@ public class JobInput extends GridPane {
 	@FXML
 	private TableView<StringProperty> expressionMatricesTableView;
 	
+	@FXML
+	private Button expressionMatricesAddButton;
+	
+	@FXML
+	private Button expressionMatricesRemoveButton;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -156,7 +167,6 @@ public class JobInput extends GridPane {
 		
 		TableColumn<StringProperty, String> pathColumn = new TableColumn<>("Path");
 		pathColumn.setCellValueFactory(idCellValueFactory);
-//		pathColumn.setEditable(true);
 		pathColumn.setCellFactory(TextFieldTableCell.<StringProperty>forTableColumn());
 		expressionMatricesTableView.getColumns().add(pathColumn);
 		
@@ -172,10 +182,22 @@ public class JobInput extends GridPane {
 		// Expression matrices: Maximise first column
 		pathColumn.prefWidthProperty().bind(expressionMatricesTableView.widthProperty().subtract(browseColumn.prefWidthProperty()).subtract(8)); // magic 8 is for the distance between columns
 		
-		// Expression matrices: Bind paths
+		// Expression matrices: Bind paths and buttons
 		expressionMatricesTableView.setItems(model.getExpressionMatrixPaths());
-		model.getExpressionMatrixPaths().add(new SimpleStringProperty("test1"));
-		model.getExpressionMatrixPaths().add(new SimpleStringProperty("test2"));
+		
+		// Expression matrices: CRUD
+		expressionMatricesTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		expressionMatricesAddButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				model.getExpressionMatrixPaths().add(new SimpleStringProperty());
+			};
+		});
+		expressionMatricesRemoveButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				model.getExpressionMatrixPaths().removeAll(expressionMatricesTableView.getSelectionModel().getSelectedItems());
+			};
+		});
+		expressionMatricesRemoveButton.disableProperty().bind(Bindings.isEmpty(expressionMatricesTableView.getSelectionModel().getSelectedItems()));
 		
 		// ...
 		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());

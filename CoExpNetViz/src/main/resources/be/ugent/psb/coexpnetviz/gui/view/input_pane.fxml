@@ -142,8 +142,8 @@
      <VBox spacing='$spacing' GridPane.rowIndex="5" GridPane.columnIndex="1">
         <TableView editable='true' fx:id='expressionMatricesTableView' />
         <HBox spacing='$spacing'>
-          <Button text="Add" />
-          <Button text="Remove" />
+          <Button text="Add" fx:id='expressionMatricesAddButton' />
+          <Button text="Remove" fx:id='expressionMatricesRemoveButton' />
         </HBox>
      </VBox>
      

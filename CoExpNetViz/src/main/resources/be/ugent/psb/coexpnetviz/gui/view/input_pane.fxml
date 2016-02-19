@@ -132,15 +132,21 @@
        <RadioButton text="No families" fx:id='radioGeneFamiliesSourceNone' />
      </VBox>
      
-     <Label styleClass='form-label' text="Expression matrices:" GridPane.rowIndex="4" />
-     <GridPane hgap='$spacing' vgap="$spacing" GridPane.rowIndex="4" GridPane.columnIndex="1">
+     <CardPane GridPane.rowIndex="4" GridPane.columnIndex="1" fx:id='geneFamiliesCardPane'>
+       <FXCollections fx:factory="observableArrayList">
+         <FileInput fx:id='geneFamiliesFileInput' />
+       </FXCollections>
+     </CardPane>
+     
+     <Label styleClass='form-label' text="Expression matrices:" GridPane.rowIndex="5" />
+     <GridPane hgap='$spacing' vgap="$spacing" GridPane.rowIndex="5" GridPane.columnIndex="1">
         <FileInput GridPane.hgrow="SOMETIMES" />
         <Button text="Remove" GridPane.columnIndex="1" />
         <Button text="Add" GridPane.rowIndex="1" GridPane.columnIndex="1" />
      </GridPane>
      
-     <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="5" />
-     <HBox spacing="$spacing" GridPane.rowIndex="5" GridPane.columnIndex="1">
+     <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="6" />
+     <HBox spacing="$spacing" GridPane.rowIndex="6" GridPane.columnIndex="1">
         <Label text="Lower percentile rank" />
         <TextField />
         <Separator prefWidth="10" />
@@ -148,12 +154,12 @@
         <TextField />
      </HBox>
      
-     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="6" />
-     <HBox spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="6">
+     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="7" />
+     <HBox spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="7">
         <RadioButton text="Pearson product-moment correlation coefficient (Pearson r)" fx:id='radioCorrelationMethodPearson' />
         <RadioButton text="Mutual information" fx:id='radioCorrelationMethodMutualInformation' />
      </HBox>
      
-     <Button mnemonicParsing="false" text="Run" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+     <Button mnemonicParsing="false" text="Run" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
   </children>
 </fx:root>

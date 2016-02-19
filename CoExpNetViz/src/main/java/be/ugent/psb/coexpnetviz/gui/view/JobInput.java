@@ -78,6 +78,12 @@ public class JobInput extends GridPane {
 	@FXML
 	private FileInput baitGroupFileInput;
 	
+	@FXML
+	private CardPane<GeneFamiliesSource> geneFamiliesCardPane;
+	
+	@FXML
+	private FileInput geneFamiliesFileInput;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -110,21 +116,26 @@ public class JobInput extends GridPane {
 		// User data
 		baitGroupTextArea.setUserData(BaitGroupSource.TEXT);
 		baitGroupFileInput.setUserData(BaitGroupSource.FILE);
+		
+		geneFamiliesFileInput.setUserData(GeneFamiliesSource.CUSTOM);
     }
 	
 	public void init(JobInputModel model, Window window) {
 		this.model = model;
 		
-		// Bind radio groups
+		// Bait group
 		baitGroupSourceGroup.valueProperty().bindBidirectional(model.getBaitGroupSourceProperty());
-		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
-		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());
-		
-		// Bind other bits
 		baitGroupCardPane.shownCardDataProperty().bind(model.getBaitGroupSourceProperty());
 		baitGroupTextArea.textProperty().bindBidirectional(model.getBaitGroupTextProperty());
 		baitGroupFileInput.getTextField().textProperty().bindBidirectional(model.getBaitGroupPathProperty());
 		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.getBaitGroupPathProperty(), window));
+		
+		// Gene families
+		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.getGeneFamiliesSourceProperty());
+		geneFamiliesCardPane.shownCardDataProperty().bind(model.getGeneFamiliesSourceProperty());
+		
+		// ...
+		correlationMethodGroup.valueProperty().bindBidirectional(model.getCorrelationMethodProperty());
 	}
 
 }

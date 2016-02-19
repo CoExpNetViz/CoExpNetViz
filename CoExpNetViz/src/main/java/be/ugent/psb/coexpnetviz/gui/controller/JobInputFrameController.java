@@ -36,14 +36,14 @@ import javafx.scene.Scene;
 // TODO rm most of util.mvc if Pivot turns out successful
 
 /**
- * Wraps a JFrame with a JobInput pane and controls it
+ * Creates and controls a JFrame with a JobInput pane
  */
-public class JobInputFrame {
+public class JobInputFrameController {
 
     private final Context context;
     private JFrame rootFrame;
 
-    public JobInputFrame(Context context) { // XXX only accept a presets and a JobInput model
+    public JobInputFrameController(Context context) { // XXX only accept a presets and a JobInput model
         this.context = context;
 
         //load settings: presets

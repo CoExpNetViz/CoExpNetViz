@@ -24,7 +24,7 @@ import be.ugent.psb.coexpnetviz.gui.CENVModel;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.controller.JobInputFrame;
+import be.ugent.psb.coexpnetviz.gui.controller.JobInputFrameController;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 
 import java.awt.Frame;
@@ -64,7 +64,7 @@ public class Context {
 	
     private final CENVModel cyModel;
 
-    private JobInputFrame guiController;
+    private JobInputFrameController guiController;
     
     // Cytoscape 'services'
     private CyApplicationManager cyApplicationManager; // TODO remove unused
@@ -203,14 +203,14 @@ public class Context {
     /**
      * @return the guiManager
      */
-    public JobInputFrame getGUIController() {
+    public JobInputFrameController getGUIController() {
         return guiController;
     }
 
 	public void showGUI() {
         if (guiController == null) {
             //create the Gui
-            guiController = new JobInputFrame(this);
+            guiController = new JobInputFrameController(this);
         }
 
         //pack and show the gui in a window

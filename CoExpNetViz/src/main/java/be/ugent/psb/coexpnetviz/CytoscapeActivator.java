@@ -12,7 +12,6 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
@@ -87,9 +86,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
         application.setTaskManager(getService(context, TaskManager.class));
         application.setUndoSupport(getService(context, UndoSupport.class));
         application.setOpenBrowser(getService(context, OpenBrowser.class));
-
-        // Listen to Cytoscape events
-        registerService(context, new NetworkEventListener(application), NetworkAboutToBeDestroyedListener.class, new Properties());
 
         // Add our menu action in OSGi services
         registerAllServices(context, new MenuAction(application.getCyApplicationManager(), Context.APP_NAME, application), new Properties());

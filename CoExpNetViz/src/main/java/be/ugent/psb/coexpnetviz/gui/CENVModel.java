@@ -53,7 +53,6 @@ public class CENVModel extends Observable {
      Fields to keep track of application state
      */
     private Path settingsPath;
-    private HashSet<CyNetwork> visibleCevNetworks = new HashSet<CyNetwork>();
 
     public CENVModel() {
 		jobDescription = new JobDescription();
@@ -82,20 +81,6 @@ public class CENVModel extends Observable {
 
     public void setSettingsPath(Path settingsPath) {
         this.settingsPath = settingsPath;
-    }
-
-    /**
-     * @return the visibleCevNetworks
-     */
-    public HashSet<CyNetwork> getVisibleCevNetworks() {
-        return visibleCevNetworks;
-    }
-
-    /**
-     * @param visibleCevNetworks the visibleCevNetworks to set
-     */
-    public void setVisibleCevNetworks(HashSet<CyNetwork> visibleCevNetworks) {
-        this.visibleCevNetworks = visibleCevNetworks;
     }
 
 	public String getBaits() {

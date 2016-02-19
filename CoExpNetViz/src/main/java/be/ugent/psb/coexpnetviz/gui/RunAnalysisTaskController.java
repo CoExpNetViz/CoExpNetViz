@@ -107,10 +107,6 @@ public class RunAnalysisTaskController implements Observer {
 	        
 	        // Apply network style
 	        application.getVisualMappingManager().setVisualStyle(getStyle(Context.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
-
-	        //add this data to the corestatus to pass it on to the next task
-	        //which is applying the layout
-	        application.getCyModel().getVisibleCevNetworks().add(getNetwork()); // TODO is this needed?
 	        
 	        // Apply layout
 	    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);

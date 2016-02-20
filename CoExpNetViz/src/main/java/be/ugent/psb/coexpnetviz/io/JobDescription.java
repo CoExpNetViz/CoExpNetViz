@@ -41,6 +41,8 @@ public class JobDescription {
     private Path saveFilePath;
     private Map<String, Path> geneFamilies; // Name -> Path of each ortholog-families file
     
+    private Path resultPath; // Where to store the result
+    
     public JobDescription() {
 		expressionMatrices = new HashMap<String, Path>();
 		geneFamilies = new HashMap<String, Path>();
@@ -108,6 +110,14 @@ public class JobDescription {
 
 	public boolean isSendBaitsAsFile() {
 		return sendBaitsAsFile;
+	}
+
+	public Path getResultPath() {
+		return resultPath;
+	}
+
+	public void setResultPath(Path resultPath) {
+		this.resultPath = resultPath;
 	}
 	
 }

@@ -73,7 +73,7 @@ public class RunAnalysisTaskController implements Observer {
 		switch (step++) {
 		case 0:
 			// Run job on server, download response
-	    	runJobTask = new RunJobTask(new JobServer(application), application.getCyModel().getJobDescription());
+	    	runJobTask = new RunJobTask(new JobServer(), application.getCyModel().getJobDescription());
 	    	taskIterator.append(runJobTask);
 	    	break;
 	    	

@@ -66,8 +66,8 @@ public class Context {
 
     private JobInputFrameController guiController;
     
-    // Cytoscape 'services'
-    private CyApplicationManager cyApplicationManager; // TODO remove unused
+    // Cytoscape 'services'. Note we don't use all of these
+    private CyApplicationManager cyApplicationManager;
     private CyNetworkReaderManager cyNetworkReaderManager;
     private CyNetworkFactory cyNetworkFactory;
     private CyNetworkManager cyNetworkManager;

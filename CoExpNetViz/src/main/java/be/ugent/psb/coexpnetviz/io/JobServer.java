@@ -30,23 +30,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.commons.io.IOUtils;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
-import org.yaml.snakeyaml.Yaml;
-
-import be.ugent.psb.coexpnetviz.Context;
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Allows posting jobs to the CoExpNetViz server sequentially
@@ -54,14 +50,8 @@ import org.apache.http.util.EntityUtils;
 public class JobServer {
 
 	private static final String URL = "http://bioinformatics.psb.ugent.be/webtools/coexpr/";
-	
-    private final CENVModel cyModel; // TODO get rid of this dependency
 
     private HttpPost httpPost;
-
-    public JobServer(Context cyAppManager) {
-        this.cyModel = cyAppManager.getCyModel();
-    }
 
     public void abort() {
         httpPost.abort();
@@ -77,27 +67,24 @@ public class JobServer {
      */
     public Path runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
         // Post request and retrieve result
-        Path downloadDirectory = Files.createTempDirectory("cenv_archive");
-        String archiveName = cyModel.getTitle();
-        Path archivePath = downloadDirectory.resolve(archiveName + "_" + Context.getTimeStamp() + ".tgz");
-        
-        HttpEntity postEntity = makeEntity(job);
-        executeAppOnSever(postEntity, archivePath);
-
-        // Decide where to unpack
-        Path unpackPath;
-        if (cyModel.getSaveFilePath() == null) {
-        	unpackPath = Files.createTempDirectory("cenv_network");
-        }
-        else {
-        	unpackPath = cyModel.getSaveFilePath();
-        }
-
-        // Unpack the archive
-        Archiver archiver = ArchiverFactory.createArchiver(archivePath.toFile());
-        archiver.extract(archivePath.toFile(), unpackPath.toFile());
-
-        return unpackPath;
+    	Path packedResultPath = null;
+    	try {
+	    	// Run job on server, which returns a tgz archive
+    		packedResultPath =  Files.createTempFile("coexpnetviz_result_", ".tgz");    	
+	        HttpEntity postEntity = makeEntity(job);
+	        executeJobOnServer(postEntity, packedResultPath);
+	
+	        // Unpack the tgz result
+	        Path unpackedResultPath = job.getResultPath();
+	        Archiver archiver = ArchiverFactory.createArchiver(packedResultPath.toFile());
+	        archiver.extract(packedResultPath.toFile(), unpackedResultPath.toFile());
+	        
+	        return unpackedResultPath;
+    	}
+    	finally {
+    		if (packedResultPath != null)
+    			Files.delete(packedResultPath);
+    	}
     }
 
     private HttpEntity makeEntity(JobDescription job)
@@ -144,7 +131,7 @@ public class JobServer {
         return entityBuilder.build();
     }
 
-    private void executeAppOnSever(HttpEntity entity, Path archivePath) throws IOException, JobServerException {
+    private void executeJobOnServer(HttpEntity entity, Path resultPath) throws IOException, JobServerException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         httpPost = new HttpPost(URL);
         httpPost.setEntity(entity);
@@ -168,7 +155,7 @@ public class JobServer {
             String contentType = responseEntity.getContentType().getValue();
             if ("application/x-gtar".equals(contentType)) {
             	// Archive with the actual result
-            	saveResponse(responseEntity.getContent(), archivePath);
+            	saveResponse(responseEntity.getContent(), resultPath);
             }
             else if ("application/x-yaml".equals(contentType)) {
             	// Error response

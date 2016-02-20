@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz;
+package be.ugent.psb.util.cytoscape;
 
 import java.util.Observable;
 import java.util.Observer;

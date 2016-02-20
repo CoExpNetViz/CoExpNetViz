@@ -1,36 +1,10 @@
 package be.ugent.psb.coexpnetviz.gui;
 
-/*
- * #%L
- * CoExpNetViz
- * %%
- * Copyright (C) 2015 PSB/UGent
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
-
-import be.ugent.psb.coexpnetviz.Context;
-import be.ugent.psb.coexpnetviz.NotificationTask;
-import be.ugent.psb.coexpnetviz.io.JobServer;
-import be.ugent.psb.coexpnetviz.io.RunJobTask;
-import be.ugent.psb.coexpnetviz.layout.FamLayout;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
+
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.model.CyColumn;
@@ -45,35 +19,52 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskIterator;
 
+import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.io.JobDescription;
+import be.ugent.psb.coexpnetviz.io.JobServer;
+import be.ugent.psb.coexpnetviz.io.RunJobTask;
+import be.ugent.psb.coexpnetviz.layout.FamLayout;
+import be.ugent.psb.util.cytoscape.NotificationTask;
+
 /**
- * Controls running an analysis
+ * Creates and controls tasks to run a job on the CoExpNetViz server and show the resulting network 
  * 
  * Similar to RunAnalysisController, but this controls the tasks being run for it, while the other one collects input from the GUI
  */
 public class RunAnalysisTaskController implements Observer {
     
-    private final Context application;
-    private int step; // what stage of the analysis we're at
+    private final Context context;
+    private JobDescription jobDescription;
+    private String networkName;
+    private int step;  // what stage of the analysis we're at
     private TaskIterator taskIterator;
     private RunJobTask runJobTask;
     private CyNetworkReader networkReader;
     private CyTableReader nodeTableReader;
     private CyTableReader edgeTableReader;
-
-    public RunAnalysisTaskController(Context cyAppManager) {
-        this.application = cyAppManager;
+    
+    public RunAnalysisTaskController(Context context, JobDescription jobDescription, String networkName) {
+        this.context = context;
+        this.jobDescription = jobDescription;
+        this.networkName = networkName;
         step = 0;
         taskIterator = new TaskIterator();
-        update(null, null); // fake update to initialise
-        application.getTaskManager().execute(taskIterator);
+        update(null, null); // send fake update event to self to initialise the first step
+        context.getTaskManager().execute(taskIterator);
     }
     
     @Override
 	public void update(Observable o, Object notificationTask) {
+    	/*
+    	 * Note: the controller has a taskIterator to which we add tasks as we finish 
+    	 * previous tasks in the iterator. Sometimes we need to wait for them to complete,
+    	 * for that we use a NotificationTask that calls this method once it's run,
+    	 * after which we can add the tasks of the next step to the still running task iterator.
+    	 */
 		switch (step++) {
 		case 0:
 			// Run job on server, download response
-	    	runJobTask = new RunJobTask(new JobServer(), application.getCyModel().getJobDescription());
+	    	runJobTask = new RunJobTask(new JobServer(), jobDescription);
 	    	taskIterator.append(runJobTask);
 	    	break;
 	    	
@@ -91,8 +82,8 @@ public class RunAnalysisTaskController implements Observer {
 	        
 		case 3:
 			// Add the network
-			getNetwork().getRow(getNetwork()).set(CyNetwork.NAME, application.getCyModel().getTitle());
-	        application.getCyNetworkManager().addNetwork(getNetwork());
+			getNetwork().getRow(getNetwork()).set(CyNetwork.NAME, networkName);
+	        context.getCyNetworkManager().addNetwork(getNetwork());
 	        
 	        // Apply tables to network
 	        addApplyTableTask(nodeTableReader, CyNode.class, getNetwork());
@@ -102,14 +93,14 @@ public class RunAnalysisTaskController implements Observer {
 	        
 		case 4:
 	        // Add network view
-	        CyNetworkView networkView = application.getCyNetworkViewFactory().createNetworkView(getNetwork());
-	        application.getCyNetworkViewManager().addNetworkView(networkView);
+	        CyNetworkView networkView = context.getCyNetworkViewFactory().createNetworkView(getNetwork());
+	        context.getCyNetworkViewManager().addNetworkView(networkView);
 	        
 	        // Apply network style
-	        application.getVisualMappingManager().setVisualStyle(getStyle(Context.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
+	        context.getVisualMappingManager().setVisualStyle(getStyle(Context.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
 	        
 	        // Apply layout
-	    	FamLayout layout = (FamLayout) application.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
+	    	FamLayout layout = (FamLayout) context.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
 	    	taskIterator.append(layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species"));
 	        
 	    	return; // return on the last step to skip adding another notification task
@@ -122,7 +113,7 @@ public class RunAnalysisTaskController implements Observer {
 	}
     
     private VisualStyle getStyle(String name) {
-    	for (VisualStyle vs : application.getVisualMappingManager().getAllVisualStyles()) {
+    	for (VisualStyle vs : context.getVisualMappingManager().getAllVisualStyles()) {
             if (vs.getTitle().equals(name)) {
                 return vs;
             }
@@ -139,7 +130,7 @@ public class RunAnalysisTaskController implements Observer {
     	// Add the visual style no sooner than when it's needed and add it only once, To prevent cluttering the Style menu.
     	if (getStyle(name) == null) {
     		// Load vizmap file
-    		application.getLoadVizmapFileTaskFactory().loadStyles(stylePath.toFile());
+    		context.getLoadVizmapFileTaskFactory().loadStyles(stylePath.toFile());
         }
     	return getStyle(name);
     }
@@ -148,7 +139,7 @@ public class RunAnalysisTaskController implements Observer {
      * Load table from file
      */
     private CyTableReader addReadTableTask(Path tablePath, Class<? extends CyIdentifiable> type) {
-    	CyTableReader tableReader = application.getCyTableReaderManager().getReader(tablePath.toUri(), null);
+    	CyTableReader tableReader = context.getCyTableReaderManager().getReader(tablePath.toUri(), null);
     	taskIterator.append(tableReader);
     	return tableReader;
     }
@@ -160,15 +151,15 @@ public class RunAnalysisTaskController implements Observer {
     	assert(tableReader.getTables().length == 1);
     	CyColumn joinColumn = network.getTable(type, CyNetwork.LOCAL_ATTRS).getPrimaryKey();
     	CyTable table = tableReader.getTables()[0];
-    	CyRootNetwork rootNetwork = application.getCyRootNetworkManager().getRootNetwork(network);
-    	TaskIterator tasks = application.getImportDataTableTaskFactory().createTaskIterator(
+    	CyRootNetwork rootNetwork = context.getCyRootNetworkManager().getRootNetwork(network);
+    	TaskIterator tasks = context.getImportDataTableTaskFactory().createTaskIterator(
     			table, false, false, Collections.singletonList(network), rootNetwork, joinColumn, type
     	);
     	taskIterator.append(tasks);
     }
 
 	private CyNetworkReader addReadNetworkTask() {
-		CyNetworkReader networkReader = application.getCyNetworkReaderManager().getReader(getExtractedFile("network.sif").toUri(), null);
+		CyNetworkReader networkReader = context.getCyNetworkReaderManager().getReader(getExtractedFile("network.sif").toUri(), null);
 		taskIterator.append(networkReader);
 		return networkReader;
 	}

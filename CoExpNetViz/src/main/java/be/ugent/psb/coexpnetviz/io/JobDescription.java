@@ -23,99 +23,104 @@ package be.ugent.psb.coexpnetviz.io;
  */
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
+
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
+import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
 
 /**
  * All a job server needs to know to run a job
  */
 public class JobDescription {
 	
-	private boolean sendBaitsAsFile; // whether to send baits as a file or directly
-	private String baits; // valid iff baitsFromFile is false
-    private Path baitsFilePath; // valid iff baitsFromFile is true
+	private BaitGroupSource baitGroupSource;
+    private String baitGroupText;
+    private Path baitGroupPath;
+    private Set<Path> expressionMatrixPaths;
+    private GeneFamiliesSource geneFamiliesSource;
+    private Path geneFamiliesPath;
+    private double lowerPercentile;
+    private double upperPercentile;
+    private CorrelationMethod correlationMethod;
+    private Path resultPath;
     
-    private Map<String, Path> expressionMatrices; // names of matrices
-    private double negativeCutoff;
-    private double positiveCutoff;
-    private Path saveFilePath;
-    private Map<String, Path> geneFamilies; // Name -> Path of each ortholog-families file
-    
-    private Path resultPath; // Where to store the result
-    
-    public JobDescription() {
-		expressionMatrices = new HashMap<String, Path>();
-		geneFamilies = new HashMap<String, Path>();
-	}
-    
-	public String getBaits() {
-		assert(!sendBaitsAsFile);
-		return baits;
+	public BaitGroupSource getBaitGroupSource() {
+		return baitGroupSource;
 	}
 	
-	public void setBaits(String baits) {
-		sendBaitsAsFile = false;
-		this.baits = baits;
+	public void setBaitGroupSource(BaitGroupSource baitGroupSource) {
+		this.baitGroupSource = baitGroupSource;
 	}
 	
-	public Path getBaitsFilePath() {
-		assert(sendBaitsAsFile);
-		return baitsFilePath;
+	public String getBaitGroupText() {
+		return baitGroupText;
 	}
 	
-	public void setBaitsFilePath(Path baitsFilePath) {
-		sendBaitsAsFile = true;
-		this.baitsFilePath = baitsFilePath;
+	public void setBaitGroupText(String baitGroupText) {
+		this.baitGroupText = baitGroupText;
 	}
 	
-	public Map<String, Path> getExpressionMatrices() {
-		return expressionMatrices;
-	}
-
-	public void setExpressionMatrices(Map<String, Path> expressionMatrices) {
-		this.expressionMatrices = expressionMatrices;
-	}
-
-	public double getNegativeCutoff() {
-		return negativeCutoff;
+	public Path getBaitGroupPath() {
+		return baitGroupPath;
 	}
 	
-	public void setNegativeCutoff(double negativeCutoff) {
-		this.negativeCutoff = negativeCutoff;
+	public void setBaitGroupPath(Path baitGroupPath) {
+		this.baitGroupPath = baitGroupPath;
 	}
 	
-	public double getPositiveCutoff() {
-		return positiveCutoff;
+	public Set<Path> getExpressionMatrixPaths() {
+		return expressionMatrixPaths;
 	}
 	
-	public void setPositiveCutoff(double positiveCutoff) {
-		this.positiveCutoff = positiveCutoff;
+	public void setExpressionMatrixPaths(Set<Path> expressionMatrixPaths) {
+		this.expressionMatrixPaths = expressionMatrixPaths;
 	}
 	
-	public Path getSaveFilePath() {
-		return saveFilePath;
+	public GeneFamiliesSource getGeneFamiliesSource() {
+		return geneFamiliesSource;
 	}
 	
-	public void setSaveFilePath(Path saveFilePath) {
-		this.saveFilePath = saveFilePath;
+	public void setGeneFamiliesSource(GeneFamiliesSource geneFamiliesSource) {
+		this.geneFamiliesSource = geneFamiliesSource;
 	}
 	
-	public Map<String, Path> getGeneFamilies() {
-		return geneFamilies;
+	public Path getGeneFamiliesPath() {
+		return geneFamiliesPath;
 	}
 	
-	public void setGeneFamilies(Map<String, Path> geneFamilies) {
-		this.geneFamilies = geneFamilies;
+	public void setGeneFamiliesPath(Path geneFamiliesPath) {
+		this.geneFamiliesPath = geneFamiliesPath;
 	}
-
-	public boolean isSendBaitsAsFile() {
-		return sendBaitsAsFile;
+	
+	public double getLowerPercentile() {
+		return lowerPercentile;
 	}
-
+	
+	public void setLowerPercentile(double lowerPercentile) {
+		this.lowerPercentile = lowerPercentile;
+	}
+	
+	public double getUpperPercentile() {
+		return upperPercentile;
+	}
+	
+	public void setUpperPercentile(double upperPercentile) {
+		this.upperPercentile = upperPercentile;
+	}
+	
+	public CorrelationMethod getCorrelationMethod() {
+		return correlationMethod;
+	}
+	
+	public void setCorrelationMethod(CorrelationMethod correlationMethod) {
+		this.correlationMethod = correlationMethod;
+	}
+	
 	public Path getResultPath() {
 		return resultPath;
 	}
-
+	
 	public void setResultPath(Path resultPath) {
 		this.resultPath = resultPath;
 	}

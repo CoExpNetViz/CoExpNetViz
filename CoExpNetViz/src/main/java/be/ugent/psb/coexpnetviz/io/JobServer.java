@@ -90,42 +90,43 @@ public class JobServer {
     private HttpEntity makeEntity(JobDescription job)
         throws UnsupportedEncodingException {
 
+    	assert false;
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
 
-        // Action to request of server
-        entityBuilder.addTextBody("__controller", "api");
-        entityBuilder.addTextBody("__action", "execute_job");
-
-        // Baits
-        if (job.isSendBaitsAsFile()) {
-        	entityBuilder.addBinaryBody("baits_file", job.getBaitsFilePath().toFile(), 
-        			ContentType.TEXT_PLAIN, job.getBaitsFilePath().getFileName().toString());
-        }
-        else {
-        	entityBuilder.addTextBody("baits", job.getBaits());
-        }
-        
-        // Cutoffs
-        entityBuilder.addTextBody("positive_correlation", Double.toString(job.getPositiveCutoff()));
-        entityBuilder.addTextBody("negative_correlation", Double.toString(job.getNegativeCutoff()));
-
-        // Expression matrices
-        for (Map.Entry<String, Path> entry : job.getExpressionMatrices().entrySet()) {
-            entityBuilder.addBinaryBody("matrix[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
-        }
-
-        // Ortholog families
-        String orthologsSource;
-        if (job.getGeneFamilies().isEmpty()) {
-        	orthologsSource = "plaza";
-        }
-        else {
-        	orthologsSource = "custom";
-        	for (Map.Entry<String, Path> entry : job.getGeneFamilies().entrySet()) {
-                entityBuilder.addBinaryBody("orthologs[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
-            }
-        }
-        entityBuilder.addTextBody("orthologs_source", orthologsSource);
+//        // Action to request of server
+//        entityBuilder.addTextBody("__controller", "api");
+//        entityBuilder.addTextBody("__action", "execute_job");
+//
+//        // Baits
+//        if (job.isSendBaitsAsFile()) {
+//        	entityBuilder.addBinaryBody("baits_file", job.getBaitsFilePath().toFile(), 
+//        			ContentType.TEXT_PLAIN, job.getBaitsFilePath().getFileName().toString());
+//        }
+//        else {
+//        	entityBuilder.addTextBody("baits", job.getBaits());
+//        }
+//        
+//        // Cutoffs
+//        entityBuilder.addTextBody("positive_correlation", Double.toString(job.getPositiveCutoff()));
+//        entityBuilder.addTextBody("negative_correlation", Double.toString(job.getNegativeCutoff()));
+//
+//        // Expression matrices
+//        for (Map.Entry<String, Path> entry : job.getExpressionMatrices().entrySet()) {
+//            entityBuilder.addBinaryBody("matrix[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
+//        }
+//
+//        // Ortholog families
+//        String orthologsSource;
+//        if (job.getGeneFamilies().isEmpty()) {
+//        	orthologsSource = "plaza";
+//        }
+//        else {
+//        	orthologsSource = "custom";
+//        	for (Map.Entry<String, Path> entry : job.getGeneFamilies().entrySet()) {
+//                entityBuilder.addBinaryBody("orthologs[]", entry.getValue().toFile(), ContentType.TEXT_PLAIN, entry.getKey());
+//            }
+//        }
+//        entityBuilder.addTextBody("orthologs_source", orthologsSource);
         
 
         return entityBuilder.build();

@@ -23,14 +23,23 @@ package be.ugent.psb.coexpnetviz.gui.view;
  */
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.gui.RunAnalysisTaskController;
 import be.ugent.psb.coexpnetviz.gui.controller.BrowseButtonHandler;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
 import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
+import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.util.TCCLRunnable;
+import be.ugent.psb.util.ValidationException;
+import be.ugent.psb.util.Validator;
 import be.ugent.psb.util.javafx.BrowseButtonTableCell;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -51,6 +60,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
@@ -61,6 +72,7 @@ import jfxtras.labs.scene.control.ToggleGroupValue;
  */
 public class JobInput extends GridPane {
 	
+	private Context context;
 	private JobInputModel model;
 	private ToggleGroupValue<JobInputModel.BaitGroupSource> baitGroupSourceGroup;
 	private ToggleGroupValue<JobInputModel.GeneFamiliesSource> geneFamiliesSourceGroup;
@@ -120,6 +132,12 @@ public class JobInput extends GridPane {
 	@FXML
 	private Button runButton;
 	
+	@FXML
+	private HBox errorTextArea;
+	
+	@FXML
+	private Text errorText;
+	
 	public JobInput() {
 		new TCCLRunnable() {
 			protected void runInner() {
@@ -156,8 +174,8 @@ public class JobInput extends GridPane {
 		geneFamiliesFileInput.setUserData(GeneFamiliesSource.CUSTOM);
     }
 	
-	public void init(final JobInputModel model, final Window window) {
-		this.model = model;
+	public void init(final Context context, final Window window) {
+		this.model = new JobInputModel();
 		
 		// Bait group
 		baitGroupSourceGroup.valueProperty().bindBidirectional(model.baitGroupSourceProperty());
@@ -220,11 +238,96 @@ public class JobInput extends GridPane {
 		// Run button
 		runButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				;
+				onRunButton();
 			};
 		});
 		
 		// Note: in a brighter future we will only need to support Java 8 and this library becomes available with good validation widgets http://fxexperience.com/controlsfx/features/#decorationvalidation
+	}
+	
+	private void onRunButton() {
+		// Validate input and build a JobDescription, then run analysis
+		try {
+			JobDescription jobDescription = new JobDescription();
+			Validator validator = new Validator();
+	        
+	        // bait group source
+	        jobDescription.setBaitGroupSource(model.getBaitGroupSource());
+	        
+	        if (model.getBaitGroupSource() == BaitGroupSource.FILE) {
+	        	validator.setName("Bait group path");
+	        	Path path = validator.ensurePath(model.getBaitGroupPath());
+	        	validator.ensureIsRegularFile(path);
+	        	validator.ensureReadable(path);
+	            jobDescription.setBaitGroupPath(path);
+	        }
+	        else if (model.getBaitGroupSource() == BaitGroupSource.TEXT) {
+	        	validator.setName("Bait group text");
+	        	String text = validator.ensureNotEmpty(model.getBaitGroupText());
+	        	jobDescription.setBaitGroupText(text);
+	        }
+	        else {
+	        	assert false;
+	        }
+	        
+	        // expression matrix paths
+	        List<StringProperty> paths = model.getExpressionMatrixPaths();
+	        Set<Path> paths_ = new HashSet<>();
+	        for (int i=0; i < paths.size(); i++) {
+	        	validator.setName("Expression matrix path at line " + i);
+	        	Path path = validator.ensurePath(paths.get(i).get());
+	        	validator.ensureIsRegularFile(path);
+	        	validator.ensureReadable(path);
+	        	paths_.add(path);
+	        }
+	        jobDescription.setExpressionMatrixPaths(paths_);
+	        
+	        // gene families
+	        jobDescription.setGeneFamiliesSource(model.getGeneFamiliesSource());
+	        if (model.getGeneFamiliesSource() == GeneFamiliesSource.CUSTOM) {
+		        validator.setName("Custom gene families path");
+	        	Path path = validator.ensurePath(model.getGeneFamiliesPath());
+		    	validator.ensureIsRegularFile(path);
+		    	validator.ensureReadable(path);
+		    	jobDescription.setGeneFamiliesPath(path);
+	        }
+	        
+	        // percentile thresholds
+	        validator.setName("Lower percentile rank");
+	        validator.ensureInRange(model.getLowerPercentile(), 0, 100);
+	        
+	        if (model.getLowerPercentile() > model.getUpperPercentile()) {
+	        	throw new ValidationException("Lower percentile rank must be less than upper percentile rank");
+	        }
+	        
+	        validator.setName("Lower percentile rank");
+	        validator.ensureInRange(model.getUpperPercentile(), 0, 100);
+	        
+	        jobDescription.setLowerPercentile(model.getLowerPercentile());
+	        jobDescription.setUpperPercentile(model.getUpperPercentile());
+	        
+	        // correlation method
+	        jobDescription.setCorrelationMethod(model.getCorrelationMethod());
+	        
+	        // result path
+	        validator.setName("Output path");
+	        Path path = validator.ensurePath(model.getOutputPath());
+	    	validator.ensureIsDirectory(path);
+	    	validator.ensureReadable(path);
+	    	
+	        String networkName = Context.APP_NAME + "_" + Context.getTimeStamp(); // TODO could use preset name
+	        jobDescription.setResultPath(path.resolve(networkName));
+	        
+	        // Valid input
+	        errorTextArea.setVisible(false);
+	        
+	        // Run the analysis
+	        new RunAnalysisTaskController(context, jobDescription, networkName);
+		}
+		catch (ValidationException ex) {
+			errorText.setText(ex.getMessage());
+			errorTextArea.setVisible(true);
+		}
 	}
 
 }

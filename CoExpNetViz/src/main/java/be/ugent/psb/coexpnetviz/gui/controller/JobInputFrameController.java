@@ -74,7 +74,7 @@ public class JobInputFrameController {
             public void runInner() {
             	JobInput jobInputPane = new JobInput();
             	Scene scene = new Scene(jobInputPane);
-            	jobInputPane.init(new JobInputModel(), scene.getWindow());
+            	jobInputPane.init(context, scene.getWindow());
             	fxPanel.setScene(scene);
             }
         });

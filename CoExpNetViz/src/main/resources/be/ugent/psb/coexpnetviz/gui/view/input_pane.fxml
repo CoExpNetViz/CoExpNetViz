@@ -5,6 +5,7 @@
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.collections.*?>
 <?import jfxtras.labs.scene.control.ToggleGroupValue?>
 <?import be.ugent.psb.coexpnetviz.gui.view.*?>
@@ -111,12 +112,20 @@
         <TextField fx:id="upperPercentileRankInput" />
      </HBox>
      
-     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="7" />
-     <HBox spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="7">
+     <Label styleClass='form-label' text="Output directory:" GridPane.rowIndex="7" />
+     <TextField GridPane.rowIndex="7" GridPane.columnIndex="1"/> <!-- Directory in which to store a directory with the Cytoscape network and other output -->
+     
+     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="8" />
+     <HBox spacing="20" GridPane.rowIndex="8" GridPane.columnIndex="1">
         <RadioButton text="Pearson product-moment correlation coefficient (Pearson r)" fx:id='radioCorrelationMethodPearson' />
         <RadioButton text="Mutual information" fx:id='radioCorrelationMethodMutualInformation' />
      </HBox>
      
-     <Button mnemonicParsing="false" text="Run" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.halignment="RIGHT" fx:id="runButton" />
+     <Button text="Run" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.halignment="RIGHT" fx:id="runButton" />
+     
+     <!-- For showing short error messages to the user -->
+     <HBox fx:id="errorTextArea" GridPane.rowIndex="10" GridPane.columnIndex="1" alignment="CENTER" visible='false' >
+       <Text fx:id="errorText" text='test lorem ipsum stuff' />
+     </HBox>
   </children>
 </fx:root>

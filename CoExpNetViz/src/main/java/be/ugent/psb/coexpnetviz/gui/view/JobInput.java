@@ -130,6 +130,9 @@ public class JobInput extends GridPane {
 	private TextField upperPercentileRankInput;
 	
 	@FXML
+	private FileInput outputDirectoryFileInput;
+	
+	@FXML
 	private Button runButton;
 	
 	@FXML
@@ -187,6 +190,8 @@ public class JobInput extends GridPane {
 		// Gene families
 		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.geneFamiliesSourceProperty());
 		geneFamiliesCardPane.shownCardDataProperty().bind(model.geneFamiliesSourceProperty());
+		geneFamiliesFileInput.getTextField().textProperty().bindBidirectional(model.geneFamiliesPathProperty());
+		geneFamiliesFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select gene families file", model.geneFamiliesPathProperty(), window));
 		
 		// Expression matrices: Add columns
 		Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>> idCellValueFactory = new Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>>() {
@@ -228,6 +233,10 @@ public class JobInput extends GridPane {
 			};
 		});
 		expressionMatricesRemoveButton.disableProperty().bind(Bindings.isEmpty(expressionMatricesTableView.getSelectionModel().getSelectedItems()));
+		
+		// Bind output directory
+		outputDirectoryFileInput.getTextField().textProperty().bindBidirectional(model.outputPathProperty());
+		outputDirectoryFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select output directory file", model.outputPathProperty(), window));
 		
 		// Bind last bits
 		NumberStringConverter doubleStringConverter  = new NumberStringConverter(new DecimalFormat());

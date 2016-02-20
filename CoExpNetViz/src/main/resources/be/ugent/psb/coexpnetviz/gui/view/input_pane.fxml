@@ -113,7 +113,7 @@
      </HBox>
      
      <Label styleClass='form-label' text="Output directory:" GridPane.rowIndex="7" />
-     <TextField GridPane.rowIndex="7" GridPane.columnIndex="1"/> <!-- Directory in which to store a directory with the Cytoscape network and other output -->
+     <FileInput GridPane.rowIndex="7" GridPane.columnIndex="1" fx:id="outputDirectoryFileInput" /> <!-- Directory in which to store a directory with the Cytoscape network and other output -->
      
      <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="8" />
      <HBox spacing="20" GridPane.rowIndex="8" GridPane.columnIndex="1">

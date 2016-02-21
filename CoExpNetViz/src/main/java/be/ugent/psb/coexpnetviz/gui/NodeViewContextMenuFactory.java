@@ -72,15 +72,15 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
 
     private String plazaDicotKey = "Plaza Dicots";
     private String plazaDicotRegex = "ORTHO\\d+D\\d+";
-
-    public NodeViewContextMenuFactory(Context cyAppManager) {
-        this.cyAppManager = cyAppManager;
-    }
-
-    private Context cyAppManager;
+    
+    private Context context;
 
     private CyNetworkView cnv;
     private View<CyNode> view;
+
+    public NodeViewContextMenuFactory(Context context) {
+        this.context = context;
+    }
 
     @Override
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
@@ -94,7 +94,7 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        CyNetworkTableManager cyNetworkTableManager = cyAppManager.getCyNetworkTableManager();
+        CyNetworkTableManager cyNetworkTableManager = context.getCyNetworkTableManager();
 
         CyNetwork cn = cnv.getModel();
         CyNode node = view.getModel();
@@ -104,7 +104,7 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
 
         String families = row.get(famColumnName, String.class);
 
-        Frame parent = Context.getCytoscapeRootFrame();
+        Frame parent = context.getCySwingApplication().getJFrame();;
 
         new NodeDialog(parent, "Node info", parseFamilies(families));
     }
@@ -211,7 +211,7 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                cyAppManager.getOpenBrowser().openURL(url);
+                context.getOpenBrowser().openURL(url);
             }
 
         }

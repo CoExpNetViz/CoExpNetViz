@@ -5,13 +5,13 @@ import static org.cytoscape.work.ServiceProperties.TITLE;
 
 import java.util.Properties;
 
+import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
@@ -22,7 +22,6 @@ import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.SynchronousTaskManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
@@ -65,27 +64,25 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	Context context = new Context();
-    	
-    	// Get CytoScape services
-        context.setCyApplicationManager(getService(bundleContext, CyApplicationManager.class));
-        context.setCyNetworkReaderManager(getService(bundleContext, CyNetworkReaderManager.class));
-        context.setCyNetworkFactory(getService(bundleContext, CyNetworkFactory.class));
-        context.setCyNetworkManager(getService(bundleContext, CyNetworkManager.class));
-        context.setCyRootNetworkManager(getService(bundleContext, CyRootNetworkManager.class));
-        context.setCyTableFactory(getService(bundleContext, CyTableFactory.class));
-        context.setCyTableReaderManager(getService(bundleContext, CyTableReaderManager.class));
-        context.setImportDataTableTaskFactory(getService(bundleContext, ImportDataTableTaskFactory.class));
-        context.setCyNetworkTableManager(getService(bundleContext, CyNetworkTableManager.class));
-        context.setLoadVizmapFileTaskFactory(getService(bundleContext, LoadVizmapFileTaskFactory.class));
-        context.setVisualMappingManager(getService(bundleContext, VisualMappingManager.class));
-        context.setCyNetworkViewFactory(getService(bundleContext, CyNetworkViewFactory.class));
-        context.setCyNetworkViewManager(getService(bundleContext, CyNetworkViewManager.class));
-        context.setCyLayoutAlgorithmManager(getService(bundleContext, CyLayoutAlgorithmManager.class));
-        context.setSynchronousTaskManager(getService(bundleContext, SynchronousTaskManager.class));
-        context.setTaskManager(getService(bundleContext, TaskManager.class));
-        context.setUndoSupport(getService(bundleContext, UndoSupport.class));
-        context.setOpenBrowser(getService(bundleContext, OpenBrowser.class));
+    	Context context = new Context(
+			getService(bundleContext, UndoSupport.class),
+			getService(bundleContext, TaskManager.class),
+			getService(bundleContext, CyNetworkManager.class),
+			getService(bundleContext, CyNetworkViewManager.class),
+			getService(bundleContext, VisualMappingManager.class),
+			getService(bundleContext, LoadVizmapFileTaskFactory.class),
+			getService(bundleContext, CyTableReaderManager.class),
+			getService(bundleContext, CyRootNetworkManager.class),
+			getService(bundleContext, ImportDataTableTaskFactory.class),
+			getService(bundleContext, CyNetworkReaderManager.class),
+			getService(bundleContext, CyLayoutAlgorithmManager.class),
+			getService(bundleContext, CyNetworkViewFactory.class),
+			getService(bundleContext, CyNetworkTableManager.class),
+			getService(bundleContext, OpenBrowser.class),
+			getService(bundleContext, CyApplicationManager.class),
+			getService(bundleContext, CyApplicationConfiguration.class),
+			getService(bundleContext, CySwingApplication.class)		
+    	);
 
         // Add our menu action in OSGi services
         registerAllServices(bundleContext, new MenuAction(context), new Properties());

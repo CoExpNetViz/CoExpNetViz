@@ -1,37 +1,10 @@
 package be.ugent.psb.coexpnetviz;
 
-import java.awt.Frame;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
-import org.cytoscape.task.edit.ImportDataTableTaskFactory;
-import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
-import org.cytoscape.util.swing.OpenBrowser;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.SynchronousTaskManager;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.undo.UndoSupport;
-
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,7 +22,28 @@ import org.cytoscape.work.undo.UndoSupport;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.controller.JobInputFrameController;
+import java.awt.Frame;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.cytoscape.application.CyApplicationConfiguration;
+import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.io.read.CyNetworkReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNetworkTableManager;
+import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.task.edit.ImportDataTableTaskFactory;
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * CoExpNetViz app context, provides refereences to what would otherwise be globals.
@@ -58,27 +52,52 @@ public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
     
-    // Cytoscape 'services'. TODO rm the unused
-    private CyApplicationManager cyApplicationManager;
-    private CyNetworkReaderManager cyNetworkReaderManager;
-    private CyNetworkFactory cyNetworkFactory;
-    private CyNetworkManager cyNetworkManager;
-    private CyRootNetworkManager cyRootNetworkManager;
-    private CyTableFactory cyTableFactory;
-    private CyNetworkTableManager cyNetworkTableManager;
-    private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
-    private VisualMappingManager visualMappingManager;
-    private CyNetworkViewFactory cyNetworkViewFactory;
-    private CyNetworkViewManager cyNetworkViewManager;
-    private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
-    private ImportDataTableTaskFactory importDataTableTaskFactory;
-    private SynchronousTaskManager synchronousTaskManager;
-    private TaskManager taskManager;
-    private UndoSupport undoSupport;
-    private OpenBrowser openBrowser;
-    private CyTableReaderManager cyTableReaderManager;
+	private UndoSupport undoSupport;
+	private TaskManager taskManager;
+	private CyNetworkManager cyNetworkManager;
+	private CyNetworkViewManager cyNetworkViewManager;
+	private VisualMappingManager visualMappingManager;
+	private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
+	private CyTableReaderManager cyTableReaderManager;
+	private CyRootNetworkManager cyRootNetworkManager;
+	private ImportDataTableTaskFactory importDataTableTaskFactory;
+	private CyNetworkReaderManager cyNetworkReaderManager;
+	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
+	private CyNetworkViewFactory cyNetworkViewFactory;
+	private CyNetworkTableManager cyNetworkTableManager;
+	private OpenBrowser openBrowser;
+	private CyApplicationManager cyApplicationManager;
+	private CyApplicationConfiguration cyApplicationConfiguration;
+	private CySwingApplication cySwingApplication;
 
-    /**
+	public Context(UndoSupport undoSupport, TaskManager taskManager, CyNetworkManager cyNetworkManager,
+			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
+			LoadVizmapFileTaskFactory loadVizmapFileTaskFactory, CyTableReaderManager cyTableReaderManager,
+			CyRootNetworkManager cyRootNetworkManager, ImportDataTableTaskFactory importDataTableTaskFactory,
+			CyNetworkReaderManager cyNetworkReaderManager, CyLayoutAlgorithmManager cyLayoutAlgorithmManager,
+			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkTableManager cyNetworkTableManager,
+			OpenBrowser openBrowser, CyApplicationManager cyApplicationManager,
+			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication) {
+		this.undoSupport = undoSupport;
+		this.taskManager = taskManager;
+		this.cyNetworkManager = cyNetworkManager;
+		this.cyNetworkViewManager = cyNetworkViewManager;
+		this.visualMappingManager = visualMappingManager;
+		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
+		this.cyTableReaderManager = cyTableReaderManager;
+		this.cyRootNetworkManager = cyRootNetworkManager;
+		this.importDataTableTaskFactory = importDataTableTaskFactory;
+		this.cyNetworkReaderManager = cyNetworkReaderManager;
+		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
+		this.cyNetworkViewFactory = cyNetworkViewFactory;
+		this.cyNetworkTableManager = cyNetworkTableManager;
+		this.openBrowser = openBrowser;
+		this.cyApplicationManager = cyApplicationManager;
+		this.cyApplicationConfiguration = cyApplicationConfiguration;
+		this.cySwingApplication = cySwingApplication;
+	}
+
+	/**
      * Get a formatted current time string
      *
      * @return
@@ -89,241 +108,76 @@ public class Context {
         return sdf.format(now);
     }
 
-    /**
-     * Get a reference to the Cytoscape desktop window.
-     * 
-     * Handy for use as a parent for dialog windows
-     *
-     * @return
-     */
-    public static Frame getCytoscapeRootFrame() {
-        //TODO: cleaner to use CySwingApplication instead  // Note: will lose its staticness 
-        Frame[] frames = Frame.getFrames();
-        Frame csFrame = null;
-        for (Frame frame : frames) {
-            String className = frame.getClass().toString();
-            if (className.endsWith("CytoscapeDesktop")) {
-                csFrame = frame;
-            }
-        }
-        return csFrame;
+    private Path getConfigurationFilePath() {
+    	return cyApplicationConfiguration.getAppConfigurationDirectoryLocation(getClass()).toPath().resolve("settings.yaml");
     }
 
-    private Path getSettingsPath() {
-    	// XXX simplify
-        Path cyHomePath;
-        Path localSettingsPath;
+	public UndoSupport getUndoSupport() {
+		return undoSupport;
+	}
 
-        //attempt 1: try to find CytoscapeConfiguration folder in user.dir
-        cyHomePath = Paths.get(System.getProperty("user.dir"));
-        localSettingsPath = getCyConfFolder(cyHomePath);
-        if (localSettingsPath != null) {
-            return localSettingsPath;
-        }
+	public TaskManager getTaskManager() {
+		return taskManager;
+	}
 
-        //attempt 2: try to find CytoscapeConfiguration folder in user.home
-        cyHomePath = Paths.get(System.getProperty("user.home"));
-        localSettingsPath = getCyConfFolder(cyHomePath);
-        if (localSettingsPath != null) {
-            return localSettingsPath;
-        }
+	public CyNetworkManager getCyNetworkManager() {
+		return cyNetworkManager;
+	}
 
-        //attempt 3: Try to get a settings folder in the user home directory
-        cyHomePath = Paths.get(System.getProperty("user.home"));
-        localSettingsPath = getHomeSettingsFolder(cyHomePath);
-        if (localSettingsPath != null) {
-            return localSettingsPath;
-        }
+	public CyNetworkViewManager getCyNetworkViewManager() {
+		return cyNetworkViewManager;
+	}
 
-        //TODO: handle this better
-        return null;
-    }
+	public VisualMappingManager getVisualMappingManager() {
+		return visualMappingManager;
+	}
 
-    private Path getCyConfFolder(Path searchPath) {
-        Path cyConfPath = searchPath.resolve("CytoscapeConfiguration");
-        Path localSettingsPath;
+	public LoadVizmapFileTaskFactory getLoadVizmapFileTaskFactory() {
+		return loadVizmapFileTaskFactory;
+	}
 
-        //try to get a settings directory in the cytoscape config folder
-        if (Files.isDirectory(cyConfPath) && Files.isWritable(cyConfPath)) {
-            localSettingsPath = cyConfPath.resolve(APP_NAME + "_settings");
-            //settins folder doesn't exists, so try to make it
-            if (!Files.exists(localSettingsPath)) {
-                try {
-                    Files.createDirectory(localSettingsPath);
-                    return localSettingsPath;
-                } catch (IOException ex) {
-                    System.out.println(ex);
-                    //TODO:warn user somehow
-                }
-            } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
-                //settings folder exists, check if I can write there
-                return localSettingsPath;
-            }
-        }
-        return null;
-    }
-
-    private Path getHomeSettingsFolder(Path searchPath) {
-        Path localSettingsPath = searchPath.resolve(APP_NAME + "_settings");
-        if (!Files.exists(localSettingsPath)) {
-            //settins folder doesn't exists, so try to make it
-            try {
-                Files.createDirectory(localSettingsPath);
-                return localSettingsPath;
-            } catch (IOException ex) {
-                System.out.println(ex);
-                //TODO:warn user somehow
-            }
-        } else if (Files.isDirectory(localSettingsPath) && Files.isWritable(localSettingsPath)) {
-            //settings folder exists, check if I can write there
-            return localSettingsPath;
-        }
-        return null;
-    }
-
-	public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
-        this.cyApplicationManager = cyApplicationManager;
-    }
-
-    public CyApplicationManager getCyApplicationManager() {
-        return cyApplicationManager;
-    }
-
-    public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
-        this.cyNetworkFactory = cyNetworkFactory;
-    }
-
-    public CyNetworkFactory getCyNetworkFactory() {
-        return cyNetworkFactory;
-    }
-
-    public void setCyNetworkManager(CyNetworkManager cyNetworkManager) {
-        this.cyNetworkManager = cyNetworkManager;
-    }
-
-    public CyNetworkManager getCyNetworkManager() {
-        return cyNetworkManager;
-    }
-
-    public void setCyRootNetworkManager(CyRootNetworkManager cyRootNetworkManager) {
-        this.cyRootNetworkManager = cyRootNetworkManager;
-    }
-
-    public CyRootNetworkManager getCyRootNetworkManager() {
-        return cyRootNetworkManager;
-    }
-
-    public void setCyTableFactory(CyTableFactory cyTableFactory) {
-        this.cyTableFactory = cyTableFactory;
-    }
-
-    public CyTableFactory getCyTableFactory() {
-        return cyTableFactory;
-    }
-
-    public void setCyNetworkTableManager(CyNetworkTableManager cyNetworkTableManager) {
-        this.cyNetworkTableManager = cyNetworkTableManager;
-    }
-
-    public CyNetworkTableManager getCyNetworkTableManager() {
-        return cyNetworkTableManager;
-    }
-
-    public void setLoadVizmapFileTaskFactory(LoadVizmapFileTaskFactory loadVizmapFileTaskFactory) {
-        this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
-    }
-
-    public LoadVizmapFileTaskFactory getLoadVizmapFileTaskFactory() {
-        return loadVizmapFileTaskFactory;
-    }
-
-    public void setVisualMappingManager(VisualMappingManager visualMappingManager) {
-        this.visualMappingManager = visualMappingManager;
-    }
-
-    public VisualMappingManager getVisualMappingManager() {
-        return visualMappingManager;
-    }
-
-    public void setCyNetworkViewFactory(CyNetworkViewFactory cyNetworkViewFactory) {
-        this.cyNetworkViewFactory = cyNetworkViewFactory;
-    }
-
-    public CyNetworkViewFactory getCyNetworkViewFactory() {
-        return cyNetworkViewFactory;
-    }
-
-    public void setCyNetworkViewManager(CyNetworkViewManager cyNetworkViewManager) {
-        this.cyNetworkViewManager = cyNetworkViewManager;
-    }
-
-    public CyNetworkViewManager getCyNetworkViewManager() {
-        return cyNetworkViewManager;
-    }
-
-    public void setCyLayoutAlgorithmManager(CyLayoutAlgorithmManager cyLayoutAlgorithmManager) {
-        this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
-    }
-
-    public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
-        return cyLayoutAlgorithmManager;
-    }
-
-    public void setTaskManager(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
-
-    public TaskManager getTaskManager() {
-        return taskManager;
-    }
-
-    public void setUndoSupport(UndoSupport UndoSupport) {
-        this.undoSupport = UndoSupport;
-
-    }
-
-    public UndoSupport getUndoSupport() {
-        return undoSupport;
-    }
-
-    public void setOpenBrowser(OpenBrowser openBrowser) {
-        this.openBrowser = openBrowser;
-    }
-
-    public OpenBrowser getOpenBrowser() {
-        return openBrowser;
-    }
-    
-    public CyTableReaderManager getCyTableReaderManager() {
+	public CyTableReaderManager getCyTableReaderManager() {
 		return cyTableReaderManager;
 	}
-    
-    public void setCyTableReaderManager(CyTableReaderManager cyTableReaderManager) {
-		this.cyTableReaderManager = cyTableReaderManager;
-	}
 
-	public SynchronousTaskManager getSynchronousTaskManager() {
-		return synchronousTaskManager;
-	}
-
-	public void setSynchronousTaskManager(SynchronousTaskManager synchronousTaskManager) {
-		this.synchronousTaskManager = synchronousTaskManager;
-	}
-
-	public CyNetworkReaderManager getCyNetworkReaderManager() {
-		return cyNetworkReaderManager;
-	}
-
-	public void setCyNetworkReaderManager(CyNetworkReaderManager cyNetworkReaderManager) {
-		this.cyNetworkReaderManager = cyNetworkReaderManager;
+	public CyRootNetworkManager getCyRootNetworkManager() {
+		return cyRootNetworkManager;
 	}
 
 	public ImportDataTableTaskFactory getImportDataTableTaskFactory() {
 		return importDataTableTaskFactory;
 	}
 
-	public void setImportDataTableTaskFactory(ImportDataTableTaskFactory importDataTableTaskFactory) {
-		this.importDataTableTaskFactory = importDataTableTaskFactory;
+	public CyNetworkReaderManager getCyNetworkReaderManager() {
+		return cyNetworkReaderManager;
+	}
+
+	public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
+		return cyLayoutAlgorithmManager;
+	}
+
+	public CyNetworkViewFactory getCyNetworkViewFactory() {
+		return cyNetworkViewFactory;
+	}
+
+	public CyNetworkTableManager getCyNetworkTableManager() {
+		return cyNetworkTableManager;
+	}
+
+	public OpenBrowser getOpenBrowser() {
+		return openBrowser;
+	}
+
+	public CyApplicationManager getCyApplicationManager() {
+		return cyApplicationManager;
+	}
+
+	public CyApplicationConfiguration getCyApplicationConfiguration() {
+		return cyApplicationConfiguration;
+	}
+
+	public CySwingApplication getCySwingApplication() {
+		return cySwingApplication;
 	}
 
 }

@@ -24,7 +24,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 
 import be.ugent.psb.coexpnetviz.Context;
@@ -35,18 +34,22 @@ import be.ugent.psb.coexpnetviz.Context;
  */
 public class MenuAction extends AbstractCyAction {
 	
-    private final Context application;
+    private final Context context;
+    private JobInputFrameController jobInputFrameController;
 
-    public MenuAction(CyApplicationManager cyApplicationManager, final String menuTitle, Context application) {
-        super(menuTitle, cyApplicationManager, null, null);
+    public MenuAction(Context context) {
+        super(Context.APP_NAME, context.getCyApplicationManager(), null, null);
         setPreferredMenu("Apps");
-        this.application = application;
+        this.context = context;
     }
 
     // menu clicked
     @Override
     public void actionPerformed(ActionEvent e) {
-    	application.showGUI();
+    	if (jobInputFrameController == null) {
+            jobInputFrameController = new JobInputFrameController(context);
+        }
+        jobInputFrameController.show();
     }
 
 }

@@ -57,10 +57,8 @@ import be.ugent.psb.coexpnetviz.gui.controller.JobInputFrameController;
 public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
-
-    private JobInputFrameController guiController;
     
-    // Cytoscape 'services'. Note we don't use all of these
+    // Cytoscape 'services'. TODO rm the unused
     private CyApplicationManager cyApplicationManager;
     private CyNetworkReaderManager cyNetworkReaderManager;
     private CyNetworkFactory cyNetworkFactory;
@@ -99,7 +97,7 @@ public class Context {
      * @return
      */
     public static Frame getCytoscapeRootFrame() {
-        //TODO: cleaner to use CySwingApplication instead
+        //TODO: cleaner to use CySwingApplication instead  // Note: will lose its staticness 
         Frame[] frames = Frame.getFrames();
         Frame csFrame = null;
         for (Frame frame : frames) {
@@ -112,6 +110,7 @@ public class Context {
     }
 
     private Path getSettingsPath() {
+    	// XXX simplify
         Path cyHomePath;
         Path localSettingsPath;
 
@@ -181,23 +180,6 @@ public class Context {
         }
         return null;
     }
-
-    /**
-     * @return the guiManager
-     */
-    public JobInputFrameController getGUIController() {
-        return guiController;
-    }
-
-	public void showGUI() {
-        if (guiController == null) {
-            //create the Gui
-            guiController = new JobInputFrameController(this);
-        }
-
-        //pack and show the gui in a window
-        guiController.show();
-	}
 
 	public void setCyApplicationManager(CyApplicationManager cyApplicationManager) {
         this.cyApplicationManager = cyApplicationManager;

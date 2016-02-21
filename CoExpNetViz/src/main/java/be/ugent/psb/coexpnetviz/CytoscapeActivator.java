@@ -64,39 +64,39 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 * listeners to Cytoscape events, ...
 	 */
     @Override
-    public void start(BundleContext context) throws Exception {
-    	Context application = new Context();
+    public void start(BundleContext bundleContext) throws Exception {
+    	Context context = new Context();
     	
     	// Get CytoScape services
-        application.setCyApplicationManager(getService(context, CyApplicationManager.class));
-        application.setCyNetworkReaderManager(getService(context, CyNetworkReaderManager.class));
-        application.setCyNetworkFactory(getService(context, CyNetworkFactory.class));
-        application.setCyNetworkManager(getService(context, CyNetworkManager.class));
-        application.setCyRootNetworkManager(getService(context, CyRootNetworkManager.class));
-        application.setCyTableFactory(getService(context, CyTableFactory.class));
-        application.setCyTableReaderManager(getService(context, CyTableReaderManager.class));
-        application.setImportDataTableTaskFactory(getService(context, ImportDataTableTaskFactory.class));
-        application.setCyNetworkTableManager(getService(context, CyNetworkTableManager.class));
-        application.setLoadVizmapFileTaskFactory(getService(context, LoadVizmapFileTaskFactory.class));
-        application.setVisualMappingManager(getService(context, VisualMappingManager.class));
-        application.setCyNetworkViewFactory(getService(context, CyNetworkViewFactory.class));
-        application.setCyNetworkViewManager(getService(context, CyNetworkViewManager.class));
-        application.setCyLayoutAlgorithmManager(getService(context, CyLayoutAlgorithmManager.class));
-        application.setSynchronousTaskManager(getService(context, SynchronousTaskManager.class));
-        application.setTaskManager(getService(context, TaskManager.class));
-        application.setUndoSupport(getService(context, UndoSupport.class));
-        application.setOpenBrowser(getService(context, OpenBrowser.class));
+        context.setCyApplicationManager(getService(bundleContext, CyApplicationManager.class));
+        context.setCyNetworkReaderManager(getService(bundleContext, CyNetworkReaderManager.class));
+        context.setCyNetworkFactory(getService(bundleContext, CyNetworkFactory.class));
+        context.setCyNetworkManager(getService(bundleContext, CyNetworkManager.class));
+        context.setCyRootNetworkManager(getService(bundleContext, CyRootNetworkManager.class));
+        context.setCyTableFactory(getService(bundleContext, CyTableFactory.class));
+        context.setCyTableReaderManager(getService(bundleContext, CyTableReaderManager.class));
+        context.setImportDataTableTaskFactory(getService(bundleContext, ImportDataTableTaskFactory.class));
+        context.setCyNetworkTableManager(getService(bundleContext, CyNetworkTableManager.class));
+        context.setLoadVizmapFileTaskFactory(getService(bundleContext, LoadVizmapFileTaskFactory.class));
+        context.setVisualMappingManager(getService(bundleContext, VisualMappingManager.class));
+        context.setCyNetworkViewFactory(getService(bundleContext, CyNetworkViewFactory.class));
+        context.setCyNetworkViewManager(getService(bundleContext, CyNetworkViewManager.class));
+        context.setCyLayoutAlgorithmManager(getService(bundleContext, CyLayoutAlgorithmManager.class));
+        context.setSynchronousTaskManager(getService(bundleContext, SynchronousTaskManager.class));
+        context.setTaskManager(getService(bundleContext, TaskManager.class));
+        context.setUndoSupport(getService(bundleContext, UndoSupport.class));
+        context.setOpenBrowser(getService(bundleContext, OpenBrowser.class));
 
         // Add our menu action in OSGi services
-        registerAllServices(context, new MenuAction(application.getCyApplicationManager(), Context.APP_NAME, application), new Properties());
+        registerAllServices(bundleContext, new MenuAction(context), new Properties());
 
         // Add our layout
-        FamLayout cgal = new FamLayout(application.getUndoSupport());
+        FamLayout cgal = new FamLayout(context.getUndoSupport());
         Properties cgalProperties = new Properties();
         cgalProperties.setProperty(PREFERRED_MENU, "Apps." + Context.APP_NAME);
         cgalProperties.setProperty("preferredTaskManager", "menu");
         cgalProperties.setProperty(TITLE, cgal.toString());
-        registerService(context, cgal, CyLayoutAlgorithm.class, cgalProperties);
+        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
 
         //register contex menu action
         // TODO fix problems with CENVNodeViewContextMenuFactory, then reenable

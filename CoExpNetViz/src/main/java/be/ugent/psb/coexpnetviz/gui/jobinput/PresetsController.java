@@ -103,5 +103,35 @@ public class PresetsController { // TODO external controller should save to disk
 ////	                    JOptionPane.ERROR_MESSAGE);
 ////	            }
 //    }
+	
+//  public void loadProfile(String profileName) {
+//  JobInputModel ipmToLoad = null;
+//  for (JobInputModel ipm : allModels) {
+//      if (ipm.getTitle().equals(profileName)) {
+//          ipmToLoad = ipm.copy();
+//      }
+//  }
+//  if (ipmToLoad == null) {
+//      throw new IllegalArgumentException("Could not load profile" + profileName);
+//  }
+//  for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
+//      SpeciesEntryPanel se = initSpeciesEntry(sem);
+//      ipmToLoad.setSpeciesEntry(sem, se);
+//  }
+//  setActiveModel(ipmToLoad);
+//  ipmToLoad.triggerUpdate();
+//}
+//
+//public void delCurrentProfile() {
+//  JobInputModel ipmToRemove = null;
+//  for (JobInputModel ipm : allModels) {
+//      if (ipm.getTitle().equals(activeModel.getTitle())) {
+//          ipmToRemove = ipm;
+//      }
+//  }
+//  if (ipmToRemove != null) {
+//      allModels.remove(ipmToRemove);
+//  }
+//}
     
 }

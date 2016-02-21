@@ -22,10 +22,17 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import java.awt.Frame;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
@@ -44,6 +51,10 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
 
 /**
  * CoExpNetViz app context, provides refereences to what would otherwise be globals.
@@ -51,9 +62,12 @@ import org.cytoscape.work.undo.UndoSupport;
 public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
+	
+	private Configuration configuration; 
     
+	// The OSGi services we consume
 	private UndoSupport undoSupport;
-	private TaskManager taskManager;
+	private TaskManager<?,?> taskManager;
 	private CyNetworkManager cyNetworkManager;
 	private CyNetworkViewManager cyNetworkViewManager;
 	private VisualMappingManager visualMappingManager;
@@ -70,7 +84,7 @@ public class Context {
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
 
-	public Context(UndoSupport undoSupport, TaskManager taskManager, CyNetworkManager cyNetworkManager,
+	public Context(UndoSupport undoSupport, TaskManager<?,?> taskManager, CyNetworkManager cyNetworkManager,
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
 			LoadVizmapFileTaskFactory loadVizmapFileTaskFactory, CyTableReaderManager cyTableReaderManager,
 			CyRootNetworkManager cyRootNetworkManager, ImportDataTableTaskFactory importDataTableTaskFactory,
@@ -95,12 +109,12 @@ public class Context {
 		this.cyApplicationManager = cyApplicationManager;
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
+		
+		loadConfiguration();
 	}
 
 	/**
      * Get a formatted current time string
-     *
-     * @return
      */
     public static String getTimeStamp() { // TODO throw into an Util class
         Date now = new Date(System.currentTimeMillis());
@@ -108,15 +122,61 @@ public class Context {
         return sdf.format(now);
     }
 
-    private Path getConfigurationFilePath() {
-    	return cyApplicationConfiguration.getAppConfigurationDirectoryLocation(getClass()).toPath().resolve("settings.yaml");
+    public List<JobInputPreset> getPresets() {
+		return configuration.getPresets();
+	}
+
+	private Path getConfigurationFilePath() {
+    	Path path = cyApplicationConfiguration.getAppConfigurationDirectoryLocation(getClass()).toPath();
+    	path = path.getParent().resolve(APP_NAME); // Make version independent so that configuration is carried on to next versions. We do have to be careful to remain backwards compatible in config format due to this.
+		return path.resolve("settings.yaml");
+    }
+	
+	private Yaml getYaml() {
+		return new Yaml(new Constructor(Configuration.class));
+	}
+    
+    private void loadConfiguration() {
+		Path configurationFile = getConfigurationFilePath();
+		if (Files.exists(configurationFile)) {
+			try {
+				BufferedReader fileReader = Files.newBufferedReader(configurationFile, Charset.forName("UTF-8"));
+				configuration = getYaml().loadAs(fileReader, Configuration.class);
+			} catch (IOException e) {
+				System.err.println("Failed to load configuration");
+				e.printStackTrace();
+				try {
+					Files.copy(configurationFile, configurationFile.resolve(".backup"), StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException e1) {
+					// Get a new hard drive, OS or JVM, please
+					e1.printStackTrace();
+				}
+				configuration = new Configuration();
+			}
+		}
+		else {
+			configuration = new Configuration();
+		}
+    }
+
+    public void saveConfiguration() {
+    	BufferedWriter fileWriter;
+    	Path configurationFile = getConfigurationFilePath();
+		try {
+			Files.createDirectories(configurationFile.getParent());
+			fileWriter = Files.newBufferedWriter(getConfigurationFilePath(), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+			getYaml().dump(configuration, fileWriter);
+		} catch (IOException e) {
+			System.err.println("Failed to save configuration");
+			e.printStackTrace();
+		}
     }
 
 	public UndoSupport getUndoSupport() {
 		return undoSupport;
 	}
 
-	public TaskManager getTaskManager() {
+	public TaskManager<?,?> getTaskManager() {
 		return taskManager;
 	}
 

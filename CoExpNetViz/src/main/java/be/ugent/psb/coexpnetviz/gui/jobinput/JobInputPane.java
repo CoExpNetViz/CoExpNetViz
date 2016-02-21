@@ -30,9 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import be.ugent.psb.coexpnetviz.Context;
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.BaitGroupSource;
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.CorrelationMethod;
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.util.TCCLRunnable;
 import be.ugent.psb.util.ValidationException;
@@ -42,14 +39,22 @@ import be.ugent.psb.util.javafx.controller.BrowseButtonHandler;
 import be.ugent.psb.util.javafx.view.CardPane;
 import be.ugent.psb.util.javafx.view.FileInput;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
@@ -73,10 +78,26 @@ import jfxtras.labs.scene.control.ToggleGroupValue;
 public class JobInputPane extends GridPane {
 	
 	private Context context;
+	private ListProperty<JobInputPreset> presets;
 	private JobInputModel model;
-	private ToggleGroupValue<JobInputModel.BaitGroupSource> baitGroupSourceGroup;
-	private ToggleGroupValue<JobInputModel.GeneFamiliesSource> geneFamiliesSourceGroup;
-	private ToggleGroupValue<JobInputModel.CorrelationMethod> correlationMethodGroup;
+	private ToggleGroupValue<BaitGroupSource> baitGroupSourceGroup;
+	private ToggleGroupValue<GeneFamiliesSource> geneFamiliesSourceGroup;
+	private ToggleGroupValue<CorrelationMethod> correlationMethodGroup;
+	
+	@FXML
+	private ComboBox<JobInputPreset> presetsComboBox;
+	
+	@FXML
+	private Button loadPresetButton;
+	
+	@FXML
+	private Button savePresetButton;
+	
+	@FXML
+	private Button deletePresetButton;
+	
+	@FXML
+	private Button resetFormButton;
 	
 	@FXML
 	private RadioButton radioBaitGroupSourceText;
@@ -180,6 +201,80 @@ public class JobInputPane extends GridPane {
 	public void init(final Context context, final Window window) {
 		this.model = new JobInputModel();
 		
+		// Presets
+		presets = new SimpleListProperty<>(FXCollections.observableList(context.getPresets()));
+		presetsComboBox.itemsProperty().bindBidirectional(presets);
+		
+		BooleanBinding hasPresetSelection = presetsComboBox.getSelectionModel().selectedItemProperty().isNull();
+		loadPresetButton.disableProperty().bind(hasPresetSelection);
+		deletePresetButton.disableProperty().bind(hasPresetSelection);
+		
+		loadPresetButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				model.assign(presetsComboBox.getSelectionModel().getSelectedItem());
+			};
+		});
+		
+		savePresetButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				String name = presetsComboBox.getEditor().getText();
+				System.out.println("name: " + name);
+				
+				// validate: not empty
+				try {
+					Validator validator = new Validator();
+					validator.setName("Preset name");
+					name = validator.ensureIsNotEmpty(name);
+				}
+				catch (ValidationException e) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setContentText(e.getMessage());
+					alert.showAndWait();
+					return;
+				}
+				
+				// check whether already exists
+				JobInputPreset existing = null;
+				for (JobInputPreset preset : presets) {
+					assert preset != null;
+					if (preset.getName().equals(name)) {
+						existing = preset;
+						break;
+					}
+				}
+				
+				// need overwrite?
+				JobInputPreset newPreset = new JobInputPreset(name, model);
+				if (existing != null) {
+					// confirm overwrite
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setContentText("A preset with this name already exists. Would you like to overwrite it?");
+					ButtonType overwrite = new ButtonType("Overwrite");
+					ButtonType cancel = new ButtonType("Cancel");
+					alert.getButtonTypes().setAll(overwrite, cancel);
+					if (alert.showAndWait().get() == cancel) {
+						return;
+					}
+					
+					// overwrite (replace)
+					int i = presets.indexOf(existing);
+					presets.remove(i);
+					presets.add(i, newPreset);
+				}
+				else {
+					// add new one
+					presets.add(newPreset);
+				}
+				presetsComboBox.getSelectionModel().select(newPreset);
+			};
+		});
+		
+		deletePresetButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				presets.remove(presetsComboBox.getSelectionModel().getSelectedItem());
+			};
+		});
+		
 		// Bait group
 		baitGroupSourceGroup.valueProperty().bindBidirectional(model.baitGroupSourceProperty());
 		baitGroupCardPane.shownCardDataProperty().bind(model.baitGroupSourceProperty());
@@ -271,7 +366,7 @@ public class JobInputPane extends GridPane {
 	        }
 	        else if (model.getBaitGroupSource() == BaitGroupSource.TEXT) {
 	        	validator.setName("Bait group text");
-	        	String text = validator.ensureNotEmpty(model.getBaitGroupText());
+	        	String text = validator.ensureIsNotEmpty(model.getBaitGroupText());
 	        	jobDescription.setBaitGroupText(text);
 	        }
 	        else {

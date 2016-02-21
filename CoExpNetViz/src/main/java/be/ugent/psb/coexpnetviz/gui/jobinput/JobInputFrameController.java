@@ -31,8 +31,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 
 
-// TODO rm most of util.mvc if Pivot turns out successful
-
 /**
  * Creates and controls a JFrame with a JobInput pane
  */
@@ -43,14 +41,6 @@ public class JobInputFrameController {
 
     public JobInputFrameController(Context context) { // XXX only accept a presets and a JobInput model
         this.context = context;
-
-        //load settings: presets
-//        try {
-//        	SettingsIO settingsIO = new SettingsIO(context);
-//            allModels = settingsIO.readAllProfiles();
-//        } catch (Exception ex) {
-//        	JOptionPane.showMessageDialog(null, "Failed to load settings: " + ex.getMessage(), GUIConstants.MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
-//        }
     }
     
     /**
@@ -83,79 +73,5 @@ public class JobInputFrameController {
         rootFrame.pack();
         rootFrame.setVisible(true);
     }
-
-//    public void addCurrentModel() {
-//    	assert false;
-//        JobInputModel ipmToRemove = null;
-//        for (JobInputModel ipm : allModels) {
-//            if (ipm.getTitle().equals(activeModel.getTitle())) {
-//                ipmToRemove = ipm;
-//            }
-//        }
-//        if (ipmToRemove != null) {
-//            allModels.remove(ipmToRemove);
-//        }
-//        allModels.add(activeModel.copy());
-//    }
-
-//    public void saveProfiles() throws IOException {
-//    	SettingsIO settingsIO = new SettingsIO(context);
-//        settingsIO.writeAllProfiles(allModels);
-//        settingsIO.writeAllSpecies(getAllSpeciesEntryModels());
-//    }
-
-//    public List<SpeciesEntryModel> getAllSpeciesEntryModels() {
-//        List<SpeciesEntryModel> sems = new ArrayList<SpeciesEntryModel>();
-//        for (JobInputModel ipm : allModels) {
-//            for (SpeciesEntryModel sem : ipm.getAllSpecies().keySet()) {
-//                if (!sems.contains(sem)) {
-//                    sems.add(sem);
-//                }
-//            }
-//        }
-//        return sems;
-//    }
-
-//    public void loadProfile(String profileName) {
-//        JobInputModel ipmToLoad = null;
-//        for (JobInputModel ipm : allModels) {
-//            if (ipm.getTitle().equals(profileName)) {
-//                ipmToLoad = ipm.copy();
-//            }
-//        }
-//        if (ipmToLoad == null) {
-//            throw new IllegalArgumentException("Could not load profile" + profileName);
-//        }
-//        for (SpeciesEntryModel sem : ipmToLoad.getAllSpecies().keySet()) {
-//            SpeciesEntryPanel se = initSpeciesEntry(sem);
-//            ipmToLoad.setSpeciesEntry(sem, se);
-//        }
-//        setActiveModel(ipmToLoad);
-//        ipmToLoad.triggerUpdate();
-//    }
-//
-//    public void delCurrentProfile() {
-//        JobInputModel ipmToRemove = null;
-//        for (JobInputModel ipm : allModels) {
-//            if (ipm.getTitle().equals(activeModel.getTitle())) {
-//                ipmToRemove = ipm;
-//            }
-//        }
-//        if (ipmToRemove != null) {
-//            allModels.remove(ipmToRemove);
-//        }
-//    }
-//
-//    public String[] getProfileTitles() {
-//        List<String> titles = new ArrayList<String>();
-//        for (JobInputModel ipm : allModels) {
-//            titles.add(ipm.getTitle());
-//        }
-//        return titles.toArray(new String[titles.size()]);
-//    }
-
-//    public JobInputPanel getInpPnl() {
-//        return inputPanel;
-//    }
 
 }

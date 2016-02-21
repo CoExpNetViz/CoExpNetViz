@@ -57,6 +57,8 @@ import be.ugent.psb.coexpnetviz.layout.FamLayout;
  */
 public class CytoscapeActivator extends AbstractCyActivator {
 
+	private Context context;
+	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
 	 * classes with those of Cytoscape, by adding Cytoscape menu items, attaching
@@ -64,7 +66,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	Context context = new Context(
+    	context = new Context(
 			getService(bundleContext, UndoSupport.class),
 			getService(bundleContext, TaskManager.class),
 			getService(bundleContext, CyNetworkManager.class),
@@ -104,5 +106,13 @@ public class CytoscapeActivator extends AbstractCyActivator {
 
         //for debugging: print message if the app started succesfully
         System.out.println(Context.APP_NAME + " started succesfully");
+    }
+    
+    @Override
+    public void shutDown() {
+    	context.saveConfiguration();
+    	context = null;
+    	
+    	super.shutDown();
     }
 }

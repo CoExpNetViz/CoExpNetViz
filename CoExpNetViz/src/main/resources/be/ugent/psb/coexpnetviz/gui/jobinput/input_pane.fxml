@@ -9,7 +9,7 @@
 <?import javafx.collections.*?>
 <?import jfxtras.labs.scene.control.ToggleGroupValue?>
 <?import be.ugent.psb.util.javafx.view.*?>
-<?import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.*?>
+<?import be.ugent.psb.coexpnetviz.gui.jobinput.*?>
      
 <!-- XXX use labelFor
 
@@ -59,12 +59,12 @@
   <children>
      <Label styleClass='form-label' text="Presets:" />
      <HBox spacing="$spacing" GridPane.columnIndex="1" >
-       <ComboBox prefWidth="200" editable='true' />
-       <Button mnemonicParsing="false" text="Load" />
-       <Button mnemonicParsing="false" text="Save" />
-       <Button mnemonicParsing="false" text="Delete" />
+       <ComboBox prefWidth="200" editable='true' fx:id="presetsComboBox" />
+       <Button text="Load" fx:id="loadPresetButton" />
+       <Button text="Save" fx:id="savePresetButton" />
+       <Button text="Delete" fx:id="deletePresetButton" />
        <Separator prefWidth="10" HBox.hgrow="SOMETIMES" />
-       <Button mnemonicParsing="false" text="Clear form" />
+       <Button text="Reset form to defaults" fx:id="resetFormButton" />
      </HBox>
      
      <Label styleClass='form-label' text="Bait group:" GridPane.rowIndex="1" />

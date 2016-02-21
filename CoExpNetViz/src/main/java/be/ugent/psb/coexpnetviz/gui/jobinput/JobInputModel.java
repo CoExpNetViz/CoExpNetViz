@@ -1,7 +1,5 @@
 package be.ugent.psb.coexpnetviz.gui.jobinput;
 
-import java.util.ArrayList;
-
 /*
  * #%L
  * CoExpNetViz
@@ -24,12 +22,11 @@ import java.util.ArrayList;
  * #L%
  */
 
-import be.ugent.psb.util.Objects;
-import javafx.beans.property.BooleanProperty;
+import java.util.ArrayList;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -40,7 +37,7 @@ import javafx.collections.ObservableList;
 /**
  * State of a job input form
  */
-public class JobInputModel implements Cloneable {
+public class JobInputModel {
 
     private ObjectProperty<BaitGroupSource> baitGroupSource;
     private StringProperty baitGroupText;
@@ -50,7 +47,6 @@ public class JobInputModel implements Cloneable {
     private StringProperty geneFamiliesPath;
     private DoubleProperty lowerPercentile;
     private DoubleProperty upperPercentile;
-    private BooleanProperty saveOutput;
     private StringProperty outputPath;
     private ObjectProperty<CorrelationMethod> correlationMethod;
 
@@ -63,40 +59,26 @@ public class JobInputModel implements Cloneable {
         geneFamiliesPath = new SimpleStringProperty("");
         lowerPercentile = new SimpleDoubleProperty(5);
         upperPercentile = new SimpleDoubleProperty(95);
-        saveOutput = new SimpleBooleanProperty(false);
         outputPath = new SimpleStringProperty(System.getProperty("user.home"));
         correlationMethod = new SimpleObjectProperty<>(CorrelationMethod.PEARSON);
     }
-
-    public Object clone() throws CloneNotSupportedException {
-    	// TODO clone deeply
-    	JobInputModel clone_ = Objects.clone(this);
-//    	clone_.expressionMatrixPaths = Objects.clone(expressionMatrixPaths);
-    	return clone_;
+    
+    public void assign(JobInputPreset preset) {
+    	setBaitGroupSource(preset.getBaitGroupSource());
+    	setBaitGroupText(preset.getBaitGroupText());
+    	setBaitGroupPath(preset.getBaitGroupPath());
+    	setGeneFamiliesSource(preset.getGeneFamiliesSource());
+    	setGeneFamiliesPath(preset.getGeneFamiliesPath());
+    	setLowerPercentile(preset.getLowerPercentile());
+    	setUpperPercentile(preset.getUpperPercentile());
+    	setOutputPath(preset.getOutputPath());
+    	setCorrelationMethod(preset.getCorrelationMethod());
+    	
+    	expressionMatrixPaths.clear();
+    	for (String path : preset.getExpressionMatrixPaths()) {
+    		expressionMatrixPaths.add(new SimpleStringProperty(path));
+    	}
     }
-
-    // TODO old
-//    public void setSpeciesEntry(SpeciesEntryModel sem, SpeciesEntryPanel se) {
-//        species.put(sem, se);
-//        setChanged();
-//        notifyObservers();
-//    }
-//
-//    public void addSpecies(SpeciesEntryModel sem, SpeciesEntryPanel se) {
-//        if (!species.containsKey(sem)) {
-//            species.put(sem, se);
-//            setChanged();
-//            notifyObservers();
-//        }
-//    }
-//
-//    public void removeSpecies(SpeciesEntryModel sem) {
-//        if (species.containsKey(sem)) {
-//            species.remove(sem);
-//            setChanged();
-//            notifyObservers();
-//        }
-//    }
 
 	public BaitGroupSource getBaitGroupSource() {
 		return baitGroupSource.get();
@@ -182,18 +164,6 @@ public class JobInputModel implements Cloneable {
 		return upperPercentile;
 	}
 
-	public boolean getSaveOutput() {
-		return saveOutput.get();
-	}
-
-	public void setSaveOutput(boolean saveOutput) {
-		this.saveOutput.set(saveOutput);
-	}
-	
-	public BooleanProperty saveOutputProperty() {
-		return saveOutput;
-	}
-
 	public String getOutputPath() {
 		return outputPath.get();
 	}
@@ -229,17 +199,5 @@ public class JobInputModel implements Cloneable {
 	public StringProperty baitGroupPathProperty() {
 		return baitGroupPath;
 	}
-
-	public static enum BaitGroupSource {
-    	FILE, TEXT
-    }
-    
-    public static enum GeneFamiliesSource {
-    	PLAZA, CUSTOM, NONE
-    }
-    
-    public static enum CorrelationMethod {
-    	PEARSON, MUTUAL_INFORMATION
-    }
 
 }

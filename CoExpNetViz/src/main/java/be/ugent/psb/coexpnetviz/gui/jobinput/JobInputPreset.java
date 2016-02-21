@@ -1,10 +1,10 @@
-package be.ugent.psb.coexpnetviz.io;
+package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,28 +22,63 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-import java.nio.file.Path;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import be.ugent.psb.coexpnetviz.gui.jobinput.BaitGroupSource;
-import be.ugent.psb.coexpnetviz.gui.jobinput.CorrelationMethod;
-import be.ugent.psb.coexpnetviz.gui.jobinput.GeneFamiliesSource;
+import javafx.beans.property.StringProperty;
 
 /**
- * All a job server needs to know to run a job
+ * Preset that can be loaded into a job input form.
+ * 
+ * JobInputPreset and JobInputModel both represent a JobInput form state.
+ * The difference is you can bind to a JobInputModel and serialise a 
+ * JobInputPreset, but not vice versa. Additionally, a preset has a name.
  */
-public class JobDescription {
-	
-	private BaitGroupSource baitGroupSource;
+public class JobInputPreset {
+
+	private String name;
+    private BaitGroupSource baitGroupSource;
     private String baitGroupText;
-    private Path baitGroupPath;
-    private Set<Path> expressionMatrixPaths;
+    private String baitGroupPath;
+    private List<String> expressionMatrixPaths;
     private GeneFamiliesSource geneFamiliesSource;
-    private Path geneFamiliesPath;
+    private String geneFamiliesPath;
     private double lowerPercentile;
     private double upperPercentile;
+    private String outputPath;
     private CorrelationMethod correlationMethod;
-    private Path resultPath;
+    
+    /**
+     * Do not use, this is meant for bean code (e.g. serialisation library)
+     */
+    public JobInputPreset() {
+	}
+    
+    public JobInputPreset(String name, JobInputModel model) {
+    	this.name = name;
+    	baitGroupSource = model.getBaitGroupSource();
+    	baitGroupText = model.getBaitGroupText();
+    	baitGroupPath = model.getBaitGroupPath();
+    	geneFamiliesSource = model.getGeneFamiliesSource();
+    	geneFamiliesPath = model.getGeneFamiliesPath();
+    	lowerPercentile = model.getLowerPercentile();
+    	upperPercentile = model.getUpperPercentile();
+    	outputPath = model.getOutputPath();
+    	correlationMethod = model.getCorrelationMethod();
+    	
+    	expressionMatrixPaths = new ArrayList<>();
+    	for (StringProperty pathProperty : model.getExpressionMatrixPaths()) {
+    		expressionMatrixPaths.add(pathProperty.get());
+    	}
+    }
+    
+    public String getName() {
+		return name;
+	}
+    
+    public void setName(String name) {
+		this.name = name;
+	}
     
 	public BaitGroupSource getBaitGroupSource() {
 		return baitGroupSource;
@@ -61,19 +96,19 @@ public class JobDescription {
 		this.baitGroupText = baitGroupText;
 	}
 	
-	public Path getBaitGroupPath() {
+	public String getBaitGroupPath() {
 		return baitGroupPath;
 	}
 	
-	public void setBaitGroupPath(Path baitGroupPath) {
+	public void setBaitGroupPath(String baitGroupPath) {
 		this.baitGroupPath = baitGroupPath;
 	}
 	
-	public Set<Path> getExpressionMatrixPaths() {
+	public List<String> getExpressionMatrixPaths() {
 		return expressionMatrixPaths;
 	}
 	
-	public void setExpressionMatrixPaths(Set<Path> expressionMatrixPaths) {
+	public void setExpressionMatrixPaths(List<String> expressionMatrixPaths) {
 		this.expressionMatrixPaths = expressionMatrixPaths;
 	}
 	
@@ -85,11 +120,11 @@ public class JobDescription {
 		this.geneFamiliesSource = geneFamiliesSource;
 	}
 	
-	public Path getGeneFamiliesPath() {
+	public String getGeneFamiliesPath() {
 		return geneFamiliesPath;
 	}
 	
-	public void setGeneFamiliesPath(Path geneFamiliesPath) {
+	public void setGeneFamiliesPath(String geneFamiliesPath) {
 		this.geneFamiliesPath = geneFamiliesPath;
 	}
 	
@@ -109,6 +144,14 @@ public class JobDescription {
 		this.upperPercentile = upperPercentile;
 	}
 	
+	public String getOutputPath() {
+		return outputPath;
+	}
+	
+	public void setOutputPath(String outputPath) {
+		this.outputPath = outputPath;
+	}
+	
 	public CorrelationMethod getCorrelationMethod() {
 		return correlationMethod;
 	}
@@ -117,12 +160,9 @@ public class JobDescription {
 		this.correlationMethod = correlationMethod;
 	}
 	
-	public Path getResultPath() {
-		return resultPath;
+	@Override
+	public String toString() {
+		return name;
 	}
-	
-	public void setResultPath(Path resultPath) {
-		this.resultPath = resultPath;
-	}
-	
+
 }

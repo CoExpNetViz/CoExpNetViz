@@ -75,7 +75,7 @@ public class Validator {
 		}
 	}
 	
-	public String ensureNotEmpty(String value) throws ValidationException {
+	public String ensureIsNotEmpty(String value) throws ValidationException {
 		if (value == null || value.trim().isEmpty()) {
 			throwTantrum("may not be empty");
 		}

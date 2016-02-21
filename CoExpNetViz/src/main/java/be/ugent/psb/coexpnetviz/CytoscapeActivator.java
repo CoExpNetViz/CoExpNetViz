@@ -66,46 +66,49 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	context = new Context(
-			getService(bundleContext, UndoSupport.class),
-			getService(bundleContext, TaskManager.class),
-			getService(bundleContext, CyNetworkManager.class),
-			getService(bundleContext, CyNetworkViewManager.class),
-			getService(bundleContext, VisualMappingManager.class),
-			getService(bundleContext, LoadVizmapFileTaskFactory.class),
-			getService(bundleContext, CyTableReaderManager.class),
-			getService(bundleContext, CyRootNetworkManager.class),
-			getService(bundleContext, ImportDataTableTaskFactory.class),
-			getService(bundleContext, CyNetworkReaderManager.class),
-			getService(bundleContext, CyLayoutAlgorithmManager.class),
-			getService(bundleContext, CyNetworkViewFactory.class),
-			getService(bundleContext, CyNetworkTableManager.class),
-			getService(bundleContext, OpenBrowser.class),
-			getService(bundleContext, CyApplicationManager.class),
-			getService(bundleContext, CyApplicationConfiguration.class),
-			getService(bundleContext, CySwingApplication.class)		
-    	);
-
-        // Add our menu action in OSGi services
-        registerAllServices(bundleContext, new MenuAction(context), new Properties());
-
-        // Add our layout
-        FamLayout cgal = new FamLayout(context.getUndoSupport());
-        Properties cgalProperties = new Properties();
-        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + Context.APP_NAME);
-        cgalProperties.setProperty("preferredTaskManager", "menu");
-        cgalProperties.setProperty(TITLE, cgal.toString());
-        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
-
-        //register contex menu action
-        // TODO fix problems with CENVNodeViewContextMenuFactory, then reenable
-        /*CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CENVNodeViewContextMenuFactory(application);
-        Properties myNodeViewContextMenuFactoryProps = new Properties();
-        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
-        registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);*/
-
-        //for debugging: print message if the app started succesfully
-        System.out.println(Context.APP_NAME + " started succesfully");
+    	try{
+	    	context = new Context(
+				getService(bundleContext, UndoSupport.class),
+				getService(bundleContext, TaskManager.class),
+				getService(bundleContext, CyNetworkManager.class),
+				getService(bundleContext, CyNetworkViewManager.class),
+				getService(bundleContext, VisualMappingManager.class),
+				getService(bundleContext, LoadVizmapFileTaskFactory.class),
+				getService(bundleContext, CyTableReaderManager.class),
+				getService(bundleContext, CyRootNetworkManager.class),
+				getService(bundleContext, ImportDataTableTaskFactory.class),
+				getService(bundleContext, CyNetworkReaderManager.class),
+				getService(bundleContext, CyLayoutAlgorithmManager.class),
+				getService(bundleContext, CyNetworkViewFactory.class),
+				getService(bundleContext, CyNetworkTableManager.class),
+				getService(bundleContext, OpenBrowser.class),
+				getService(bundleContext, CyApplicationManager.class),
+				getService(bundleContext, CyApplicationConfiguration.class),
+				getService(bundleContext, CySwingApplication.class)		
+	    	);
+	
+	        // Add our menu action in OSGi services
+	        registerAllServices(bundleContext, new MenuAction(context), new Properties());
+	
+	        // Add our layout
+	        FamLayout cgal = new FamLayout(context.getUndoSupport());
+	        Properties cgalProperties = new Properties();
+	        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + Context.APP_NAME);
+	        cgalProperties.setProperty("preferredTaskManager", "menu");
+	        cgalProperties.setProperty(TITLE, cgal.toString());
+	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
+	
+	        //register contex menu action
+	        // TODO fix problems with CENVNodeViewContextMenuFactory, then reenable
+	        /*CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CENVNodeViewContextMenuFactory(application);
+	        Properties myNodeViewContextMenuFactoryProps = new Properties();
+	        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
+	        registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);*/
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		throw e;
+    	}
     }
     
     @Override

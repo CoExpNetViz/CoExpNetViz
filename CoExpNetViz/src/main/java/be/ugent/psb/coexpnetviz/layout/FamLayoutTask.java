@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.cytoscape.model.CyEdge;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
@@ -41,8 +41,6 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
 
 public class FamLayoutTask extends AbstractLayoutTask {
 

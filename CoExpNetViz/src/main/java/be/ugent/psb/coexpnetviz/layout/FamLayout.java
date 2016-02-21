@@ -32,8 +32,6 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-import be.ugent.psb.coexpnetviz.gui.CENVModel;
-
 public class FamLayout extends AbstractLayoutAlgorithm {
 
 	public static final String NAME = "fam-layout";

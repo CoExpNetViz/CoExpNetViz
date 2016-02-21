@@ -250,12 +250,11 @@ public class JobInput extends GridPane {
 				onRunButton();
 			};
 		});
-		
-		// Note: in a brighter future we will only need to support Java 8 and this library becomes available with good validation widgets http://fxexperience.com/controlsfx/features/#decorationvalidation
 	}
 	
 	private void onRunButton() {
 		// Validate input and build a JobDescription, then run analysis
+		// Note: in a brighter future we will only need to support Java 8 and this library becomes available with good validation widgets http://fxexperience.com/controlsfx/features/#decorationvalidation
 		try {
 			JobDescription jobDescription = new JobDescription();
 			Validator validator = new Validator();

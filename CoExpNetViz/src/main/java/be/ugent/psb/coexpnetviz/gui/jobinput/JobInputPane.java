@@ -275,6 +275,14 @@ public class JobInputPane extends GridPane {
 			};
 		});
 		
+		// Reset form
+		resetFormButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				// clunky assignment as won't implement assignment from other model
+				model.assign(new JobInputPreset("hack", new JobInputModel()));
+			};
+		});
+		
 		// Bait group
 		baitGroupSourceGroup.valueProperty().bindBidirectional(model.baitGroupSourceProperty());
 		baitGroupCardPane.shownCardDataProperty().bind(model.baitGroupSourceProperty());

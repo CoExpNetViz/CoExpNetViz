@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.model;
+package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.coexpnetviz.gui;
 
 /*
  * #%L
@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.application.swing.AbstractCyAction;
 
 import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputFrameController;
 
 /**
  * Creates a new menu item under Apps menu section.

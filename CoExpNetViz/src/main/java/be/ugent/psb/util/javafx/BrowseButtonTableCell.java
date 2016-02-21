@@ -4,7 +4,7 @@ package be.ugent.psb.util.javafx;
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2016 PSB/UGent
+ * Copyright (C) 2015 - 2016 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ package be.ugent.psb.util.javafx;
  * #L%
  */
 
-import be.ugent.psb.coexpnetviz.gui.controller.BrowseButtonHandler;
+import be.ugent.psb.util.javafx.controller.BrowseButtonHandler;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Button;

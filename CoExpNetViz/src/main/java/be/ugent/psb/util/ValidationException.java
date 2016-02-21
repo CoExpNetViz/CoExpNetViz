@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel;
 
 /*
  * #%L

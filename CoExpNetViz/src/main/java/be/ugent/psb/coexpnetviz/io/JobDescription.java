@@ -25,9 +25,9 @@ package be.ugent.psb.coexpnetviz.io;
 import java.nio.file.Path;
 import java.util.Set;
 
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.BaitGroupSource;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.CorrelationMethod;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.GeneFamiliesSource;
 
 /**
  * All a job server needs to know to run a job

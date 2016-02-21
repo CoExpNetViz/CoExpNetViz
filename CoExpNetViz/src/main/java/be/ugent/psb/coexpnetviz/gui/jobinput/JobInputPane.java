@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.view;
+package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 /*
  * #%L
@@ -30,17 +30,17 @@ import java.util.List;
 import java.util.Set;
 
 import be.ugent.psb.coexpnetviz.Context;
-import be.ugent.psb.coexpnetviz.gui.RunAnalysisTaskController;
-import be.ugent.psb.coexpnetviz.gui.controller.BrowseButtonHandler;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.BaitGroupSource;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.CorrelationMethod;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.GeneFamiliesSource;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.BaitGroupSource;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.CorrelationMethod;
+import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel.GeneFamiliesSource;
 import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.util.TCCLRunnable;
 import be.ugent.psb.util.ValidationException;
 import be.ugent.psb.util.Validator;
 import be.ugent.psb.util.javafx.BrowseButtonTableCell;
+import be.ugent.psb.util.javafx.controller.BrowseButtonHandler;
+import be.ugent.psb.util.javafx.view.CardPane;
+import be.ugent.psb.util.javafx.view.FileInput;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -70,7 +70,7 @@ import jfxtras.labs.scene.control.ToggleGroupValue;
 /**
  * File input control: a text field with a browse button
  */
-public class JobInput extends GridPane {
+public class JobInputPane extends GridPane {
 	
 	private Context context;
 	private JobInputModel model;
@@ -141,12 +141,12 @@ public class JobInput extends GridPane {
 	@FXML
 	private Text errorText;
 	
-	public JobInput() {
+	public JobInputPane() {
 		new TCCLRunnable() {
 			protected void runInner() {
 		        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("input_pane.fxml"));
-		        fxmlLoader.setRoot(JobInput.this);
-		        fxmlLoader.setController(JobInput.this);
+		        fxmlLoader.setRoot(JobInputPane.this);
+		        fxmlLoader.setController(JobInputPane.this);
 
 		        try {
 		            fxmlLoader.load();

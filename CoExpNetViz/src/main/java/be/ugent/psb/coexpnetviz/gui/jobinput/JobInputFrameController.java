@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 /*
  * #%L
@@ -25,8 +25,6 @@ package be.ugent.psb.coexpnetviz.gui.controller;
 import javax.swing.JFrame;
 
 import be.ugent.psb.coexpnetviz.Context;
-import be.ugent.psb.coexpnetviz.gui.model.JobInputModel;
-import be.ugent.psb.coexpnetviz.gui.view.JobInput;
 import be.ugent.psb.util.TCCLRunnable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -72,7 +70,7 @@ public class JobInputFrameController {
         Platform.runLater(new TCCLRunnable() {
             @Override
             public void runInner() {
-            	JobInput jobInputPane = new JobInput();
+            	JobInputPane jobInputPane = new JobInputPane();
             	Scene scene = new Scene(jobInputPane);
             	jobInputPane.init(context, scene.getWindow());
             	fxPanel.setScene(scene);

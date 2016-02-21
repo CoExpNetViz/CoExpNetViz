@@ -1,9 +1,6 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.util.javafx.controller;
 
 import java.io.File;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -65,8 +62,5 @@ public class BrowseButtonHandler implements EventHandler<ActionEvent> {
 	public void setPathProperty(StringProperty pathProperty) {
 		this.pathProperty = pathProperty;
 	}
-    
-    // TODO add validation to path (but put it elsewhere), validation icon goes on the text field.
-    //      It must be a file, it must exist, it should be plain text and have read permissions (Files.isRegularFile(orthFilePath) && Files.isReadable(orthFilePath))
     
 }

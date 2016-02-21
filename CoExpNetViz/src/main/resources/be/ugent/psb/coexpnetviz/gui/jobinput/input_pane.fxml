@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.collections.*?>
 <?import jfxtras.labs.scene.control.ToggleGroupValue?>
-<?import be.ugent.psb.coexpnetviz.gui.view.*?>
+<?import be.ugent.psb.util.javafx.view.*?>
 <?import be.ugent.psb.coexpnetviz.gui.model.JobInputModel.*?>
      
 <!-- XXX use labelFor

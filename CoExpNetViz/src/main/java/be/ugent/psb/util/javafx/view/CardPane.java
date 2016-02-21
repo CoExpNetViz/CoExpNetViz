@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.view;
+package be.ugent.psb.util.javafx.view;
 
 import javafx.beans.DefaultProperty;
 import javafx.beans.property.ListProperty;

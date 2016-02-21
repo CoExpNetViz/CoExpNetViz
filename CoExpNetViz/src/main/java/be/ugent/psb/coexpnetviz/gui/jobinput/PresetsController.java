@@ -1,4 +1,4 @@
-package be.ugent.psb.coexpnetviz.gui.controller;
+package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 /*
  * #%L

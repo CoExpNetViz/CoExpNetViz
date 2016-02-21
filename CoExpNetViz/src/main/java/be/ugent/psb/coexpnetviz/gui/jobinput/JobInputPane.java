@@ -202,7 +202,7 @@ public class JobInputPane extends GridPane {
 		this.model = new JobInputModel();
 		
 		// Presets
-		presets = new SimpleListProperty<>(FXCollections.observableList(context.getPresets()));
+		presets = new SimpleListProperty<>(FXCollections.observableList(context.getConfiguration().getPresets()));
 		presetsComboBox.itemsProperty().bindBidirectional(presets);
 		
 		BooleanBinding hasPresetSelection = presetsComboBox.getSelectionModel().selectedItemProperty().isNull();
@@ -211,7 +211,9 @@ public class JobInputPane extends GridPane {
 		
 		loadPresetButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				model.assign(presetsComboBox.getSelectionModel().getSelectedItem());
+				JobInputPreset preset = presetsComboBox.getSelectionModel().getSelectedItem();
+				model.assign(preset);
+				context.getConfiguration().setLastUsedPresetName(preset.getName());
 			};
 		});
 		
@@ -274,6 +276,12 @@ public class JobInputPane extends GridPane {
 				presets.remove(presetsComboBox.getSelectionModel().getSelectedItem());
 			};
 		});
+		
+		JobInputPreset lastUsedPreset = context.getConfiguration().getLastUsedPreset();
+		if (lastUsedPreset != null) {
+			model.assign(lastUsedPreset);
+			presetsComboBox.getSelectionModel().select(lastUsedPreset);
+		}
 		
 		// Reset form
 		resetFormButton.setOnAction(new EventHandler<ActionEvent>() {

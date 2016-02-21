@@ -164,5 +164,15 @@ public class JobInputPreset {
 	public String toString() {
 		return name;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj != null && obj instanceof JobInputPreset && ((JobInputPreset)obj).getName().equals(name);
+	}
+	
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
 }

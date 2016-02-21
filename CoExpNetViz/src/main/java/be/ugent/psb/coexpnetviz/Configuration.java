@@ -23,6 +23,7 @@ package be.ugent.psb.coexpnetviz;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
@@ -33,6 +34,7 @@ import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
 public class Configuration {
 
 	List<JobInputPreset> presets;
+	String lastUsedPreset;
 	
 	public Configuration() {
 		presets = new ArrayList<>();
@@ -44,6 +46,29 @@ public class Configuration {
 	
 	public void setPresets(List<JobInputPreset> presets) {
 		this.presets = presets;
+	}
+	
+	public JobInputPreset getLastUsedPreset() {
+		System.out.println("get " + lastUsedPreset);
+		for (JobInputPreset preset : presets) {
+			if (preset.getName().equals(lastUsedPreset)) {
+				return preset;
+			}
+		}
+		System.out.println("not found");
+		return null;
+	}
+	
+	public String getLastUsedPresetName() {
+		return lastUsedPreset;
+	}
+
+	public void setLastUsedPresetName(String lastUsedPreset) {
+		System.out.println("set " + lastUsedPreset);
+		JobInputPreset preset = new JobInputPreset();
+		preset.setName(lastUsedPreset);
+		assert presets.contains(preset);
+		this.lastUsedPreset = lastUsedPreset;
 	}
 
 }

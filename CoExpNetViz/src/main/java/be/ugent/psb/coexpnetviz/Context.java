@@ -32,7 +32,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
@@ -51,10 +50,10 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
+import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * CoExpNetViz app context, provides refereences to what would otherwise be globals.
@@ -122,8 +121,8 @@ public class Context {
         return sdf.format(now);
     }
 
-    public List<JobInputPreset> getPresets() {
-		return configuration.getPresets();
+    public Configuration getConfiguration() {
+		return configuration;
 	}
 
 	private Path getConfigurationFilePath() {
@@ -133,7 +132,10 @@ public class Context {
     }
 	
 	private Yaml getYaml() {
-		return new Yaml(new Constructor(Configuration.class));
+		// if there's ever a need to hide more properties, use https://bitbucket.org/asomov/snakeyaml/src/tip/src/test/java/org/yaml/snakeyaml/representer/FilterPropertyToDumpTest.java?fileviewer=file-view-default
+		DumperOptions dumperOptions = new DumperOptions();
+		dumperOptions.setAllowReadOnlyProperties(false);
+		return new Yaml(new Constructor(Configuration.class), new Representer(), dumperOptions);
 	}
     
     private void loadConfiguration() {

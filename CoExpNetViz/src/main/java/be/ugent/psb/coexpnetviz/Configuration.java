@@ -1,5 +1,8 @@
 package be.ugent.psb.coexpnetviz;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /*
  * #%L
  * CoExpNetViz
@@ -30,28 +33,41 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
+import be.ugent.psb.util.jaxb.PathAdapter;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * CoExpNetViz Configuration
  */
 @XmlRootElement
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlAccessorType (XmlAccessType.NONE)
 public class Configuration {
 
 	@XmlElementWrapper
 	@XmlElement(name="preset")
 	List<JobInputPreset> presets;
 	
+	@XmlElement
 	String lastUsedPreset;
+	
+	ObjectProperty<Path> lastBrowsedPath;
 	
 	public Configuration() {
 		presets = new ArrayList<>();
+		lastBrowsedPath = new SimpleObjectProperty<>(Paths.get(System.getProperty("user.home")));
+		assert lastBrowsedPath.get() != null;
 	}
 	
 	public List<JobInputPreset> getPresets() {
 		return presets;
+	}
+	
+	public void setPresets(List<JobInputPreset> presets) {
+		this.presets = presets;
 	}
 	
 	public JobInputPreset getLastUsedPreset() {
@@ -62,18 +78,32 @@ public class Configuration {
 		}
 		return null;
 	}
-	
-	public String getLastUsedPresetName() {
-		return lastUsedPreset;
+
+	public void setLastUsedPreset(JobInputPreset preset) {
+		if (preset == null) {
+			// unset
+			lastUsedPreset = null;
+		}
+		else {
+			// set
+			assert presets.contains(preset);
+			lastUsedPreset = preset.getName();
+		}
 	}
 
-	public void setLastUsedPresetName(String lastUsedPreset) {
-		if (lastUsedPreset != null) {
-			JobInputPreset preset = new JobInputPreset();
-			preset.setName(lastUsedPreset);
-			assert presets.contains(preset);
-		}
-		this.lastUsedPreset = lastUsedPreset;
+	@XmlJavaTypeAdapter(PathAdapter.class)
+	@XmlElement
+	public Path getLastBrowsedPath() {
+		return lastBrowsedPath.get();
+	}
+
+	public void setLastBrowsedPath(Path lastBrowsedPath) {
+		assert lastBrowsedPath != null;
+		this.lastBrowsedPath.set(lastBrowsedPath);
+	}
+	
+	public ObjectProperty<Path> lastBrowsedPathProperty() {
+		return lastBrowsedPath;
 	}
 
 }

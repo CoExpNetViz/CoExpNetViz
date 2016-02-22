@@ -1,5 +1,7 @@
 package be.ugent.psb.util.javafx;
 
+import java.nio.file.Path;
+
 /*
  * #%L
  * CoExpNetViz
@@ -23,6 +25,7 @@ package be.ugent.psb.util.javafx;
  */
 
 import be.ugent.psb.util.javafx.controller.BrowseButtonHandler;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Button;
@@ -39,11 +42,11 @@ public class BrowseButtonTableCell extends TableCell<StringProperty, String> { /
 	private Button button;
 	private BrowseButtonHandler buttonHandler;
 	
-	public BrowseButtonTableCell(String browseDialogTitle, Window window) {
+	public BrowseButtonTableCell(String browseDialogTitle, Window window, ObjectProperty<Path> lastBrowsedPath) {
 		this.browseDialogTitle = browseDialogTitle;
 		this.window = window;
 		button = new Button("Browse");
-		buttonHandler = new BrowseButtonHandler(browseDialogTitle, window);
+		buttonHandler = new BrowseButtonHandler(browseDialogTitle, window, lastBrowsedPath);
 		button.setOnAction(buttonHandler);
 		indexProperty().addListener(new ChangeListener<Number>() {
 			public void changed(javafx.beans.value.ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {

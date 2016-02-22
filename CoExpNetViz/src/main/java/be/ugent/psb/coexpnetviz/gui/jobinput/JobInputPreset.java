@@ -40,7 +40,7 @@ import javafx.beans.property.StringProperty;
  */
 @XmlRootElement
 @XmlAccessorType (XmlAccessType.FIELD)
-public class JobInputPreset {
+public class JobInputPreset { // XXX could get rid of this by using JobInputModel and annotating it such that JAXB knows how to get around StringProperty and such (or implement generally, somehow, how to store/load Property instances)
 
 	private String name;
     private BaitGroupSource baitGroupSource;

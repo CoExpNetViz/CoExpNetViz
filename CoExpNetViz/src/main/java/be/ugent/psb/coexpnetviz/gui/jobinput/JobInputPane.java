@@ -24,6 +24,7 @@ package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,9 @@ import be.ugent.psb.util.javafx.view.FileInput;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -200,6 +203,7 @@ public class JobInputPane extends GridPane {
 	
 	public void init(final CENVContext context, final Window window) {
 		this.model = new JobInputModel();
+		final ObjectProperty<Path> lastBrowsedPath = context.getConfiguration().lastBrowsedPathProperty();
 		
 		// Presets
 		presets = new SimpleListProperty<>(FXCollections.observableList(context.getConfiguration().getPresets()));
@@ -213,7 +217,7 @@ public class JobInputPane extends GridPane {
 			public void handle(ActionEvent event) {
 				JobInputPreset preset = presetsComboBox.getSelectionModel().getSelectedItem();
 				model.assign(preset);
-				context.getConfiguration().setLastUsedPresetName(preset.getName());
+				context.getConfiguration().setLastUsedPreset(preset);
 			};
 		});
 		
@@ -268,7 +272,7 @@ public class JobInputPane extends GridPane {
 					presets.add(newPreset);
 				}
 				presetsComboBox.getSelectionModel().select(newPreset);
-				context.getConfiguration().setLastUsedPresetName(newPreset.getName());
+				context.getConfiguration().setLastUsedPreset(newPreset);
 			};
 		});
 		
@@ -276,8 +280,9 @@ public class JobInputPane extends GridPane {
 			public void handle(ActionEvent event) {
 				JobInputPreset preset = presetsComboBox.getSelectionModel().getSelectedItem();
 				presets.remove(preset);
-				if (preset.getName().equals(context.getConfiguration().getLastUsedPresetName())) {
-					context.getConfiguration().setLastUsedPresetName(null);
+				JobInputPreset lastUsedPreset = context.getConfiguration().getLastUsedPreset();
+				if (lastUsedPreset != null && preset.getName().equals(lastUsedPreset.getName())) {
+					context.getConfiguration().setLastUsedPreset(null);
 				}
 			};
 		});
@@ -301,13 +306,13 @@ public class JobInputPane extends GridPane {
 		baitGroupCardPane.shownCardDataProperty().bind(model.baitGroupSourceProperty());
 		baitGroupTextArea.textProperty().bindBidirectional(model.baitGroupTextProperty());
 		baitGroupFileInput.getTextField().textProperty().bindBidirectional(model.baitGroupPathProperty());
-		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.baitGroupPathProperty(), window));
+		baitGroupFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select bait group file", model.baitGroupPathProperty(), window, lastBrowsedPath));
 		
 		// Gene families
 		geneFamiliesSourceGroup.valueProperty().bindBidirectional(model.geneFamiliesSourceProperty());
 		geneFamiliesCardPane.shownCardDataProperty().bind(model.geneFamiliesSourceProperty());
 		geneFamiliesFileInput.getTextField().textProperty().bindBidirectional(model.geneFamiliesPathProperty());
-		geneFamiliesFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select gene families file", model.geneFamiliesPathProperty(), window));
+		geneFamiliesFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select gene families file", model.geneFamiliesPathProperty(), window, lastBrowsedPath));
 		
 		// Expression matrices: Add columns
 		Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>> idCellValueFactory = new Callback<CellDataFeatures<StringProperty, String>, ObservableValue<String>>() {
@@ -325,7 +330,7 @@ public class JobInputPane extends GridPane {
 		browseColumn.setCellValueFactory(idCellValueFactory);
 		browseColumn.setCellFactory(new Callback<TableColumn<StringProperty, String>, TableCell<StringProperty, String>>() {
 			public TableCell<StringProperty, String> call(TableColumn<StringProperty, String> column) {
-				return new BrowseButtonTableCell("Select gene expression matrix", window);
+				return new BrowseButtonTableCell("Select gene expression matrix", window, lastBrowsedPath);
 			};
 		});
 		expressionMatricesTableView.getColumns().add(browseColumn);
@@ -352,7 +357,7 @@ public class JobInputPane extends GridPane {
 		
 		// Bind output directory
 		outputDirectoryFileInput.getTextField().textProperty().bindBidirectional(model.outputPathProperty());
-		outputDirectoryFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select output directory file", model.outputPathProperty(), window));
+		outputDirectoryFileInput.getBrowseButton().setOnAction(new BrowseButtonHandler("Select output directory file", model.outputPathProperty(), window, lastBrowsedPath));
 		
 		// Bind last bits
 		NumberStringConverter doubleStringConverter  = new NumberStringConverter(new DecimalFormat());
@@ -433,20 +438,22 @@ public class JobInputPane extends GridPane {
 	        // correlation method
 	        jobDescription.setCorrelationMethod(model.getCorrelationMethod());
 	        
+	        // network name
+	    	JobInputPreset lastUsedPreset = context.getConfiguration().getLastUsedPreset();
+	    	String presetName;
+	    	if (lastUsedPreset == null) {
+	    		presetName = "";
+	    	}
+	    	else {
+	    		presetName = "_" + lastUsedPreset.getName(); 
+	    	}
+	        String networkName = CENVContext.APP_NAME + presetName + "_" + CENVContext.getTimeStamp();
+	        
 	        // result path
 	        validator.setName("Output path");
 	        Path path = validator.ensurePath(model.getOutputPath());
 	    	validator.ensureIsDirectory(path);
 	    	validator.ensureReadable(path);
-	    	
-	    	String presetName = context.getConfiguration().getLastUsedPresetName();
-	    	if (presetName == null) {
-	    		presetName = "";
-	    	}
-	    	else {
-	    		presetName += "_"; 
-	    	}
-	        String networkName = CENVContext.APP_NAME + "_" + presetName + CENVContext.getTimeStamp();
 	        jobDescription.setResultPath(path.resolve(networkName));
 	        System.out.println(jobDescription.getResultPath().toString());
 	        return;

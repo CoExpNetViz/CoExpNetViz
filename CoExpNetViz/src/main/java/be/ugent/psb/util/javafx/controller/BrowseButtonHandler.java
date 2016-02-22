@@ -1,7 +1,12 @@
 package be.ugent.psb.util.javafx.controller;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import be.ugent.psb.util.Strings;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,23 +43,50 @@ public class BrowseButtonHandler implements EventHandler<ActionEvent> {
 	private String browseDialogTitle;
 	private StringProperty pathProperty;
 	private Window window;
+	private ObjectProperty<Path> lastBrowsedPathProperty;
 	
-    public BrowseButtonHandler(String browseDialogTitle, StringProperty pathProperty, Window window) {
-		this(browseDialogTitle, window);
+    public BrowseButtonHandler(String browseDialogTitle, StringProperty pathProperty, Window window, ObjectProperty<Path> lastBrowsedPathProperty) {
+		this(browseDialogTitle, window, lastBrowsedPathProperty);
 		this.pathProperty = pathProperty;
 	}
     
-    public BrowseButtonHandler(String browseDialogTitle, Window window) {
+    public BrowseButtonHandler(String browseDialogTitle, Window window, ObjectProperty<Path> lastBrowsedPathProperty) {
 		this.browseDialogTitle = browseDialogTitle;
 		this.window = window;
+		this.lastBrowsedPathProperty = lastBrowsedPathProperty;
 	}
 
 	@Override
 	public void handle(ActionEvent arg0) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(browseDialogTitle);
-		File path = fileChooser.showOpenDialog(window);
+		
+		// Get path of pathProperty
+		Path path = null;
+		if (!Strings.isNullOrEmpty(pathProperty.get())) {
+			try {
+				path = Paths.get(pathProperty.get().trim());
+			}
+			catch (InvalidPathException e) {
+			}
+		}
+		
+		// Set initial path
 		if (path != null) {
+			if (path.getParent() != null) {
+				fileChooser.setInitialDirectory(path.getParent().toFile());
+			}
+			fileChooser.setInitialFileName(path.getFileName().toString());
+		}
+		else {
+			fileChooser.setInitialDirectory(lastBrowsedPathProperty.get().toFile());
+		}
+		
+		//
+		File file = fileChooser.showOpenDialog(window);
+		if (file != null) {
+			path = file.toPath().toAbsolutePath();
+			lastBrowsedPathProperty.set(path.getParent());
 			pathProperty.set(path.toString());
 		}
 	}

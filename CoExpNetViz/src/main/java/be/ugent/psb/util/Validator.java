@@ -83,7 +83,7 @@ public class Validator {
 	}
 	
 	public void ensureInRange(double value, double min, double max) throws ValidationException {
-		if (value >= min && value <= max) {
+		if (value < min || value > max) {
 			throwTantrum("must lie between " + min + " and " + max + " (inclusive)");
 		}
 	}

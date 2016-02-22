@@ -44,6 +44,9 @@ public class Configuration {
 		return presets;
 	}
 	
+	/**
+	 * Do not use. Is meant as part of bean interface for serialisation.
+	 */
 	public void setPresets(List<JobInputPreset> presets) {
 		this.presets = presets;
 	}
@@ -62,9 +65,11 @@ public class Configuration {
 	}
 
 	public void setLastUsedPresetName(String lastUsedPreset) {
-		JobInputPreset preset = new JobInputPreset();
-		preset.setName(lastUsedPreset);
-		assert presets.contains(preset);
+		if (lastUsedPreset != null) {
+			JobInputPreset preset = new JobInputPreset();
+			preset.setName(lastUsedPreset);
+			assert presets.contains(preset);
+		}
 		this.lastUsedPreset = lastUsedPreset;
 	}
 

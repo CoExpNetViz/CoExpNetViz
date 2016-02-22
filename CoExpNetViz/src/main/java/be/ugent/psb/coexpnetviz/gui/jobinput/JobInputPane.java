@@ -268,12 +268,17 @@ public class JobInputPane extends GridPane {
 					presets.add(newPreset);
 				}
 				presetsComboBox.getSelectionModel().select(newPreset);
+				context.getConfiguration().setLastUsedPresetName(newPreset.getName());
 			};
 		});
 		
 		deletePresetButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				presets.remove(presetsComboBox.getSelectionModel().getSelectedItem());
+				JobInputPreset preset = presetsComboBox.getSelectionModel().getSelectedItem();
+				presets.remove(preset);
+				if (preset.getName().equals(context.getConfiguration().getLastUsedPresetName())) {
+					context.getConfiguration().setLastUsedPresetName(null);
+				}
 			};
 		});
 		
@@ -434,14 +439,23 @@ public class JobInputPane extends GridPane {
 	    	validator.ensureIsDirectory(path);
 	    	validator.ensureReadable(path);
 	    	
-	        String networkName = Context.APP_NAME + "_" + Context.getTimeStamp(); // TODO could use preset name
+	    	String presetName = context.getConfiguration().getLastUsedPresetName();
+	    	if (presetName == null) {
+	    		presetName = "";
+	    	}
+	    	else {
+	    		presetName += "_"; 
+	    	}
+	        String networkName = Context.APP_NAME + "_" + presetName + Context.getTimeStamp();
 	        jobDescription.setResultPath(path.resolve(networkName));
+	        System.out.println(jobDescription.getResultPath().toString());
+	        return;
 	        
 	        // Valid input
-	        errorTextArea.setVisible(false);
-	        
-	        // Run the analysis
-	        new RunAnalysisTaskController(context, jobDescription, networkName);
+//	        errorTextArea.setVisible(false);
+//	        
+//	        // Run the analysis
+//	        new RunAnalysisTaskController(context, jobDescription, networkName);
 		}
 		catch (ValidationException ex) {
 			errorText.setText(ex.getMessage());

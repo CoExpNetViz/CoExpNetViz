@@ -23,17 +23,27 @@ package be.ugent.psb.coexpnetviz;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputPreset;
 
 /**
  * CoExpNetViz Configuration
  */
+@XmlRootElement
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Configuration {
 
+	@XmlElementWrapper
+	@XmlElement(name="preset")
 	List<JobInputPreset> presets;
+	
 	String lastUsedPreset;
 	
 	public Configuration() {
@@ -42,13 +52,6 @@ public class Configuration {
 	
 	public List<JobInputPreset> getPresets() {
 		return presets;
-	}
-	
-	/**
-	 * Do not use. Is meant as part of bean interface for serialisation.
-	 */
-	public void setPresets(List<JobInputPreset> presets) {
-		this.presets = presets;
 	}
 	
 	public JobInputPreset getLastUsedPreset() {

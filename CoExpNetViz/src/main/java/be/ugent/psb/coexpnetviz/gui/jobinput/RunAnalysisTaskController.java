@@ -41,7 +41,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskIterator;
 
-import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
@@ -53,7 +53,7 @@ import be.ugent.psb.util.cytoscape.NotificationTask;
  */
 public class RunAnalysisTaskController implements Observer {
     
-    private final Context context;
+    private final CENVContext context;
     private JobDescription jobDescription;
     private String networkName;
     private int step;  // what stage of the analysis we're at
@@ -63,7 +63,7 @@ public class RunAnalysisTaskController implements Observer {
     private CyTableReader nodeTableReader;
     private CyTableReader edgeTableReader;
     
-    public RunAnalysisTaskController(Context context, JobDescription jobDescription, String networkName) {
+    public RunAnalysisTaskController(CENVContext context, JobDescription jobDescription, String networkName) {
         this.context = context;
         this.jobDescription = jobDescription;
         this.networkName = networkName;
@@ -117,7 +117,7 @@ public class RunAnalysisTaskController implements Observer {
 	        context.getCyNetworkViewManager().addNetworkView(networkView);
 	        
 	        // Apply network style
-	        context.getVisualMappingManager().setVisualStyle(getStyle(Context.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
+	        context.getVisualMappingManager().setVisualStyle(getStyle(CENVContext.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
 	        
 	        // Apply layout
 	    	FamLayout layout = (FamLayout) context.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);

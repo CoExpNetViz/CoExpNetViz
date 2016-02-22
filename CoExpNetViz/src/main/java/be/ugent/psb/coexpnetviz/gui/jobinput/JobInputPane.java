@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.util.TCCLRunnable;
 import be.ugent.psb.util.ValidationException;
@@ -77,7 +77,7 @@ import jfxtras.labs.scene.control.ToggleGroupValue;
  */
 public class JobInputPane extends GridPane {
 	
-	private Context context;
+	private CENVContext context;
 	private ListProperty<JobInputPreset> presets;
 	private JobInputModel model;
 	private ToggleGroupValue<BaitGroupSource> baitGroupSourceGroup;
@@ -198,7 +198,7 @@ public class JobInputPane extends GridPane {
 		geneFamiliesFileInput.setUserData(GeneFamiliesSource.CUSTOM);
     }
 	
-	public void init(final Context context, final Window window) {
+	public void init(final CENVContext context, final Window window) {
 		this.model = new JobInputModel();
 		
 		// Presets
@@ -446,7 +446,7 @@ public class JobInputPane extends GridPane {
 	    	else {
 	    		presetName += "_"; 
 	    	}
-	        String networkName = Context.APP_NAME + "_" + presetName + Context.getTimeStamp();
+	        String networkName = CENVContext.APP_NAME + "_" + presetName + CENVContext.getTimeStamp();
 	        jobDescription.setResultPath(path.resolve(networkName));
 	        System.out.println(jobDescription.getResultPath().toString());
 	        return;

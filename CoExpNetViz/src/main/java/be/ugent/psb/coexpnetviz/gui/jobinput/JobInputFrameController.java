@@ -24,7 +24,7 @@ package be.ugent.psb.coexpnetviz.gui.jobinput;
 
 import javax.swing.JFrame;
 
-import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.util.TCCLRunnable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -36,10 +36,10 @@ import javafx.scene.Scene;
  */
 public class JobInputFrameController {
 
-    private final Context context;
+    private final CENVContext context;
     private JFrame rootFrame;
 
-    public JobInputFrameController(Context context) { // XXX only accept a presets and a JobInput model
+    public JobInputFrameController(CENVContext context) { // XXX only accept a presets and a JobInput model
         this.context = context;
     }
     

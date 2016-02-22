@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 
-import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputFrameController;
 
 /**
@@ -35,11 +35,11 @@ import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputFrameController;
  */
 public class MenuAction extends AbstractCyAction {
 	
-    private final Context context;
+    private final CENVContext context;
     private JobInputFrameController jobInputFrameController;
 
-    public MenuAction(Context context) {
-        super(Context.APP_NAME, context.getCyApplicationManager(), null, null);
+    public MenuAction(CENVContext context) {
+        super(CENVContext.APP_NAME, context.getCyApplicationManager(), null, null);
         setPreferredMenu("Apps");
         this.context = context;
     }

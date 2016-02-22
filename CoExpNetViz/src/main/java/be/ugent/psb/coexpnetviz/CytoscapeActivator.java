@@ -57,7 +57,7 @@ import be.ugent.psb.coexpnetviz.layout.FamLayout;
  */
 public class CytoscapeActivator extends AbstractCyActivator {
 
-	private Context context;
+	private CENVContext context;
 	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
@@ -67,7 +67,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
     @Override
     public void start(BundleContext bundleContext) throws Exception {
     	try{
-	    	context = new Context(
+	    	context = new CENVContext(
 				getService(bundleContext, UndoSupport.class),
 				getService(bundleContext, TaskManager.class),
 				getService(bundleContext, CyNetworkManager.class),
@@ -93,7 +93,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        // Add our layout
 	        FamLayout cgal = new FamLayout(context.getUndoSupport());
 	        Properties cgalProperties = new Properties();
-	        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + Context.APP_NAME);
+	        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVContext.APP_NAME);
 	        cgalProperties.setProperty("preferredTaskManager", "menu");
 	        cgalProperties.setProperty(TITLE, cgal.toString());
 	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);

@@ -25,6 +25,10 @@ package be.ugent.psb.coexpnetviz.gui.jobinput;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import javafx.beans.property.StringProperty;
 
 /**
@@ -34,6 +38,8 @@ import javafx.beans.property.StringProperty;
  * The difference is you can bind to a JobInputModel and serialise a 
  * JobInputPreset, but not vice versa. Additionally, a preset has a name.
  */
+@XmlRootElement
+@XmlAccessorType (XmlAccessType.FIELD)
 public class JobInputPreset {
 
 	private String name;
@@ -52,6 +58,7 @@ public class JobInputPreset {
      * Do not use, this is meant for bean code (e.g. serialisation library)
      */
     public JobInputPreset() {
+    	expressionMatrixPaths = new ArrayList<>();
 	}
     
     public JobInputPreset(String name, JobInputModel model) {

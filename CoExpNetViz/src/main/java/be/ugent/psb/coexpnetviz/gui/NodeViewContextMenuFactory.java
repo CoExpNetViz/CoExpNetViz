@@ -59,7 +59,7 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
-import be.ugent.psb.coexpnetviz.Context;
+import be.ugent.psb.coexpnetviz.CENVContext;
 
 //TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
 /**
@@ -73,12 +73,12 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
     private String plazaDicotKey = "Plaza Dicots";
     private String plazaDicotRegex = "ORTHO\\d+D\\d+";
     
-    private Context context;
+    private CENVContext context;
 
     private CyNetworkView cnv;
     private View<CyNode> view;
 
-    public NodeViewContextMenuFactory(Context context) {
+    public NodeViewContextMenuFactory(CENVContext context) {
         this.context = context;
     }
 
@@ -86,7 +86,7 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(Context.APP_NAME);
+        JMenuItem menuItem = new JMenuItem(CENVContext.APP_NAME);
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;

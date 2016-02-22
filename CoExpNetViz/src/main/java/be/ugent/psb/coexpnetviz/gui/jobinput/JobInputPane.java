@@ -202,6 +202,7 @@ public class JobInputPane extends GridPane {
     }
 	
 	public void init(final CENVContext context, final Window window) {
+		this.context = context;
 		this.model = new JobInputModel();
 		final ObjectProperty<Path> lastBrowsedPath = context.getConfiguration().lastBrowsedPathProperty();
 		
@@ -445,9 +446,9 @@ public class JobInputPane extends GridPane {
 	    		presetName = "";
 	    	}
 	    	else {
-	    		presetName = "_" + lastUsedPreset.getName(); 
+	    		presetName = "__" + lastUsedPreset.getName().replace(' ', '_'); 
 	    	}
-	        String networkName = CENVContext.APP_NAME + presetName + "_" + CENVContext.getTimeStamp();
+	        String networkName = CENVContext.APP_NAME + presetName + "__" + CENVContext.getTimeStamp();
 	        
 	        // result path
 	        validator.setName("Output path");
@@ -455,14 +456,12 @@ public class JobInputPane extends GridPane {
 	    	validator.ensureIsDirectory(path);
 	    	validator.ensureReadable(path);
 	        jobDescription.setResultPath(path.resolve(networkName));
-	        System.out.println(jobDescription.getResultPath().toString());
-	        return;
 	        
 	        // Valid input
-//	        errorTextArea.setVisible(false);
-//	        
-//	        // Run the analysis
-//	        new RunAnalysisTaskController(context, jobDescription, networkName);
+	        errorTextArea.setVisible(false);
+	        
+	        // Run the analysis
+	        new RunAnalysisTaskController(context, jobDescription, networkName);
 		}
 		catch (ValidationException ex) {
 			errorText.setText(ex.getMessage());

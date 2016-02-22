@@ -49,13 +49,11 @@ public class Configuration {
 	}
 	
 	public JobInputPreset getLastUsedPreset() {
-		System.out.println("get " + lastUsedPreset);
 		for (JobInputPreset preset : presets) {
 			if (preset.getName().equals(lastUsedPreset)) {
 				return preset;
 			}
 		}
-		System.out.println("not found");
 		return null;
 	}
 	
@@ -64,7 +62,6 @@ public class Configuration {
 	}
 
 	public void setLastUsedPresetName(String lastUsedPreset) {
-		System.out.println("set " + lastUsedPreset);
 		JobInputPreset preset = new JobInputPreset();
 		preset.setName(lastUsedPreset);
 		assert presets.contains(preset);

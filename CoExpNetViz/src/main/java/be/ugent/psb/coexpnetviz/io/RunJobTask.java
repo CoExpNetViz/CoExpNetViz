@@ -1,7 +1,5 @@
 package be.ugent.psb.coexpnetviz.io;
 
-import java.nio.file.Path;
-
 /*
  * #%L
  * CoExpNetViz
@@ -34,7 +32,6 @@ public class RunJobTask implements Task {
 
 	private JobServer jobServer;
 	private JobDescription jobDescription;
-	private Path unpackedResult;
 	
 	public RunJobTask(JobServer jobServer, JobDescription jobDescription) {
 		super();
@@ -50,11 +47,7 @@ public class RunJobTask implements Task {
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
 		tm.setStatusMessage("Running job on CoExpNetViz server");
-		unpackedResult = jobServer.runJob(jobDescription);
-	}
-	
-	public Path getUnpackedResult() {
-		return unpackedResult;
+		jobServer.runJob(jobDescription);
 	}
 	
 }

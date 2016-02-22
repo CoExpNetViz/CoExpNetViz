@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -69,29 +70,30 @@ public class JobServer {
      * @throws JobServerException
      * @return Path to unpacked result  
      */
-    public Path runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
+    public void runJob(JobDescription job) throws InterruptedException, IOException, JobServerException {
         // Post request and retrieve result
-    	Path packedResultPath = null;
+    	Path tempDirectory = null;
     	try {
 	    	// Run job on server, which returns a tgz archive
-    		packedResultPath =  Files.createTempFile("coexpnetviz_result_", ".tgz");    	
-	        HttpEntity postEntity = makeEntity(job);
+    		tempDirectory =  Files.createTempDirectory("coexpnetviz_result");
+    		Path packedResultPath = tempDirectory.resolve("network.tgz");
+	        HttpEntity postEntity = makeRequestEntity(job);
 	        executeJobOnServer(postEntity, packedResultPath);
 	
 	        // Unpack the tgz result
-	        Path unpackedResultPath = job.getResultPath();
 	        Archiver archiver = ArchiverFactory.createArchiver(packedResultPath.toFile());
-	        archiver.extract(packedResultPath.toFile(), unpackedResultPath.toFile());
+	        archiver.extract(packedResultPath.toFile(), tempDirectory.toFile());
 	        
-	        return unpackedResultPath;
+	        // Move to the right spot
+	        Files.move(tempDirectory.resolve("network"), job.getResultPath());
     	}
     	finally {
-    		if (packedResultPath != null)
-    			Files.delete(packedResultPath);
+    		if (tempDirectory != null)
+    			FileUtils.deleteDirectory(tempDirectory.toFile());
     	}
     }
 
-    private HttpEntity makeEntity(JobDescription job)
+    private HttpEntity makeRequestEntity(JobDescription job)
         throws UnsupportedEncodingException {
 
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();

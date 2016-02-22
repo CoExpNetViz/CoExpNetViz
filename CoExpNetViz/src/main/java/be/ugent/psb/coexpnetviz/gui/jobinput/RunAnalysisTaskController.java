@@ -185,7 +185,7 @@ public class RunAnalysisTaskController implements Observer {
 	}
 
 	private Path getExtractedFile(String fileName) {
-		return runJobTask.getUnpackedResult().resolve(fileName);
+		return jobDescription.getResultPath().resolve(fileName);
 	}
 
 	private CyNetwork getNetwork() {

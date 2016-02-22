@@ -23,6 +23,7 @@ package be.ugent.psb.coexpnetviz.gui.jobinput;
  */
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
@@ -58,7 +59,6 @@ public class RunAnalysisTaskController implements Observer {
     private String networkName;
     private int step;  // what stage of the analysis we're at
     private TaskIterator taskIterator;
-    private RunJobTask runJobTask;
     private CyNetworkReader networkReader;
     private CyTableReader nodeTableReader;
     private CyTableReader edgeTableReader;
@@ -67,7 +67,7 @@ public class RunAnalysisTaskController implements Observer {
         this.context = context;
         this.jobDescription = jobDescription;
         this.networkName = networkName;
-        step = 0;
+        step = 1; // TODO rm debug, back to 0
         taskIterator = new TaskIterator();
         update(null, null); // send fake update event to self to initialise the first step
         context.getTaskManager().execute(taskIterator);
@@ -84,8 +84,7 @@ public class RunAnalysisTaskController implements Observer {
 		switch (step++) {
 		case 0:
 			// Run job on server, download response
-	    	runJobTask = new RunJobTask(new JobServer(), jobDescription);
-	    	taskIterator.append(runJobTask);
+	    	taskIterator.append(new RunJobTask(new JobServer(), jobDescription));
 	    	break;
 	    	
 		case 1:
@@ -95,7 +94,7 @@ public class RunAnalysisTaskController implements Observer {
 	        
 		case 2:
 			// Load tables and apply them to the network
-	        nodeTableReader = addReadTableTask(getExtractedFile("network.node.attr"), CyNode.class);
+	        nodeTableReader = addReadTableTask(getExtractedFile("network.node.attr"), CyNode.class); // TODO these ask the user for info, it shouldn't, we can supply that info
 	        edgeTableReader = addReadTableTask(getExtractedFile("network.edge.attr"), CyEdge.class);
 	        
 	        break;
@@ -117,7 +116,7 @@ public class RunAnalysisTaskController implements Observer {
 	        context.getCyNetworkViewManager().addNetworkView(networkView);
 	        
 	        // Apply network style
-	        context.getVisualMappingManager().setVisualStyle(getStyle(CENVContext.APP_NAME, getExtractedFile("cenv_style.xml")), networkView);
+	        context.getVisualMappingManager().setVisualStyle(getStyle(CENVContext.APP_NAME, getExtractedFile("coexpnetviz_style.xml")), networkView);
 	        
 	        // Apply layout
 	    	FamLayout layout = (FamLayout) context.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
@@ -159,7 +158,8 @@ public class RunAnalysisTaskController implements Observer {
      * Load table from file
      */
     private CyTableReader addReadTableTask(Path tablePath, Class<? extends CyIdentifiable> type) {
-    	CyTableReader tableReader = context.getCyTableReaderManager().getReader(tablePath.toUri(), null);
+    	CyTableReader tableReader = context.getCyTableReaderManager().getReader(tablePath.toUri(), tablePath.getFileName().toString());
+    	assert tableReader != null;
     	taskIterator.append(tableReader);
     	return tableReader;
     }
@@ -184,8 +184,9 @@ public class RunAnalysisTaskController implements Observer {
 		return networkReader;
 	}
 
-	private Path getExtractedFile(String fileName) {
-		return jobDescription.getResultPath().resolve(fileName);
+	private Path getExtractedFile(String fileName) { // TODO rm debug
+		return Paths.get("/home/limyreth/coexp_test").resolve(fileName);
+//		return jobDescription.getResultPath().resolve(fileName);
 	}
 
 	private CyNetwork getNetwork() {

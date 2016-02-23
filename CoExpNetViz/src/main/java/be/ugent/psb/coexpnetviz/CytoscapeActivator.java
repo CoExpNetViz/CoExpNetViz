@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -49,6 +50,7 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 
 import be.ugent.psb.coexpnetviz.gui.MenuAction;
+import be.ugent.psb.coexpnetviz.gui.NodeViewContextMenuFactory;
 import be.ugent.psb.coexpnetviz.layout.FamLayout;
 
 // With declarative services we wouldn't need glue code like this http://www.eclipsezone.com/eclipse/forums/t97690.rhtml
@@ -98,12 +100,11 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        cgalProperties.setProperty(TITLE, cgal.toString());
 	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
 	
-	        //register contex menu action
-	        // TODO fix problems with CENVNodeViewContextMenuFactory, then reenable
-	        /*CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new CENVNodeViewContextMenuFactory(application);
+	        // Add node context menu action
+	        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new NodeViewContextMenuFactory(context);
 	        Properties myNodeViewContextMenuFactoryProps = new Properties();
 	        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
-	        registerAllServices(context, myNodeViewContextMenuFactory, myNodeViewContextMenuFactoryProps);*/
+	        registerService(bundleContext, myNodeViewContextMenuFactory, CyNodeViewContextMenuFactory.class, myNodeViewContextMenuFactoryProps);
     	}
     	catch (Exception e) {
     		e.printStackTrace();

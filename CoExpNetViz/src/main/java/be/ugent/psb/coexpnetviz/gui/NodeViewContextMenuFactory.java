@@ -23,43 +23,34 @@ package be.ugent.psb.coexpnetviz.gui;
  */
 
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.InputMap;
-import javax.swing.JButton;
+
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.border.EmptyBorder;
+
 import org.cytoscape.application.swing.CyMenuItem;
 import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
-import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
 import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.util.Strings;
 
 //TODO this is probably broken due to changed family strings, and you also need to make the distinction between bait and family nodes. Disabled this class for now (by not activating it in the CytoscapeActivator
 /**
@@ -68,10 +59,9 @@ import be.ugent.psb.coexpnetviz.CENVContext;
 public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory, ActionListener {
 
     private String plazaMonocotKey = "Plaza Monocots";
-    private String plazaMonocotRegex = "ORTHO\\d+M\\d+";
-
     private String plazaDicotKey = "Plaza Dicots";
-    private String plazaDicotRegex = "ORTHO\\d+D\\d+";
+    private Pattern plazaMonocotPattern;
+    private Pattern plazaDicotPattern;
     
     private CENVContext context;
 
@@ -80,13 +70,15 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
 
     public NodeViewContextMenuFactory(CENVContext context) {
         this.context = context;
+        plazaMonocotPattern = Pattern.compile("ORTHO\\d+M\\d+", Pattern.CASE_INSENSITIVE);
+        plazaDicotPattern = Pattern.compile("ORTHO\\d+D\\d+", Pattern.CASE_INSENSITIVE);
     }
 
     @Override
     public CyMenuItem createMenuItem(CyNetworkView cnv, View<CyNode> view) {
         this.cnv = cnv;
         this.view = view;
-        JMenuItem menuItem = new JMenuItem(CENVContext.APP_NAME);
+        JMenuItem menuItem = new JMenuItem("Node info (" + CENVContext.APP_NAME + ")");
         menuItem.addActionListener(this);
         CyMenuItem cyMenuItem = new CyMenuItem(menuItem, 0);
         return cyMenuItem;
@@ -94,101 +86,75 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        CyNetworkTableManager cyNetworkTableManager = context.getCyNetworkTableManager();
-
-        CyNetwork cn = cnv.getModel();
+        CyNetwork network = cnv.getModel();
         CyNode node = view.getModel();
-        CyTable cevNodeTable = cyNetworkTableManager.getTable(cn, CyNode.class, CyNetwork.LOCAL_ATTRS);
-        String famColumnName = "family";
-        CyRow row = cn.getRow(node);
+        CyRow row = network.getRow(node);
 
-        String families = row.get(famColumnName, String.class);
-
+        String families;
+        String title;
+        if (row.get("type", String.class).equals("family node")) {
+        	families = row.get("family", String.class);
+        	title = "Family node info";
+        }
+        else {
+        	families = row.get("families", String.class);
+        	title = "Bait node info";
+        }
+        
+        if (Strings.isNullOrEmpty(families))
+        	families = "<None>";
+        
         Frame parent = context.getCySwingApplication().getJFrame();;
-
-        new NodeDialog(parent, "Node info", parseFamilies(families));
+        new NodeInfoDialog(families, title, parent);
     }
 
-    public Map<String, List<String>> parseFamilies(String families) { // not sure if supposed to be public
-        HashMap<String, List<String>> famsMap = new LinkedHashMap<String, List<String>>();
+    private class NodeInfoDialog extends JDialog {
 
-        List<String> monocotFams = parseFamilyType(families, plazaMonocotRegex);
-        if (!monocotFams.isEmpty()) {
-            famsMap.put(plazaMonocotKey, monocotFams);
-        }
-
-        List<String> dicotFams = parseFamilyType(families, plazaDicotRegex);
-        if (!dicotFams.isEmpty()) {
-            famsMap.put(plazaDicotKey, dicotFams);
-        }
-
-        return famsMap;
-    }
-
-    private List<String> parseFamilyType(String families, String regex) {
-        Pattern dicotp = Pattern.compile(regex);
-        Matcher dicotm = dicotp.matcher(families);
-
-        List<String> fams = new ArrayList<String>();
-        while (dicotm.find()) {
-            String match = dicotm.group();
-            fams.add(match);
-        }
-
-        return fams;
-    }
-
-    private class NodeDialog extends JDialog {
-
-        public NodeDialog(Frame parent, String title, Map<String, List<String>> famsMap) {
+        public NodeInfoDialog(String families, String title, Frame parent) {
             super(parent, title);
-            // set the position of the window
-            Point p = MouseInfo.getPointerInfo().getLocation();
-            setLocation(p);
-//            Point p = parent.getLocationOnScreen();
-//            setLocation(p.x + 400, p.y + 200);
 
-            JPanel famPane = new JPanel();
-            famPane.setLayout(new BoxLayout(famPane, BoxLayout.PAGE_AXIS));
-            setContentPane(famPane);
+            JPanel panel = new JPanel();
+            panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            GridLayout layout = new GridLayout();
+            layout.setColumns(1);
+            layout.setVgap(5);
+            panel.setLayout(layout);
+            setContentPane(panel);
 
-            // show source of gene family
-            for (String key : famsMap.keySet()) {
-                famPane.add(new JLabel(key));
-
-                // show gene family linkouts
-                for (String genfam : famsMap.get(key)) {
-                    String url = null;
-                    if (key.equals(plazaMonocotKey)) {
-                        url = String.format("http://bioinformatics.psb.ugent.be/plaza/versions/plaza_v3_monocots/gene_families/view/%s", genfam);
-                    }
-                    if (key.equals(plazaDicotKey)) {
-                        url = String.format("http://bioinformatics.psb.ugent.be/plaza/versions/plaza_v3_dicots/gene_families/view/%s", genfam);
-                    }
-                    famPane.add(makeLinkoutLbl(genfam, url));
-                }
+            // Link to family pages
+            for (String family : families.split("[+]")) {
+            	if (plazaMonocotPattern.matcher(family).matches()) {
+            		panel.add(createLinkLabel(String.format("http://bioinformatics.psb.ugent.be/plaza/versions/plaza_v3_monocots/gene_families/view/%s", family), family));
+            	}
+            	else if (plazaDicotPattern.matcher(family).matches()) {
+            		panel.add(createLinkLabel(String.format("http://bioinformatics.psb.ugent.be/plaza/versions/plaza_v3_dicots/gene_families/view/%s", family), family));
+            	}
+            	else {
+            		panel.add(new JLabel(family));
+            	}
             }
+            layout.setRows(panel.getComponentCount());
 
-            //close window on ESC keypress
-            KeyStroke stroke = KeyStroke.getKeyStroke("ESCAPE");
-            InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-            inputMap.put(stroke, "ESCAPE");
-            rootPane.getActionMap().put("ESCAPE", new AbstractAction() {
-
+            // When press escape, dispose window
+            ActionListener escListener = new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent ae) {
-                    setVisible(false);
+                public void actionPerformed(ActionEvent e) {
                     dispose();
                 }
+            };
+            getRootPane().registerKeyboardAction(escListener, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-            });
-
+            // When close window, dispose it
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            
+            // Show window at mouse
+            Point p = MouseInfo.getPointerInfo().getLocation();
+            setLocation(p);
             pack();
             setVisible(true);
         }
 
-        private JLabel makeLinkoutLbl(String text, String url) {
+        private JLabel createLinkLabel(String url, String text) {
             JLabel hrefLabel;
             if (url != null) {
                 hrefLabel = new JLabel(String.format("<html><a href=%s>%s</a></html>", text, text));

@@ -106,7 +106,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
 	        registerService(bundleContext, myNodeViewContextMenuFactory, CyNodeViewContextMenuFactory.class, myNodeViewContextMenuFactoryProps);
     	}
-    	catch (Exception e) {
+    	catch (Throwable e) {
     		e.printStackTrace();
     		throw e;
     	}

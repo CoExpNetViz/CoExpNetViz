@@ -25,11 +25,11 @@ package be.ugent.psb.util.javafx.view;
 import java.io.IOException;
 
 import be.ugent.psb.util.TCCLRunnable;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
 /**
@@ -66,5 +66,24 @@ public class FileInput extends HBox {
 	public Button getBrowseButton() {
 		return browseButton;
 	}
+
+	public final String getPromptText() {
+		return textField.getPromptText();
+	}
+
+	public final void setPromptText(String value) {
+		textField.setPromptText(value);
+	}
+
+	public final Tooltip getTooltip() {
+		return browseButton.getTooltip();
+	}
+
+	public final void setTooltip(Tooltip value) {
+		textField.setTooltip(value);
+		browseButton.setTooltip(value);
+	}
+	
+	
 
 }

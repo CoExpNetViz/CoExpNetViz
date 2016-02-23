@@ -114,17 +114,13 @@ public class FamLayoutTask extends AbstractLayoutTask {
             if (cComponent.size == 1) {
                 //group unconnected nodes in a square
 
-                try {
-                    addToSquare(targetList.get(0).get(0), offsetx, offsety);
+                addToSquare(targetList.get(0).get(0), offsetx, offsety);
 
-                    if (offsetx > context.maxwidths) {
-                        offsety += context.nspacingy;
-                        offsetx = 0.0;
-                    } else {
-                        offsetx += context.nspacingx;
-                    }
-                } catch (NullPointerException e) {
-                    //TODO
+                if (offsetx > context.maxwidths) {
+                    offsety += context.nspacingy;
+                    offsetx = 0.0;
+                } else {
+                    offsetx += context.nspacingx;
                 }
 
             } else if (cComponent.size > 1) {

@@ -113,7 +113,7 @@ public class CENVContext {
 	/**
      * Get a formatted current time string
      */
-    public static String getTimeStamp() { // TODO throw into an Util class
+    public static String getTimeStamp() {
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
         return sdf.format(now);

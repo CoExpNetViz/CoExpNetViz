@@ -67,7 +67,7 @@ public class RunAnalysisTaskController implements Observer {
         this.context = context;
         this.jobDescription = jobDescription;
         this.networkName = networkName;
-        step = 1; // TODO rm debug, back to 0
+        step = 0;
         taskIterator = new TaskIterator();
         update(null, null); // send fake update event to self to initialise the first step
         context.getTaskManager().execute(taskIterator);
@@ -184,9 +184,8 @@ public class RunAnalysisTaskController implements Observer {
 		return networkReader;
 	}
 
-	private Path getExtractedFile(String fileName) { // TODO rm debug
-		return Paths.get("/home/limyreth/coexp_test").resolve(fileName);
-//		return jobDescription.getResultPath().resolve(fileName);
+	private Path getExtractedFile(String fileName) {
+		return jobDescription.getResultPath().resolve(fileName);
 	}
 
 	private CyNetwork getNetwork() {

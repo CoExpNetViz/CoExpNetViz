@@ -11,6 +11,8 @@ Put CoExpNetViz-*.jar in ~/CytoscapeConfiguration/3/apps/installed
 
 An introduction to Cytoscape app development: http://opentutorials.cgl.ucsf.edu/index.php/Tutorial:Create_a_Bundle_App_Using_IDE
 
+Cytoscape cookbook: http://wiki.cytoscape.org/Cytoscape_3/AppDeveloper/Cytoscape_3_App_Cookbook
+
 Versioning scheme: semantic versioning, i.e. major.minor.maintenance[-SNAPSHOT], e.g. 1.0.0-SNAPSHOT. [Explanation of SNAPSHOT](https://docs.oracle.com/middleware/1212/core/MAVEN/maven_version.htm#MAVEN401), [Major, minor, maintenance usage](https://python-packaging-user-guide.readthedocs.org/en/latest/distributing/#semantic-versioning-preferred).
 
 The latest Cytoscape (v3.2 as of writing) is compatible with Java 7 (i.e. version 1.7), so we develop for Java 7. We require at least Java 7 update 6 (which is from 2012-06-12, i.e. ancient). 

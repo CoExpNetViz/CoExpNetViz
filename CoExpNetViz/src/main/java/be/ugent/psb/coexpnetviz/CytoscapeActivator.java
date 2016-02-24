@@ -68,7 +68,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	try{
+    	try {
 	    	context = new CENVContext(
 				getService(bundleContext, UndoSupport.class),
 				getService(bundleContext, TaskManager.class),

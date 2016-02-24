@@ -84,7 +84,7 @@ public class RunAnalysisTaskController implements Observer {
 		switch (step++) {
 		case 0:
 			// Run job on server, download response
-	    	taskIterator.append(new RunJobTask(new JobServer(), jobDescription));
+	    	taskIterator.append(new RunJobTask(context, new JobServer(), jobDescription));
 	    	break;
 	    	
 		case 1:

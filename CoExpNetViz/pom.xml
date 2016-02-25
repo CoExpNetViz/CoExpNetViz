@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <properties>
-        <bundle.symbolicName>coexpnetviz</bundle.symbolicName>
-        <bundle.namespace>be.ugent.psb</bundle.namespace>
-    </properties>
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>be.ugent.psb</groupId>
     <artifactId>CoExpNetViz</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
-    <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+    <name>CoExpNetViz</name>
 	
     <licenses>
         <license>
@@ -51,8 +46,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <optimize>true</optimize>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
@@ -130,9 +125,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>be.ugent.psb.coexpnetviz</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Bundle-Activator>${bundle.namespace}.coexpnetviz.CytoscapeActivator</Bundle-Activator>
+                        <Bundle-Activator>be.ugent.psb.coexpnetviz.CytoscapeActivator</Bundle-Activator>
                         
                         <!-- TODO when testing java-7-jdk with scope=provided, this did not work in Cytoscape
                         	 When JavaFX from java-7-jdk was embedded (scope=compile) it did work. But then 

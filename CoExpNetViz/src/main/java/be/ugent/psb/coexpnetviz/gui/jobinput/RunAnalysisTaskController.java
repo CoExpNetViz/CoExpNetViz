@@ -46,7 +46,7 @@ import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.io.JobDescription;
 import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
-import be.ugent.psb.coexpnetviz.layout.FamLayout;
+import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 import be.ugent.psb.util.cytoscape.NotificationTask;
 
 /**
@@ -67,7 +67,7 @@ public class RunAnalysisTaskController implements Observer {
         this.context = context;
         this.jobDescription = jobDescription;
         this.networkName = networkName;
-        step = 0;
+        step = 1;//TODO
         taskIterator = new TaskIterator();
         update(null, null); // send fake update event to self to initialise the first step
         context.getTaskManager().execute(taskIterator);
@@ -119,8 +119,8 @@ public class RunAnalysisTaskController implements Observer {
 	        context.getVisualMappingManager().setVisualStyle(getStyle(CENVContext.APP_NAME, getExtractedFile("coexpnetviz_style.xml")), networkView);
 	        
 	        // Apply layout
-	    	FamLayout layout = (FamLayout) context.getCyLayoutAlgorithmManager().getLayout(FamLayout.NAME);
-	    	taskIterator.append(layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, "colour", "species"));
+	    	CyLayoutAlgorithm layout = context.getCyLayoutAlgorithmManager().getLayout(CENVLayoutAlgorithm.NAME);
+	    	taskIterator.append(layout.createTaskIterator(networkView, layout.createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, null));
 	        
 	    	return; // return on the last step to skip adding another notification task
 			
@@ -185,7 +185,8 @@ public class RunAnalysisTaskController implements Observer {
 	}
 
 	private Path getExtractedFile(String fileName) {
-		return jobDescription.getResultPath().resolve(fileName);
+		return Paths.get("/home/limyreth/CoExpNetViz__2_species_example__16.02.25-05:29:04").resolve(fileName);
+//		return jobDescription.getResultPath().resolve(fileName);
 	}
 
 	private CyNetwork getNetwork() {

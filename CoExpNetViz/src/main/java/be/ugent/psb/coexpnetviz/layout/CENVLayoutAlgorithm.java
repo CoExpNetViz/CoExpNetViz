@@ -32,47 +32,35 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-public class FamLayout extends AbstractLayoutAlgorithm {
-
-	public static final String NAME = "fam-layout";
-    public static final String HUMAN_FRIENDLY_NAME = "Family node Layout";
+public class CENVLayoutAlgorithm extends AbstractLayoutAlgorithm {
+	
+	public static final String NAME = "coexpnetviz_layout";
     
-    /**
-     * Creates a new GroupAttributesLayout object.
-     * @param undo
-     */
-    public FamLayout(UndoSupport undo) {
-        super(NAME, HUMAN_FRIENDLY_NAME, undo);
+    public CENVLayoutAlgorithm(UndoSupport undo) {
+        super(NAME, "CoExpNetViz layout", undo);
     }
 
-    public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName) {
-        return new TaskIterator(new FamLayoutTask(toString(), networkView, nodesToLayOut, (FamLayoutContext) context, attrName, null, undoSupport));
-    }
-
-    public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String attrName, String baitName) {
-        return new TaskIterator(new FamLayoutTask(toString(), networkView, nodesToLayOut, (FamLayoutContext) context, attrName, baitName, undoSupport));
+    public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String layoutAttribute) {
+        return new TaskIterator(new CENVLayoutTask(toString(), networkView, nodesToLayOut, (CENVLayoutContext) context, undoSupport));
     }
 
     @Override
     public Set<Class<?>> getSupportedNodeAttributeTypes() {
         Set<Class<?>> ret = new HashSet<Class<?>>();
-
         ret.add(Integer.class);
         ret.add(Double.class);
         ret.add(String.class);
-        ret.add(Boolean.class);
-
         return ret;
     }
 
     @Override
-    public FamLayoutContext createLayoutContext() {
-        return new FamLayoutContext();
+    public CENVLayoutContext createLayoutContext() {
+        return new CENVLayoutContext();
     }
 
     @Override
     public boolean getSupportsSelectedOnly() {
-        return true;
+        return false;
     }
 
 }

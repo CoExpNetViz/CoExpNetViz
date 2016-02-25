@@ -51,7 +51,7 @@ import org.osgi.framework.BundleContext;
 
 import be.ugent.psb.coexpnetviz.gui.MenuAction;
 import be.ugent.psb.coexpnetviz.gui.NodeViewContextMenuFactory;
-import be.ugent.psb.coexpnetviz.layout.FamLayout;
+import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
 // With declarative services we wouldn't need glue code like this http://www.eclipsezone.com/eclipse/forums/t97690.rhtml
 /**
@@ -93,7 +93,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        registerAllServices(bundleContext, new MenuAction(context), new Properties());
 	
 	        // Add our layout
-	        FamLayout cgal = new FamLayout(context.getUndoSupport());
+	        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
 	        Properties cgalProperties = new Properties();
 	        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVContext.APP_NAME);
 	        cgalProperties.setProperty("preferredTaskManager", "menu");

@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- See https://github.com/cytoscape/cytoscape-app-samples/blob/master/project-template/pom.xml -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>be.ugent.psb</groupId>
     <artifactId>CoExpNetViz</artifactId>
     <version>1.0.4</version>
-
-    <name>CoExpNetViz</name>
+    
+	<properties>
+		<cytoscape.api.version>3.1.0</cytoscape.api.version>
+		<maven-compiler-plugin.version>3.5</maven-compiler-plugin.version>
+		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
+		<osgi.api.version>4.2.0</osgi.api.version>
+		
+		<!-- The java version to support. Should match the one Cytoscape recommends. -->
+		<java.version>1.8</java.version>
+	</properties>
 	
     <licenses>
         <license>
@@ -24,11 +34,10 @@
             </resource>
         </resources>
         <plugins>
-        	<!-- Set java version and compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>default-testCompile</id>
@@ -46,8 +55,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <optimize>true</optimize>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
@@ -121,7 +130,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
+                <version>${maven-bundle-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -136,10 +145,18 @@
                         	 1. Why does Cytoscape find JavaFX under Java 8, but not Java 7, when scope=provided (should ask on mailing list)
                         	 2. We could work around it if we could embed both JavaFX 2 and JavaFX 8 and import 
                         	    the right one based on the java version (maybe java.lang has a version attrib)-->
-                        <Export-Package></Export-Package> <!-- export nothing, everything is private -->
-                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency> <!-- Simply include jars with packages. You can use these packages only if they're also imported by Import-Package -->
+                        
+                        <!-- Export nothing, keep everything private -->
+                        <Export-Package></Export-Package>
+                        
+                        <!-- Include some dependencies in the bundle which aren't provided by cytoscape. Also include test dependencies because we provide those in our dev env. -->
+                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency>
+                        
+                        <!-- Embed deps of deps too -->
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>*;resolution:=optional</Import-Package> <!-- When a package is not imported, we cannot use it in our code. * indicates we import everything we use -->
+                        
+                        <!-- The default is *, which is necessary for Embed-Dependency, but not sure what the resolution=optional is for -->
+                        <Import-Package>*;resolution:=optional</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -191,6 +208,7 @@
         <repository>
             <id>cytoscape_snapshots</id>
             <snapshots>
+            	<enabled>true</enabled>
             </snapshots>
             <releases>
                 <enabled>false</enabled>
@@ -204,6 +222,7 @@
                 <enabled>false</enabled>
             </snapshots>
             <releases>
+            	<enabled>true</enabled>
             </releases>
             <name>Cytoscape Releases</name>
             <url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
@@ -215,74 +234,77 @@
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>application-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
+            <!-- Do not include in jar, they are provided-by/included-in cytoscape already -->
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>swing-application-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>session-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>vizmap-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>model-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>layout-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>work-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>swing-util-api</artifactId>
-            <version>3.1.0</version>
+            <version>${cytoscape.api.version}</version>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.cytoscape</groupId>    
             <artifactId>model-impl</artifactId>    
-            <version>3.1.0</version>     
-            <type>test-jar</type>    
+            <version>${cytoscape.api.version}</version>     
+            <type>test-jar</type>
+            <!-- Only necessary to run tests -->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>    
             <artifactId>model-impl</artifactId>     
-            <version>3.1.0</version>    
+            <version>${cytoscape.api.version}</version>    
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.cytoscape</groupId>    
             <artifactId>event-api</artifactId>    
-            <version>3.1.0</version>     
+            <version>${cytoscape.api.version}</version>     
             <type>test-jar</type>    
             <scope>test</scope>
         </dependency>
@@ -313,7 +335,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
+            <version>${osgi.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

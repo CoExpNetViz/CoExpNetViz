@@ -1,1 +1,4 @@
 CoExpNetViz/target/*
+.classpath
+.project
+.settings

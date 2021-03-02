@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <properties>
-        <bundle.symbolicName>be.samey.CoExpNetViz</bundle.symbolicName>
-        <bundle.namespace>be.samey</bundle.namespace>
-    </properties>
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>be.samey</groupId>
+    <groupId>be.ugent.psb</groupId>
     <artifactId>CoExpNetViz</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.4</version>
 
-    <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+    <name>CoExpNetViz</name>
 	
     <licenses>
         <license>
@@ -28,12 +23,12 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-        <!-- Cytoscape requires Java 1.6 -->
         <plugins>
+        	<!-- Set java version and compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.5</version>
                 <executions>
                     <execution>
                         <id>default-testCompile</id>
@@ -51,17 +46,22 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <optimize>true</optimize>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
                     <compilerArguments>
-                        <Xmaxwarns>10000</Xmaxwarns>
-                        <Xmaxerrs>10000</Xmaxerrs>
-                    </compilerArguments>
+					  <Xmaxwarns>10000</Xmaxwarns>
+					  <Xmaxerrs>10000</Xmaxerrs>
+					</compilerArguments>
                 </configuration>
             </plugin>
+            
+            <!-- Testing plugins -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -70,7 +70,8 @@
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
-            <!--  Add licenses -->
+            
+            <!--  Add license -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -112,7 +113,11 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Generates the OSGi metadata based on the osgi.bnd file. -->
+            
+            <!-- Bundle as OSGi plugin with metadata and embed dependencies
+            
+            	 You either embed X or import X. Importing implies it will be fetched from another bundle, 
+            	 but that means it should be in a separate bundle and embedded in this one.  -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -120,21 +125,68 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>be.ugent.psb.coexpnetviz</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>${bundle.namespace}.*</Export-Package>
-                        <Private-Package>${bundle.namespace}.internal.*</Private-Package>
-                        <Bundle-Activator>${bundle.namespace}.internal.CyActivator</Bundle-Activator>
-                        <Embed-Dependency>*;scope=!provided|test</Embed-Dependency>
+                        <Bundle-Activator>be.ugent.psb.coexpnetviz.CytoscapeActivator</Bundle-Activator>
+                        
+                        <!-- TODO when testing java-7-jdk with scope=provided, this did not work in Cytoscape
+                        	 When JavaFX from java-7-jdk was embedded (scope=compile) it did work. But then 
+                        	 when starting under Java 8 the old JavaFX would break due to backwards incompatible
+                        	 changes in other parts of Java.
+                        	 1. Why does Cytoscape find JavaFX under Java 8, but not Java 7, when scope=provided (should ask on mailing list)
+                        	 2. We could work around it if we could embed both JavaFX 2 and JavaFX 8 and import 
+                        	    the right one based on the java version (maybe java.lang has a version attrib)-->
+                        <Export-Package></Export-Package> <!-- export nothing, everything is private -->
+                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency> <!-- Simply include jars with packages. You can use these packages only if they're also imported by Import-Package -->
                         <Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>*;resolution:=optional</Import-Package>
+                        <Import-Package>*;resolution:=optional</Import-Package> <!-- When a package is not imported, we cannot use it in our code. * indicates we import everything we use -->
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									org.codehaus.mojo
+        								</groupId>
+        								<artifactId>
+        									license-maven-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.7,)
+        								</versionRange>
+        								<goals>
+        									<goal>
+        										update-file-header
+        									</goal>
+        									<goal>
+        										update-project-license
+        									</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore></ignore>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
     </build>
 
-    <!-- Links to the Cytoscape Maven repositories. -->
+    <!-- Cytoscape Maven repositories. -->
     <repositories>
         <repository>
             <id>cytoscape_snapshots</id>
@@ -159,14 +211,13 @@
     </repositories>
 
     <dependencies>
-        <!-- Dependencies needed to compile this project. -->
+        <!-- Cytoscape -->
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
+            <groupId>org.cytoscape</groupId>
+            <artifactId>application-api</artifactId>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Cytoscape modules -->
         <dependency>
             <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
@@ -215,8 +266,6 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Dependencies below are required for: compile, runtime and test.
-        They are all provided by Cytoscape at runtime. -->
         <dependency>
             <groupId>org.cytoscape</groupId>    
             <artifactId>model-impl</artifactId>    
@@ -260,31 +309,58 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Third party -->
+		<!-- Various -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.4</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
             <version>4.4</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.rauschig</groupId>
             <artifactId>jarchivelib</artifactId>
             <version>0.7.0</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.15</version>
-            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
+        </dependency>  
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+        <dependency>
+          <groupId>com.oracle.javafx</groupId>
+          <artifactId>javafx</artifactId>
+          <version>[2.0,)</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency> <!-- Only use features that are also still available in jfxtras 8.0 (which requires Java 8) -->
+          <groupId>org.jfxtras</groupId>
+          <artifactId>jfxtras-labs</artifactId>
+          <version>2.2-r5</version>
         </dependency>
     </dependencies>
-
 </project>

@@ -1,2163 +1,1438 @@
-n1	cor	n2	n3	n4	n5	n6
-n7	cor	n2	n3	n4
-n8	cor	n2	n3	n4
-n9	cor	n2
-n10	cor	n2	n3	n4
-n11	cor	n2	n3	n4
-n12	cor	n2	n3	n4
-n13	cor	n2	n3	n4	n5	n6	n14
-n15	cor	n2	n3	n4
-n16	cor	n2	n3	n4
-n17	cor	n2	n3	n4
-n18	cor	n2	n3	n4
-n19	cor	n2	n3	n4	n5	n6
-n20	cor	n2	n3	n4	n5	n6
-n21	cor	n2	n3	n4
-n22	cor	n2	n3	n4
-n23	cor	n2	n3	n4	n5	n6	n24	n25	n26
-n27	cor	n2	n3	n4	n5	n6	n14
-n28	cor	n2	n3	n4	n5
-n29	cor	n2	n3	n4	n5	n6	n14
-n30	cor	n2	n3	n4
-n31	cor	n2	n3	n4	n5	n6
-n32	cor	n2	n3	n4	n5	n6	n14
-n33	cor	n2	n3	n4
-n34	cor	n2	n3	n4	n5	n6
-n35	cor	n2	n3	n4	n5	n6
-n36	cor	n2	n3	n4	n5	n6
-n37	cor	n2	n3	n4	n5	n6
-n38	cor	n2	n3	n4	n5	n6	n25
-n39	cor	n2	n3	n4
-n40	cor	n2	n3	n4
-n41	cor	n2	n3	n4	n5	n6	n14
-n42	cor	n2	n3	n4
-n43	cor	n2	n3	n4	n5
-n44	cor	n2	n3	n4	n5	n6
-n45	cor	n2	n3	n4	n5	n6
-n46	cor	n2	n3	n4	n5	n6
-n47	cor	n2	n3	n4
-n48	cor	n2	n3	n4
-n49	cor	n2	n3	n4
-n50	cor	n2	n3	n4	n5	n6
-n51	cor	n2	n3	n4	n5	n6
-n52	cor	n2	n3	n4
-n53	cor	n2	n3	n4	n5	n6	n14
-n54	cor	n2	n3	n4
-n55	cor	n2	n3	n4
-n56	cor	n2
-n57	cor	n2	n3
-n58	cor	n2	n3	n4
-n59	cor	n2	n3	n4
-n60	cor	n2	n3	n4	n5
-n61	cor	n2	n3	n4	n5	n6
-n62	cor	n2	n3	n4	n25	n26
-n63	cor	n2	n3	n4	n5
-n64	cor	n2	n3	n4
-n65	cor	n2	n3	n4
-n66	cor	n2	n3	n4
-n67	cor	n2	n3	n4	n5	n24	n25	n26
-n68	cor	n2	n3	n4
-n69	cor	n2	n3	n4
-n70	cor	n2	n3	n4	n5	n6	n14
-n71	cor	n2	n3	n4	n5	n6
-n72	cor	n2	n3	n4	n5	n6	n14
-n73	cor	n2	n3	n4	n5	n6	n14
-n74	cor	n2	n3	n4
-n75	cor	n2	n3	n4
-n76	cor	n2	n3	n5
-n77	cor	n2	n3	n4	n5	n6
-n78	cor	n2	n3	n4	n5
-n79	cor	n2	n3	n4
-n80	cor	n2	n3	n4	n25
-n81	cor	n2	n3	n4
-n82	cor	n2	n3	n4	n5
-n83	cor	n2	n3	n4
-n84	cor	n2	n3	n4
-n85	cor	n2	n3	n4
-n86	cor	n2	n3	n4
-n87	cor	n2	n3	n4	n5	n6
-n88	cor	n2	n3	n4
-n89	cor	n2	n3	n4	n24	n26
-n90	cor	n2	n3	n4
-n91	cor	n2	n3	n4	n5	n6
-n92	cor	n2	n3	n4	n5	n6
-n93	cor	n2	n3	n4
-n94	cor	n2	n3	n4
-n95	cor	n2	n3	n4
-n96	cor	n2	n3	n4	n5	n6
-n97	cor	n2	n3	n4
-n98	cor	n2	n3	n4	n5	n6
-n99	cor	n2	n3	n4	n5
-n100	cor	n2	n3	n4
-n101	cor	n2	n3	n4	n6	n14	n24	n26
-n102	cor	n2	n3
-n103	cor	n2	n3	n4
-n104	cor	n2	n3	n4	n5	n6
-n105	cor	n2	n3	n4	n5	n6	n14	n25
-n106	cor	n2	n3	n4	n5	n6	n24	n26
-n107	cor	n2	n3	n4
-n108	cor	n2	n3	n4
-n109	cor	n2	n3	n4	n5	n6
-n110	cor	n2	n3	n4
-n111	cor	n2	n3	n4
-n112	cor	n2	n3	n4	n5	n6
-n113	cor	n2	n3	n4
-n114	cor	n2	n3	n4	n24	n26
-n115	cor	n2	n3	n4
-n116	cor	n2	n3	n4
-n117	cor	n2	n3	n4
-n118	cor	n2	n3	n4
-n119	cor	n2	n3	n4
-n120	cor	n2	n3	n4
-n121	cor	n2	n3	n4	n5	n6
-n122	cor	n2	n3	n4	n5	n6
-n123	cor	n2	n3	n4
-n124	cor	n2	n3	n4
-n125	cor	n2	n3	n4
-n126	cor	n2	n3	n4
-n127	cor	n2	n3	n4	n14
-n128	cor	n2	n3	n4	n26
-n129	cor	n2	n3	n4
-n130	cor	n2	n3	n4
-n131	cor	n2	n3	n4	n5	n6
-n132	cor	n2	n3	n4
-n133	cor	n2	n3	n4	n5	n6
-n134	cor	n2	n3	n4	n5	n6
-n135	cor	n2	n3	n4
-n136	cor	n2	n3	n4
-n137	cor	n2	n3	n4
-n138	cor	n2	n3	n4	n5	n6	n24
-n139	cor	n2	n3	n4
-n140	cor	n3
-n141	cor	n3	n4
-n142	cor	n2	n3	n4	n5	n6
-n143	cor	n2	n3	n4
-n144	cor	n2	n3	n4	n5	n6	n14
-n145	cor	n2	n3	n4	n5	n6
-n146	cor	n2	n3	n4
-n147	cor	n2	n3	n4	n5	n6
-n148	cor	n2	n3	n4	n5	n6	n14
-n149	cor	n2	n3	n4
-n150	cor	n2	n3	n4
-n151	cor	n2	n3	n4
-n152	cor	n2	n3	n4	n6	n14
-n153	cor	n2	n3	n4
-n154	cor	n2	n3	n4
-n155	cor	n2	n3	n4	n5
-n156	cor	n2	n3	n4	n5	n6	n14	n24	n26
-n157	cor	n2	n3	n4
-n158	cor	n2	n3	n4	n5	n6
-n159	cor	n5	n6
-n160	cor	n5	n6
-n161	cor	n5
-n162	cor	n5	n6	n14
-n163	cor	n5	n6	n14
-n164	cor	n5	n6
-n165	cor	n5
-n166	cor	n5
-n167	cor	n2	n3	n4
-n168	cor	n2	n3	n4	n5	n6	n14	n24	n26
-n169	cor	n2	n3	n4	n5	n6
-n170	cor	n2	n3	n4
-n171	cor	n2	n3	n4	n5	n6	n14
-n172	cor	n2	n3	n4
-n173	cor	n2	n3	n4
-n174	cor	n2
-n175	cor	n2	n3	n4	n5	n6	n14
-n176	cor	n2	n3	n4
-n177	cor	n2
-n178	cor	n2	n3	n4	n25
-n179	cor	n2	n3	n4	n5	n6	n14	n24	n25	n26
-n180	cor	n2	n3	n4
-n181	cor	n5	n6
-n182	cor	n5
-n183	cor	n5	n6
-n184	cor	n5
-n185	cor	n5
-n186	cor	n5	n6
-n187	cor	n5	n6
-n188	cor	n5	n6
-n189	cor	n5	n6
-n190	cor	n5
-n191	cor	n5	n6
-n192	cor	n5
-n193	cor	n5
-n194	cor	n3	n4
-n195	cor	n5	n6
-n196	cor	n5	n6
-n197	cor	n5	n6
-n198	cor	n4	n5	n6	n14
-n199	cor	n4
-n200	cor	n24	n26
-n201	cor	n6
-n202	cor	n6	n14
-n203	cor	n6	n14
-n204	cor	n4
-n205	cor	n14
-n206	cor	n6	n14
-n207	cor	n5	n6	n14
-n208	cor	n5
-n209	cor	n5
-n210	cor	n5	n6
-n211	cor	n5	n6
-n212	cor	n5	n6	n14
-n213	cor	n5	n6
-n214	cor	n5	n6
-n215	cor	n5	n6
-n216	cor	n5
-n217	cor	n5	n6	n14
-n218	cor	n5	n6
-n219	cor	n5	n6
-n220	cor	n5	n6
-n221	cor	n5	n6
-n222	cor	n5	n6	n14
-n223	cor	n5	n6
-n224	cor	n5	n6
-n225	cor	n5	n6
-n226	cor	n5
-n227	cor	n5	n6
-n228	cor	n5	n25
-n229	cor	n5	n6
-n230	cor	n5	n6
-n231	cor	n5	n6
-n232	cor	n5	n6
-n233	cor	n5	n6
-n234	cor	n5	n6
-n235	cor	n5	n6
-n236	cor	n5	n6
-n237	cor	n5	n6
-n238	cor	n5	n6	n25
-n239	cor	n5	n6
-n240	cor	n5	n6
-n241	cor	n5	n6
-n242	cor	n5	n6	n14
-n243	cor	n5
-n244	cor	n5	n6
-n245	cor	n5	n6
-n246	cor	n5	n6	n14	n24	n25	n26
-n247	cor	n5	n6	n24	n26
-n248	cor	n5	n6
-n249	cor	n5	n6
-n250	cor	n5	n6
-n251	cor	n5	n6
-n252	cor	n5	n6
-n253	cor	n5	n6
-n254	cor	n5	n6
-n255	cor	n5
-n256	cor	n5	n6
-n257	cor	n5
-n258	cor	n5	n6
-n259	cor	n5	n6
-n260	cor	n5	n6
-n261	cor	n5
-n262	cor	n5	n6
-n263	cor	n5
-n264	cor	n5	n6
-n265	cor	n5	n6	n14
-n266	cor	n5	n6	n14
-n267	cor	n5
-n268	cor	n5	n6
-n269	cor	n5	n6
-n270	cor	n5	n6
-n271	cor	n5
-n272	cor	n5	n6
-n273	cor	n5	n6
-n274	cor	n5	n6
-n275	cor	n5	n6
-n276	cor	n5	n6
-n277	cor	n5	n6
-n278	cor	n5	n6
-n279	cor	n5
-n280	cor	n5	n6	n25
-n281	cor	n5
-n282	cor	n5	n6	n24	n25	n26
-n283	cor	n5	n6
-n284	cor	n5	n6
-n285	cor	n5	n14
-n286	cor	n5	n6
-n287	cor	n5	n6
-n288	cor	n5	n6
-n289	cor	n5	n6
-n290	cor	n5	n6
-n291	cor	n5	n6	n24	n26
-n292	cor	n5	n6
-n293	cor	n5	n6
-n294	cor	n5	n6
-n295	cor	n5	n6
-n296	cor	n5	n6
-n297	cor	n5
-n298	cor	n5	n6	n14
-n299	cor	n5
-n300	cor	n5
-n301	cor	n5
-n302	cor	n5
-n303	cor	n5
-n304	cor	n5
-n305	cor	n5	n6
-n306	cor	n5	n6
-n307	cor	n5	n6
-n308	cor	n5	n6	n14
-n309	cor	n5	n6
-n310	cor	n5	n6
-n311	cor	n5
-n312	cor	n5
-n313	cor	n5	n6
-n314	cor	n5	n6
-n315	cor	n5
-n316	cor	n5	n6
-n317	cor	n5
-n318	cor	n5	n6
-n319	cor	n5	n6
-n320	cor	n5	n6
-n321	cor	n5
-n322	cor	n5	n6
-n323	cor	n5	n6	n14
-n324	cor	n5
-n325	cor	n5	n6
-n326	cor	n5
-n327	cor	n5	n6	n25
-n328	cor	n5	n6
-n329	cor	n5	n6
-n330	cor	n5
-n331	cor	n5	n6
-n332	cor	n5	n6
-n333	cor	n5	n6	n14
-n334	cor	n5	n6
-n335	cor	n5
-n336	cor	n5
-n337	cor	n5
-n338	cor	n5
-n339	cor	n5	n6	n14	n24	n25	n26
-n340	cor	n5
-n341	cor	n5	n6
-n342	cor	n5
-n343	cor	n5	n6	n14
-n344	cor	n5	n6
-n345	cor	n5	n6
-n346	cor	n5	n6	n24	n25	n26
-n347	cor	n5	n6
-n348	cor	n5	n6
-n349	cor	n5	n6
-n350	cor	n5	n6	n14
-n351	cor	n5
-n352	cor	n5	n6
-n353	cor	n5	n6
-n354	cor	n5	n6
-n355	cor	n5	n6
-n356	cor	n5	n6	n14
-n357	cor	n5
-n358	cor	n5
-n359	cor	n5	n6	n14
-n360	cor	n5	n6
-n361	cor	n5	n6
-n362	cor	n5	n6	n14
-n363	cor	n5	n6
-n364	cor	n5	n6
-n365	cor	n5
-n366	cor	n5
-n367	cor	n5	n6
-n368	cor	n5	n6
-n369	cor	n5	n6
-n370	cor	n5
-n371	cor	n5	n6
-n372	cor	n5	n6
-n373	cor	n5	n6
-n374	cor	n5	n6
-n375	cor	n5
-n376	cor	n5	n6
-n377	cor	n5
-n378	cor	n5	n6	n14
-n379	cor	n5	n6
-n380	cor	n5	n6
-n381	cor	n5	n6
-n382	cor	n5	n6
-n383	cor	n5
-n384	cor	n5	n6
-n385	cor	n5
-n386	cor	n5
-n387	cor	n5	n6
-n388	cor	n5	n6
-n389	cor	n5	n6
-n390	cor	n5	n6
-n391	cor	n5	n6
-n392	cor	n5	n6
-n393	cor	n5
-n394	cor	n5	n6
-n395	cor	n5	n6
-n396	cor	n5
-n397	cor	n5	n6
-n398	cor	n5	n6
-n399	cor	n5	n6
-n400	cor	n5
-n401	cor	n5	n6	n14	n25
-n402	cor	n5	n6
-n403	cor	n5	n6	n14
-n404	cor	n5	n6	n14
-n405	cor	n5	n6
-n406	cor	n5	n6
-n407	cor	n5	n6
-n408	cor	n5
-n409	cor	n5
-n410	cor	n5	n6
-n411	cor	n5	n6
-n412	cor	n5	n6	n14
-n413	cor	n5
-n414	cor	n5	n6
-n415	cor	n5	n6
-n416	cor	n5
-n417	cor	n5
-n418	cor	n5
-n419	cor	n5	n6
-n420	cor	n5
-n421	cor	n5	n6
-n422	cor	n5	n6	n24	n26
-n423	cor	n5
-n424	cor	n5
-n425	cor	n5	n6
-n426	cor	n5	n6	n14
-n427	cor	n5	n6
-n428	cor	n5	n6
-n429	cor	n5	n6	n14
-n430	cor	n5
-n431	cor	n5	n6	n14
-n432	cor	n5	n6
-n433	cor	n5
-n434	cor	n5	n6	n14
-n435	cor	n5
-n436	cor	n5	n6
-n437	cor	n5	n6
-n438	cor	n5	n6	n14
-n439	cor	n5	n6	n14
-n440	cor	n5	n6	n14
-n441	cor	n5	n6
-n442	cor	n5
-n443	cor	n5	n6	n25
-n444	cor	n5	n6
-n445	cor	n5	n6
-n446	cor	n5	n6
-n447	cor	n5	n6
-n448	cor	n5
-n449	cor	n5	n6
-n450	cor	n5	n6	n25
-n451	cor	n5	n6
-n452	cor	n5	n6
-n453	cor	n5	n6
-n454	cor	n5
-n455	cor	n5	n6
-n456	cor	n5	n6
-n457	cor	n5	n6	n14
-n458	cor	n5
-n459	cor	n5
-n460	cor	n5	n6
-n461	cor	n5	n6
-n462	cor	n5
-n463	cor	n5
-n464	cor	n5	n6
-n465	cor	n5	n6
-n466	cor	n5	n6	n24	n25	n26
-n467	cor	n5
-n468	cor	n5	n6
-n469	cor	n5
-n470	cor	n5
-n471	cor	n5	n6	n14
-n472	cor	n5	n6
-n473	cor	n5	n6
-n474	cor	n5	n6
-n475	cor	n5	n6
-n476	cor	n5	n6
-n477	cor	n5
-n478	cor	n5	n6	n14
-n479	cor	n5	n6
-n480	cor	n5	n6
-n481	cor	n5	n6
-n482	cor	n5	n6
-n483	cor	n5
-n484	cor	n5	n6
-n485	cor	n5	n6
-n486	cor	n5
-n487	cor	n5	n6
-n488	cor	n5
-n489	cor	n5	n24	n26
-n490	cor	n5	n6
-n491	cor	n5
-n492	cor	n5
-n493	cor	n5	n6
-n494	cor	n5
-n495	cor	n5	n6
-n496	cor	n5	n6	n14
-n497	cor	n5
-n498	cor	n5	n6	n25
-n499	cor	n5
-n500	cor	n5	n6
-n501	cor	n5
-n502	cor	n5	n6
-n503	cor	n5	n6
-n504	cor	n5
-n505	cor	n5	n6
-n506	cor	n5	n6
-n507	cor	n5	n6
-n508	cor	n5
-n509	cor	n5	n6
-n510	cor	n5
-n511	cor	n5	n6
-n512	cor	n5	n6
-n513	cor	n5	n6
-n514	cor	n5	n6
-n515	cor	n5	n6
-n516	cor	n5
-n517	cor	n5	n6	n25
-n518	cor	n5	n6	n14
-n519	cor	n5	n6
-n520	cor	n5	n6
-n521	cor	n5	n6
-n522	cor	n5
-n523	cor	n5	n6
-n524	cor	n5	n6	n14
-n525	cor	n5	n6
-n526	cor	n5	n6
-n527	cor	n5	n6
-n528	cor	n5	n6	n14
-n529	cor	n5	n6
-n530	cor	n5	n6
-n531	cor	n5	n6
-n532	cor	n5	n6	n14
-n533	cor	n5
-n534	cor	n5
-n535	cor	n5	n6
-n536	cor	n5
-n537	cor	n5
-n538	cor	n5
-n539	cor	n5	n6	n14
-n540	cor	n5	n6	n25
-n541	cor	n5	n6
-n542	cor	n5	n6
-n543	cor	n5	n6	n14
-n544	cor	n5
-n545	cor	n5	n6
-n546	cor	n5	n6
-n547	cor	n5	n6
-n548	cor	n5	n6
-n549	cor	n5	n6
-n550	cor	n5	n6	n14
-n551	cor	n5
-n552	cor	n5	n6
-n553	cor	n5	n6
-n554	cor	n5	n6
-n555	cor	n5	n6	n14
-n556	cor	n5	n6
-n557	cor	n5	n6
-n558	cor	n5
-n559	cor	n5
-n560	cor	n5	n6
-n561	cor	n5	n6
-n562	cor	n5	n6	n14
-n563	cor	n5
-n564	cor	n5	n6
-n565	cor	n5	n6
-n566	cor	n5	n6
-n567	cor	n5
-n568	cor	n5
-n569	cor	n5	n6
-n570	cor	n5	n6	n14	n26
-n571	cor	n5	n6
-n572	cor	n5
-n573	cor	n5
-n574	cor	n5	n6
-n575	cor	n5	n6	n14
-n576	cor	n5
-n577	cor	n5	n6
-n578	cor	n5
-n579	cor	n5	n6
-n580	cor	n5	n6
-n581	cor	n5	n6	n14
-n582	cor	n5	n6
-n583	cor	n5
-n584	cor	n5	n6
-n585	cor	n5	n6
-n586	cor	n5	n6
-n587	cor	n5	n6
-n588	cor	n5	n6
-n589	cor	n5	n6
-n590	cor	n5
-n591	cor	n5
-n592	cor	n5
-n593	cor	n5	n6
-n594	cor	n5
-n595	cor	n5
-n596	cor	n5
-n597	cor	n5	n6
-n598	cor	n5	n6
-n599	cor	n5	n6
-n600	cor	n5	n6
-n601	cor	n5
-n602	cor	n5	n6
-n603	cor	n5
-n604	cor	n5	n6
-n605	cor	n5	n6
-n606	cor	n5	n6
-n607	cor	n5	n6
-n608	cor	n5	n6	n14
-n609	cor	n5	n6	n14
-n610	cor	n5	n6
-n611	cor	n5	n6
-n612	cor	n5
-n613	cor	n5	n6
-n614	cor	n5
-n615	cor	n5	n6
-n616	cor	n5	n6	n14
-n617	cor	n5
-n618	cor	n5
-n619	cor	n5	n6	n14
-n620	cor	n5	n6
-n621	cor	n5	n6
-n622	cor	n5	n6
-n623	cor	n5	n6
-n624	cor	n5
-n625	cor	n5	n6
-n626	cor	n5	n6
-n627	cor	n5
-n628	cor	n5
-n629	cor	n5	n6
-n630	cor	n5	n6	n14
-n631	cor	n5
-n632	cor	n5	n6	n24	n26
-n633	cor	n5
-n634	cor	n5	n6
-n635	cor	n5
-n636	cor	n5	n6
-n637	cor	n5	n6
-n638	cor	n5	n6
-n639	cor	n5	n6
-n640	cor	n5	n6
-n641	cor	n5
-n642	cor	n5	n6
-n643	cor	n5	n6
-n644	cor	n5	n6
-n645	cor	n5	n6
-n646	cor	n5
-n647	cor	n5
-n648	cor	n5	n6
-n649	cor	n5	n6
-n650	cor	n5
-n651	cor	n5	n6	n14
-n652	cor	n5	n6	n14
-n653	cor	n5	n6
-n654	cor	n5
-n655	cor	n5	n6
-n656	cor	n5	n6
-n657	cor	n5	n6
-n658	cor	n5	n6
-n659	cor	n5	n6
-n660	cor	n5	n6	n14
-n661	cor	n5	n6	n14
-n662	cor	n5	n6
-n663	cor	n5
-n664	cor	n5
-n665	cor	n5	n6	n14	n25
-n666	cor	n5	n6
-n667	cor	n5	n6
-n668	cor	n5	n6
-n669	cor	n5	n6
-n670	cor	n5
-n671	cor	n5	n6	n14
-n672	cor	n5	n6
-n673	cor	n5
-n674	cor	n5	n6
-n675	cor	n5
-n676	cor	n5	n6
-n677	cor	n5	n6	n14
-n678	cor	n5	n6
-n679	cor	n5	n6	n24	n26
-n680	cor	n5	n6
-n681	cor	n5
-n682	cor	n5	n6
-n683	cor	n5	n6
-n684	cor	n5
-n685	cor	n5
-n686	cor	n5
-n687	cor	n5	n6
-n688	cor	n5	n6
-n689	cor	n5	n6
-n690	cor	n5
-n691	cor	n5	n6
-n692	cor	n5	n6
-n693	cor	n5
-n694	cor	n5
-n695	cor	n5
-n696	cor	n5
-n697	cor	n5	n6	n14
-n698	cor	n5
-n699	cor	n5
-n700	cor	n5	n6
-n701	cor	n5	n6
-n702	cor	n5	n6	n14
-n703	cor	n5
-n704	cor	n5
-n705	cor	n5
-n706	cor	n5	n6
-n707	cor	n5
-n708	cor	n5	n6
-n709	cor	n5
-n710	cor	n5	n6
-n711	cor	n5	n6
-n712	cor	n5	n6
-n713	cor	n5	n6
-n714	cor	n5	n6	n14
-n715	cor	n5	n6	n24
-n716	cor	n5
-n717	cor	n5	n6	n14
-n718	cor	n5
-n719	cor	n5	n6	n14
-n720	cor	n5
-n721	cor	n5
-n722	cor	n5	n6
-n723	cor	n5	n6
-n724	cor	n5	n6	n14
-n725	cor	n5
-n726	cor	n5
-n727	cor	n5	n6
-n728	cor	n5	n6
-n729	cor	n5	n6
-n730	cor	n5	n6
-n731	cor	n5	n6	n14
-n732	cor	n5	n6
-n733	cor	n5
-n734	cor	n5	n6
-n735	cor	n5	n6
-n736	cor	n5	n6
-n737	cor	n5	n6	n14
-n738	cor	n5
-n739	cor	n5
-n740	cor	n5
-n741	cor	n5	n6	n14
-n742	cor	n5	n6	n24	n26
-n743	cor	n5	n6
-n744	cor	n5	n6
-n745	cor	n5
-n746	cor	n5
-n747	cor	n5	n6
-n748	cor	n5	n25
-n749	cor	n5	n6	n14
-n750	cor	n5	n6	n24	n26
-n751	cor	n5	n6
-n752	cor	n5	n6
-n753	cor	n5	n6
-n754	cor	n5
-n755	cor	n5	n6
-n756	cor	n5	n6	n14
-n757	cor	n5	n6	n14
-n758	cor	n5
-n759	cor	n5	n6
-n760	cor	n5	n6
-n761	cor	n5	n6	n14
-n762	cor	n5	n6
-n763	cor	n5	n6
-n764	cor	n5	n6	n14
-n765	cor	n5	n6
-n766	cor	n5
-n767	cor	n5
-n768	cor	n5	n6
-n769	cor	n5
-n770	cor	n5	n6
-n771	cor	n5	n6
-n772	cor	n5
-n773	cor	n5	n6
-n774	cor	n5	n6
-n775	cor	n5	n6
-n776	cor	n5	n6
-n777	cor	n5	n6
-n778	cor	n5	n6	n24	n25	n26
-n779	cor	n5	n6	n24	n26
-n780	cor	n5	n6	n24
-n781	cor	n5	n6
-n782	cor	n5
-n783	cor	n5	n6	n14
-n784	cor	n5
-n785	cor	n5	n6	n24	n25
-n786	cor	n5	n6	n24	n26
-n787	cor	n5	n6
-n788	cor	n5	n6	n14
-n789	cor	n5	n6
-n790	cor	n5
-n791	cor	n5	n6
-n792	cor	n5
-n793	cor	n5	n6
-n794	cor	n5	n6
-n795	cor	n5	n6
-n796	cor	n5
-n797	cor	n5	n6
-n798	cor	n5
-n799	cor	n5
-n800	cor	n5
-n801	cor	n5	n6
-n802	cor	n5	n6
-n803	cor	n5	n6	n14
-n804	cor	n5	n6
-n805	cor	n5	n6
-n806	cor	n5
-n807	cor	n5
-n808	cor	n5
-n809	cor	n5
-n810	cor	n5
-n811	cor	n5	n6
-n812	cor	n5	n25	n26
-n813	cor	n5	n6
-n814	cor	n5
-n815	cor	n5	n6
-n816	cor	n5
-n817	cor	n5	n6
-n818	cor	n5	n6	n14
-n819	cor	n5	n6
-n820	cor	n5	n6
-n821	cor	n5	n6
-n822	cor	n5	n6
-n823	cor	n5	n6	n14
-n824	cor	n5	n6
-n825	cor	n5
-n826	cor	n5
-n827	cor	n5	n6
-n828	cor	n5	n6
-n829	cor	n5	n6
-n830	cor	n5	n6
-n831	cor	n5	n6
-n832	cor	n5	n6
-n833	cor	n5	n6	n24
-n834	cor	n5	n6
-n835	cor	n5	n6
-n836	cor	n5	n6
-n837	cor	n5
-n838	cor	n5	n6
-n839	cor	n5
-n840	cor	n5	n6
-n841	cor	n5	n6
-n842	cor	n5	n6
-n843	cor	n5	n6
-n844	cor	n5	n6
-n845	cor	n5	n6
-n846	cor	n5	n6
-n847	cor	n5	n6
-n848	cor	n5
-n849	cor	n5	n6
-n850	cor	n5	n6
-n851	cor	n5	n6	n25
-n852	cor	n5	n6
-n853	cor	n5
-n854	cor	n5	n6
-n855	cor	n5	n6	n14
-n856	cor	n5	n6
-n857	cor	n5
-n858	cor	n5	n6
-n859	cor	n5	n6
-n860	cor	n5	n6
-n861	cor	n5	n6
-n862	cor	n5	n6
-n863	cor	n5	n6	n14
-n864	cor	n5	n6	n24	n26
-n865	cor	n5	n6
-n866	cor	n5	n6	n14
-n867	cor	n5
-n868	cor	n5
-n869	cor	n5	n6
-n870	cor	n5	n6
-n871	cor	n5	n6
-n872	cor	n5	n6
-n873	cor	n5	n6
-n874	cor	n5
-n875	cor	n5	n6	n14
-n876	cor	n5	n6
-n877	cor	n5	n6
-n878	cor	n5
-n879	cor	n5	n6
-n880	cor	n5
-n881	cor	n5
-n882	cor	n5	n6	n14
-n883	cor	n5	n6
-n884	cor	n5	n6
-n885	cor	n5	n6
-n886	cor	n5	n6
-n887	cor	n5	n6
-n888	cor	n5	n6
-n889	cor	n5
-n890	cor	n5	n6
-n891	cor	n5	n6
-n892	cor	n5	n6
-n893	cor	n5
-n894	cor	n5	n6
-n895	cor	n5	n6
-n896	cor	n5	n6	n14
-n897	cor	n5
-n898	cor	n5
-n899	cor	n5	n6
-n900	cor	n5	n6	n25
-n901	cor	n5	n6
-n902	cor	n5	n6
-n903	cor	n5	n6
-n904	cor	n5	n6	n14
-n905	cor	n5	n6	n14
-n906	cor	n5	n6
-n907	cor	n5	n6
-n908	cor	n5	n6	n14
-n909	cor	n5	n6	n14
-n910	cor	n5
-n911	cor	n5	n6
-n912	cor	n5	n6	n14
-n913	cor	n5
-n914	cor	n5	n6
-n915	cor	n5	n6
-n916	cor	n5	n6
-n917	cor	n5	n6
-n918	cor	n5	n6
-n919	cor	n5	n6
-n920	cor	n5	n6
-n921	cor	n5
-n922	cor	n5	n6
-n923	cor	n5	n6	n14
-n924	cor	n5	n6
-n925	cor	n5	n6	n14
-n926	cor	n5	n6
-n927	cor	n5
-n928	cor	n5
-n929	cor	n5	n6
-n930	cor	n5	n6	n14
-n931	cor	n5	n6	n14
-n932	cor	n5	n6
-n933	cor	n5	n6
-n934	cor	n5
-n935	cor	n5
-n936	cor	n5	n6	n14
-n937	cor	n5	n6
-n938	cor	n5	n6
-n939	cor	n5
-n940	cor	n5	n6
-n941	cor	n5	n6
-n942	cor	n5	n24	n25	n26
-n943	cor	n5	n6
-n944	cor	n5	n6
-n945	cor	n5
-n946	cor	n5	n6
-n947	cor	n5	n6
-n948	cor	n5	n6
-n949	cor	n5	n6
-n950	cor	n5	n6
-n951	cor	n5
-n952	cor	n5	n6	n25
-n953	cor	n5	n6
-n954	cor	n5
-n955	cor	n5	n6	n14
-n956	cor	n5	n6	n14
-n957	cor	n5	n6
-n958	cor	n5	n6
-n959	cor	n5	n6
-n960	cor	n5
-n961	cor	n5	n6
-n962	cor	n5	n6
-n963	cor	n5
-n964	cor	n5	n6
-n965	cor	n5	n6
-n966	cor	n5
-n967	cor	n5	n6
-n968	cor	n5
-n969	cor	n5
-n970	cor	n5
-n971	cor	n5	n6
-n972	cor	n5	n6
-n973	cor	n5
-n974	cor	n5
-n975	cor	n5	n6	n14
-n976	cor	n5	n6
-n977	cor	n5	n6
-n978	cor	n5	n6
-n979	cor	n5	n6	n14	n24
-n980	cor	n5	n6
-n981	cor	n5	n6
-n982	cor	n5	n6
-n983	cor	n5	n6
-n984	cor	n5	n6	n14
-n985	cor	n5	n6
-n986	cor	n5	n6
-n987	cor	n5
-n988	cor	n5
-n989	cor	n5
-n990	cor	n5	n6
-n991	cor	n5	n6
-n992	cor	n5
-n993	cor	n5	n6
-n994	cor	n5	n6
-n995	cor	n5
-n996	cor	n5	n6
-n997	cor	n5	n6
-n998	cor	n5	n6
-n999	cor	n5	n6	n14
-n1000	cor	n5
-n1001	cor	n5	n6
-n1002	cor	n5
-n1003	cor	n5
-n1004	cor	n5
-n1005	cor	n5	n6
-n1006	cor	n5	n6
-n1007	cor	n5	n6
-n1008	cor	n5
-n1009	cor	n5	n6
-n1010	cor	n5	n6
-n1011	cor	n5	n6
-n1012	cor	n5	n6
-n1013	cor	n5	n6
-n1014	cor	n5	n6
-n1015	cor	n5	n6	n25
-n1016	cor	n5	n6
-n1017	cor	n5	n6
-n1018	cor	n5	n6
-n1019	cor	n5	n6
-n1020	cor	n5	n6
-n1021	cor	n5	n6	n14	n25
-n1022	cor	n5
-n1023	cor	n5
-n1024	cor	n5	n6	n14
-n1025	cor	n5	n6
-n1026	cor	n5	n6
-n1027	cor	n5	n6
-n1028	cor	n5	n6
-n1029	cor	n5	n6
-n1030	cor	n5	n6
-n1031	cor	n5
-n1032	cor	n5	n6
-n1033	cor	n5	n6
-n1034	cor	n5	n6
-n1035	cor	n5	n6	n14
-n1036	cor	n5
-n1037	cor	n5	n6
-n1038	cor	n5	n6
-n1039	cor	n5	n6
-n1040	cor	n5	n6	n14
-n1041	cor	n5
-n1042	cor	n5	n6
-n1043	cor	n5	n6
-n1044	cor	n5
-n1045	cor	n5	n6
-n1046	cor	n5	n6	n14
-n1047	cor	n5	n6
-n1048	cor	n5	n6
-n1049	cor	n5	n6
-n1050	cor	n5	n6
-n1051	cor	n5	n6
-n1052	cor	n5
-n1053	cor	n5	n6
-n1054	cor	n5	n6
-n1055	cor	n5	n6
-n1056	cor	n5	n6
-n1057	cor	n5	n6
-n1058	cor	n5	n6	n14
-n1059	cor	n5	n6
-n1060	cor	n5	n6
-n1061	cor	n5	n6	n14
-n1062	cor	n5	n6
-n1063	cor	n5	n6
-n1064	cor	n5	n6	n14	n25	n26
-n1065	cor	n5	n6
-n1066	cor	n5	n6
-n1067	cor	n5	n6
-n1068	cor	n5	n6
-n1069	cor	n5	n6
-n1070	cor	n5
-n1071	cor	n5
-n1072	cor	n5
-n1073	cor	n5
-n1074	cor	n5	n6
-n1075	cor	n5	n6
-n1076	cor	n5	n6	n14
-n1077	cor	n5
-n1078	cor	n5	n6
-n1079	cor	n5	n6	n14
-n1080	cor	n5	n6
-n1081	cor	n5
-n1082	cor	n5	n6
-n1083	cor	n5	n6
-n1084	cor	n5	n6
-n1085	cor	n5
-n1086	cor	n5	n6
-n1087	cor	n5	n6
-n1088	cor	n5
-n1089	cor	n5	n6	n14
-n1090	cor	n5	n6
-n1091	cor	n5
-n1092	cor	n5
-n1093	cor	n5	n6
-n1094	cor	n5
-n1095	cor	n5	n6
-n1096	cor	n5	n6	n14
-n1097	cor	n5	n6
-n1098	cor	n5	n6	n14
-n1099	cor	n5	n6
-n1100	cor	n5	n6
-n1101	cor	n5	n6
-n1102	cor	n5	n6
-n1103	cor	n5	n6
-n1104	cor	n5	n6	n14
-n1105	cor	n5	n6
-n1106	cor	n5
-n1107	cor	n5	n6
-n1108	cor	n5	n6
-n1109	cor	n5
-n1110	cor	n5
-n1111	cor	n5	n6
-n1112	cor	n5	n6	n25
-n1113	cor	n5
-n1114	cor	n5	n6
-n1115	cor	n5	n6
-n1116	cor	n5	n6
-n1117	cor	n5
-n1118	cor	n5	n6	n14
-n1119	cor	n5
-n1120	cor	n5	n6	n14	n24	n26
-n1121	cor	n5	n6
-n1122	cor	n5	n6
-n1123	cor	n5	n6	n14
-n1124	cor	n5	n6
-n1125	cor	n5	n6	n14
-n1126	cor	n5	n6
-n1127	cor	n5	n6
-n1128	cor	n5	n6
-n1129	cor	n5
-n1130	cor	n5	n6
-n1131	cor	n5	n6
-n1132	cor	n5	n6
-n1133	cor	n5	n6
-n1134	cor	n5	n6
-n1135	cor	n5
-n1136	cor	n5	n6
-n1137	cor	n5
-n1138	cor	n5	n6
-n1139	cor	n5	n6
-n1140	cor	n5	n6	n14
-n1141	cor	n5	n6
-n1142	cor	n5
-n1143	cor	n5	n6
-n1144	cor	n5	n6
-n1145	cor	n5	n6
-n1146	cor	n5	n6
-n1147	cor	n5	n6	n14
-n1148	cor	n5
-n1149	cor	n5	n6
-n1150	cor	n5	n6
-n1151	cor	n5
-n1152	cor	n5	n6
-n1153	cor	n5
-n1154	cor	n5	n6
-n1155	cor	n5	n6
-n1156	cor	n5	n6
-n1157	cor	n5	n6
-n1158	cor	n5	n6
-n1159	cor	n5	n6	n14
-n1160	cor	n5
-n1161	cor	n5	n6	n14
-n1162	cor	n5
-n1163	cor	n5	n6
-n1164	cor	n5
-n1165	cor	n5	n6	n14
-n1166	cor	n5	n6
-n1167	cor	n5	n6
-n1168	cor	n5
-n1169	cor	n5	n6	n14
-n1170	cor	n5
-n1171	cor	n5	n6
-n1172	cor	n5	n6
-n1173	cor	n5	n6
-n1174	cor	n5	n6
-n1175	cor	n5	n6
-n1176	cor	n5	n6
-n1177	cor	n5	n6
-n1178	cor	n5	n6
-n1179	cor	n5	n6
-n1180	cor	n5	n6
-n1181	cor	n5	n25
-n1182	cor	n5
-n1183	cor	n25
-n1184	cor	n25
-n1185	cor	n25
-n1186	cor	n25
-n1187	cor	n25
-n1188	cor	n25
-n1189	cor	n25	n26
-n1190	cor	n25
-n1191	cor	n25
-n1192	cor	n25
-n1193	cor	n25
-n1194	cor	n25
-n1195	cor	n25
-n1196	cor	n25
-n1197	cor	n25
-n1198	cor	n25
-n1199	cor	n25
-n1200	cor	n25
-n1201	cor	n25
-n1202	cor	n25
-n1203	cor	n25
-n1204	cor	n25
-n1205	cor	n25
-n1206	cor	n25
-n1207	cor	n25	n26
-n1208	cor	n25
-n1209	cor	n25	n26
-n1210	cor	n25
-n1211	cor	n25
-n1212	cor	n25	n26
-n1213	cor	n25
-n1214	cor	n25	n26
-n1215	cor	n25
-n1216	cor	n25
-n1217	cor	n25	n26
-n1218	cor	n25
-n1219	cor	n25
-n1220	cor	n25
-n1221	cor	n25
-n1222	cor	n25
-n1223	cor	n25
-n1224	cor	n25
-n1225	cor	n25
-n1226	cor	n25
-n1227	cor	n25
-n1228	cor	n25
-n1229	cor	n25
-n1230	cor	n25
-n1231	cor	n25
-n1232	cor	n25
-n1233	cor	n25
-n1234	cor	n25
-n1235	cor	n25
-n1236	cor	n25
-n1237	cor	n25
-n1238	cor	n25
-n1239	cor	n25
-n1240	cor	n25
-n1241	cor	n25
-n1242	cor	n25
-n1243	cor	n25
-n1244	cor	n25
-n1245	cor	n25
-n1246	cor	n25
-n1247	cor	n25
-n1248	cor	n25
-n1249	cor	n25
-n1250	cor	n25
-n1251	cor	n25	n26
-n1252	cor	n25
-n1253	cor	n25
-n1254	cor	n25
-n1255	cor	n5	n6
-n1256	cor	n5	n6
-n1257	cor	n5
-n1258	cor	n5	n6	n24	n26
-n1259	cor	n5	n6	n25
-n1260	cor	n5	n6
-n1261	cor	n5	n6	n24	n25	n26
-n1262	cor	n5	n6
-n1263	cor	n5	n6
-n1264	cor	n5	n6
-n1265	cor	n5	n6
-n1266	cor	n5	n6
-n1267	cor	n5	n6
-n1268	cor	n5	n6
-n1269	cor	n5	n6	n14
-n1270	cor	n5	n6
-n1271	cor	n5	n6
-n1272	cor	n5	n6	n14
-n1273	cor	n5
-n1274	cor	n5	n6
-n1275	cor	n5	n6
-n1276	cor	n5	n6
-n1277	cor	n5	n6
-n1278	cor	n5	n6
-n1279	cor	n5	n6	n14
-n1280	cor	n5	n6
-n1281	cor	n5	n6
-n1282	cor	n5	n6
-n1283	cor	n5
-n1284	cor	n5
-n1285	cor	n5
-n1286	cor	n5	n6
-n1287	cor	n5	n6
-n1288	cor	n5	n6	n14	n25
-n1289	cor	n5	n6
-n1290	cor	n5	n6
-n1291	cor	n5	n6
-n1292	cor	n5
-n1293	cor	n5	n6	n14	n25
-n1294	cor	n5	n6
-n1295	cor	n5	n6
-n1296	cor	n5	n6
-n1297	cor	n5	n6
-n1298	cor	n5	n6
-n1299	cor	n5	n6
-n1300	cor	n5	n6
-n1301	cor	n5	n6
-n1302	cor	n5	n6
-n1303	cor	n5	n6
-n1304	cor	n5	n6
-n1305	cor	n5
-n1306	cor	n5
-n1307	cor	n5	n6
-n1308	cor	n5
-n1309	cor	n5	n6
-n1310	cor	n5
-n1311	cor	n5	n6
-n1312	cor	n5	n6
-n1313	cor	n5
-n1314	cor	n5	n6	n14
-n1315	cor	n5	n6
-n1316	cor	n5	n6
-n1317	cor	n5	n6
-n1318	cor	n5	n6
-n1319	cor	n5	n6
-n1320	cor	n5	n6
-n1321	cor	n5
-n1322	cor	n5
-n1323	cor	n5	n6	n14
-n1324	cor	n5	n6	n14
-n1325	cor	n5	n6
-n1326	cor	n5
-n1327	cor	n5	n6	n25	n26
-n1328	cor	n5	n6
-n1329	cor	n5	n6
-n1330	cor	n5	n6
-n1331	cor	n5	n6	n14
-n1332	cor	n5	n25
-n1333	cor	n5	n6	n14
-n1334	cor	n5	n6	n14
-n1335	cor	n5
-n1336	cor	n5	n6	n14
-n1337	cor	n5
-n1338	cor	n5
-n1339	cor	n5	n6
-n1340	cor	n5	n6
-n1341	cor	n5	n6
-n1342	cor	n5	n6	n14
-n1343	cor	n5	n6
-n1344	cor	n5	n6
-n1345	cor	n5	n6
-n1346	cor	n5
-n1347	cor	n5	n6
-n1348	cor	n5	n6
-n1349	cor	n5	n6
-n1350	cor	n5	n6
-n1351	cor	n5	n6
-n1352	cor	n5	n6
-n1353	cor	n5
-n1354	cor	n5	n6
-n1355	cor	n5	n6	n25
-n1356	cor	n5	n6
-n1357	cor	n5	n6
-n1358	cor	n5	n6
-n1359	cor	n5
-n1360	cor	n5	n6
-n1361	cor	n5	n6
-n1362	cor	n5	n6	n14
-n1363	cor	n5	n6
-n1364	cor	n5	n6	n14
-n1365	cor	n5
-n1366	cor	n5	n6
-n1367	cor	n5	n6	n14
-n1368	cor	n5	n6	n14
-n1369	cor	n5
-n1370	cor	n5	n6
-n1371	cor	n5	n6
-n1372	cor	n5	n6
-n1373	cor	n5	n6	n14
-n1374	cor	n5	n6
-n1375	cor	n5	n6	n14
-n1376	cor	n5	n6
-n1377	cor	n5	n6
-n1378	cor	n5	n6
-n1379	cor	n5	n6
-n1380	cor	n5	n6	n14
-n1381	cor	n5	n6
-n1382	cor	n5	n6
-n1383	cor	n5
-n1384	cor	n5	n6
-n1385	cor	n5	n6
-n1386	cor	n5	n6
-n1387	cor	n5	n6
-n1388	cor	n5	n6
-n1389	cor	n5
-n1390	cor	n5	n6
-n1391	cor	n5	n6	n14
-n1392	cor	n5	n6
-n1393	cor	n5	n6
-n1394	cor	n5
-n1395	cor	n5
-n1396	cor	n5
-n1397	cor	n5	n6	n14
-n1398	cor	n5	n6
-n1399	cor	n5
-n1400	cor	n5
-n1401	cor	n5	n6
-n1402	cor	n5
-n1403	cor	n5	n6
-n1404	cor	n5	n6
-n1405	cor	n5	n6	n14
-n1406	cor	n5	n6
-n1407	cor	n5	n6
-n1408	cor	n5	n6
-n1409	cor	n5	n6
-n1410	cor	n5	n6	n14	n24	n26
-n1411	cor	n5	n6
-n1412	cor	n5	n6
-n1413	cor	n5	n6	n24	n26
-n1414	cor	n5
-n1415	cor	n5	n6
-n1416	cor	n5	n6
-n1417	cor	n5	n6
-n1418	cor	n5	n6
-n1419	cor	n5	n6
-n1420	cor	n5	n14
-n1421	cor	n5	n6	n14
-n1422	cor	n5	n6
-n1423	cor	n5	n6	n24	n25	n26
-n1424	cor	n5	n6
-n1425	cor	n5	n6
-n1426	cor	n5
-n1427	cor	n5	n6
-n1428	cor	n5	n6
-n1429	cor	n5
-n1430	cor	n5	n6	n14
-n1431	cor	n5	n6
-n1432	cor	n5
-n1433	cor	n5	n6
-n1434	cor	n5	n6
-n1435	cor	n5	n6
-n1436	cor	n5
-n1437	cor	n5	n6
-n1438	cor	n5	n6
-n1439	cor	n5	n6
-n1440	cor	n5	n6	n14
-n1441	cor	n5	n6
-n1442	cor	n5	n6	n24	n26
-n1443	cor	n5	n6
-n1444	cor	n5	n6	n14
-n1445	cor	n5
-n1446	cor	n5	n6	n14
-n1447	cor	n6	n14
-n1448	cor	n24	n26
-n1449	cor	n6
-n1450	cor	n24	n25	n26
-n1451	cor	n6	n14
-n1452	cor	n6
-n1453	cor	n6
-n1454	cor	n6	n14
-n1455	cor	n6	n14
-n1456	cor	n6
-n1457	cor	n6	n14
-n1458	cor	n6
-n1459	cor	n6	n14	n24	n26
-n1460	cor	n6	n14
-n1461	cor	n6	n14
-n1462	cor	n6	n14
-n1463	cor	n14
-n1464	cor	n5	n24
-n1465	cor	n5	n6
-n1466	cor	n5	n6
-n1467	cor	n5	n6
-n1468	cor	n5
-n1469	cor	n5	n6
-n1470	cor	n5
-n1471	cor	n5	n6
-n1472	cor	n5	n6
-n1473	cor	n5	n6
-n1474	cor	n5	n6
-n1475	cor	n5	n6
-n1476	cor	n5	n6	n14
-n1477	cor	n5
-n1478	cor	n5	n6
-n1479	cor	n5	n6
-n1480	cor	n5	n6
-n1481	cor	n5	n6	n14
-n1482	cor	n5	n6
-n1483	cor	n5
-n1484	cor	n5	n6
-n1485	cor	n5	n6
-n1486	cor	n5	n6	n14
-n1487	cor	n5	n6
-n1488	cor	n5
-n1489	cor	n5	n6	n14
-n1490	cor	n5	n6
-n1491	cor	n5	n6	n14
-n1492	cor	n5	n6
-n1493	cor	n5	n6
-n1494	cor	n5	n6	n24
-n1495	cor	n5	n6
-n1496	cor	n5
-n1497	cor	n5	n6
-n1498	cor	n5	n6	n14
-n1499	cor	n5	n6
-n1500	cor	n5	n6	n14
-n1501	cor	n5	n6
-n1502	cor	n5
-n1503	cor	n5	n6
-n1504	cor	n5	n6
-n1505	cor	n5	n24	n25	n26
-n1506	cor	n5	n6
-n1507	cor	n5	n6
-n1508	cor	n5	n6	n24	n26
-n1509	cor	n5	n6
-n1510	cor	n5	n6
-n1511	cor	n5	n6
-n1512	cor	n5	n6
-n1513	cor	n5	n6	n14
-n1514	cor	n5	n14
-n1515	cor	n5
-n1516	cor	n5	n6
-n1517	cor	n5	n6
-n1518	cor	n5	n6
-n1519	cor	n5
-n1520	cor	n5
-n1521	cor	n5	n6
-n1522	cor	n5
-n1523	cor	n5	n6
-n1524	cor	n5	n6
-n1525	cor	n5	n6
-n1526	cor	n5
-n1527	cor	n5	n25
-n1528	cor	n5	n6
-n1529	cor	n5	n6
-n1530	cor	n5	n6
-n1531	cor	n5	n6	n14
-n1532	cor	n5
-n1533	cor	n5	n6
-n1534	cor	n5
-n1535	cor	n5	n6
-n1536	cor	n5	n6
-n1537	cor	n5	n6
-n1538	cor	n5	n6
-n1539	cor	n5	n6
-n1540	cor	n5	n6	n14	n25	n26
-n1541	cor	n5	n6
-n1542	cor	n5	n6
-n1543	cor	n5	n6	n25	n26
-n1544	cor	n5	n6
-n1545	cor	n5	n6	n14
-n1546	cor	n5	n6
-n1547	cor	n5	n6
-n1548	cor	n5	n6
-n1549	cor	n5	n6
-n1550	cor	n5	n6
-n1551	cor	n5	n6
-n1552	cor	n5	n24	n26
-n1553	cor	n5
-n1554	cor	n5	n6
-n1555	cor	n5	n6
-n1556	cor	n5
-n1557	cor	n5	n6
-n1558	cor	n5	n6
-n1559	cor	n5	n6
-n1560	cor	n5
-n1561	cor	n5	n6
-n1562	cor	n5	n14
-n1563	cor	n5	n6
-n1564	cor	n5	n6
-n1565	cor	n5	n6
-n1566	cor	n5	n6	n24
-n1567	cor	n5	n6	n14
-n1568	cor	n5	n6
-n1569	cor	n5	n6
-n1570	cor	n5	n6
-n1571	cor	n5
-n1572	cor	n5	n6
-n1573	cor	n5	n6
-n1574	cor	n5
-n1575	cor	n5	n6	n14
-n1576	cor	n5
-n1577	cor	n5	n6
-n1578	cor	n5	n6
-n1579	cor	n5
-n1580	cor	n5	n6	n14
-n1581	cor	n5
-n1582	cor	n5	n6
-n1583	cor	n5	n6
-n1584	cor	n5	n6
-n1585	cor	n5	n6
-n1586	cor	n5	n6
-n1587	cor	n5	n6
-n1588	cor	n5	n6	n14
-n1589	cor	n5	n6
-n1590	cor	n5
-n1591	cor	n5	n6	n14
-n1592	cor	n5	n6	n14
-n1593	cor	n5	n6
-n1594	cor	n5	n6
-n1595	cor	n5	n6
-n1596	cor	n5	n6
-n1597	cor	n5	n6
-n1598	cor	n5	n6	n14
-n1599	cor	n5	n6
-n1600	cor	n5	n6	n14
-n1601	cor	n5	n6	n14
-n1602	cor	n5	n6
-n1603	cor	n5
-n1604	cor	n5	n6
-n1605	cor	n5	n6
-n1606	cor	n5
-n1607	cor	n5	n6
-n1608	cor	n5
-n1609	cor	n5	n6	n14
-n1610	cor	n5	n6
-n1611	cor	n5
-n1612	cor	n5	n6
-n1613	cor	n5	n6	n14	n25
-n1614	cor	n5	n6
-n1615	cor	n5	n6	n14
-n1616	cor	n5
-n1617	cor	n5
-n1618	cor	n5	n6
-n1619	cor	n5	n6
-n1620	cor	n5	n6
-n1621	cor	n5
-n1622	cor	n5	n6
-n1623	cor	n5	n6
-n1624	cor	n5	n6	n14
-n1625	cor	n5	n6
-n1626	cor	n5	n6
-n1627	cor	n5	n6
-n1628	cor	n5	n6
-n1629	cor	n5	n6
-n1630	cor	n5	n6	n14
-n1631	cor	n5	n6	n14
-n1632	cor	n5	n6
-n1633	cor	n5	n6
-n1634	cor	n5	n6
-n1635	cor	n5	n6
-n1636	cor	n5	n6
-n1637	cor	n5	n6
-n1638	cor	n5
-n1639	cor	n5
-n1640	cor	n5	n6
-n1641	cor	n5	n6	n14
-n1642	cor	n5	n6	n14
-n1643	cor	n5	n6
-n1644	cor	n5	n6
-n1645	cor	n5	n6
-n1646	cor	n5	n6	n14
-n1647	cor	n5	n6
-n1648	cor	n5	n6
-n1649	cor	n5
-n1650	cor	n5	n6
-n1651	cor	n5	n6
-n1652	cor	n5	n6	n14
-n1653	cor	n5	n6
-n1654	cor	n5	n6
-n1655	cor	n5	n6	n25
-n1656	cor	n5	n6
-n1657	cor	n5	n6	n14
-n1658	cor	n5	n6
-n1659	cor	n5	n6	n14
-n1660	cor	n5	n6
-n1661	cor	n5	n6
-n1662	cor	n5	n6
-n1663	cor	n5
-n1664	cor	n5	n6
-n1665	cor	n5	n6
-n1666	cor	n5	n6
-n1667	cor	n5	n6
-n1668	cor	n5	n6
-n1669	cor	n5	n6	n14	n24	n26
-n1670	cor	n5	n6
-n1671	cor	n5	n6
-n1672	cor	n5	n6
-n1673	cor	n5	n6
-n1674	cor	n5
-n1675	cor	n5	n6
-n1676	cor	n5	n6
-n1677	cor	n5	n6
-n1678	cor	n5	n6	n14
-n1679	cor	n5	n6
-n1680	cor	n5	n6
-n1681	cor	n5
-n1682	cor	n5	n6
-n1683	cor	n5	n6
-n1684	cor	n5	n6
-n1685	cor	n5	n6
-n1686	cor	n5	n6
-n1687	cor	n5	n6	n14
-n1688	cor	n5
-n1689	cor	n5	n6	n24	n25	n26
-n1690	cor	n5	n6
-n1691	cor	n5	n6
-n1692	cor	n5	n6
-n1693	cor	n5	n6
-n1694	cor	n5	n6
-n1695	cor	n5	n6
-n1696	cor	n5	n6
-n1697	cor	n5
-n1698	cor	n5	n6
-n1699	cor	n5
-n1700	cor	n5	n6
-n1701	cor	n5	n6
-n1702	cor	n5	n6
-n1703	cor	n5	n6
-n1704	cor	n5	n6
-n1705	cor	n5	n6	n14
-n1706	cor	n5	n6
-n1707	cor	n5	n6
-n1708	cor	n5	n6
-n1709	cor	n5	n6
-n1710	cor	n5
-n1711	cor	n5	n6
-n1712	cor	n5	n6
-n1713	cor	n5	n6
-n1714	cor	n5	n6
-n1715	cor	n5	n6
-n1716	cor	n5	n6
-n1717	cor	n5	n6
-n1718	cor	n5	n6	n14
-n1719	cor	n5	n6
-n1720	cor	n5	n6
-n1721	cor	n5	n6
-n1722	cor	n5	n6
-n1723	cor	n5	n6
-n1724	cor	n5	n6
-n1725	cor	n5	n6	n14
-n1726	cor	n5
-n1727	cor	n5	n6
-n1728	cor	n5	n6
-n1729	cor	n5	n6
-n1730	cor	n5	n6
-n1731	cor	n5
-n1732	cor	n5	n6
-n1733	cor	n5	n6
-n1734	cor	n5	n6
-n1735	cor	n5	n6
-n1736	cor	n5	n6
-n1737	cor	n5	n6
-n1738	cor	n5	n6
-n1739	cor	n5
-n1740	cor	n5	n6	n14
-n1741	cor	n5	n6
-n1742	cor	n5	n6
-n1743	cor	n5	n6	n25
-n1744	cor	n5
-n1745	cor	n5
-n1746	cor	n5
-n1747	cor	n5	n6	n14	n25
-n1748	cor	n5	n6	n14
-n1749	cor	n5
-n1750	cor	n5	n6	n14
-n1751	cor	n5	n14
-n1752	cor	n5	n6
-n1753	cor	n5
-n1754	cor	n5	n6
-n1755	cor	n5	n6
-n1756	cor	n5
-n1757	cor	n5	n6
-n1758	cor	n5	n6
-n1759	cor	n5	n6
-n1760	cor	n5	n6
-n1761	cor	n5
-n1762	cor	n5	n6
-n1763	cor	n5	n6
-n1764	cor	n5
-n1765	cor	n5	n6
-n1766	cor	n5	n6
-n1767	cor	n5	n6
-n1768	cor	n5	n6	n14
-n1769	cor	n5	n6
-n1770	cor	n5	n6
-n1771	cor	n5	n6
-n1772	cor	n5
-n1773	cor	n5	n6
-n1774	cor	n5	n6
-n1775	cor	n5
-n1776	cor	n5	n6
-n1777	cor	n5	n6
-n1778	cor	n5	n6
-n1779	cor	n5	n6
-n1780	cor	n5	n6
-n1781	cor	n5	n6	n14
-n1782	cor	n5	n6
-n1783	cor	n5	n6
-n1784	cor	n5
-n1785	cor	n5	n6
-n1786	cor	n5	n6
-n1787	cor	n5
-n1788	cor	n5
-n1789	cor	n5	n6	n14
-n1790	cor	n5
-n1791	cor	n5	n6
-n1792	cor	n5	n6
-n1793	cor	n5	n6	n14
-n1794	cor	n5	n6
-n1795	cor	n5	n6
-n1796	cor	n5	n6
-n1797	cor	n5	n6
-n1798	cor	n5	n6	n14
-n1799	cor	n5	n6
-n1800	cor	n5	n6
-n1801	cor	n5	n6
-n1802	cor	n5	n6
-n1803	cor	n5
-n1804	cor	n5	n6
-n1805	cor	n5	n6
-n1806	cor	n5	n6
-n1807	cor	n5	n6
-n1808	cor	n5	n6
-n1809	cor	n5	n6	n14
-n1810	cor	n5	n6
-n1811	cor	n5	n6
-n1812	cor	n5	n6
-n1813	cor	n5	n6	n14
-n1814	cor	n5	n6
-n1815	cor	n5	n6
-n1816	cor	n5	n6
-n1817	cor	n5	n6
-n1818	cor	n6	n14
-n1819	cor	n6	n14
-n1820	cor	n6	n14
-n1821	cor	n6	n14
-n1822	cor	n6	n14
-n1823	cor	n6	n14
-n1824	cor	n6	n14
-n1825	cor	n6	n14
-n1826	cor	n6	n14
-n1827	cor	n6	n14
-n1828	cor	n6	n14
-n1829	cor	n6	n14
-n1830	cor	n6	n14
-n1831	cor	n6
-n1832	cor	n6
-n1833	cor	n6	n14
-n1834	cor	n6	n14
-n1835	cor	n6	n14
-n1836	cor	n6	n14
-n1837	cor	n6
-n1838	cor	n6	n14
-n1839	cor	n6	n14
-n1840	cor	n6
-n1841	cor	n6	n14
-n1842	cor	n6	n14
-n1843	cor	n6
-n1844	cor	n6	n14
-n1845	cor	n6	n14
-n1846	cor	n6	n14
-n1847	cor	n6
-n1848	cor	n24	n25	n26
-n1849	cor	n6	n14
-n1850	cor	n6	n14
-n1851	cor	n6
-n1852	cor	n6
-n1853	cor	n6	n14
-n1854	cor	n6
-n1855	cor	n6	n14
-n1856	cor	n6	n14
-n1857	cor	n6
-n1858	cor	n6	n14
-n1859	cor	n6
-n1860	cor	n6	n14
-n1861	cor	n6	n14
-n1862	cor	n6
-n1863	cor	n6	n14
-n1864	cor	n6	n14
-n1865	cor	n6
-n1866	cor	n6	n14
-n1867	cor	n6	n14
-n1868	cor	n6	n14
-n1869	cor	n6
-n1870	cor	n6	n14
-n1871	cor	n6	n14
-n1872	cor	n6	n14
-n1873	cor	n6	n14
-n1874	cor	n6	n14
-n1875	cor	n6
-n1876	cor	n6	n14	n25
-n1877	cor	n6	n14
-n1878	cor	n6	n14
-n1879	cor	n6
-n1880	cor	n6	n14
-n1881	cor	n6
-n1882	cor	n6	n14
-n1883	cor	n6	n14
-n1884	cor	n6	n14
-n1885	cor	n6	n14
-n1886	cor	n6	n14
-n1887	cor	n6
-n1888	cor	n6
-n1889	cor	n6	n14
-n1890	cor	n6	n14
-n1891	cor	n6
-n1892	cor	n6	n14
-n1893	cor	n6	n14
-n1894	cor	n6	n14
-n1895	cor	n6
-n1896	cor	n6	n14
-n1897	cor	n6	n14
-n1898	cor	n6	n14
-n1899	cor	n6	n14
-n1900	cor	n6	n14
-n1901	cor	n6	n14
-n1902	cor	n6	n14
-n1903	cor	n6
-n1904	cor	n6	n14
-n1905	cor	n6	n14	n25
-n1906	cor	n6
-n1907	cor	n6	n14
-n1908	cor	n6	n14
-n1909	cor	n6	n14
-n1910	cor	n24	n26
-n1911	cor	n6	n14
-n1912	cor	n14
-n1913	cor	n14
-n1914	cor	n14
-n1915	cor	n14
-n1916	cor	n14
-n1917	cor	n14
-n1918	cor	n14
-n1919	cor	n14
-n1920	cor	n14
-n1921	cor	n14
-n1922	cor	n14
-n1923	cor	n14
-n1924	cor	n14
-n1925	cor	n14
-n1926	cor	n14
-n1927	cor	n14
-n1928	cor	n14
-n1929	cor	n14
-n1930	cor	n14
-n1931	cor	n14
-n1932	cor	n14
-n1933	cor	n14
-n1934	cor	n14
-n1935	cor	n14
-n1936	cor	n14
-n1937	cor	n14
-n1938	cor	n14
-n1939	cor	n14
-n1940	cor	n14
-n1941	cor	n14
-n1942	cor	n14
-n1943	cor	n14
-n1944	cor	n14
-n1945	cor	n14
-n1946	cor	n14
-n1947	cor	n14
-n1948	cor	n14
-n1949	cor	n14
-n1950	cor	n14
-n1951	cor	n14
-n1952	cor	n14
-n1953	cor	n14
-n1954	cor	n14
-n1955	cor	n14
-n1956	cor	n14
-n1957	cor	n26
-n1958	cor	n14
-n1959	cor	n14
-n1960	cor	n14
-n1961	cor	n24
-n1962	cor	n24	n26
-n1963	cor	n24
-n1964	cor	n24	n26
-n1965	cor	n24
-n1966	cor	n24	n26
-n1967	cor	n24	n25	n26
-n1968	cor	n24	n26
-n1969	cor	n24
-n1970	cor	n24	n25	n26
-n1971	cor	n24	n26
-n1972	cor	n24	n26
-n1973	cor	n24	n26
-n1974	cor	n24	n26
-n1975	cor	n24	n26
-n1976	cor	n24
-n1977	cor	n24
-n1978	cor	n24	n26
-n1979	cor	n24	n26
-n1980	cor	n24	n26
-n1981	cor	n24	n26
-n1982	cor	n24	n26
-n1983	cor	n24	n26
-n1984	cor	n24	n26
-n1985	cor	n24	n26
-n1986	cor	n24
-n1987	cor	n24	n26
-n1988	cor	n24	n26
-n1989	cor	n24
-n1990	cor	n24	n26
-n1991	cor	n24	n26
-n1992	cor	n24
-n1993	cor	n24
-n1994	cor	n24	n26
-n1995	cor	n24	n25	n26
-n1996	cor	n24	n26
-n1997	cor	n24	n26
-n1998	cor	n24
-n1999	cor	n24	n26
-n2000	cor	n24	n26
-n2001	cor	n24	n26
-n2002	cor	n24	n26
-n2003	cor	n24	n26
-n2004	cor	n24	n26
-n2005	cor	n24
-n2006	cor	n24	n25	n26
-n2007	cor	n24
-n2008	cor	n24
-n2009	cor	n24	n26
-n2010	cor	n24	n26
-n2011	cor	n24	n25	n26
-n2012	cor	n24	n26
-n2013	cor	n24	n26
-n2014	cor	n24	n26
-n2015	cor	n24	n26
-n2016	cor	n24	n26
-n2017	cor	n24	n25	n26
-n2018	cor	n24	n26
-n2019	cor	n24	n26
-n2020	cor	n24
-n2021	cor	n24
-n2022	cor	n24	n26
-n2023	cor	n24	n25	n26
-n2024	cor	n24	n26
-n2025	cor	n24	n26
-n2026	cor	n24	n26
-n2027	cor	n24	n26
-n2028	cor	n25
-n2029	cor	n25
-n2030	cor	n25
-n2031	cor	n25
-n2032	cor	n25
-n2033	cor	n25
-n2034	cor	n25	n26
-n2035	cor	n25
-n2036	cor	n25
-n2037	cor	n25
-n2038	cor	n25
-n2039	cor	n25
-n2040	cor	n25
-n2041	cor	n25
-n2042	cor	n25
-n2043	cor	n25
-n2044	cor	n25	n26
-n2045	cor	n25
-n2046	cor	n25
-n2047	cor	n25
-n2048	cor	n25	n26
-n2049	cor	n25
-n2050	cor	n25
-n2051	cor	n25
-n2052	cor	n25
-n2053	cor	n25
-n2054	cor	n25
-n2055	cor	n25
-n2056	cor	n25	n26
-n2057	cor	n25	n26
-n2058	cor	n25
-n2059	cor	n25	n26
-n2060	cor	n25
-n2061	cor	n25
-n2062	cor	n25
-n2063	cor	n25
-n2064	cor	n25
-n2065	cor	n25	n26
-n2066	cor	n25
-n2067	cor	n25
-n2068	cor	n25
-n2069	cor	n25
-n2070	cor	n25
-n2071	cor	n25
-n2072	cor	n25
-n2073	cor	n25	n26
-n2074	cor	n25
-n2075	cor	n25
-n2076	cor	n25
-n2077	cor	n25
-n2078	cor	n25
-n2079	cor	n25
-n2080	cor	n25
-n2081	cor	n25
-n2082	cor	n25
-n2083	cor	n25
-n2084	cor	n25
-n2085	cor	n25
-n2086	cor	n25
-n2087	cor	n25
-n2088	cor	n25
-n2089	cor	n25
-n2090	cor	n25
-n2091	cor	n25
-n2092	cor	n25
-n2093	cor	n25
-n2094	cor	n25
-n2095	cor	n25
-n2096	cor	n25
-n2097	cor	n25	n26
-n2098	cor	n25
-n2099	cor	n25
-n2100	cor	n25
-n2101	cor	n25
-n2102	cor	n25
-n2103	cor	n25
-n2104	cor	n25
-n2105	cor	n25
-n2106	cor	n25
-n2107	cor	n25
-n2108	cor	n25
-n2109	cor	n25
-n2110	cor	n25
-n2111	cor	n25
-n2112	cor	n25
-n2113	cor	n25
-n2114	cor	n25
-n2115	cor	n25
-n2116	cor	n25	n26
-n2117	cor	n25
-n2118	cor	n25
-n2119	cor	n25
-n2120	cor	n25
-n2121	cor	n25
-n2122	cor	n25
-n2123	cor	n25
-n2124	cor	n25
-n2125	cor	n25
-n2126	cor	n25
-n2127	cor	n25
-n2128	cor	n25
-n2129	cor	n25
-n2130	cor	n25
-n2131	cor	n25
-n2132	cor	n25
-n2133	cor	n25
-n2134	cor	n26
-n2135	cor	n26
-n2136	cor	n2137	n2138
-n2139	cor	n2137	n2138
-n2140	cor	n2137	n2138
-n2141	cor	n2137	n2138
-n2142	cor	n2137	n2138
-n2143	cor	n2137	n2138
-n2144	cor	n2137	n2138
-n2145	cor	n2137	n2138
-n2146	cor	n2137
-n2147	cor	n2137	n2138
-n2148	cor	n2137	n2138
-n2149	cor	n2137	n2138
-n2150	cor	n2137	n2138
-n2151	cor	n2137	n2138
-n2152	cor	n2137	n2138
-n2153	cor	n2137	n2138
-n2154	cor	n2137	n2138
-n2155	cor	n2137	n2138
-n2156	cor	n2137	n2138
-n2157	cor	n2137	n2138
-n2158	cor	n2137	n2138
-n2159	cor	n2137	n2138
-n2160	cor	n2137	n2138
-n2161	cor	n2137	n2138
-n2162	cor	n2137	n2138
-n25	hom	n3
-n3	hom	n25
-n25	hom	n6
-n6	hom	n25
-n3	hom	n6
-n6	hom	n3
-n24	hom	n2
-n2	hom	n24
-n24	hom	n5
-n5	hom	n24
-n2	hom	n5
-n5	hom	n2
+n1	cor	n2	n3
+n4	cor	n2
+n5	cor	n2
+n6	cor	n2
+n7	cor	n8	n9	n10
+n11	cor	n8	n9	n10
+n12	cor	n13
+n14	cor	n8	n9	n10
+n15	cor	n8	n9	n10
+n16	cor	n13
+n17	cor	n13
+n18	cor	n13
+n19	cor	n13
+n20	cor	n8	n9	n10
+n21	cor	n13
+n22	cor	n8	n9	n10
+n23	cor	n8	n9	n10
+n24	cor	n2	n13	n3
+n25	cor	n13	n3
+n26	cor	n13
+n27	cor	n13
+n28	cor	n2
+n29	cor	n8	n9	n10
+n30	cor	n2	n3
+n31	cor	n2	n3
+n32	cor	n13	n3
+n33	cor	n2	n13	n3
+n34	cor	n8	n9	n10
+n35	cor	n13	n3
+n36	cor	n13
+n37	cor	n13
+n38	cor	n8	n9	n10
+n39	cor	n13
+n40	cor	n10
+n41	cor	n13	n3
+n42	cor	n13
+n43	cor	n13	n3
+n44	cor	n8	n9	n10
+n45	cor	n8	n9	n10
+n46	cor	n2	n3
+n47	cor	n2	n3
+n48	cor	n13
+n49	cor	n13
+n50	cor	n8	n9	n10
+n51	cor	n13
+n52	cor	n13
+n53	cor	n8	n9	n10
+n54	cor	n13
+n55	cor	n13
+n56	cor	n2	n3
+n57	cor	n13
+n58	cor	n13
+n59	cor	n8	n9	n10
+n60	cor	n2
+n61	cor	n8	n9	n10
+n62	cor	n8	n9	n10
+n63	cor	n8	n9	n10
+n64	cor	n2	n3
+n65	cor	n2	n3
+n66	cor	n13
+n67	cor	n13
+n68	cor	n13
+n69	cor	n2	n3
+n70	cor	n8	n9	n10
+n71	cor	n13
+n72	cor	n13
+n73	cor	n8	n9	n10
+n74	cor	n2
+n75	cor	n8	n9	n10
+n76	cor	n2	n3
+n77	cor	n8	n9	n10
+n78	cor	n8	n9	n10
+n79	cor	n8
+n80	cor	n13
+n81	cor	n13
+n82	cor	n8	n9	n10
+n83	cor	n13
+n84	cor	n8	n9	n10
+n85	cor	n8	n9	n10
+n86	cor	n8	n9	n10
+n87	cor	n8	n9	n10
+n88	cor	n8	n9	n10
+n89	cor	n8	n9	n10
+n90	cor	n13
+n91	cor	n3
+n92	cor	n8	n9	n10
+n93	cor	n13
+n94	cor	n8	n9	n10
+n95	cor	n13
+n96	cor	n13
+n97	cor	n2	n3
+n98	cor	n13
+n99	cor	n13
+n100	cor	n13	n3	n8	n9	n10
+n101	cor	n13	n3
+n102	cor	n8	n9	n10
+n103	cor	n13
+n104	cor	n8	n9	n10
+n105	cor	n2	n3	n8	n9	n10
+n106	cor	n2	n3
+n107	cor	n13
+n108	cor	n2	n13	n3
+n109	cor	n2	n3
+n110	cor	n8	n9	n10
+n111	cor	n13
+n112	cor	n2	n3
+n113	cor	n8	n9	n10
+n114	cor	n8	n9	n10
+n115	cor	n13
+n116	cor	n8	n9	n10
+n117	cor	n13
+n118	cor	n2	n3
+n119	cor	n8	n9	n10
+n120	cor	n2
+n121	cor	n2	n13	n3
+n122	cor	n13
+n123	cor	n9	n10
+n124	cor	n2	n3
+n125	cor	n2
+n126	cor	n8	n9	n10
+n127	cor	n2	n3
+n128	cor	n13
+n129	cor	n13
+n130	cor	n8	n9	n10
+n131	cor	n8	n9	n10
+n132	cor	n8	n9	n10
+n133	cor	n2	n3
+n134	cor	n13
+n135	cor	n13
+n136	cor	n2	n3
+n137	cor	n13
+n138	cor	n13	n8	n9	n10
+n139	cor	n8	n9	n10
+n140	cor	n2	n3
+n141	cor	n13
+n142	cor	n13	n3
+n143	cor	n13
+n144	cor	n13
+n145	cor	n13
+n146	cor	n8	n9	n10
+n147	cor	n8	n9	n10
+n148	cor	n2	n3
+n149	cor	n2	n13	n3
+n150	cor	n8	n9	n10
+n151	cor	n2	n3	n8	n9	n10
+n152	cor	n13
+n153	cor	n13
+n154	cor	n8	n9	n10
+n155	cor	n13
+n156	cor	n8	n9	n10
+n157	cor	n13
+n158	cor	n8	n9	n10
+n159	cor	n13
+n160	cor	n8	n9	n10
+n161	cor	n13
+n162	cor	n13
+n163	cor	n8	n9	n10
+n164	cor	n8	n9	n10
+n165	cor	n13
+n166	cor	n13
+n167	cor	n13
+n168	cor	n2
+n169	cor	n13
+n170	cor	n3	n8	n9	n10
+n171	cor	n8	n9	n10
+n172	cor	n13
+n173	cor	n8	n9	n10
+n174	cor	n13
+n175	cor	n2	n13	n3
+n176	cor	n8	n9	n10
+n177	cor	n8	n9	n10
+n178	cor	n8	n9	n10
+n179	cor	n8	n9	n10
+n180	cor	n8	n9	n10
+n181	cor	n8	n9	n10
+n182	cor	n2	n3
+n183	cor	n13
+n184	cor	n2	n3
+n185	cor	n2
+n186	cor	n13
+n187	cor	n13
+n188	cor	n8	n9	n10
+n189	cor	n13
+n190	cor	n13
+n191	cor	n13	n3
+n192	cor	n2	n3
+n193	cor	n8	n9	n10
+n194	cor	n13
+n195	cor	n8	n9	n10
+n196	cor	n2
+n197	cor	n13
+n198	cor	n2	n3
+n199	cor	n13
+n200	cor	n10
+n201	cor	n8	n9	n10
+n202	cor	n2	n3
+n203	cor	n13
+n204	cor	n13
+n205	cor	n9	n10
+n206	cor	n2	n13	n3
+n207	cor	n2	n3
+n208	cor	n13
+n209	cor	n13
+n210	cor	n13
+n211	cor	n13
+n212	cor	n8	n9	n10
+n213	cor	n13
+n214	cor	n13
+n215	cor	n13
+n216	cor	n13
+n217	cor	n2	n13	n3
+n218	cor	n2	n3
+n219	cor	n13
+n220	cor	n10
+n221	cor	n13
+n222	cor	n8	n9	n10
+n223	cor	n2	n13	n3
+n224	cor	n8	n9	n10
+n225	cor	n8	n9	n10
+n226	cor	n13
+n227	cor	n8	n9	n10
+n228	cor	n2	n3
+n229	cor	n13	n3
+n230	cor	n13
+n231	cor	n8	n9	n10
+n232	cor	n2	n3
+n233	cor	n3
+n234	cor	n8	n9	n10
+n235	cor	n2	n3
+n236	cor	n8	n9	n10
+n237	cor	n8	n9	n10
+n238	cor	n8	n9	n10
+n239	cor	n8	n9	n10
+n240	cor	n8	n9	n10
+n241	cor	n13
+n242	cor	n8	n9	n10
+n243	cor	n13
+n244	cor	n2	n3
+n245	cor	n8	n9	n10
+n246	cor	n2	n13	n3	n8	n9	n10
+n247	cor	n13
+n248	cor	n13
+n249	cor	n8	n9	n10
+n250	cor	n13
+n251	cor	n13	n3
+n252	cor	n8	n9	n10
+n253	cor	n8	n9	n10
+n254	cor	n13
+n255	cor	n8	n9	n10
+n256	cor	n13	n3
+n257	cor	n2	n13	n3
+n258	cor	n13
+n259	cor	n2	n13	n3	n8	n9	n10
+n260	cor	n8	n9	n10
+n261	cor	n13
+n262	cor	n2
+n263	cor	n13
+n264	cor	n8	n9	n10
+n265	cor	n13
+n266	cor	n8	n9	n10
+n267	cor	n8	n9	n10
+n268	cor	n8	n9	n10
+n269	cor	n8	n9	n10
+n270	cor	n13
+n271	cor	n13
+n272	cor	n8	n9
+n273	cor	n8	n9	n10
+n274	cor	n8	n9	n10
+n275	cor	n13
+n276	cor	n8	n9	n10
+n277	cor	n8	n9	n10
+n278	cor	n2	n13	n3
+n279	cor	n2	n3
+n280	cor	n13
+n281	cor	n10
+n282	cor	n2	n3	n8	n9	n10
+n283	cor	n13
+n284	cor	n8	n9	n10
+n285	cor	n2	n3
+n286	cor	n13
+n287	cor	n13
+n288	cor	n8	n9	n10
+n289	cor	n8	n9	n10
+n290	cor	n13
+n291	cor	n8	n9	n10
+n292	cor	n2	n3
+n293	cor	n13
+n294	cor	n13
+n295	cor	n8	n9	n10
+n296	cor	n2	n3
+n297	cor	n13
+n298	cor	n8	n9	n10
+n299	cor	n8	n9	n10
+n300	cor	n13
+n301	cor	n8	n9	n10
+n302	cor	n13
+n303	cor	n13
+n304	cor	n8	n9	n10
+n305	cor	n13
+n306	cor	n13
+n307	cor	n2
+n308	cor	n13	n3
+n309	cor	n8	n9	n10
+n310	cor	n8	n9	n10
+n311	cor	n13
+n312	cor	n2	n3	n8	n9	n10
+n313	cor	n8	n9	n10
+n314	cor	n13
+n315	cor	n8	n9	n10
+n316	cor	n2
+n317	cor	n13
+n318	cor	n13
+n319	cor	n13
+n320	cor	n13
+n321	cor	n13
+n322	cor	n13
+n323	cor	n2	n3	n8	n9	n10
+n324	cor	n2	n3	n8	n9	n10
+n325	cor	n13	n3
+n326	cor	n2	n13	n3
+n327	cor	n13
+n328	cor	n13
+n329	cor	n13
+n330	cor	n2	n3
+n331	cor	n2	n3
+n332	cor	n2	n3
+n333	cor	n2	n3
+n334	cor	n8	n9	n10
+n335	cor	n8	n9	n10
+n336	cor	n2	n3
+n337	cor	n2
+n338	cor	n2	n3
+n339	cor	n13
+n340	cor	n2	n3
+n341	cor	n8	n9	n10
+n342	cor	n8	n9	n10
+n343	cor	n13
+n344	cor	n13
+n345	cor	n2
+n346	cor	n8	n9	n10
+n347	cor	n13
+n348	cor	n8	n9	n10
+n349	cor	n10
+n350	cor	n13
+n351	cor	n13
+n352	cor	n8	n9	n10
+n353	cor	n13
+n354	cor	n2	n13	n3
+n355	cor	n8	n9	n10
+n356	cor	n2	n3
+n357	cor	n10
+n358	cor	n10
+n359	cor	n8	n9	n10
+n360	cor	n13
+n361	cor	n2	n3
+n362	cor	n13
+n363	cor	n2	n3
+n364	cor	n13
+n365	cor	n2	n13	n3	n8	n9	n10
+n366	cor	n10
+n367	cor	n2	n3
+n368	cor	n13
+n369	cor	n9	n10
+n370	cor	n9	n10
+n371	cor	n2	n13	n3
+n372	cor	n9	n10
+n373	cor	n9	n10
+n374	cor	n2	n3
+n375	cor	n2	n3
+n376	cor	n13
+n377	cor	n2	n3
+n378	cor	n9	n10
+n379	cor	n9	n10
+n380	cor	n9	n10
+n381	cor	n9	n10
+n382	cor	n9	n10
+n383	cor	n9	n10
+n384	cor	n9	n10
+n385	cor	n13
+n386	cor	n9
+n387	cor	n9
+n388	cor	n13
+n389	cor	n8	n9	n10
+n390	cor	n13	n3
+n391	cor	n13
+n392	cor	n2	n3
+n393	cor	n3	n8	n9	n10
+n394	cor	n13
+n395	cor	n8	n9	n10
+n396	cor	n2	n13	n3
+n397	cor	n13	n3
+n398	cor	n2	n3
+n399	cor	n8	n9	n10
+n400	cor	n13	n8	n9	n10
+n401	cor	n13
+n402	cor	n10
+n403	cor	n8	n9	n10
+n404	cor	n10
+n405	cor	n8	n9	n10
+n406	cor	n8	n9	n10
+n407	cor	n13
+n408	cor	n8	n9	n10
+n409	cor	n8	n9	n10
+n410	cor	n8	n9	n10
+n411	cor	n8	n9	n10
+n412	cor	n8
+n413	cor	n8
+n414	cor	n2
+n415	cor	n8	n9	n10
+n416	cor	n8	n9	n10
+n417	cor	n13	n3
+n418	cor	n8	n9	n10
+n419	cor	n8	n9	n10
+n420	cor	n8
+n421	cor	n8
+n422	cor	n8	n9	n10
+n423	cor	n8	n9	n10
+n424	cor	n8	n9	n10
+n425	cor	n8	n9	n10
+n426	cor	n8	n9	n10
+n427	cor	n8	n9	n10
+n428	cor	n8	n9	n10
+n429	cor	n8	n9	n10
+n430	cor	n8	n9	n10
+n431	cor	n2	n3
+n432	cor	n8	n9	n10
+n433	cor	n8	n9	n10
+n434	cor	n8	n9	n10
+n435	cor	n8	n9	n10
+n436	cor	n8	n9	n10
+n437	cor	n8	n9	n10
+n438	cor	n8	n9	n10
+n439	cor	n8	n9	n10
+n440	cor	n8	n9	n10
+n441	cor	n8	n9	n10
+n442	cor	n8	n9	n10
+n443	cor	n8	n9	n10
+n444	cor	n8	n9	n10
+n445	cor	n8	n9	n10
+n446	cor	n8	n9	n10
+n447	cor	n8	n9	n10
+n448	cor	n8	n9	n10
+n449	cor	n8	n9	n10
+n450	cor	n8	n9	n10
+n451	cor	n8	n9	n10
+n452	cor	n8	n9	n10
+n453	cor	n8	n9	n10
+n454	cor	n8	n9	n10
+n455	cor	n8	n9	n10
+n456	cor	n2	n3
+n457	cor	n8	n9	n10
+n458	cor	n8	n9	n10
+n459	cor	n8	n9	n10
+n460	cor	n8	n9	n10
+n461	cor	n8	n9	n10
+n462	cor	n8	n9	n10
+n463	cor	n8	n9	n10
+n464	cor	n13
+n465	cor	n8	n9	n10
+n466	cor	n8	n9	n10
+n467	cor	n8	n9	n10
+n468	cor	n8	n9	n10
+n469	cor	n8	n9	n10
+n470	cor	n8	n9	n10
+n471	cor	n8	n9	n10
+n472	cor	n8	n9	n10
+n473	cor	n8	n9	n10
+n474	cor	n8	n9	n10
+n475	cor	n13
+n476	cor	n8	n9	n10
+n477	cor	n8	n9	n10
+n478	cor	n8	n9	n10
+n479	cor	n8	n9	n10
+n480	cor	n8	n9	n10
+n481	cor	n8	n9	n10
+n482	cor	n8	n9	n10
+n483	cor	n8	n9	n10
+n484	cor	n8	n9	n10
+n485	cor	n8	n9	n10
+n486	cor	n8	n9	n10
+n487	cor	n8	n9	n10
+n488	cor	n8	n9	n10
+n489	cor	n8	n9	n10
+n490	cor	n8	n9	n10
+n491	cor	n8	n9	n10
+n492	cor	n8	n9	n10
+n493	cor	n8	n9	n10
+n494	cor	n8	n9	n10
+n495	cor	n8	n9	n10
+n496	cor	n8	n9	n10
+n497	cor	n8	n9	n10
+n498	cor	n8	n9	n10
+n499	cor	n13
+n500	cor	n8	n9	n10
+n501	cor	n8	n9	n10
+n502	cor	n8	n9	n10
+n503	cor	n8	n9	n10
+n504	cor	n8	n9	n10
+n505	cor	n8	n9	n10
+n506	cor	n2
+n507	cor	n8	n9	n10
+n508	cor	n8	n9	n10
+n509	cor	n8	n9	n10
+n510	cor	n8	n9	n10
+n511	cor	n8	n9	n10
+n512	cor	n8	n9	n10
+n513	cor	n8	n9	n10
+n514	cor	n8	n9	n10
+n515	cor	n8	n9	n10
+n516	cor	n8	n9	n10
+n517	cor	n8	n9	n10
+n518	cor	n8	n9	n10
+n519	cor	n8	n9	n10
+n520	cor	n8	n9	n10
+n521	cor	n8	n9	n10
+n522	cor	n8	n9	n10
+n523	cor	n8	n9	n10
+n524	cor	n8	n9	n10
+n525	cor	n8	n9	n10
+n526	cor	n8	n9	n10
+n527	cor	n8	n9	n10
+n528	cor	n8	n9	n10
+n529	cor	n8	n9	n10
+n530	cor	n8	n9	n10
+n531	cor	n8	n9	n10
+n532	cor	n2	n3
+n533	cor	n8	n9	n10
+n534	cor	n8	n9	n10
+n535	cor	n8	n9	n10
+n536	cor	n8	n9	n10
+n537	cor	n8	n9	n10
+n538	cor	n8	n9	n10
+n539	cor	n8	n9	n10
+n540	cor	n8	n9	n10
+n541	cor	n8	n9	n10
+n542	cor	n8	n9	n10
+n543	cor	n8	n9	n10
+n544	cor	n8	n9	n10
+n545	cor	n8	n9	n10
+n546	cor	n8	n9
+n547	cor	n8	n9
+n548	cor	n8	n9	n10
+n549	cor	n8	n9	n10
+n550	cor	n8	n9	n10
+n551	cor	n8	n9	n10
+n552	cor	n8	n9	n10
+n553	cor	n8	n9	n10
+n554	cor	n8	n9	n10
+n555	cor	n8	n9	n10
+n556	cor	n8	n9	n10
+n557	cor	n8	n9	n10
+n558	cor	n8	n9	n10
+n559	cor	n8	n9	n10
+n560	cor	n8	n9	n10
+n561	cor	n13
+n562	cor	n8	n9	n10
+n563	cor	n8	n9	n10
+n564	cor	n8	n9	n10
+n565	cor	n8	n9	n10
+n566	cor	n8	n9	n10
+n567	cor	n8	n9	n10
+n568	cor	n8	n9
+n569	cor	n8	n9	n10
+n570	cor	n8	n9	n10
+n571	cor	n8	n9	n10
+n572	cor	n8	n9	n10
+n573	cor	n8	n9	n10
+n574	cor	n8	n9	n10
+n575	cor	n8	n9	n10
+n576	cor	n8	n9	n10
+n577	cor	n8	n9	n10
+n578	cor	n8	n9	n10
+n579	cor	n8	n9	n10
+n580	cor	n8	n9	n10
+n581	cor	n8	n9	n10
+n582	cor	n8	n9	n10
+n583	cor	n8	n9	n10
+n584	cor	n8	n9	n10
+n585	cor	n8	n9	n10
+n586	cor	n8	n9	n10
+n587	cor	n8	n9	n10
+n588	cor	n8	n9	n10
+n589	cor	n8	n9	n10
+n590	cor	n8	n9	n10
+n591	cor	n8	n9	n10
+n592	cor	n8	n9	n10
+n593	cor	n8	n9	n10
+n594	cor	n8	n9	n10
+n595	cor	n8	n9	n10
+n596	cor	n13
+n597	cor	n8	n9	n10
+n598	cor	n8	n9	n10
+n599	cor	n8	n9	n10
+n600	cor	n8	n9	n10
+n601	cor	n8	n9	n10
+n602	cor	n8	n9	n10
+n603	cor	n8	n9	n10
+n604	cor	n8	n9	n10
+n605	cor	n8	n9	n10
+n606	cor	n8	n9	n10
+n607	cor	n8	n9	n10
+n608	cor	n8	n9	n10
+n609	cor	n8	n9	n10
+n610	cor	n8	n9	n10
+n611	cor	n8	n9	n10
+n612	cor	n8	n9	n10
+n613	cor	n8	n9	n10
+n614	cor	n8	n9	n10
+n615	cor	n8	n9	n10
+n616	cor	n8	n9	n10
+n617	cor	n2	n3
+n618	cor	n8	n9	n10
+n619	cor	n8	n9	n10
+n620	cor	n8	n9	n10
+n621	cor	n8	n9	n10
+n622	cor	n8	n9
+n623	cor	n8	n9
+n624	cor	n8	n9	n10
+n625	cor	n8	n9	n10
+n626	cor	n2	n13	n3
+n627	cor	n8	n9	n10
+n628	cor	n8	n9	n10
+n629	cor	n8	n9	n10
+n630	cor	n8	n9	n10
+n631	cor	n8	n9	n10
+n632	cor	n8	n9	n10
+n633	cor	n8	n9	n10
+n634	cor	n8	n9	n10
+n635	cor	n8	n9	n10
+n636	cor	n8	n9	n10
+n637	cor	n8	n9	n10
+n638	cor	n8	n9	n10
+n639	cor	n8	n9	n10
+n640	cor	n8	n9	n10
+n641	cor	n8	n9	n10
+n642	cor	n8	n9	n10
+n643	cor	n8	n9	n10
+n644	cor	n8	n9	n10
+n645	cor	n8	n9	n10
+n646	cor	n8	n9	n10
+n647	cor	n8	n9	n10
+n648	cor	n13
+n649	cor	n8	n9	n10
+n650	cor	n8	n9	n10
+n651	cor	n8	n9	n10
+n652	cor	n8	n9	n10
+n653	cor	n8	n9	n10
+n654	cor	n8	n9	n10
+n655	cor	n8	n9	n10
+n656	cor	n8	n9	n10
+n657	cor	n8	n9	n10
+n658	cor	n8	n9
+n659	cor	n8	n9
+n660	cor	n8	n9
+n661	cor	n8	n9	n10
+n662	cor	n8
+n663	cor	n13
+n664	cor	n8	n9	n10
+n665	cor	n8	n9	n10
+n666	cor	n8	n9	n10
+n667	cor	n8	n9	n10
+n668	cor	n8	n9	n10
+n669	cor	n8	n9	n10
+n670	cor	n8	n9	n10
+n671	cor	n8	n9	n10
+n672	cor	n8	n9	n10
+n673	cor	n8	n9	n10
+n674	cor	n8	n9	n10
+n675	cor	n8	n9	n10
+n676	cor	n8	n9	n10
+n677	cor	n8	n9	n10
+n678	cor	n8	n9	n10
+n679	cor	n8	n9	n10
+n680	cor	n8	n9	n10
+n681	cor	n8	n9	n10
+n682	cor	n8	n9	n10
+n683	cor	n8	n9	n10
+n684	cor	n8	n9	n10
+n685	cor	n8	n9	n10
+n686	cor	n8	n9	n10
+n687	cor	n8	n9	n10
+n688	cor	n8	n9	n10
+n689	cor	n8	n9	n10
+n690	cor	n8	n9	n10
+n691	cor	n8	n9	n10
+n692	cor	n8	n9	n10
+n693	cor	n8	n9	n10
+n694	cor	n8	n9	n10
+n695	cor	n8	n9	n10
+n696	cor	n8	n9	n10
+n697	cor	n8	n9	n10
+n698	cor	n13
+n699	cor	n3
+n700	cor	n8	n9	n10
+n701	cor	n8	n9	n10
+n702	cor	n8	n9	n10
+n703	cor	n8	n9	n10
+n704	cor	n8	n9	n10
+n705	cor	n8	n9	n10
+n706	cor	n8	n9	n10
+n707	cor	n8	n9	n10
+n708	cor	n8	n9	n10
+n709	cor	n8	n9	n10
+n710	cor	n8	n9	n10
+n711	cor	n8	n9	n10
+n712	cor	n8	n9	n10
+n713	cor	n8	n9	n10
+n714	cor	n8	n9	n10
+n715	cor	n8	n9	n10
+n716	cor	n8	n9	n10
+n717	cor	n8	n9	n10
+n718	cor	n8	n9	n10
+n719	cor	n8	n9	n10
+n720	cor	n8	n9	n10
+n721	cor	n8	n9	n10
+n722	cor	n8	n9	n10
+n723	cor	n8	n9	n10
+n724	cor	n8	n9	n10
+n725	cor	n8	n9	n10
+n726	cor	n8	n9	n10
+n727	cor	n13
+n728	cor	n8	n9	n10
+n729	cor	n8	n9	n10
+n730	cor	n8	n9	n10
+n731	cor	n8	n9	n10
+n732	cor	n8	n9	n10
+n733	cor	n8	n9	n10
+n734	cor	n8	n9	n10
+n735	cor	n8	n9	n10
+n736	cor	n8	n9	n10
+n737	cor	n8	n9	n10
+n738	cor	n8	n9	n10
+n739	cor	n8	n9	n10
+n740	cor	n8	n9	n10
+n741	cor	n8	n9	n10
+n742	cor	n8	n9	n10
+n743	cor	n8	n9	n10
+n744	cor	n8	n9	n10
+n745	cor	n8	n9	n10
+n746	cor	n8	n9	n10
+n747	cor	n8	n9	n10
+n748	cor	n8	n9	n10
+n749	cor	n8
+n750	cor	n8
+n751	cor	n8	n9	n10
+n752	cor	n13
+n753	cor	n13
+n754	cor	n13
+n755	cor	n2	n3
+n756	cor	n2	n3	n8	n9	n10
+n757	cor	n13
+n758	cor	n8	n9	n10
+n759	cor	n2	n13	n3
+n760	cor	n13
+n761	cor	n2
+n762	cor	n13
+n763	cor	n8	n9	n10
+n764	cor	n13
+n765	cor	n13	n3
+n766	cor	n13
+n767	cor	n3
+n768	cor	n3
+n769	cor	n3
+n770	cor	n13
+n771	cor	n13
+n772	cor	n3
+n773	cor	n13
+n774	cor	n13
+n775	cor	n13
+n776	cor	n13
+n777	cor	n13
+n778	cor	n13	n3
+n779	cor	n13
+n780	cor	n13
+n781	cor	n13
+n782	cor	n13
+n783	cor	n13
+n784	cor	n13
+n785	cor	n13
+n786	cor	n13
+n787	cor	n13
+n788	cor	n13
+n789	cor	n13
+n790	cor	n13
+n791	cor	n13
+n792	cor	n3
+n793	cor	n13
+n794	cor	n13
+n795	cor	n13
+n796	cor	n13
+n797	cor	n13
+n798	cor	n13
+n799	cor	n13
+n800	cor	n13
+n801	cor	n2	n3
+n802	cor	n13
+n803	cor	n13
+n804	cor	n13
+n805	cor	n13
+n806	cor	n13
+n807	cor	n13
+n808	cor	n13
+n809	cor	n13
+n810	cor	n13
+n811	cor	n13
+n812	cor	n13
+n813	cor	n13
+n814	cor	n13
+n815	cor	n13
+n816	cor	n13
+n817	cor	n13
+n818	cor	n13
+n819	cor	n13
+n820	cor	n13
+n821	cor	n13
+n822	cor	n13
+n823	cor	n13
+n824	cor	n13
+n825	cor	n13
+n826	cor	n13
+n827	cor	n13
+n828	cor	n13
+n829	cor	n13
+n830	cor	n13
+n831	cor	n13
+n832	cor	n13
+n833	cor	n13
+n834	cor	n13
+n835	cor	n13	n3
+n836	cor	n13	n3
+n837	cor	n13
+n838	cor	n13
+n839	cor	n13
+n840	cor	n13
+n841	cor	n13
+n842	cor	n13
+n843	cor	n13
+n844	cor	n13
+n845	cor	n13
+n846	cor	n13
+n847	cor	n13
+n848	cor	n13
+n849	cor	n13
+n850	cor	n13
+n851	cor	n13
+n852	cor	n13
+n853	cor	n13
+n854	cor	n13
+n855	cor	n13
+n856	cor	n13
+n857	cor	n13
+n858	cor	n13
+n859	cor	n13	n8	n9	n10
+n860	cor	n13
+n861	cor	n13
+n862	cor	n13
+n863	cor	n13
+n864	cor	n13
+n865	cor	n13
+n866	cor	n13
+n867	cor	n13
+n868	cor	n13
+n869	cor	n13
+n870	cor	n13
+n871	cor	n13
+n872	cor	n13
+n873	cor	n13
+n874	cor	n13
+n875	cor	n13
+n876	cor	n13
+n877	cor	n13
+n878	cor	n13
+n879	cor	n13	n8	n9	n10
+n880	cor	n13
+n881	cor	n13
+n882	cor	n13
+n883	cor	n13
+n884	cor	n13
+n885	cor	n13
+n886	cor	n13
+n887	cor	n13
+n888	cor	n13
+n889	cor	n13
+n890	cor	n13
+n891	cor	n13	n3
+n892	cor	n13	n3
+n893	cor	n13
+n894	cor	n13
+n895	cor	n13
+n896	cor	n13
+n897	cor	n2
+n898	cor	n2
+n899	cor	n13
+n900	cor	n13
+n901	cor	n13
+n902	cor	n13
+n903	cor	n13
+n904	cor	n13
+n905	cor	n13
+n906	cor	n13
+n907	cor	n13
+n908	cor	n13
+n909	cor	n13
+n910	cor	n13
+n911	cor	n13
+n912	cor	n13
+n913	cor	n13
+n914	cor	n13	n3
+n915	cor	n13
+n916	cor	n13
+n917	cor	n13
+n918	cor	n2	n13	n3
+n919	cor	n13
+n920	cor	n13
+n921	cor	n13
+n922	cor	n13
+n923	cor	n13
+n924	cor	n2
+n925	cor	n13
+n926	cor	n13
+n927	cor	n13
+n928	cor	n13
+n929	cor	n13
+n930	cor	n13
+n931	cor	n13
+n932	cor	n13
+n933	cor	n13
+n934	cor	n13
+n935	cor	n13
+n936	cor	n13
+n937	cor	n13
+n938	cor	n13
+n939	cor	n13
+n940	cor	n13
+n941	cor	n13
+n942	cor	n13
+n943	cor	n13
+n944	cor	n13
+n945	cor	n13
+n946	cor	n13
+n947	cor	n13
+n948	cor	n13	n3
+n949	cor	n13
+n950	cor	n13
+n951	cor	n13
+n952	cor	n13
+n953	cor	n13
+n954	cor	n13
+n955	cor	n13
+n956	cor	n13	n3
+n957	cor	n13	n3
+n958	cor	n13
+n959	cor	n13
+n960	cor	n13
+n961	cor	n13
+n962	cor	n13
+n963	cor	n13
+n964	cor	n13	n3	n8	n9	n10
+n965	cor	n13
+n966	cor	n13
+n967	cor	n13
+n968	cor	n13
+n969	cor	n13	n3
+n970	cor	n13
+n971	cor	n13
+n972	cor	n13	n3
+n973	cor	n13	n3
+n974	cor	n13
+n975	cor	n13
+n976	cor	n3
+n977	cor	n13
+n978	cor	n13
+n979	cor	n13
+n980	cor	n13
+n981	cor	n13
+n982	cor	n13
+n983	cor	n13	n8	n9	n10
+n984	cor	n13	n3
+n985	cor	n13	n3
+n986	cor	n3
+n987	cor	n13
+n988	cor	n13
+n989	cor	n3
+n990	cor	n8	n9	n10
+n991	cor	n13
+n992	cor	n2	n3
+n993	cor	n13
+n994	cor	n2	n3
+n995	cor	n13	n3
+n996	cor	n13	n3
+n997	cor	n13
+n998	cor	n3
+n999	cor	n13
+n1000	cor	n8	n9	n10
+n1001	cor	n13
+n1002	cor	n13
+n1003	cor	n13
+n1004	cor	n13
+n1005	cor	n13
+n1006	cor	n13
+n1007	cor	n13
+n1008	cor	n13
+n1009	cor	n13
+n1010	cor	n13
+n1011	cor	n13
+n1012	cor	n13
+n1013	cor	n13
+n1014	cor	n13
+n1015	cor	n8	n9	n10
+n1016	cor	n13
+n1017	cor	n13
+n1018	cor	n13	n3
+n1019	cor	n13
+n1020	cor	n13
+n1021	cor	n13
+n1022	cor	n13
+n1023	cor	n13
+n1024	cor	n13
+n1025	cor	n13
+n1026	cor	n13
+n1027	cor	n13
+n1028	cor	n13
+n1029	cor	n13
+n1030	cor	n13
+n1031	cor	n13
+n1032	cor	n13
+n1033	cor	n13
+n1034	cor	n13
+n1035	cor	n13
+n1036	cor	n13	n3
+n1037	cor	n13	n3
+n1038	cor	n13
+n1039	cor	n13
+n1040	cor	n13
+n1041	cor	n8	n9	n10
+n1042	cor	n13	n3
+n1043	cor	n13
+n1044	cor	n13
+n1045	cor	n13
+n1046	cor	n13
+n1047	cor	n13
+n1048	cor	n13
+n1049	cor	n13
+n1050	cor	n13
+n1051	cor	n13
+n1052	cor	n13
+n1053	cor	n13	n3
+n1054	cor	n13	n3
+n1055	cor	n2	n13	n3
+n1056	cor	n13	n3
+n1057	cor	n13	n3
+n1058	cor	n13
+n1059	cor	n13
+n1060	cor	n13
+n1061	cor	n13	n8	n9	n10
+n1062	cor	n13	n8	n9	n10
+n1063	cor	n13
+n1064	cor	n13
+n1065	cor	n13
+n1066	cor	n13
+n1067	cor	n13
+n1068	cor	n13
+n1069	cor	n13
+n1070	cor	n13
+n1071	cor	n13
+n1072	cor	n13
+n1073	cor	n13
+n1074	cor	n13
+n1075	cor	n13
+n1076	cor	n13
+n1077	cor	n13
+n1078	cor	n13
+n1079	cor	n13
+n1080	cor	n13
+n1081	cor	n13
+n1082	cor	n13
+n1083	cor	n13
+n1084	cor	n8	n9	n10
+n1085	cor	n13
+n1086	cor	n13
+n1087	cor	n13
+n1088	cor	n13
+n1089	cor	n8	n9	n10
+n1090	cor	n13
+n1091	cor	n13
+n1092	cor	n13	n3
+n1093	cor	n13
+n1094	cor	n13
+n1095	cor	n13
+n1096	cor	n13
+n1097	cor	n13
+n1098	cor	n13
+n1099	cor	n13
+n1100	cor	n13
+n1101	cor	n13
+n1102	cor	n13
+n1103	cor	n13
+n1104	cor	n8	n9	n10
+n1105	cor	n13
+n1106	cor	n13
+n1107	cor	n13
+n1108	cor	n13
+n1109	cor	n13
+n1110	cor	n13
+n1111	cor	n13
+n1112	cor	n13
+n1113	cor	n13
+n1114	cor	n13
+n1115	cor	n13
+n1116	cor	n13
+n1117	cor	n13
+n1118	cor	n13
+n1119	cor	n13
+n1120	cor	n13
+n1121	cor	n13
+n1122	cor	n13
+n1123	cor	n13
+n1124	cor	n2
+n1125	cor	n13
+n1126	cor	n13
+n1127	cor	n13
+n1128	cor	n13
+n1129	cor	n13
+n1130	cor	n13
+n1131	cor	n13
+n1132	cor	n13
+n1133	cor	n13
+n1134	cor	n13
+n1135	cor	n13
+n1136	cor	n13
+n1137	cor	n13
+n1138	cor	n13	n3
+n1139	cor	n13
+n1140	cor	n13
+n1141	cor	n13
+n1142	cor	n13
+n1143	cor	n13
+n1144	cor	n13
+n1145	cor	n13
+n1146	cor	n13
+n1147	cor	n13
+n1148	cor	n13
+n1149	cor	n13
+n1150	cor	n13
+n1151	cor	n13
+n1152	cor	n13
+n1153	cor	n13
+n1154	cor	n13	n3
+n1155	cor	n13
+n1156	cor	n2	n13	n3
+n1157	cor	n13
+n1158	cor	n13
+n1159	cor	n13
+n1160	cor	n13
+n1161	cor	n13
+n1162	cor	n13
+n1163	cor	n13
+n1164	cor	n13
+n1165	cor	n13	n3
+n1166	cor	n13	n3
+n1167	cor	n13	n3
+n1168	cor	n13	n3
+n1169	cor	n13
+n1170	cor	n13
+n1171	cor	n13
+n1172	cor	n13
+n1173	cor	n13
+n1174	cor	n13
+n1175	cor	n13
+n1176	cor	n13
+n1177	cor	n13
+n1178	cor	n13
+n1179	cor	n13
+n1180	cor	n13
+n1181	cor	n13
+n1182	cor	n13	n3
+n1183	cor	n13	n3
+n1184	cor	n13
+n1185	cor	n13
+n1186	cor	n13
+n1187	cor	n13
+n1188	cor	n13
+n1189	cor	n13	n3
+n1190	cor	n13	n3
+n1191	cor	n13
+n1192	cor	n13	n3
+n1193	cor	n13
+n1194	cor	n13
+n1195	cor	n13
+n1196	cor	n13
+n1197	cor	n13
+n1198	cor	n13
+n1199	cor	n2	n3
+n1200	cor	n13
+n1201	cor	n13
+n1202	cor	n13
+n1203	cor	n13
+n1204	cor	n13
+n1205	cor	n13
+n1206	cor	n13
+n1207	cor	n13	n3
+n1208	cor	n13
+n1209	cor	n13
+n1210	cor	n13
+n1211	cor	n13
+n1212	cor	n13
+n1213	cor	n13
+n1214	cor	n13
+n1215	cor	n13
+n1216	cor	n13
+n1217	cor	n13
+n1218	cor	n13
+n1219	cor	n13
+n1220	cor	n13
+n1221	cor	n13
+n1222	cor	n13
+n1223	cor	n2	n3
+n1224	cor	n2	n3
+n1225	cor	n13
+n1226	cor	n2
+n1227	cor	n2	n3
+n1228	cor	n2	n13	n3
+n1229	cor	n2	n13	n3	n8	n9	n10
+n1230	cor	n2	n13	n3
+n1231	cor	n2	n3
+n1232	cor	n2	n3
+n1233	cor	n2	n3
+n1234	cor	n2	n3
+n1235	cor	n2	n13	n3	n8	n9	n10
+n1236	cor	n2	n13	n3
+n1237	cor	n2
+n1238	cor	n2	n3
+n1239	cor	n2	n3
+n1240	cor	n2	n3
+n1241	cor	n2	n3
+n1242	cor	n2
+n1243	cor	n2
+n1244	cor	n2
+n1245	cor	n2
+n1246	cor	n2
+n1247	cor	n2	n3
+n1248	cor	n2	n3
+n1249	cor	n2	n3
+n1250	cor	n2	n3
+n1251	cor	n2	n3
+n1252	cor	n2	n3
+n1253	cor	n2	n3
+n1254	cor	n2	n3
+n1255	cor	n2	n3
+n1256	cor	n2	n13	n3
+n1257	cor	n2	n13	n3
+n1258	cor	n2	n13	n3
+n1259	cor	n2	n3
+n1260	cor	n2	n3
+n1261	cor	n2	n3
+n1262	cor	n2	n3
+n1263	cor	n2	n3
+n1264	cor	n2	n3
+n1265	cor	n2	n3
+n1266	cor	n2
+n1267	cor	n2
+n1268	cor	n2	n13	n3
+n1269	cor	n2	n3
+n1270	cor	n2	n3
+n1271	cor	n2	n3
+n1272	cor	n2
+n1273	cor	n2
+n1274	cor	n2	n3
+n1275	cor	n2	n13	n3
+n1276	cor	n2	n3
+n1277	cor	n2
+n1278	cor	n2
+n1279	cor	n2
+n1280	cor	n2
+n1281	cor	n2	n3
+n1282	cor	n2	n3
+n1283	cor	n2	n13	n3
+n1284	cor	n2	n13	n3
+n1285	cor	n2	n13	n3
+n1286	cor	n2	n3
+n1287	cor	n2	n3
+n1288	cor	n2	n3
+n1289	cor	n2	n3
+n1290	cor	n2	n3
+n1291	cor	n2	n3
+n1292	cor	n2	n3
+n1293	cor	n2	n3
+n1294	cor	n2	n3
+n1295	cor	n2	n3
+n1296	cor	n2	n3
+n1297	cor	n2	n13	n3	n8	n9	n10
+n1298	cor	n2	n3
+n1299	cor	n2	n3
+n1300	cor	n2
+n1301	cor	n2
+n1302	cor	n2	n3
+n1303	cor	n2	n3
+n1304	cor	n2	n3
+n1305	cor	n2	n3
+n1306	cor	n2	n13	n3
+n1307	cor	n2
+n1308	cor	n2
+n1309	cor	n2	n3
+n1310	cor	n2	n3
+n1311	cor	n2	n13	n3
+n1312	cor	n2	n3
+n1313	cor	n2	n3
+n1314	cor	n2	n3
+n1315	cor	n2	n3
+n1316	cor	n2
+n1317	cor	n2	n13	n3
+n1318	cor	n2	n3	n8	n9	n10
+n1319	cor	n2	n3	n8	n9	n10
+n1320	cor	n2	n3
+n1321	cor	n2	n3
+n1322	cor	n2
+n1323	cor	n2
+n1324	cor	n2	n3
+n1325	cor	n2	n3
+n1326	cor	n2	n3
+n1327	cor	n2	n3
+n1328	cor	n2	n13	n3
+n1329	cor	n2	n13	n3
+n1330	cor	n2	n3
+n1331	cor	n2
+n1332	cor	n2	n13	n3
+n1333	cor	n2	n3
+n1334	cor	n2	n13	n3
+n1335	cor	n2	n13	n3
+n1336	cor	n2	n13	n3
+n1337	cor	n2	n3
+n1338	cor	n2
+n1339	cor	n2
+n1340	cor	n2	n3
+n1341	cor	n2	n3
+n1342	cor	n2
+n1343	cor	n2	n3
+n1344	cor	n2	n3
+n1345	cor	n2	n3	n8	n9	n10
+n1346	cor	n2	n3
+n1347	cor	n2	n3
+n1348	cor	n2	n3
+n1349	cor	n2
+n1350	cor	n2
+n1351	cor	n2	n3
+n1352	cor	n2	n13	n3
+n1353	cor	n2	n3
+n1354	cor	n2	n3
+n1355	cor	n2	n3
+n1356	cor	n2	n3
+n1357	cor	n2	n3
+n1358	cor	n2	n3
+n1359	cor	n2	n3
+n1360	cor	n2	n3
+n1361	cor	n2	n3
+n1362	cor	n2	n3
+n1363	cor	n2	n3
+n1364	cor	n2	n3	n8	n9	n10
+n1365	cor	n2	n3
+n1366	cor	n2	n3
+n1367	cor	n2	n3
+n1368	cor	n2	n3
+n1369	cor	n2	n3
+n1370	cor	n2
+n1371	cor	n2	n3
+n1372	cor	n2	n3
+n1373	cor	n2
+n1374	cor	n2	n3
+n1375	cor	n2	n13	n3
+n1376	cor	n2
+n1377	cor	n2	n13	n3
+n1378	cor	n2
+n1379	cor	n2	n13	n3
+n1380	cor	n2	n13	n3
+n1381	cor	n2
+n1382	cor	n2	n3
+n1383	cor	n2	n3
+n1384	cor	n2	n13	n3
+n1385	cor	n2
+n1386	cor	n2	n3
+n1387	cor	n2	n3
+n1388	cor	n2	n3
+n1389	cor	n2
+n1390	cor	n2	n3
+n1391	cor	n2	n3
+n1392	cor	n2	n3
+n1393	cor	n2	n3
+n1394	cor	n2	n3
+n1395	cor	n2	n3
+n1396	cor	n2	n3
+n1397	cor	n2	n3
+n1398	cor	n2
+n1399	cor	n2	n13	n3
+n1400	cor	n2	n3
+n1401	cor	n2	n13	n3
+n1402	cor	n2	n3	n8	n9	n10
+n1403	cor	n2	n8	n9	n10
+n1404	cor	n2	n8	n9	n10
+n1405	cor	n2	n3
+n1406	cor	n2	n3
+n1407	cor	n2
+n1408	cor	n2
+n1409	cor	n2	n3
+n1410	cor	n2	n3
+n1411	cor	n2
+n1412	cor	n2
+n1413	cor	n2	n3
+n1414	cor	n2	n3
+n1415	cor	n2
+n1416	cor	n2
+n1417	cor	n2	n13	n3
+n1418	cor	n2	n13	n3
+n1419	cor	n2
+n1420	cor	n2	n3
+n1421	cor	n8	n9	n10
+n1422	cor	n2	n3
+n1423	cor	n2	n3
+n1424	cor	n2	n3
+n1425	cor	n2	n3
+n1426	cor	n2
+n1427	cor	n8	n9	n10
+n1428	cor	n8	n9	n10
+n1429	cor	n13	n8	n9	n10
+n1430	cor	n8	n9	n10
+n1431	cor	n13
+n1432	cor	n2	n3
+n1433	cor	n8	n9	n10
+n1434	cor	n2
+n1435	cor	n13
+n1436	cor	n8	n9	n10
+n1437	cor	n2	n3
+n1438	cor	n8	n9	n10
+n1439	cor	n2	n3
+n1440	cor	n2
+n2	hom	n8
+n8	hom	n2
+n13	hom	n9
+n9	hom	n13

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.collections.*?>
+<?import jfxtras.labs.scene.control.ToggleGroupValue?>
+<?import be.ugent.psb.util.javafx.view.*?>
+<?import be.ugent.psb.coexpnetviz.gui.jobinput.*?>
+     
+<!-- XXX extract a form class from this
+     But with sections to help keep things flat.
+     -*2 section -*many
+     Like Pivot's form layout
+     
+     XXX don't use separators as we have now, instead use GridPane with an empty cell (or make a filler control)
+        -->
+
+<fx:root type="javafx.scene.layout.GridPane" hgap="20" vgap="20" prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1">
+
+  <fx:define>
+    <Double fx:id='spacing' fx:value="10"/>
+  </fx:define>
+  
+  <columnConstraints>
+    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+    <RowConstraints minHeight="10" valignment="TOP" vgrow="NEVER" />
+  </rowConstraints>
+  <padding>
+     <Insets bottom="15" left="15" right="15" top="15" />
+  </padding>
+  <stylesheets>
+    <URL value='@style.css' />
+  </stylesheets>
+  
+  <children>
+     <Label styleClass='form-label' text="Presets:" />
+     <HBox spacing="$spacing" GridPane.columnIndex="1" >
+       <ComboBox prefWidth="200" editable='true' fx:id="presetsComboBox" promptText='Preset name'>
+         <tooltip><Tooltip text="Enter a preset name and click Save to save your current input. Or select a preset and click Load to load a preset." /></tooltip>
+       </ComboBox>
+       <Button text="Load" fx:id="loadPresetButton">
+         <tooltip><Tooltip text="Load the selected preset"/></tooltip>
+       </Button>
+       <Button text="Save" fx:id="savePresetButton">
+         <tooltip><Tooltip text="Save the current form input to the selected preset"/></tooltip>
+       </Button>
+       <Button text="Delete" fx:id="deletePresetButton">
+         <tooltip><Tooltip text="Delete the selected preset"/></tooltip>
+       </Button>
+       <Separator prefWidth="10" HBox.hgrow="SOMETIMES" />
+       <Button text="Reset form to defaults" fx:id="resetFormButton" />
+     </HBox>
+     
+     <Label styleClass='form-label' text="Bait group:" GridPane.rowIndex="1" />
+     <HBox spacing="$spacing" GridPane.columnIndex="1" GridPane.rowIndex="1">
+       <Label text="Input method:" />
+       <RadioButton text="Text area" fx:id='radioBaitGroupSourceText'>
+         <tooltip><Tooltip text="Input the bait group directly in a text area"/></tooltip>
+       </RadioButton>
+       <RadioButton text="File" fx:id='radioBaitGroupSourceFile'>
+         <tooltip><Tooltip text="Input the bait group as a file"/></tooltip>
+       </RadioButton>
+     </HBox>
+     
+     <CardPane GridPane.rowIndex="2" GridPane.columnIndex="1" fx:id='baitGroupCardPane'>
+       <FXCollections fx:factory="observableArrayList">
+         <TextArea wrapText='true' prefRowCount='8' fx:id='baitGroupTextArea' promptText='Bait group genes, e.g.: AT2G03340 AT2G03341 AT2G03342'>
+           <tooltip><Tooltip text="Enter bait group genes"/></tooltip>
+         </TextArea>
+         <FileInput fx:id='baitGroupFileInput' promptText="Bait group file" />
+       </FXCollections>
+     </CardPane>
+     
+     <Label styleClass='form-label' text="Gene families:" GridPane.rowIndex="3" />
+     <VBox spacing="$spacing" GridPane.rowIndex="3" GridPane.columnIndex="1" >
+       <RadioButton text="Plaza families (monocots + dicots)" fx:id='radioGeneFamiliesSourcePlaza'>
+         <tooltip><Tooltip text="Use Plaza families on server, merged from monocot and dicot families."/></tooltip>
+       </RadioButton>
+       <RadioButton text="Custom families" fx:id='radioGeneFamiliesSourceCustom'>
+         <tooltip><Tooltip text="Upload custom gene families."/></tooltip>
+       </RadioButton>
+       <RadioButton text="No families" fx:id='radioGeneFamiliesSourceNone'>
+         <tooltip><Tooltip text="Run without gene family data. Each (sufficiently correlated) gene will become a 'family' node in the output. Do not pick this option if comparing between multiple species."/></tooltip>
+       </RadioButton>
+     </VBox>
+     
+     <CardPane GridPane.rowIndex="4" GridPane.columnIndex="1" fx:id='geneFamiliesCardPane'>
+       <FXCollections fx:factory="observableArrayList">
+         <FileInput fx:id='geneFamiliesFileInput' promptText='Gene families file'/>
+       </FXCollections>
+     </CardPane>
+     
+     <Label styleClass='form-label' text="Expression matrices:" GridPane.rowIndex="5" />
+     <VBox spacing='$spacing' GridPane.rowIndex="5" GridPane.columnIndex="1">
+       <TableView editable='true' fx:id='expressionMatricesTableView'>
+         <tooltip><Tooltip text="Expression matrices"/></tooltip>
+       </TableView>
+       <HBox spacing='$spacing'>
+         <Button text="Add" fx:id='expressionMatricesAddButton'>
+           <tooltip><Tooltip text="Add expression matrix file"/></tooltip>
+         </Button>
+         <Button text="Remove" fx:id='expressionMatricesRemoveButton'>
+           <tooltip><Tooltip text="Remove selected expression matrices"/></tooltip>
+         </Button>
+       </HBox>
+     </VBox>
+     
+     <Label styleClass='form-label' text="Correlation thresholds:" GridPane.rowIndex="6" />
+     <HBox spacing="$spacing" GridPane.rowIndex="6" GridPane.columnIndex="1">
+       <fx:define>
+         <Tooltip fx:id='percentileRankTooltip'><text>
+           For each expression matrix, consider genes coexpressed if their correlation does not lie between
+           the lower and upper percentile of the distribution of correlations between a sample of genes per
+           gene expression matrix. Commonly used values are the 5th and 95th percentiles, or the 1st and
+           99th percentiles.
+         </text></Tooltip>
+       </fx:define>
+       <Label text="Lower percentile rank" />
+       <TextField fx:id="lowerPercentileRankInput" promptText='Lower percentile rank' tooltip='$percentileRankTooltip' />
+       <Separator prefWidth="10" />
+       <Label text="Upper percentile rank" />
+       <TextField fx:id="upperPercentileRankInput" promptText='Upper percentile rank' tooltip='$percentileRankTooltip' />
+     </HBox>
+     
+     <Label styleClass='form-label' text="Output directory:" GridPane.rowIndex="7" />
+     <FileInput GridPane.rowIndex="7" GridPane.columnIndex="1" fx:id="outputDirectoryFileInput" promptText='Output directory'>
+       <tooltip><Tooltip text="Directory in which to store a directory named 'CoExpNetViz__{preset_name}__timestamp' with the Cytoscape network and other output"/></tooltip>
+     </FileInput>
+     
+     <Label styleClass='form-label' text="Correlation method:" GridPane.rowIndex="8" />
+     <HBox spacing="20" GridPane.rowIndex="8" GridPane.columnIndex="1">
+       <RadioButton text="Pearson product-moment correlation coefficient (Pearson r)" fx:id='radioCorrelationMethodPearson' />
+       <RadioButton text="Mutual information" fx:id='radioCorrelationMethodMutualInformation' />
+     </HBox>
+     
+     <Button text="Run" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.halignment="RIGHT" fx:id="runButton">
+       <tooltip><Tooltip text="Run CoExpNetViz on server"/></tooltip>
+     </Button>
+     
+     <!-- For showing short error messages to the user -->
+     <HBox fx:id="errorTextArea" GridPane.rowIndex="10" GridPane.columnIndex="1" alignment="CENTER" visible='false' >
+       <Text fx:id="errorText" />
+     </HBox>
+  </children>
+</fx:root>

@@ -1,14 +1,5 @@
 package be.ugent.psb.util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel;
-
 /*
  * #%L
  * CoExpNetViz
@@ -36,8 +27,8 @@ public abstract class Strings {
 	/**
 	 * Is null or empty after trimming
 	 */
-	public static boolean isNullOrEmpty(String string) {
-		return string == null || string.trim().isEmpty();
+	public static boolean isNullOrBlank(String string) {
+		return string == null || string.isBlank();
 	}
 
 }

@@ -24,6 +24,9 @@ package be.ugent.psb.coexpnetviz;
 
 import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
 import static org.cytoscape.work.ServiceProperties.TITLE;
+import static org.cytoscape.work.ServiceProperties.COMMAND;
+import static org.cytoscape.work.ServiceProperties.COMMAND_DESCRIPTION;
+import static org.cytoscape.work.ServiceProperties.COMMAND_NAMESPACE;
 
 import java.util.Properties;
 
@@ -45,11 +48,13 @@ import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import be.ugent.psb.coexpnetviz.gui.MenuAction;
 import be.ugent.psb.coexpnetviz.gui.NodeViewContextMenuFactory;
 import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
@@ -60,6 +65,9 @@ import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 public class CytoscapeActivator extends AbstractCyActivator {
 
 	private CENVContext context;
+	
+	private static final String APP_MENU = "Apps." + CENVContext.APP_NAME;
+	private static final String CMD_NAMESPACE = "coexpnetviz";
 	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
@@ -88,14 +96,13 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, CyApplicationConfiguration.class),
 				getService(bundleContext, CySwingApplication.class)		
 	    	);
-	
-	        // Add our menu action in OSGi services
-	        registerAllServices(bundleContext, new MenuAction(context), new Properties());
-	
-	        // Add our layout
+	    	
+	    	registerCreateNetwork(bundleContext);
+	        
+	        // Register our layout algorithm, also add it to the menu
 	        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
 	        Properties cgalProperties = new Properties();
-	        cgalProperties.setProperty(PREFERRED_MENU, "Apps." + CENVContext.APP_NAME);
+	        cgalProperties.setProperty(PREFERRED_MENU, APP_MENU);
 	        cgalProperties.setProperty("preferredTaskManager", "menu");
 	        cgalProperties.setProperty(TITLE, cgal.toString());
 	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
@@ -103,7 +110,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        // Add node context menu action
 	        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new NodeViewContextMenuFactory(context);
 	        Properties myNodeViewContextMenuFactoryProps = new Properties();
-	        myNodeViewContextMenuFactoryProps.put("preferredMenu", "Apps");
+	        myNodeViewContextMenuFactoryProps.setProperty(PREFERRED_MENU, APP_MENU);
 	        registerService(bundleContext, myNodeViewContextMenuFactory, CyNodeViewContextMenuFactory.class, myNodeViewContextMenuFactoryProps);
     	}
     	catch (Throwable e) {
@@ -111,12 +118,19 @@ public class CytoscapeActivator extends AbstractCyActivator {
     		throw e;
     	}
     }
-    
-    @Override
-    public void shutDown() {
-    	context.saveConfiguration();
-    	context = null;
-    	
-    	super.shutDown();
-    }
+
+	private void registerCreateNetwork(BundleContext bundleContext) {
+		// Add a menu item for the create-network task
+		Properties props = new Properties();
+		props.setProperty(PREFERRED_MENU, APP_MENU);
+		props.setProperty(TITLE, "Create co-expression network");
+		
+		// and a command
+		props.setProperty(COMMAND_NAMESPACE, CMD_NAMESPACE);
+		props.setProperty(COMMAND, "create_network");
+		props.setProperty(COMMAND_DESCRIPTION, "Create a co-expression network");
+		
+		// finally, actually register it
+		registerService(bundleContext, new CENVTaskFactory(context), TaskFactory.class, props);
+	}
 }

@@ -100,7 +100,7 @@ public class NodeViewContextMenuFactory implements CyNodeViewContextMenuFactory,
         	title = "Bait node info";
         }
         
-        if (Strings.isNullOrEmpty(families))
+        if (Strings.isNullOrBlank(families))
         	families = "<None>";
         
         Frame parent = context.getCySwingApplication().getJFrame();;

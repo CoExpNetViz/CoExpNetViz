@@ -4,7 +4,7 @@ package be.ugent.psb.coexpnetviz;
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 - 2016 PSB/UGent
+ * Copyright (C) 2015 - 2021 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,18 +22,8 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
@@ -60,8 +50,6 @@ public class CENVContext {
 
 	public static final String APP_NAME = "CoExpNetViz";
 	
-	private Configuration configuration; 
-    
 	// The OSGi services we consume
 	private UndoSupport undoSupport;
 	private TaskManager<?,?> taskManager;
@@ -106,8 +94,6 @@ public class CENVContext {
 		this.cyApplicationManager = cyApplicationManager;
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
-		
-		loadConfiguration();
 	}
 
 	/**
@@ -117,62 +103,6 @@ public class CENVContext {
         Date now = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
         return sdf.format(now);
-    }
-
-    public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	private Path getConfigurationFilePath() {
-    	Path path = cyApplicationConfiguration.getAppConfigurationDirectoryLocation(getClass()).toPath();
-    	path = path.getParent().resolve(APP_NAME); // Make version independent so that configuration is carried on to next versions. We do have to be careful to remain backwards compatible in config format due to this.
-		return path.resolve("settings.xml");
-    }
-    
-    private void loadConfiguration() {
-		Path configurationFile = getConfigurationFilePath();
-		if (Files.exists(configurationFile)) {
-			try {
-				JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
-			    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			    configuration = (Configuration)unmarshaller.unmarshal(getConfigurationFilePath().toFile());
-			}
-			catch (JAXBException e) {
-				System.err.println("Failed to load configuration");
-				e.printStackTrace();
-				try {
-					
-					Files.copy(configurationFile, configurationFile.getParent().resolve(configurationFile.getFileName() + ".backup"), StandardCopyOption.REPLACE_EXISTING);
-				} catch (IOException e1) {
-					// Get a new hard drive, OS or JVM, please
-					e1.printStackTrace();
-				}
-				configuration = new Configuration();
-			}
-		}
-		else {
-			configuration = new Configuration();
-		}
-    }
-
-    public void saveConfiguration() {
-    	Path configurationFile = getConfigurationFilePath();
-		try {
-			Files.createDirectories(configurationFile.getParent());
-			
-			JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
-		    Marshaller marshaller = jaxbContext.createMarshaller();
-		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		    marshaller.marshal(configuration, getConfigurationFilePath().toFile());
-		}
-		catch (IOException e) {
-			System.err.println("Failed to save configuration");
-			e.printStackTrace();
-		}
-		catch (JAXBException e) {
-			System.err.println("Failed to save configuration");
-			e.printStackTrace();
-		}
     }
 
 	public UndoSupport getUndoSupport() {

@@ -1,13 +1,4 @@
-package be.ugent.psb.util;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-
-import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel;
+package be.ugent.psb.coexpnetviz;
 
 /*
  * #%L
@@ -31,21 +22,21 @@ import be.ugent.psb.coexpnetviz.gui.jobinput.JobInputModel;
  * #L%
  */
 
-public class ValidationException extends Exception {
+public class InputError extends Exception {
 
-	public ValidationException(String message) {
+	public InputError(String message) {
 		super(message);
 	}
 	
-	public ValidationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public InputError(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public ValidationException(String message, Throwable cause) {
+	public InputError(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public ValidationException(Throwable cause) {
+	public InputError(Throwable cause) {
 		super(cause);
 	}
 

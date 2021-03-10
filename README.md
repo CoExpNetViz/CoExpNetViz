@@ -15,8 +15,8 @@ Links:
 - [Cytoscape javadoc]
 - [Cytoscape source code on GitHub][Cytoscape source] in case the docs weren't clear.
 
-Setting up your dev env mostly boils down to following the [Cytoscape app
-ladder]. Here's a short version for Debian:
+Setting up your dev env mostly boils down to following the
+[Cytoscape app ladder]. Here's a short version for Debian:
 
 - `apt install openjdk-...-jdk`, peek at the cytoscape install step to find out
   which Java version Cytoscape requires.
@@ -29,14 +29,34 @@ ladder]. Here's a short version for Debian:
   Eclipse IDE and selecting it from the list. Or install Intellij; see the
   [Cytoscape dev wiki].
 - Clone this repo
-- In Eclipse open the Import dialog: Existing maven project, as root dir pick
-  the parent dir of the cloned repo. Select CoExpNetViz' pom, add to a new
-  working set 'CoExpNetViz' and finish.
+- Create the eclipse project files by running mvn inside the dir with
+  `pom.xml`: `mvn eclipse:clean; mvn eclipse:eclipse`. When changing pom.xml,
+  you may need to rerun `mvn eclipse:eclipse`, e.g. when changing dependencies.
+- In Eclipse menu, choose File > Import, select General > Existing projects
+  into workspace. As root dir pick the parent dir of the cloned repo. Select
+  CoExpNetViz and finish.
 
-Debugging/testing: [Cytoscape reloads the app] when it's rebuilt without
-needing to restart Cytoscape. If for some reason that doesn't work, you could
-try [debugging from Eclipse], which also might not require rebuilding the app
-in its entirety.
+Versioning: set the version in pom.xml, append `-SNAPSHOT` to make it a dev
+version. SNAPSHOT is commonly understood by tools and they may refresh
+accordingly when they notice a new snapshot is pushed.
+
+To build the jar, run `mvn package`. The jar is in the target dir. To install
+it, add a symlink in `~/CytoscapeConfiguration/3/apps/installed` to the created
+jar.
+
+Debugging:
+
+- [Cytoscape reloads the app] when it's rebuilt without needing to restart
+  Cytoscape, even when symlinked like above. If for some reason that doesn't
+  work, you could try [debugging from Eclipse], which also might not require
+  rebuilding the app in its entirety.
+- Cytoscape logs what it's doing, e.g. whether it reloaded the app, in
+  `~/CytoscapeConfiguration/3/framework-cytoscape.log`.
+- [How to log]. WARNING and above log messages end up in Cytoscape's
+  stdout/err. Not sure where INFO and DEBUG go to, they do not appear in the
+  log file.
+
+
 
 [Cytoscape app page]: https://apps.cytoscape.org/apps/coexpnetviz
 [GitHub]: https://github.com/CoExpNetViz/CoExpNetViz
@@ -48,3 +68,4 @@ in its entirety.
 [Cytoscape reloads the app]: https://github.com/cytoscape/cytoscape/wiki/Java-Hotswap
 [Install Eclipse]: http://www.eclipse.org/downloads/
 [Debugging from eclipse]: https://github.com/cytoscape/cytoscape/wiki/Launch-and-Debug-from-Eclipse
+[How to log]: http://wikiold.cytoscape.org/Cytoscape_3/AppDeveloper/Cytoscape_3_App_Cookbook#Logging

@@ -54,7 +54,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 /**
- * CoExpNetViz app context, provides refereences to what would otherwise be globals.
+ * CoExpNetViz app context, provides references to what would otherwise be globals.
  */
 public class CENVContext {
 

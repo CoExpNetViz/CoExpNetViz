@@ -311,11 +311,17 @@
 
         <!-- Logging -->
         <dependency>
-            <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-api</artifactId>
-            <version>1.5.2</version>
-            <scope>provided</scope>
-        </dependency>
+		     <groupId>org.ops4j.pax.logging</groupId>
+		     <artifactId>pax-logging-api</artifactId>
+		     <version>1.5.3</version>
+		     <scope>provided</scope>
+		</dependency>
+		<dependency>
+		     <groupId>org.ops4j.pax.logging</groupId>
+		     <artifactId>pax-logging-service</artifactId>
+		     <version>1.5.3</version>
+		     <scope>provided</scope>
+		</dependency>
 
         <!-- Unit testing -->
         <dependency>

@@ -3,14 +3,10 @@ package be.ugent.psb.coexpnetviz.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /*
  * #%L
@@ -36,33 +32,45 @@ import javax.swing.SwingUtilities;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskMonitor.Level;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.ListSingleSelection;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.InputError;
-import be.ugent.psb.util.Strings;
+import be.ugent.psb.coexpnetviz.JsonParserThread;
+import be.ugent.psb.coexpnetviz.ReaderThread;
+import be.ugent.psb.coexpnetviz.UserException;
 
-/**
- * Communication with CoExpNetViz server that handles jobs (in reality, this may be an intermediate)
+/* Create a co-expression network starting from an empty network  
+ * 
+ * Tunables notes: tunables are only picked up when public field/property in a public class.
+ * Tunable supports File, but not Path, so we use File here. A File with
+ * input=True will browse to a file for reading, else for writing (e.g.
+ * the latter will ask to confirm to overwrite a file); the former still
+ * lets you open files which do not exist though. Tunable(tooltip) only shows
+ * up in the GUI, Tunable(longDescription) only shows up on the CLI.
+ * Tunable(exampleStringValue) and Tunable(required) do not seem to do anything
+ * in cytoscape 3.8.2.
+ * 
+ * Task notes: Always prefer using showMessage as it works for both CLI/GUI.
+ * Task javadoc says all information regarding an exception should be contained
+ * in the exception and indeed setStatusMessage should not be used for extra
+ * information as e.g. in the GUI that just disappears but showMessage always
+ * ends up in the CLI or task history (GUI). Exceptions also end up in CLI and
+ * task history. Task history is hidden by default so better include all info
+ * in the exception. CLI expects <br> as line ending, GUI expects \n.
  */
 public class RunJobTask implements Task, TunableValidator {
 
 	private CENVContext context;
-	private JobServer jobServer;
-	private JobDescription jobDescription;
-	
-	/* Tunables are only picked up when public field/property in a public class.
-	 * Tunable supports File, but not Path, so we use File here. A File with
-	 * input=True will browse to a file for reading, else for writing (e.g.
-	 * the latter will ask to confirm to overwrite a file); the former still
-	 * lets you open files which do not exist though. Tunable(tooltip) only shows
-	 * up in the GUI, Tunable(longDescription) only shows up on the CLI.
-	 * Tunable(exampleStringValue) and Tunable(required) do not seem to do anything
-	 * in cytoscape 3.8.2.
-	 */
 	
 	/* Can't 'dependsOn=' for enabling when the other is empty, so we use a
 	 * source field and depend on that. xorKey is also an option but it requires
@@ -113,7 +121,15 @@ public class RunJobTask implements Task, TunableValidator {
 	@Tunable(description = "Output dir")
 	public File outputDir;
 	
-	private List<File> expressionMatrixFiles;
+	// These are sets to remove duplicates
+	private Set<File> expressionMatrixFiles;
+	private Set<String> cleanedBaits;
+
+	// volatile allows multiple threads to access it
+	private volatile boolean cancelled = false;
+	
+	// The thread that called run(), if any
+	private volatile Thread thread;
 	
 	public RunJobTask(CENVContext context) {
 		super();
@@ -125,7 +141,7 @@ public class RunJobTask implements Task, TunableValidator {
 	public ValidationState getValidationState(Appendable msg) {
 		try {
 			if (baitGroupSource.getSelectedValue() == "Inline") {
-				baitGroupText = cleanRequiredString("Bait names", baitGroupText);
+				cleanBaits();
 			} else {
 				baitGroupFile = cleanInputFile("Bait group file", baitGroupFile, true);
 			}
@@ -153,9 +169,24 @@ public class RunJobTask implements Task, TunableValidator {
 		return ValidationState.OK;
 	}
 	
+	private void cleanBaits() throws InputError {
+		String[] baits = baitGroupText.split("[,;]");
+		cleanedBaits = new HashSet<String>();
+		for (String bait : baits) {
+			bait = bait.trim();
+			if (bait.isEmpty()) {
+				continue;
+			}
+			cleanedBaits.add(bait);
+		}
+		if (cleanedBaits.size() < 2) {
+			throw new InputError("At least 2 bait names are required.");
+		}
+	}
+	
 	private void cleanExpressionMatrices() throws InputError {
 		String[] paths = expressionMatrices.split("[,;]");
-		expressionMatrixFiles = new ArrayList<File>();
+		expressionMatrixFiles = new HashSet<File>();
 		for (String path : paths) {
 			path = path.trim();
 			if (path.isEmpty()) {
@@ -190,36 +221,184 @@ public class RunJobTask implements Task, TunableValidator {
 		}
 		return file.getAbsoluteFile();
 	}
-	
-	private String cleanRequiredString(String name, String value) throws InputError {
-		if (Strings.isNullOrBlank(value)) {
-			throw new InputError(name + " is required.");
-		}
-		return value.trim();
-	}
 
 	@Override
 	public void cancel() {
-		jobServer.abort();
+		/* 99.999999999% of the time there is a Thread, in the off chance someone
+		 * manages to cancel the task before it runs its first statement, there's
+		 * the cancelled var.
+		 */
+		if (thread == null) {
+			cancelled = true;
+		} else {
+			/* The thread will get interrupted the next time it blocks on
+			 * something (or right away if already blocked). It can also
+			 * check thread.interrupted() when doing non-blocking stuff to
+			 * see whether it was cancelled; though next time you call
+			 * interrupted() it will return false again!
+			 */
+			thread.interrupt();
+		}
 	}
 	
 	@Override
-	public void run(TaskMonitor tm) throws Exception {
-		tm.setStatusMessage("Running job on CoExpNetViz server");
+	public void run(TaskMonitor monitor) throws Exception {
+		/* Tasks are single use so there's no need to unset the thread var. 
+		 * Unsetting would cause a race condition in cancel() where it gets
+		 * past the if, thread gets unset and then it tries to call
+		 * `null.interrupt`.
+		 * 
+		 * We only need to check `cancelled` once here, beyond that you can
+		 * forget about it.
+		 */
+		thread = Thread.currentThread();
+		if (cancelled) {
+			return;
+		}
+		
 		try {
-		jobServer.runJob(jobDescription);
-		}
-		catch (final JobServerException e) {
-			// Cytoscape's exception dialog is too small, so we show one instead
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					JOptionPane.showMessageDialog(context.getCySwingApplication().getJFrame(), e.getMessage(), "CoExpNetViz server error", JOptionPane.ERROR_MESSAGE);
-				}
-			});
+			JsonNode response = callBackend(monitor);
 			
-			throw new RuntimeException("CoExpNetViz job failed due to server error");
+			// TODO turn into a network
+			monitor.setStatusMessage("Bla bla next step");
+			monitor.setProgress(0.5);
+		} catch (InterruptedException e) {
+			/* Happens when cancelled, just ignore it and stop running.
+			 * If we let it bubble up, Cytoscape will show an error.
+			 */
 		}
+	}
+
+	private void showMessage(TaskMonitor monitor, Level level, String msg) {
+		// TODO discern between GUI/CLI. CLI wants <br>, GUI doesn't. Or report upstream, maybe they should fix it.
+		monitor.showMessage(level, msg.replaceAll("\n", "<br>\n"));
+	}
+
+	private JsonNode callBackend(TaskMonitor monitor) throws UserException, InterruptedException {
+		// conda does not pass on stdin to coexpnetviz unless --no-capture-output is specified.
+		final String command = "conda run -n coexpnetviz --no-capture-output coexpnetviz";
+		monitor.setStatusMessage("Running python backend: " + command);
+		
+		Process process = null;
+		JsonParserThread stdoutThread = null;
+		ReaderThread stderrThread = null;
+		int exitCode;
+		try {
+			// Start backend process
+			try {
+				process = Runtime.getRuntime().exec(command);
+			} catch (IOException e) {
+				throw new UserException("Failed to exec backend command", e);
+			}
+			
+			/* Read stdout/err in a separate thread to avoid blocking the backend process.
+			 * If we wait for the backend process to exit before reading, the backend process
+			 * may fill up its output buffer and start waiting for us to read it; i.e. deadlock.
+			 */
+			stdoutThread = new JsonParserThread(process.getInputStream());
+			stderrThread = new ReaderThread(process.getErrorStream());
+			stdoutThread.start();
+			stderrThread.start();
+			
+			// Pass json input to backend process
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectNode jsonInput = createJsonInput(mapper);
+			try {
+				mapper.writeValue(process.getOutputStream(), jsonInput);
+				process.getOutputStream().close();
+			} catch (IOException e) {
+				throw new UserException("Failed to send json input to backend", e);
+			}
+			
+			/* Wait for backend process and our reader threads to exit
+			 * 
+			 * Simply waiting for it to close its stdout is not enough and that also
+			 * wouldn't allow cancelling the task.
+			 */
+			exitCode = process.waitFor();
+			stdoutThread.join();
+			stderrThread.join();
+		} catch (InterruptedException e) {
+			showMessage(monitor, Level.WARN, "Cancelled");
+			
+			if (process != null) {
+				monitor.setStatusMessage("Killing backend process");
+				process.destroy(); // TODO backend probably does not respond to sigterm, it should.
+				try {
+					process.waitFor(5, TimeUnit.SECONDS);
+				} catch (InterruptedException e1) {
+				}
+				process.destroyForcibly();
+			}
+			
+			monitor.setStatusMessage("Killing reader threads");
+			if (stdoutThread != null) {
+				stdoutThread.interrupt();
+			}
+			if (stderrThread != null) {
+				stderrThread.interrupt();
+			}
+			
+			throw e;
+		}
+		
+		// Mention the log file, if any
+		Path logFile = outputDir.toPath().resolve("coexpnetviz.log");
+		if (Files.exists(logFile)) {
+			showMessage(monitor, Level.INFO, "Backend log file: " + logFile);
+		}
+		
+		// Report crash to user, if any
+		if (exitCode != 0) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("python backend exited non-zero: ").append(process.exitValue()).append("\n");
+			
+			try {
+				msg.append("stderr: ").append(stderrThread.getOutput());
+			} catch (IOException e) {
+				showMessage(monitor, Level.WARN, "Failed to read stderr from backend process: " + e.toString());
+				e.printStackTrace();
+			}
+			
+			throw new UserException(msg.toString());
+		}
+		
+		try {
+			return stdoutThread.getResponse();
+		} catch (IOException e) {
+			throw new UserException("Failed to read or parse response from backend process.", e);
+		}
+	}
+	
+	/*
+	 * Formulate json for a call to coexpnetviz-python
+	 */
+	private ObjectNode createJsonInput(ObjectMapper mapper) {
+		ObjectNode root = mapper.createObjectNode();
+		
+		if (baitGroupSource.getSelectedValue() == "Inline") {
+			ArrayNode baitsArray = root.putArray("baits");
+			for (String bait : cleanedBaits) {
+				baitsArray.add(bait);
+			}
+		} else {
+			root.put("baits", baitGroupFile.toString());
+		}
+		
+		ArrayNode matrixArray = root.putArray("expression_matrices");
+		for (File matrix : expressionMatrixFiles) {
+			matrixArray.add(matrix.toString());
+		}
+		
+		if (geneFamiliesFile != null) {
+			root.put("gene_families", geneFamiliesFile.toString());
+		}
+		
+		root.put("lower_percentile_rank", lowerPercentileRank.getValue());
+		root.put("upper_percentile_rank", upperPercentileRank.getValue());
+		root.put("output_dir", outputDir.toString());
+		
+		return root;
 	}
 	
 }

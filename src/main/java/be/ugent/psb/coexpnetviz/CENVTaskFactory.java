@@ -41,10 +41,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TunableValidator;
 
-import be.ugent.psb.coexpnetviz.io.JobDescription;
-import be.ugent.psb.coexpnetviz.io.JobServer;
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
 import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 import be.ugent.psb.util.cytoscape.NotificationTask;

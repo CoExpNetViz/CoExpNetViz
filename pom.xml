@@ -11,7 +11,7 @@
 	<properties>
 		<cytoscape.api.version>3.8.0</cytoscape.api.version>
 		<maven-compiler-plugin.version>3.5</maven-compiler-plugin.version>
-		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
+		<maven-bundle-plugin.version>4.2.1</maven-bundle-plugin.version>
 		<osgi.api.version>4.2.0</osgi.api.version>
 		
 		<!-- The java version to support. Should match the one Cytoscape recommends. -->
@@ -337,26 +337,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.rauschig</groupId>
-            <artifactId>jarchivelib</artifactId>
-            <version>0.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.15</version>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
@@ -366,5 +346,10 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+        <dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.12.2</version>
+		</dependency>
     </dependencies>
 </project>

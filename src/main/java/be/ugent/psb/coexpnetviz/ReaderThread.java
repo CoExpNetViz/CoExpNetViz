@@ -1,10 +1,10 @@
-package be.ugent.psb.coexpnetviz.io;
+package be.ugent.psb.coexpnetviz;
 
 /*
  * #%L
  * CoExpNetViz
  * %%
- * Copyright (C) 2015 PSB/UGent
+ * Copyright (C) 2015 - 2021 PSB/UGent
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,13 +22,39 @@ package be.ugent.psb.coexpnetviz.io;
  * #L%
  */
 
-/**
- * Exception due to error on server
- */
-public class JobServerException extends Exception {
-	private static final long serialVersionUID = 1L;
+import java.io.IOException;
+import java.io.InputStream;
 
-	public JobServerException(String message) {
-        super(message);
-    }
+import org.apache.commons.io.IOUtils;
+
+/*
+ * Read an input stream into a String in a separate thread
+ */
+public class ReaderThread extends Thread {
+	
+	private String output;
+	private InputStream input;
+	private IOException caughtException;
+	
+	public ReaderThread(InputStream input) {
+		super();
+		this.input = input;
+	}
+
+	@Override
+	public void run() {
+		try {
+			output = IOUtils.toString(input);
+		} catch (IOException e) {
+			caughtException = e;
+		}
+	}
+	
+	public String getOutput() throws IOException {
+		if (caughtException != null) {
+			throw caughtException;
+		}
+		return output;
+	}
+
 }

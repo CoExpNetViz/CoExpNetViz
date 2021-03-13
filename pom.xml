@@ -40,13 +40,6 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>default-testCompile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>default-compile</id>
                         <phase>compile</phase>
                         <goals>
@@ -67,16 +60,6 @@
 					  <Xmaxwarns>10000</Xmaxwarns>
 					  <Xmaxerrs>10000</Xmaxerrs>
 					</compilerArguments>
-                </configuration>
-            </plugin>
-            
-            <!-- Testing plugins -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-                <configuration>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
             
@@ -261,28 +244,6 @@
             <scope>provided</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.cytoscape</groupId>    
-            <artifactId>model-impl</artifactId>    
-            <version>${cytoscape.api.version}</version>     
-            <type>test-jar</type>
-            <!-- Only necessary to run tests -->
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.cytoscape</groupId>    
-            <artifactId>model-impl</artifactId>     
-            <version>${cytoscape.api.version}</version>    
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.cytoscape</groupId>    
-            <artifactId>event-api</artifactId>    
-            <version>${cytoscape.api.version}</version>     
-            <type>test-jar</type>    
-            <scope>test</scope>
-        </dependency>
-
         <!-- Logging -->
         <dependency>
 		     <groupId>org.ops4j.pax.logging</groupId>
@@ -296,20 +257,6 @@
 		     <version>1.5.3</version>
 		     <scope>provided</scope>
 		</dependency>
-
-        <!-- Unit testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
 
 		<!-- Various -->
         <dependency>

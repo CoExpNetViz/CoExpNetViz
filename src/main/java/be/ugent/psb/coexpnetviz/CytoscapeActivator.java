@@ -36,6 +36,7 @@ import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
@@ -47,7 +48,9 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
@@ -83,6 +86,10 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, CyNetworkManager.class),
 				getService(bundleContext, CyNetworkViewManager.class),
 				getService(bundleContext, VisualMappingManager.class),
+				getService(bundleContext, VisualStyleFactory.class),
+				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
+				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
+				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
 				getService(bundleContext, LoadVizmapFileTaskFactory.class),
 				getService(bundleContext, CyTableReaderManager.class),
 				getService(bundleContext, CyRootNetworkManager.class),
@@ -94,7 +101,8 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, OpenBrowser.class),
 				getService(bundleContext, CyApplicationManager.class),
 				getService(bundleContext, CyApplicationConfiguration.class),
-				getService(bundleContext, CySwingApplication.class)		
+				getService(bundleContext, CySwingApplication.class),
+				getService(bundleContext, CyNetworkFactory.class)
 	    	);
 	    	
 	    	registerCreateNetwork(bundleContext);

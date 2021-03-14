@@ -1,12 +1,33 @@
 package be.ugent.psb.coexpnetviz.io;
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+import org.cytoscape.view.presentation.property.LineTypeVisualProperty;
+import org.cytoscape.view.presentation.property.values.LineType;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 /*
  * #%L
@@ -42,6 +63,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Throwables;
 
 import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.coexpnetviz.InputError;
@@ -71,6 +93,18 @@ import be.ugent.psb.coexpnetviz.UserException;
 public class RunJobTask implements Task, TunableValidator {
 
 	private CENVContext context;
+	
+	/*
+	 * Empty network to turn into a co-expression network
+	 */
+	private CyNetwork network;
+	
+	private ObjectMapper mapper = new ObjectMapper();
+	
+	private static final String networkNameHelp = "Name of the co-expression network to create";
+	
+	@Tunable(description = "Network name", tooltip = networkNameHelp, longDescription = networkNameHelp)
+	public String networkName;
 	
 	/* Can't 'dependsOn=' for enabling when the other is empty, so we use a
 	 * source field and depend on that. xorKey is also an option but it requires
@@ -140,6 +174,8 @@ public class RunJobTask implements Task, TunableValidator {
 	@Override
 	public ValidationState getValidationState(Appendable msg) {
 		try {
+			cleanNetworkName();
+			
 			if (baitGroupSource.getSelectedValue() == "Inline") {
 				cleanBaits();
 			} else {
@@ -167,6 +203,14 @@ public class RunJobTask implements Task, TunableValidator {
 		}
 		
 		return ValidationState.OK;
+	}
+	
+	private void cleanNetworkName() throws InputError {
+		// Note: CyNetwork names don't have to be unique
+		if (networkName == null || networkName.isBlank()) {
+			throw new InputError("Network name is required.");
+		}
+		networkName = networkName.trim();
 	}
 	
 	private void cleanBaits() throws InputError {
@@ -256,16 +300,36 @@ public class RunJobTask implements Task, TunableValidator {
 			return;
 		}
 		
+		/* This title is shown in the task log and should make it easy to identify
+		 * the task and roughly which params though I don't go as far as including
+		 * those. 
+		 */
+		monitor.setTitle("Create co-expression network '" + networkName + "'");
+		
 		try {
 			JsonNode response = callBackend(monitor);
+			createNetwork(monitor);
+			Map<Integer, CyNode> nodes = createNodes(monitor, response);
+			createEdges(monitor, response, nodes);
+			CyNetworkView networkView = createNetworkView(monitor);
 			
-			// TODO turn into a network
-			monitor.setStatusMessage("Bla bla next step");
-			monitor.setProgress(0.5);
+			// Finally, reveal the created network to the user in the GUI. Doing this earlier risks
+			// them editing it while we're still working on it.
+			context.getCyNetworkManager().addNetwork(network, true);
+			context.getCyNetworkViewManager().addNetworkView(networkView);
 		} catch (InterruptedException e) {
 			/* Happens when cancelled, just ignore it and stop running.
 			 * If we let it bubble up, Cytoscape will show an error.
 			 */
+		} catch (UserException e) {
+			// Already formatted nicely
+			throw e;
+		} catch (Exception e) {
+			/* Cytoscape only shows e.getMessage() but for unexpected errors like
+			 * these we want to provide full details so they can open an issue for
+			 * it. Also helpful to us when debugging.
+			 */
+			throw new UserException("Internal CoExpNetViz error: " + e.getMessage() + "\n" + Throwables.getStackTraceAsString(e), e);
 		}
 	}
 
@@ -301,8 +365,7 @@ public class RunJobTask implements Task, TunableValidator {
 			stderrThread.start();
 			
 			// Pass json input to backend process
-			ObjectMapper mapper = new ObjectMapper();
-			ObjectNode jsonInput = createJsonInput(mapper);
+			ObjectNode jsonInput = createJsonInput();
 			try {
 				mapper.writeValue(process.getOutputStream(), jsonInput);
 				process.getOutputStream().close();
@@ -373,7 +436,7 @@ public class RunJobTask implements Task, TunableValidator {
 	/*
 	 * Formulate json for a call to coexpnetviz-python
 	 */
-	private ObjectNode createJsonInput(ObjectMapper mapper) {
+	private ObjectNode createJsonInput() {
 		ObjectNode root = mapper.createObjectNode();
 		
 		if (baitGroupSource.getSelectedValue() == "Inline") {
@@ -401,4 +464,183 @@ public class RunJobTask implements Task, TunableValidator {
 		return root;
 	}
 	
+	private void createNetwork(TaskMonitor monitor) {
+		monitor.setStatusMessage("Creating network");
+		monitor.setProgress(0.4);
+		network = context.getCyNetworkFactory().createNetwork();
+		network.getRow(network).set(CyNetwork.NAME, networkName);
+	}
+	
+	private Map<Integer, CyNode> createNodes(TaskMonitor monitor, JsonNode response) {
+		monitor.setStatusMessage("Creating nodes");
+		monitor.setProgress(0.5);
+		
+		// Define extra node columns. false means the user may delete the columns.
+		CyTable nodeTable = network.getDefaultNodeTable();
+		nodeTable.createColumn(CENVContext.NAMESPACE, "type", String.class, false);
+		nodeTable.createListColumn(CENVContext.NAMESPACE, "genes", String.class, false);
+		nodeTable.createColumn(CENVContext.NAMESPACE, "family", String.class, false);
+		nodeTable.createColumn(CENVContext.NAMESPACE, "colour", String.class, false);
+		nodeTable.createColumn(CENVContext.NAMESPACE, "partition_id", Integer.class, false);
+		
+		Map<Integer, CyNode> nodes = new HashMap<>();
+		for (JsonNode rawNode : response.get("nodes")) {
+			CyNode node = network.addNode();
+			CyRow nodeAttrs = network.getRow(node);
+			JsonNode nodeAttr;
+			
+			nodeAttr = rawNode.get("id");
+			assert nodeAttr.isIntegralNumber();
+			nodes.put(nodeAttr.asInt(), node);
+			
+			nodeAttr = rawNode.get("label");
+			assert nodeAttr.isTextual();
+			nodeAttrs.set(CyNetwork.NAME, nodeAttr.textValue());
+			
+			nodeAttr = rawNode.get("type");
+			assert nodeAttr.isTextual();
+			nodeAttrs.set(CENVContext.NAMESPACE, "type", nodeAttr.textValue());
+			
+			/* Apparently you could use mapper.convertValue to convert to List<String>
+			 * but I couldn't get that to compile.
+			 */
+			nodeAttr = rawNode.get("genes");
+			assert nodeAttr.isArray();
+			List<String> genes = new ArrayList<String>();
+			for (JsonNode gene : nodeAttr) {
+				assert gene.isTextual();
+				genes.add(gene.textValue());
+			}
+			nodeAttrs.set(CENVContext.NAMESPACE, "genes", genes);
+			
+			nodeAttr = rawNode.get("family");
+			assert nodeAttr.isTextual();
+			nodeAttrs.set(CENVContext.NAMESPACE, "family", nodeAttr.textValue());
+			
+			nodeAttr = rawNode.get("colour");
+			assert nodeAttr.isTextual();
+			nodeAttrs.set(CENVContext.NAMESPACE, "colour", nodeAttr.textValue());
+			
+			nodeAttr = rawNode.get("partition_id");
+			assert nodeAttr.isIntegralNumber();
+			nodeAttrs.set(CENVContext.NAMESPACE, "partition_id", nodeAttr.asInt());
+		}
+		
+		return nodes;
+	}
+
+	private void createEdges(TaskMonitor monitor, JsonNode response, Map<Integer, CyNode> nodes) {
+		monitor.setStatusMessage("Creating edges");
+		monitor.setProgress(0.6);
+		
+		CyTable edgeTable = network.getDefaultEdgeTable();
+		edgeTable.createColumn(CENVContext.NAMESPACE, "max_correlation", Double.class, false);
+
+		for (JsonNode jsonEdge : response.get("homology_edges")) {
+			CyNode node1 = getNode(nodes, jsonEdge, "bait_node1");
+			CyNode node2 = getNode(nodes, jsonEdge, "bait_node2");
+			boolean isDirected = false;
+			CyEdge edge = network.addEdge(node1, node2, isDirected);
+			CyRow edgeAttrs = network.getRow(edge);
+			
+			edgeAttrs.set("interaction", "hom");
+		}
+		
+		for (JsonNode jsonEdge : response.get("cor_edges")) {
+			CyNode baitNode = getNode(nodes, jsonEdge, "bait_node");
+			CyNode node = getNode(nodes, jsonEdge, "node");
+			boolean isDirected = false;
+			CyEdge edge = network.addEdge(baitNode, node, isDirected);
+			CyRow edgeAttrs = network.getRow(edge);
+			
+			edgeAttrs.set("interaction", "cor");
+			
+			JsonNode edgeAttr = jsonEdge.get("max_correlation");
+			assert edgeAttr.isNumber();
+			edgeAttrs.set(CENVContext.NAMESPACE, "max_correlation", edgeAttr.asDouble());
+		}
+	}
+
+	private CyNode getNode(Map<Integer, CyNode> nodes, JsonNode json, String nodeIdAttr) {
+		JsonNode jsonNodeId = json.get(nodeIdAttr);
+		assert jsonNodeId.isIntegralNumber();
+		int nodeId = jsonNodeId.asInt();
+		return nodes.get(nodeId);
+	}
+	
+	/*
+	 * Create network view and style it
+	 * 
+	 * We do this after we are done with the CyNetwork, its nodes and edges. Otherwise we would
+	 * have to call CyEventHelper to flushPayloadEvents() to the view.
+	 */
+	private CyNetworkView createNetworkView(TaskMonitor monitor) {
+		monitor.setStatusMessage("Creating network view");
+		monitor.setProgress(0.7);
+		
+		/* User can't view the network before it has a view, so create one and add it to the GUI.
+		 * We add it to the GUI right away to prevent the user from clicking "Create view" while
+		 * we're working on ours.
+		 */
+		CyNetworkView networkView = context.getCyNetworkViewFactory().createNetworkView(network);
+
+		/* Style the view
+		 * 
+		 * If the style already exists, it might have been created by and older coexpnetviz version,
+		 * so once a version has set a visual property, all future versions must keep setting it (e.g.
+		 * to its default). Otherwise you may end up with an unintended mix of old and new properties.
+		 * E.g. v1 sets x, v2 only sets y, you then end up with x=v1_value and y=v2_value instead of
+		 * x=default. Or you might try using style.removeVisualMappingFunction, or style.getDefaultValue().
+		 */
+		VisualStyle style = getOrCreateStyle();
+		VisualMappingFunctionFactory passthrough = context.getPassthroughMappingFactory();
+		VisualMappingFunctionFactory discrete = context.getDiscreteMappingFactory();
+		VisualMappingFunctionFactory continuous = context.getContinuousMappingFactory();
+		
+		style.addVisualMappingFunction(passthrough.createVisualMappingFunction(
+			CyNetwork.NAME, String.class, BasicVisualLexicon.NODE_LABEL
+		));
+		
+		style.addVisualMappingFunction(passthrough.createVisualMappingFunction(
+			CENVContext.NAMESPACE + "::colour", String.class, BasicVisualLexicon.NODE_FILL_COLOR
+		));
+		
+		// Cor edge colour: red (-1) -- black (0) -- green (1)
+		ContinuousMapping<Double, Paint> edgeColourMapping = (ContinuousMapping<Double, Paint>) continuous.createVisualMappingFunction(
+			CENVContext.NAMESPACE + "::max_correlation", Double.class, BasicVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT
+		);
+		edgeColourMapping.addPoint(-1.0, new BoundaryRangeValues<>(Color.RED, Color.RED, Color.RED));
+		edgeColourMapping.addPoint(0.0, new BoundaryRangeValues<>(Color.BLACK, Color.BLACK, Color.BLACK));
+		edgeColourMapping.addPoint(1.0, new BoundaryRangeValues<>(Color.GREEN, Color.GREEN, Color.GREEN));
+		style.addVisualMappingFunction(edgeColourMapping);
+		
+		// Hom edge: dotted line
+		DiscreteMapping<String, LineType> lineTypeMapping = (DiscreteMapping<String, LineType>) discrete.createVisualMappingFunction(
+				"interaction", String.class, BasicVisualLexicon.EDGE_LINE_TYPE
+		);
+		lineTypeMapping.putMapValue("hom", LineTypeVisualProperty.DOT);
+		lineTypeMapping.putMapValue("cor", LineTypeVisualProperty.SOLID);
+		style.addVisualMappingFunction(lineTypeMapping);
+		
+		style.apply(networkView);
+		return networkView;
+	}
+	
+	/* Get/create our stylesheet and ensure it's listed in the GUI (in case user made changes
+	 * and wants to restore the original). If we simply create a new one each time, we end
+	 * up spamming the style list with coexpnetviz_0, _1, ... Deleting the existing style
+	 * would probably reset the style of previous networks, so we use the existing one if any.
+	 */
+	private VisualStyle getOrCreateStyle() {
+		for (VisualStyle style : context.getVisualMappingManager().getAllVisualStyles()) {
+			if (style.getTitle() == CENVContext.APP_NAME) {
+				return style;
+			}
+		}
+		
+		VisualStyle style = context.getVisualStyleFactory().createVisualStyle(CENVContext.APP_NAME);
+		context.getVisualMappingManager().addVisualStyle(style);
+		return style;
+	}
+
 }

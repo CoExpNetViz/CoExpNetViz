@@ -30,6 +30,7 @@ import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
@@ -39,7 +40,9 @@ import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -50,12 +53,19 @@ public class CENVContext {
 
 	public static final String APP_NAME = "CoExpNetViz";
 	
+	// Table column namespace
+	public static final String NAMESPACE = "coexpnetviz";
+	
 	// The OSGi services we consume
 	private UndoSupport undoSupport;
 	private TaskManager<?,?> taskManager;
 	private CyNetworkManager cyNetworkManager;
 	private CyNetworkViewManager cyNetworkViewManager;
 	private VisualMappingManager visualMappingManager;
+	private VisualStyleFactory visualStyleFactory;
+	private VisualMappingFunctionFactory continuousMappingFactory;
+	private VisualMappingFunctionFactory discreteMappingFactory;
+	private VisualMappingFunctionFactory passthroughMappingFactory;
 	private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
 	private CyTableReaderManager cyTableReaderManager;
 	private CyRootNetworkManager cyRootNetworkManager;
@@ -68,20 +78,29 @@ public class CENVContext {
 	private CyApplicationManager cyApplicationManager;
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
+	private CyNetworkFactory cyNetworkFactory;
 
-	public CENVContext(UndoSupport undoSupport, TaskManager<?,?> taskManager, CyNetworkManager cyNetworkManager,
+	public CENVContext(UndoSupport undoSupport, TaskManager<?, ?> taskManager, CyNetworkManager cyNetworkManager,
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
+			VisualStyleFactory visualStyleFactory, VisualMappingFunctionFactory continuousMappingFactory,
+			VisualMappingFunctionFactory discreteMappingFactory, VisualMappingFunctionFactory passthroughMappingFactory,
 			LoadVizmapFileTaskFactory loadVizmapFileTaskFactory, CyTableReaderManager cyTableReaderManager,
 			CyRootNetworkManager cyRootNetworkManager, ImportDataTableTaskFactory importDataTableTaskFactory,
 			CyNetworkReaderManager cyNetworkReaderManager, CyLayoutAlgorithmManager cyLayoutAlgorithmManager,
 			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkTableManager cyNetworkTableManager,
 			OpenBrowser openBrowser, CyApplicationManager cyApplicationManager,
-			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication) {
+			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication,
+			CyNetworkFactory cyNetworkFactory) {
+		super();
 		this.undoSupport = undoSupport;
 		this.taskManager = taskManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.cyNetworkViewManager = cyNetworkViewManager;
 		this.visualMappingManager = visualMappingManager;
+		this.visualStyleFactory = visualStyleFactory;
+		this.continuousMappingFactory = continuousMappingFactory;
+		this.discreteMappingFactory = discreteMappingFactory;
+		this.passthroughMappingFactory = passthroughMappingFactory;
 		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
 		this.cyTableReaderManager = cyTableReaderManager;
 		this.cyRootNetworkManager = cyRootNetworkManager;
@@ -94,6 +113,7 @@ public class CENVContext {
 		this.cyApplicationManager = cyApplicationManager;
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
+		this.cyNetworkFactory = cyNetworkFactory;
 	}
 
 	/**
@@ -172,5 +192,25 @@ public class CENVContext {
 	public CySwingApplication getCySwingApplication() {
 		return cySwingApplication;
 	}
+	
+	public CyNetworkFactory getCyNetworkFactory() {
+		return cyNetworkFactory;
+	}
 
+	public VisualStyleFactory getVisualStyleFactory() {
+		return visualStyleFactory;
+	}
+
+	public VisualMappingFunctionFactory getContinuousMappingFactory() {
+		return continuousMappingFactory;
+	}
+
+	public VisualMappingFunctionFactory getDiscreteMappingFactory() {
+		return discreteMappingFactory;
+	}
+
+	public VisualMappingFunctionFactory getPassthroughMappingFactory() {
+		return passthroughMappingFactory;
+	}
+	
 }

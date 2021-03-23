@@ -63,8 +63,8 @@ import be.ugent.psb.util.Sets;
  */
 public class CENVLayoutTask extends AbstractLayoutTask {
 
-    private static final String TYPE_ATTRIBUTE = "type";
-    private static final String PARTITION_ATTRIBUTE = "partition_id";
+    private static final String TYPE_ATTRIBUTE = CENVContext.NAMESPACE + "::type";
+    private static final String PARTITION_ATTRIBUTE = CENVContext.NAMESPACE + "::partition_id";
 
     private CENVLayoutContext context;
 
@@ -136,57 +136,54 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     }
     
     private Container layOutConnectedComponent(Set<CyNode> connectedComponent) {
-    	// Split into family partitions and baits partition
-    	Map<Object, Set<CyNode>> familyPartitions = new HashMap<>(); // partition id -> partition
+    	// Split into a baits partition and other partitions 
+    	Map<Object, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
     	Set<CyNode> baitPartition = new HashSet<>();
     	for (CyNode node : connectedComponent) {
     		CyRow row = getNetwork().getRow(node);
     		String type = row.get(TYPE_ATTRIBUTE, String.class);
-    		if (type.equals("bait node")) {
+    		if (type.equals("bait")) {
     			baitPartition.add(node);
     		}
-    		else if (type.equals("family node")) {
-    			Object partitionId = row.getRaw(PARTITION_ATTRIBUTE);
-    			if (!familyPartitions.containsKey(partitionId)) {
-    				familyPartitions.put(partitionId, new HashSet<CyNode>());
-    			}
-    			familyPartitions.get(partitionId).add(node);
-    		}
     		else {
-    			throw new RuntimeException("Invalid node type: " + type);
+    			Object partitionId = row.getRaw(PARTITION_ATTRIBUTE);
+    			if (!nonBaitPartitions.containsKey(partitionId)) {
+    				nonBaitPartitions.put(partitionId, new HashSet<CyNode>());
+    			}
+    			nonBaitPartitions.get(partitionId).add(node);
     		}
     	}
     	
-    	// Create children
+    	// Create children. Singletons are merged into a partition of their own.
     	Set<CyNode> singletons = new HashSet<>();
-    	Container familyPartitionsContainer = new Container();
-    	for (Set<CyNode> partition : familyPartitions.values()) { // family partitions and merge singleton partitions into a pseudo partition
+    	Container nonBaitPartitionsContainer = new Container();
+    	for (Set<CyNode> partition : nonBaitPartitions.values()) {
     		if (partition.size() > 1) {
-    			familyPartitionsContainer.getChildren().add(layOutFamilyPartition(partition));
+    			nonBaitPartitionsContainer.getChildren().add(layOutNonBaitPartition(partition));
     		}
     		else {
     			singletons.add(Iterables.getOnlyElement(partition));
     		}
     	}
-    	familyPartitionsContainer.getChildren().add(layOutFamilyPartition(singletons));
+    	nonBaitPartitionsContainer.getChildren().add(layOutNonBaitPartition(singletons));
     	
     	Container baitsContainer = layOutBaitPartition(baitPartition);
     	
     	Container container = new Container();
-    	container.getChildren().add(familyPartitionsContainer);
+    	container.getChildren().add(nonBaitPartitionsContainer);
     	container.getChildren().add(baitsContainer);
     	
     	// Lay out children
-    	familyPartitionsContainer.sortByArea();
-    	familyPartitionsContainer.layOutInCircle(context.familyNodeSpacing, context.baitToFamilyPartitionSpacing + Math.max(baitsContainer.getWidth(), baitsContainer.getHeight()));
-    	baitsContainer.setCenter(familyPartitionsContainer.getWidth() / 2.0, familyPartitionsContainer.getHeight() / 2.0);
+    	nonBaitPartitionsContainer.sortByArea();
+    	nonBaitPartitionsContainer.layOutInCircle(context.nodeSpacing, context.baitPartitionSpacing + Math.max(baitsContainer.getWidth(), baitsContainer.getHeight()));
+    	baitsContainer.setCenter(nonBaitPartitionsContainer.getWidth() / 2.0, nonBaitPartitionsContainer.getHeight() / 2.0);
     	
     	return container;
     }
     
-    private Container layOutFamilyPartition(Set<CyNode> partition) {
+    private Container layOutNonBaitPartition(Set<CyNode> partition) {
     	Container container = layOutPartition(partition);
-    	container.layOutInGrid(context.familyNodeSpacing);
+    	container.layOutInGrid(context.nodeSpacing);
     	return container;
     }
     

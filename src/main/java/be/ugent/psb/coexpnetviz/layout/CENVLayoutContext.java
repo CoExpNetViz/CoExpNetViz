@@ -32,13 +32,13 @@ public class CENVLayoutContext {
     @Tunable(description = "Space between adjacent partitions in a circle layout of partitions")
     public double partitionSpacing = 400.0;
     
-    @Tunable(description = "Minimum space between a baits partition and its surrounding family partitions")
-    public double baitToFamilyPartitionSpacing = 400.0;
+    @Tunable(description = "Minimum space between the baits partition and its surrounding partitions")
+    public double baitPartitionSpacing = 400.0;
     
-    @Tunable(description = "Space between adjacent family nodes in a grid of a partition of family nodes")
-    public double familyNodeSpacing = 80.0;
+    @Tunable(description = "Space between adjacent nodes in a grid of a non-bait partition")
+    public double nodeSpacing = 80.0;
     
-    @Tunable(description = "Space between adjacent bait nodes in a circle layout of baits")
+    @Tunable(description = "Space between adjacent nodes in a circle layout of baits")
     public double baitNodeSpacing = 80.0;
     
 }

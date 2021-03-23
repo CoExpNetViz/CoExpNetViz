@@ -38,7 +38,6 @@ import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Throwables;
@@ -98,8 +97,6 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	 * Empty network to turn into a co-expression network
 	 */
 	private CyNetwork network;
-	
-	private ObjectMapper mapper = new ObjectMapper();
 	
 	private static final String networkNameHelp = "Name of the co-expression network to create";
 	
@@ -364,7 +361,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			 * If we wait for the backend process to exit before reading, the backend process
 			 * may fill up its output buffer and start waiting for us to read it; i.e. deadlock.
 			 */
-			stdoutThread = new JsonParserThread(process.getInputStream());
+			stdoutThread = new JsonParserThread(process.getInputStream(), context.getJsonMapper());
 			stderrThread = new ReaderThread(process.getErrorStream());
 			stdoutThread.start();
 			stderrThread.start();
@@ -372,7 +369,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			// Pass json input to backend process
 			ObjectNode jsonInput = createJsonInput();
 			try {
-				mapper.writeValue(process.getOutputStream(), jsonInput);
+				context.getJsonMapper().writeValue(process.getOutputStream(), jsonInput);
 				process.getOutputStream().close();
 			} catch (IOException e) {
 				throw new UserException("Failed to send json input to backend", e);
@@ -453,7 +450,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	 * Formulate json for a call to coexpnetviz-python
 	 */
 	private ObjectNode createJsonInput() {
-		ObjectNode root = mapper.createObjectNode();
+		ObjectNode root = context.getJsonMapper().createObjectNode();
 		
 		if (baitGroupSource.getSelectedValue() == "Inline") {
 			ArrayNode baitsArray = root.putArray("baits");

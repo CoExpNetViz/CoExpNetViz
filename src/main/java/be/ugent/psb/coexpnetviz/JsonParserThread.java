@@ -34,19 +34,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonParserThread extends Thread {
 	
 	private JsonNode response;
+	private ObjectMapper jsonMapper;
 	private InputStream input;
 	private IOException caughtException;
 	
-	public JsonParserThread(InputStream input) {
+	public JsonParserThread(InputStream input, ObjectMapper jsonMapper) {
 		super();
 		this.input = input;
+		this.jsonMapper = jsonMapper;
 	}
 
 	@Override
 	public void run() {
-		ObjectMapper mapper = new ObjectMapper();
 		try {
-			response = mapper.readTree(input);
+			response = jsonMapper.readTree(input);
 		} catch (IOException e) {
 			caughtException = e;
 		}

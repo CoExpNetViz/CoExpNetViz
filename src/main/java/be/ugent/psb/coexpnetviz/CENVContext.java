@@ -46,6 +46,10 @@ import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+
 import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
 /**
@@ -81,7 +85,10 @@ public class CENVContext {
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
 	private CyNetworkFactory cyNetworkFactory;
+	
 	private CENVLayoutAlgorithm layoutAlgorithm;
+	
+	private ObjectMapper jsonMapper;
 
 	public CENVContext(UndoSupport undoSupport, TaskManager<?, ?> taskManager, CyNetworkManager cyNetworkManager,
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
@@ -117,6 +124,12 @@ public class CENVContext {
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
 		this.cyNetworkFactory = cyNetworkFactory;
+		
+		jsonMapper = JsonMapper
+				.builder()
+				// Parse NaN, Inf, ... as floats
+				.enable(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS)
+				.build();
 	}
 
 	/**
@@ -222,6 +235,10 @@ public class CENVContext {
 	
 	public void setLayoutAlgorithm(CENVLayoutAlgorithm layoutAlgorithm) {
 		this.layoutAlgorithm = layoutAlgorithm;
+	}
+	
+	public ObjectMapper getJsonMapper() {
+		return jsonMapper;
 	}
 	
 }

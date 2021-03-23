@@ -41,12 +41,10 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 
+import be.ugent.psb.coexpnetviz.CENVContext;
 import be.ugent.psb.util.Sets;
 
 /**
@@ -65,20 +63,20 @@ import be.ugent.psb.util.Sets;
  */
 public class CENVLayoutTask extends AbstractLayoutTask {
 
-    private static final String TYPE_ATTRIBUTE = "type"; // 'bait node' or 'family node'
+    private static final String TYPE_ATTRIBUTE = "type";
     private static final String PARTITION_ATTRIBUTE = "partition_id";
 
     private CENVLayoutContext context;
 
-    public CENVLayoutTask(String displayName, CyNetworkView networkView, Set<View<CyNode>> nodesToLayOut, CENVLayoutContext context, UndoSupport undo)
+    public CENVLayoutTask(CyNetworkView networkView, Set<View<CyNode>> nodesToLayOut, CENVLayoutContext context, UndoSupport undo)
     {
-        super(displayName, networkView, nodesToLayOut, PARTITION_ATTRIBUTE, undo);
+        super(CENVContext.APP_NAME, networkView, nodesToLayOut, null, undo);
         this.context = context;
     }
 
     @Override
     final protected void doLayout(final TaskMonitor taskMonitor) {
-        // Check the required node attributes are present (i.e. is it a CENV network?)
+        // Check the required node attributes are present
         CyTable dataTable = getNetwork().getDefaultNodeTable();
         ensureExists(dataTable, TYPE_ATTRIBUTE);
         ensureExists(dataTable, PARTITION_ATTRIBUTE);
@@ -94,7 +92,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     
     private void ensureExists(CyTable dataTable, String nodeAttribute) {
     	if (dataTable.getColumn(nodeAttribute) == null) {
-            throw new RuntimeException(String.format("Could not find node attribute: %s", nodeAttribute));
+            throw new RuntimeException("Could not find node attribute: " + nodeAttribute);
         }
     }
     
@@ -119,10 +117,8 @@ public class CENVLayoutTask extends AbstractLayoutTask {
                 	}
                 }
             }
-            System.out.println("connected component: " + connectedComponent.size());
         }
         
-        System.out.println("got the connected components");
         return connectedComponents;
     }
     

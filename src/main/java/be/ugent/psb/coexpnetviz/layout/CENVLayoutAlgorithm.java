@@ -1,5 +1,16 @@
 package be.ugent.psb.coexpnetviz.layout;
 
+import java.util.Set;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
+
+import be.ugent.psb.coexpnetviz.CENVContext;
+
 /*
  * #%L
  * CoExpNetViz
@@ -22,35 +33,15 @@ package be.ugent.psb.coexpnetviz.layout;
  * #L%
  */
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.undo.UndoSupport;
 
 public class CENVLayoutAlgorithm extends AbstractLayoutAlgorithm {
 	
-	public static final String NAME = "coexpnetviz_layout";
-    
-    public CENVLayoutAlgorithm(UndoSupport undo) {
-        super(NAME, "CoExpNetViz layout", undo);
+    public CENVLayoutAlgorithm(UndoSupport undoSupport) {
+        super(CENVContext.NAMESPACE, CENVContext.APP_NAME, undoSupport);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String layoutAttribute) {
-        return new TaskIterator(new CENVLayoutTask(toString(), networkView, nodesToLayOut, (CENVLayoutContext) context, undoSupport));
-    }
-
-    @Override
-    public Set<Class<?>> getSupportedNodeAttributeTypes() {
-        Set<Class<?>> ret = new HashSet<Class<?>>();
-        ret.add(Integer.class);
-        ret.add(Double.class);
-        ret.add(String.class);
-        return ret;
+        return new TaskIterator(new CENVLayoutTask(networkView, nodesToLayOut, (CENVLayoutContext) context, undoSupport));
     }
 
     @Override

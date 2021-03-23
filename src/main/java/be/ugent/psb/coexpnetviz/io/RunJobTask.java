@@ -416,26 +416,37 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			showMessage(monitor, Level.INFO, "Backend log file: " + logFile);
 		}
 		
-		// Report crash to user, if any
+		// Report crash to user, if any.
 		if (exitCode != 0) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("python backend exited non-zero: ").append(process.exitValue()).append("\n");
-			
-			try {
-				msg.append("stderr: ").append(stderrThread.getOutput());
-			} catch (IOException e) {
-				showMessage(monitor, Level.WARN, "Failed to read stderr from backend process: " + e.toString());
-				e.printStackTrace();
+			final int BROKEN_PIPE = 120;
+			if (exitCode == BROKEN_PIPE) {
+				/* The backend encounters a broken pipe when we stop reading stdout/err
+				 * before it closes those streams itself. This happens when our stdout/err
+				 * thread dies due to an exception. E.g. most likely stdoutThread failed to
+				 * parse stdout. In that case, we show stdout's exception here, otherwise we
+				 * just mention it exited non-zero. Either way we'll show a message when
+				 * something went wrong with stderr.   
+				 */
+				stdoutThread.throwIfCaughtException();
 			}
-			
-			throw new UserException(msg.toString());
+			throwExitedNonZero(monitor, stderrThread, exitCode);
 		}
 		
+		return stdoutThread.getResponse();
+	}
+	
+	private void throwExitedNonZero(TaskMonitor monitor, ReaderThread stderrThread, int exitCode) throws UserException {
+		StringBuilder msg = new StringBuilder();
+		msg.append("python backend exited non-zero: ").append(exitCode).append("\n");
+		
 		try {
-			return stdoutThread.getResponse();
+			msg.append("stderr: ").append(stderrThread.getOutput());
 		} catch (IOException e) {
-			throw new UserException("Failed to read or parse response from backend process.", e);
+			showMessage(monitor, Level.WARN, "Failed to read stderr from backend process: " + e.toString());
+			e.printStackTrace();
 		}
+		
+		throw new UserException(msg.toString());
 	}
 	
 	/*

@@ -52,11 +52,16 @@ public class JsonParserThread extends Thread {
 		}
 	}
 	
-	public JsonNode getResponse() throws IOException {
-		if (caughtException != null) {
-			throw caughtException;
-		}
+	public JsonNode getResponse() throws UserException {
+		throwIfCaughtException();
 		return response;
 	}
 
+	// This bit makes it coupled to callBackend but that's all we use it for and it's more convenient this way
+	public void throwIfCaughtException() throws UserException {
+		if (caughtException != null) {
+			throw new UserException("Failed to read or parse response from backend process: " + caughtException.toString(), caughtException);
+		}
+	}
+	
 }

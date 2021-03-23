@@ -56,5 +56,5 @@ public class ReaderThread extends Thread {
 		}
 		return output;
 	}
-
+	
 }

@@ -19,6 +19,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.LineTypeVisualProperty;
@@ -28,6 +29,25 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskMonitor.Level;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.util.BoundedDouble;
+import org.cytoscape.work.util.ListSingleSelection;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Throwables;
+
+import be.ugent.psb.coexpnetviz.CENVContext;
+import be.ugent.psb.coexpnetviz.InputError;
+import be.ugent.psb.coexpnetviz.JsonParserThread;
+import be.ugent.psb.coexpnetviz.ReaderThread;
+import be.ugent.psb.coexpnetviz.UserException;
 
 /*
  * #%L
@@ -51,26 +71,6 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
  * #L%
  */
 
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskMonitor.Level;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.util.BoundedDouble;
-import org.cytoscape.work.util.ListSingleSelection;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Throwables;
-
-import be.ugent.psb.coexpnetviz.CENVContext;
-import be.ugent.psb.coexpnetviz.InputError;
-import be.ugent.psb.coexpnetviz.JsonParserThread;
-import be.ugent.psb.coexpnetviz.ReaderThread;
-import be.ugent.psb.coexpnetviz.UserException;
-
 /* Create a co-expression network starting from an empty network  
  * 
  * Tunables notes: tunables are only picked up when public field/property in a public class.
@@ -90,7 +90,7 @@ import be.ugent.psb.coexpnetviz.UserException;
  * task history. Task history is hidden by default so better include all info
  * in the exception. CLI expects <br> as line ending, GUI expects \n.
  */
-public class RunJobTask implements Task, TunableValidator {
+public class RunJobTask extends AbstractTask implements TunableValidator {
 
 	private CENVContext context;
 	
@@ -317,6 +317,11 @@ public class RunJobTask implements Task, TunableValidator {
 			// them editing it while we're still working on it.
 			context.getCyNetworkManager().addNetwork(network, true);
 			context.getCyNetworkViewManager().addNetworkView(networkView);
+			
+			// Apply our layout to the network in a next task
+			insertTasksAfterCurrentTask(context.getLayoutAlgorithm().createTaskIterator(
+				networkView, context.getLayoutAlgorithm().createLayoutContext(), CyLayoutAlgorithm.ALL_NODE_VIEWS, null
+			));
 		} catch (InterruptedException e) {
 			/* Happens when cancelled, just ignore it and stop running.
 			 * If we let it bubble up, Cytoscape will show an error.

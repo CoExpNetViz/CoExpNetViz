@@ -109,6 +109,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        
 	        // Register our layout algorithm, also add it to the menu
 	        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
+	        context.setLayoutAlgorithm(cgal);
 	        Properties cgalProperties = new Properties();
 	        cgalProperties.setProperty(PREFERRED_MENU, APP_MENU);
 	        cgalProperties.setProperty("preferredTaskManager", "menu");

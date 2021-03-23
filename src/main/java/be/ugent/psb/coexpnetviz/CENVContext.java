@@ -46,6 +46,8 @@ import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
+import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
+
 /**
  * CoExpNetViz app context, provides references to what would otherwise be globals.
  */
@@ -79,6 +81,7 @@ public class CENVContext {
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
 	private CyNetworkFactory cyNetworkFactory;
+	private CENVLayoutAlgorithm layoutAlgorithm;
 
 	public CENVContext(UndoSupport undoSupport, TaskManager<?, ?> taskManager, CyNetworkManager cyNetworkManager,
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
@@ -211,6 +214,14 @@ public class CENVContext {
 
 	public VisualMappingFunctionFactory getPassthroughMappingFactory() {
 		return passthroughMappingFactory;
+	}
+	
+	public CENVLayoutAlgorithm getLayoutAlgorithm() {
+		return layoutAlgorithm;
+	}
+	
+	public void setLayoutAlgorithm(CENVLayoutAlgorithm layoutAlgorithm) {
+		this.layoutAlgorithm = layoutAlgorithm;
 	}
 	
 }

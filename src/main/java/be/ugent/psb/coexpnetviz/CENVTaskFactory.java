@@ -22,12 +22,10 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.work.AbstractTaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 import be.ugent.psb.coexpnetviz.io.RunJobTask;
-import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
 /**
  * Runs coexpnetviz-python and creates a network from the result
@@ -37,17 +35,13 @@ public class CENVTaskFactory extends AbstractTaskFactory {
 	private final CENVContext context;
 
 	public CENVTaskFactory(CENVContext context) {
+		super();
 		this.context = context;
 	}
 
 	@Override
 	public TaskIterator createTaskIterator() {
 		return new TaskIterator(new RunJobTask(context));
-		
-		/*
-		CyLayoutAlgorithm layout = context.getCyLayoutAlgorithmManager().getLayout(CENVLayoutAlgorithm.NAME);
-		taskIterator.append(layout.createTaskIterator(networkView, layout.createLayoutContext(),
-				CyLayoutAlgorithm.ALL_NODE_VIEWS, null)); */
 	}
 
 }

@@ -78,11 +78,11 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     final protected void doLayout(final TaskMonitor taskMonitor) {
         // Check the required node attributes are present
         CyTable dataTable = getNetwork().getDefaultNodeTable();
-        ensureExists(dataTable, TYPE_ATTRIBUTE);
-        ensureExists(dataTable, PARTITION_ATTRIBUTE);
+        requireColumn(dataTable, TYPE_ATTRIBUTE);
+        requireColumn(dataTable, PARTITION_ATTRIBUTE);
 
         // Do layout
-        Container container = layOutConnectedComponents(getConnectedComponents());
+        Container container = layOutConnectedComponents();
         container.updateView(0, 0);
     }
     
@@ -90,54 +90,59 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	return networkView.getModel();
     }
     
-    private void ensureExists(CyTable dataTable, String nodeAttribute) {
+    private void requireColumn(CyTable dataTable, String nodeAttribute) {
     	if (dataTable.getColumn(nodeAttribute) == null) {
             throw new RuntimeException("Could not find node attribute: " + nodeAttribute);
         }
     }
     
-    private Set<Set<CyNode>> getConnectedComponents() {
-        Set<Set<CyNode>> connectedComponents = new HashSet<>();
-        Set<CyNode> unvisited = new HashSet<CyNode>(getNetwork().getNodeList());
-        
-        while (!unvisited.isEmpty()) {
-        	Set<CyNode> connectedComponent = new HashSet<>();
-        	connectedComponents.add(connectedComponent);
-        	
-        	Set<CyNode> toVisit = new HashSet<>(); // nodes of the connected component that we know we haven't visited yet
-        	toVisit.add(Iterables.getFirst(unvisited, null));
-            
-            while (!toVisit.isEmpty()) {
-                CyNode node = Sets.pop(toVisit);
-                unvisited.remove(node);
-                connectedComponent.add(node);
-                for (CyNode neighbour : getNetwork().getNeighborList(node, CyEdge.Type.ANY)) {
-                	if (unvisited.contains(neighbour)) {
-                		toVisit.add(neighbour);
-                	}
-                }
-            }
-        }
-        
-        return connectedComponents;
-    }
-    
-    private Container layOutConnectedComponents(Set<Set<CyNode>> connectedComponents) {
+    private Container layOutConnectedComponents() {
     	Container container = new Container();
         
-    	// Create children
-    	for (Set<CyNode> connectedComponent : connectedComponents) {
-        	container.getChildren().add(layOutConnectedComponent(connectedComponent));
+    	// Create a container per connected component
+    	for (Set<CyNode> connectedComponent : getConnectedComponents()) {
+        	container.add(layOutConnectedComponent(connectedComponent));
         }
         
-        // Lay out children
+        // and lay out those components in a grid
     	container.layOutInGrid(context.connectedComponentSpacing);
         return container;
     }
     
+    /*
+     * Divide the the network into disjunct sets of nodes with no edge between nodes
+     * of different sets. Nodes in a sit are (indirectly) connected to each other (by edges).
+     * These sets are called connected components.
+     */
+    private Set<Set<CyNode>> getConnectedComponents() {
+    	Set<Set<CyNode>> connectedComponents = new HashSet<>();
+    	Set<CyNode> unvisited = new HashSet<CyNode>(getNetwork().getNodeList());
+    	
+    	while (!unvisited.isEmpty()) {
+    		Set<CyNode> connectedComponent = new HashSet<>();
+    		connectedComponents.add(connectedComponent);
+    		
+    		Set<CyNode> toVisit = new HashSet<>(); // nodes of the connected component that we know we haven't visited yet
+    		toVisit.add(Iterables.getFirst(unvisited, null));
+    		
+    		while (!toVisit.isEmpty()) {
+    			CyNode node = Sets.pop(toVisit);
+    			unvisited.remove(node);
+    			connectedComponent.add(node);
+    			for (CyNode neighbour : getNetwork().getNeighborList(node, CyEdge.Type.ANY)) {
+    				if (unvisited.contains(neighbour)) {
+    					toVisit.add(neighbour);
+    				}
+    			}
+    		}
+    	}
+    	
+    	return connectedComponents;
+    }
+    
     private Container layOutConnectedComponent(Set<CyNode> connectedComponent) {
-    	// Split into a baits partition and other partitions 
-    	Map<Object, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
+    	// Group nodes by partition_id and keep baits separate
+    	Map<Integer, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
     	Set<CyNode> baitPartition = new HashSet<>();
     	for (CyNode node : connectedComponent) {
     		CyRow row = getNetwork().getRow(node);
@@ -146,7 +151,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     			baitPartition.add(node);
     		}
     		else {
-    			Object partitionId = row.getRaw(PARTITION_ATTRIBUTE);
+    			Integer partitionId = row.get(PARTITION_ATTRIBUTE, Integer.class);
     			if (!nonBaitPartitions.containsKey(partitionId)) {
     				nonBaitPartitions.put(partitionId, new HashSet<CyNode>());
     			}
@@ -159,19 +164,19 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	Container nonBaitPartitionsContainer = new Container();
     	for (Set<CyNode> partition : nonBaitPartitions.values()) {
     		if (partition.size() > 1) {
-    			nonBaitPartitionsContainer.getChildren().add(layOutNonBaitPartition(partition));
+    			nonBaitPartitionsContainer.add(layOutNonBaitPartition(partition));
     		}
     		else {
     			singletons.add(Iterables.getOnlyElement(partition));
     		}
     	}
-    	nonBaitPartitionsContainer.getChildren().add(layOutNonBaitPartition(singletons));
+    	nonBaitPartitionsContainer.add(layOutNonBaitPartition(singletons));
     	
     	Container baitsContainer = layOutBaitPartition(baitPartition);
     	
     	Container container = new Container();
-    	container.getChildren().add(nonBaitPartitionsContainer);
-    	container.getChildren().add(baitsContainer);
+    	container.add(nonBaitPartitionsContainer);
+    	container.add(baitsContainer);
     	
     	// Lay out children
     	nonBaitPartitionsContainer.sortByArea();
@@ -180,23 +185,20 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	
     	return container;
     }
-    
-    private Container layOutNonBaitPartition(Set<CyNode> partition) {
-    	Container container = layOutPartition(partition);
+
+	private Container layOutNonBaitPartition(Set<CyNode> partition) {
+    	Container container = createContainer(partition);
     	container.layOutInGrid(context.nodeSpacing);
     	return container;
     }
     
     private Container layOutBaitPartition(Set<CyNode> partition) {
-    	Container container = layOutPartition(partition);
+    	Container container = createContainer(partition);
     	container.layOutInCircle(context.baitNodeSpacing, 0);
     	return container;
     }
     
-    /**
-     * Get container of partition with nodes sorted by name 
-     */
-    private Container layOutPartition(Set<CyNode> partition) {
+    private Container createContainer(Set<CyNode> partition) {
     	// Sort nodes by name
     	List<CyNode> sortedPartition = new ArrayList<>(partition);
     	Collections.sort(sortedPartition, new Comparator<CyNode>() {
@@ -208,10 +210,10 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     		}
     	});
     	
-    	// Create `Container` with `Node`s
+    	// Create Container with `Node`s
     	Container container = new Container();
     	for (CyNode node : sortedPartition) {
-    		container.getChildren().add(new Node(networkView.getNodeView(node)));
+    		container.add(new Node(networkView.getNodeView(node)));
     	}
     	
     	return container;

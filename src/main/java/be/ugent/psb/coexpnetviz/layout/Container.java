@@ -39,8 +39,8 @@ public class Container extends UIComponent {
 		y = 0;
 	}
 	
-	public List<UIComponent> getChildren() {
-		return children;
+	public void add(UIComponent child) {
+		children.add(child);
 	}
 	
 	/**

@@ -37,7 +37,6 @@ import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
-import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -81,7 +80,6 @@ public class CENVContext {
 	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 	private CyNetworkViewFactory cyNetworkViewFactory;
 	private CyNetworkTableManager cyNetworkTableManager;
-	private OpenBrowser openBrowser;
 	private CyApplicationManager cyApplicationManager;
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
@@ -100,7 +98,7 @@ public class CENVContext {
 			CyRootNetworkManager cyRootNetworkManager, ImportDataTableTaskFactory importDataTableTaskFactory,
 			CyNetworkReaderManager cyNetworkReaderManager, CyLayoutAlgorithmManager cyLayoutAlgorithmManager,
 			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkTableManager cyNetworkTableManager,
-			OpenBrowser openBrowser, CyApplicationManager cyApplicationManager,
+			CyApplicationManager cyApplicationManager,
 			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication,
 			CyNetworkFactory cyNetworkFactory, CySessionManager cySessionManager) {
 		super();
@@ -121,7 +119,6 @@ public class CENVContext {
 		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyNetworkTableManager = cyNetworkTableManager;
-		this.openBrowser = openBrowser;
 		this.cyApplicationManager = cyApplicationManager;
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
@@ -194,10 +191,6 @@ public class CENVContext {
 
 	public CyNetworkTableManager getCyNetworkTableManager() {
 		return cyNetworkTableManager;
-	}
-
-	public OpenBrowser getOpenBrowser() {
-		return openBrowser;
 	}
 
 	public CyApplicationManager getCyApplicationManager() {

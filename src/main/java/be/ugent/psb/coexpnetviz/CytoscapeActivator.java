@@ -32,7 +32,6 @@ import java.util.Properties;
 
 import org.cytoscape.application.CyApplicationConfiguration;
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CyNodeViewContextMenuFactory;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.read.CyNetworkReaderManager;
 import org.cytoscape.io.read.CyTableReaderManager;
@@ -44,7 +43,6 @@ import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
-import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -59,7 +57,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.ugent.psb.coexpnetviz.gui.NodeViewContextMenuFactory;
 import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
 // With declarative services we wouldn't need glue code like this http://www.eclipsezone.com/eclipse/forums/t97690.rhtml
@@ -99,7 +96,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, CyLayoutAlgorithmManager.class),
 				getService(bundleContext, CyNetworkViewFactory.class),
 				getService(bundleContext, CyNetworkTableManager.class),
-				getService(bundleContext, OpenBrowser.class),
 				getService(bundleContext, CyApplicationManager.class),
 				getService(bundleContext, CyApplicationConfiguration.class),
 				getService(bundleContext, CySwingApplication.class),
@@ -117,12 +113,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	        cgalProperties.setProperty("preferredTaskManager", "menu");
 	        cgalProperties.setProperty(TITLE, cgal.toString());
 	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
-	
-	        // Add node context menu action
-	        CyNodeViewContextMenuFactory myNodeViewContextMenuFactory = new NodeViewContextMenuFactory(context);
-	        Properties myNodeViewContextMenuFactoryProps = new Properties();
-	        myNodeViewContextMenuFactoryProps.setProperty(PREFERRED_MENU, APP_MENU);
-	        registerService(bundleContext, myNodeViewContextMenuFactory, CyNodeViewContextMenuFactory.class, myNodeViewContextMenuFactoryProps);
     	}
     	catch (Throwable e) {
     		e.printStackTrace();

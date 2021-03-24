@@ -54,7 +54,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	private CENVContext context;
 	
 	private static final String APP_MENU = "Apps." + CENVContext.APP_NAME;
-	private static final String CMD_NAMESPACE = "coexpnetviz";
 	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
@@ -88,7 +87,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 		props.setProperty(TITLE, "Create co-expression network");
 		
 		// and a command
-		props.setProperty(COMMAND_NAMESPACE, CMD_NAMESPACE);
+		props.setProperty(COMMAND_NAMESPACE, CENVContext.NAMESPACE);
 		props.setProperty(COMMAND, "create_network");
 		props.setProperty(COMMAND_DESCRIPTION, "Create a co-expression network");
 		
@@ -104,6 +103,11 @@ public class CytoscapeActivator extends AbstractCyActivator {
 		Properties props = new Properties();
 		props.setProperty(PREFERRED_MENU, APP_MENU);
 		props.setProperty(TITLE, CENVContext.APP_NAME);
+		
+		// and a command
+		props.setProperty(COMMAND_NAMESPACE, CENVContext.NAMESPACE);
+		props.setProperty(COMMAND, "apply_layout");
+		props.setProperty(COMMAND_DESCRIPTION, "Apply CoExpNetViz layout to a CoExpNetViz network");
 		
 		registerService(bundleContext, layoutAlgorithm, CyLayoutAlgorithm.class, props);
 	}

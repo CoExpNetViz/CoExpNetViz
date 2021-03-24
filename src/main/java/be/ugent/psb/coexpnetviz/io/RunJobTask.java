@@ -54,6 +54,7 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskMonitor.Level;
 import org.cytoscape.work.Tunable;
@@ -169,6 +170,11 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		this.context = context;
 		baitGroupSource.setSelectedValue("File");
 		
+	}
+	
+	@ProvidesTitle
+	public String getTitle() {
+		return "CoExpNetViz parameters";
 	}
 	
 	@Tunable(description = "Output directory", tooltip = outputDirHelp, longDescription = outputDirHelp, listenForChange="networkName")

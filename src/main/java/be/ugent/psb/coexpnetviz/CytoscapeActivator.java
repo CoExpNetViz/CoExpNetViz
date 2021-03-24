@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
 
 import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 
-// With declarative services we wouldn't need glue code like this http://www.eclipsezone.com/eclipse/forums/t97690.rhtml
 /**
  * Activates CENV plugin in Cytoscape.
  */

@@ -141,7 +141,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     
     private Container layOutConnectedComponent(Set<CyNode> connectedComponent) {
     	// Group nodes by partition_id and keep baits separate
-    	Map<Integer, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
+    	Map<Long, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
     	Set<CyNode> baitPartition = new HashSet<>();
     	for (CyNode node : connectedComponent) {
     		CyRow row = getNetwork().getRow(node);
@@ -150,7 +150,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     			baitPartition.add(node);
     		}
     		else {
-    			Integer partitionId = row.get(PARTITION_ATTRIBUTE, Integer.class);
+    			Long partitionId = row.get(PARTITION_ATTRIBUTE, Long.class);
     			if (!nonBaitPartitions.containsKey(partitionId)) {
     				nonBaitPartitions.put(partitionId, new HashSet<CyNode>());
     			}

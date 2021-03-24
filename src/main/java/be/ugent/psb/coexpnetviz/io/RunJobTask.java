@@ -369,7 +369,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			monitor.setStatusMessage("Creating network");
 			monitor.setProgress(0.6);
 			createNetwork();
-			Map<Integer, CyNode> nodes = createNodes(response);
+			Map<Long, CyNode> nodes = createNodes(response);
 			createEdges(response, nodes);
 			CyNetworkView networkView = createNetworkView();
 			
@@ -545,16 +545,16 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		network.getRow(network).set(CyNetwork.NAME, networkName);
 	}
 	
-	private Map<Integer, CyNode> createNodes(JsonNode response) {
+	private Map<Long, CyNode> createNodes(JsonNode response) {
 		// Define extra node columns. false means the user may delete the columns.
 		CyTable nodeTable = network.getDefaultNodeTable();
 		nodeTable.createColumn(CENVContext.NAMESPACE, "type", String.class, false);
 		nodeTable.createListColumn(CENVContext.NAMESPACE, "genes", String.class, false);
 		nodeTable.createColumn(CENVContext.NAMESPACE, "family", String.class, false);
 		nodeTable.createColumn(CENVContext.NAMESPACE, "colour", String.class, false);
-		nodeTable.createColumn(CENVContext.NAMESPACE, "partition_id", Integer.class, false);
+		nodeTable.createColumn(CENVContext.NAMESPACE, "partition_id", Long.class, false);
 		
-		Map<Integer, CyNode> nodes = new HashMap<>();
+		Map<Long, CyNode> nodes = new HashMap<>();
 		for (JsonNode rawNode : response.get("nodes")) {
 			CyNode node = network.addNode();
 			CyRow nodeAttrs = network.getRow(node);
@@ -562,7 +562,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			
 			nodeAttr = rawNode.get("id");
 			assert nodeAttr.isIntegralNumber();
-			nodes.put(nodeAttr.asInt(), node);
+			nodes.put(nodeAttr.asLong(), node);
 			
 			nodeAttr = rawNode.get("label");
 			assert nodeAttr.isTextual();
@@ -594,13 +594,13 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			
 			nodeAttr = rawNode.get("partition_id");
 			assert nodeAttr.isIntegralNumber();
-			nodeAttrs.set(CENVContext.NAMESPACE, "partition_id", nodeAttr.asInt());
+			nodeAttrs.set(CENVContext.NAMESPACE, "partition_id", nodeAttr.asLong());
 		}
 		
 		return nodes;
 	}
 
-	private void createEdges(JsonNode response, Map<Integer, CyNode> nodes) {
+	private void createEdges(JsonNode response, Map<Long, CyNode> nodes) {
 		CyTable edgeTable = network.getDefaultEdgeTable();
 		edgeTable.createColumn(CENVContext.NAMESPACE, "max_correlation", Double.class, false);
 
@@ -629,10 +629,10 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		}
 	}
 
-	private CyNode getNode(Map<Integer, CyNode> nodes, JsonNode json, String nodeIdAttr) {
+	private CyNode getNode(Map<Long, CyNode> nodes, JsonNode json, String nodeIdAttr) {
 		JsonNode jsonNodeId = json.get(nodeIdAttr);
 		assert jsonNodeId.isIntegralNumber();
-		int nodeId = jsonNodeId.asInt();
+		long nodeId = jsonNodeId.asLong();
 		return nodes.get(nodeId);
 	}
 	

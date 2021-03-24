@@ -53,8 +53,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
 
 	private CENVContext context;
 	
-	private static final String APP_MENU = "Apps." + CENVContext.APP_NAME;
-	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
 	 * classes with those of Cytoscape, by adding Cytoscape menu items, attaching
@@ -83,7 +81,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	private void registerCreateNetwork(BundleContext bundleContext) {
 		// Add a menu item for the create-network task
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, APP_MENU);
+		props.setProperty(PREFERRED_MENU, CENVContext.APP_MENU);
 		props.setProperty(TITLE, "Create co-expression network");
 		
 		// and a command
@@ -101,7 +99,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 		
 		// Add menu item
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, APP_MENU);
+		props.setProperty(PREFERRED_MENU, CENVContext.APP_MENU);
 		props.setProperty(TITLE, CENVContext.APP_NAME);
 		
 		// and a command

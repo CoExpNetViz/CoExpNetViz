@@ -44,8 +44,7 @@ import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
 public class CENVContext {
 
 	public static final String APP_NAME = "CoExpNetViz";
-	
-	// Table column namespace
+	public static final String APP_MENU = "Apps." + APP_NAME;
 	public static final String NAMESPACE = "coexpnetviz";
 	
 	// The OSGi services we consume

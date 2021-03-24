@@ -78,15 +78,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
     	);
     	
     	registerCreateNetwork(bundleContext);
-        
-        // Register our layout algorithm, also add it to the menu
-        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
-        context.setLayoutAlgorithm(cgal);
-        Properties cgalProperties = new Properties();
-        cgalProperties.setProperty(PREFERRED_MENU, APP_MENU);
-        cgalProperties.setProperty("preferredTaskManager", "menu");
-        cgalProperties.setProperty(TITLE, cgal.toString());
-        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
+        registerLayoutAlgorithm(bundleContext);
     }
 
 	private void registerCreateNetwork(BundleContext bundleContext) {
@@ -102,5 +94,17 @@ public class CytoscapeActivator extends AbstractCyActivator {
 		
 		// finally, actually register it
 		registerService(bundleContext, new CENVTaskFactory(context), TaskFactory.class, props);
+	}
+	
+	private void registerLayoutAlgorithm(BundleContext bundleContext) {
+		CENVLayoutAlgorithm layoutAlgorithm = new CENVLayoutAlgorithm(context.getUndoSupport());
+		context.setLayoutAlgorithm(layoutAlgorithm);
+		
+		// Add menu item
+		Properties props = new Properties();
+		props.setProperty(PREFERRED_MENU, APP_MENU);
+		props.setProperty(TITLE, CENVContext.APP_NAME);
+		
+		registerService(bundleContext, layoutAlgorithm, CyLayoutAlgorithm.class, props);
 	}
 }

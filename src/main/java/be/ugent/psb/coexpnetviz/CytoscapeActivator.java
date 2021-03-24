@@ -30,28 +30,17 @@ import static org.cytoscape.work.ServiceProperties.COMMAND_NAMESPACE;
 
 import java.util.Properties;
 
-import org.cytoscape.application.CyApplicationConfiguration;
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.task.edit.ImportDataTableTaskFactory;
-import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -79,7 +68,6 @@ public class CytoscapeActivator extends AbstractCyActivator {
     	try {
 	    	context = new CENVContext(
 				getService(bundleContext, UndoSupport.class),
-				getService(bundleContext, TaskManager.class),
 				getService(bundleContext, CyNetworkManager.class),
 				getService(bundleContext, CyNetworkViewManager.class),
 				getService(bundleContext, VisualMappingManager.class),
@@ -87,17 +75,7 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
 				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
 				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
-				getService(bundleContext, LoadVizmapFileTaskFactory.class),
-				getService(bundleContext, CyTableReaderManager.class),
-				getService(bundleContext, CyRootNetworkManager.class),
-				getService(bundleContext, ImportDataTableTaskFactory.class),
-				getService(bundleContext, CyNetworkReaderManager.class),
-				getService(bundleContext, CyLayoutAlgorithmManager.class),
 				getService(bundleContext, CyNetworkViewFactory.class),
-				getService(bundleContext, CyNetworkTableManager.class),
-				getService(bundleContext, CyApplicationManager.class),
-				getService(bundleContext, CyApplicationConfiguration.class),
-				getService(bundleContext, CySwingApplication.class),
 				getService(bundleContext, CyNetworkFactory.class),
 				getService(bundleContext, CySessionManager.class)
 	    	);

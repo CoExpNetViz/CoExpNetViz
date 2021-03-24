@@ -29,16 +29,4 @@ public class InputError extends Exception {
 		super(message);
 	}
 	
-	public InputError(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-	public InputError(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public InputError(Throwable cause) {
-		super(cause);
-	}
-
 }

@@ -55,7 +55,4 @@ public abstract class UIComponent {
 		return Math.sqrt(getWidth()*getWidth() + getHeight()*getHeight());
 	}
 	
-	double getRadius() {
-		return getDiameter() / 2.0;
-	}
 }

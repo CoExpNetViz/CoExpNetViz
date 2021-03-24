@@ -22,28 +22,14 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.cytoscape.application.CyApplicationConfiguration;
-import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetworkTableManager;
-import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.task.edit.ImportDataTableTaskFactory;
-import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
-import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
@@ -64,7 +50,6 @@ public class CENVContext {
 	
 	// The OSGi services we consume
 	private UndoSupport undoSupport;
-	private TaskManager<?,?> taskManager;
 	private CyNetworkManager cyNetworkManager;
 	private CyNetworkViewManager cyNetworkViewManager;
 	private VisualMappingManager visualMappingManager;
@@ -72,17 +57,7 @@ public class CENVContext {
 	private VisualMappingFunctionFactory continuousMappingFactory;
 	private VisualMappingFunctionFactory discreteMappingFactory;
 	private VisualMappingFunctionFactory passthroughMappingFactory;
-	private LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
-	private CyTableReaderManager cyTableReaderManager;
-	private CyRootNetworkManager cyRootNetworkManager;
-	private ImportDataTableTaskFactory importDataTableTaskFactory;
-	private CyNetworkReaderManager cyNetworkReaderManager;
-	private CyLayoutAlgorithmManager cyLayoutAlgorithmManager;
 	private CyNetworkViewFactory cyNetworkViewFactory;
-	private CyNetworkTableManager cyNetworkTableManager;
-	private CyApplicationManager cyApplicationManager;
-	private CyApplicationConfiguration cyApplicationConfiguration;
-	private CySwingApplication cySwingApplication;
 	private CyNetworkFactory cyNetworkFactory;
 	private CySessionManager cySessionManager;
 	
@@ -90,20 +65,14 @@ public class CENVContext {
 	
 	private ObjectMapper jsonMapper;
 
-	public CENVContext(UndoSupport undoSupport, TaskManager<?, ?> taskManager, CyNetworkManager cyNetworkManager,
+	public CENVContext(UndoSupport undoSupport, CyNetworkManager cyNetworkManager,
 			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
 			VisualStyleFactory visualStyleFactory, VisualMappingFunctionFactory continuousMappingFactory,
 			VisualMappingFunctionFactory discreteMappingFactory, VisualMappingFunctionFactory passthroughMappingFactory,
-			LoadVizmapFileTaskFactory loadVizmapFileTaskFactory, CyTableReaderManager cyTableReaderManager,
-			CyRootNetworkManager cyRootNetworkManager, ImportDataTableTaskFactory importDataTableTaskFactory,
-			CyNetworkReaderManager cyNetworkReaderManager, CyLayoutAlgorithmManager cyLayoutAlgorithmManager,
-			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkTableManager cyNetworkTableManager,
-			CyApplicationManager cyApplicationManager,
-			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication,
-			CyNetworkFactory cyNetworkFactory, CySessionManager cySessionManager) {
+			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
+			CySessionManager cySessionManager) {
 		super();
 		this.undoSupport = undoSupport;
-		this.taskManager = taskManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.cyNetworkViewManager = cyNetworkViewManager;
 		this.visualMappingManager = visualMappingManager;
@@ -111,17 +80,7 @@ public class CENVContext {
 		this.continuousMappingFactory = continuousMappingFactory;
 		this.discreteMappingFactory = discreteMappingFactory;
 		this.passthroughMappingFactory = passthroughMappingFactory;
-		this.loadVizmapFileTaskFactory = loadVizmapFileTaskFactory;
-		this.cyTableReaderManager = cyTableReaderManager;
-		this.cyRootNetworkManager = cyRootNetworkManager;
-		this.importDataTableTaskFactory = importDataTableTaskFactory;
-		this.cyNetworkReaderManager = cyNetworkReaderManager;
-		this.cyLayoutAlgorithmManager = cyLayoutAlgorithmManager;
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
-		this.cyNetworkTableManager = cyNetworkTableManager;
-		this.cyApplicationManager = cyApplicationManager;
-		this.cyApplicationConfiguration = cyApplicationConfiguration;
-		this.cySwingApplication = cySwingApplication;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.cySessionManager = cySessionManager;
 		
@@ -132,21 +91,8 @@ public class CENVContext {
 				.build();
 	}
 
-	/**
-     * Get a formatted current time string
-     */
-    public static String getTimeStamp() {
-        Date now = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd-hh:mm:ss");
-        return sdf.format(now);
-    }
-
 	public UndoSupport getUndoSupport() {
 		return undoSupport;
-	}
-
-	public TaskManager<?,?> getTaskManager() {
-		return taskManager;
 	}
 
 	public CyNetworkManager getCyNetworkManager() {
@@ -160,55 +106,15 @@ public class CENVContext {
 	public VisualMappingManager getVisualMappingManager() {
 		return visualMappingManager;
 	}
-
-	public LoadVizmapFileTaskFactory getLoadVizmapFileTaskFactory() {
-		return loadVizmapFileTaskFactory;
-	}
-
-	public CyTableReaderManager getCyTableReaderManager() {
-		return cyTableReaderManager;
-	}
-
-	public CyRootNetworkManager getCyRootNetworkManager() {
-		return cyRootNetworkManager;
-	}
-
-	public ImportDataTableTaskFactory getImportDataTableTaskFactory() {
-		return importDataTableTaskFactory;
-	}
-
-	public CyNetworkReaderManager getCyNetworkReaderManager() {
-		return cyNetworkReaderManager;
-	}
-
-	public CyLayoutAlgorithmManager getCyLayoutAlgorithmManager() {
-		return cyLayoutAlgorithmManager;
-	}
-
+	
 	public CyNetworkViewFactory getCyNetworkViewFactory() {
 		return cyNetworkViewFactory;
 	}
 
-	public CyNetworkTableManager getCyNetworkTableManager() {
-		return cyNetworkTableManager;
-	}
-
-	public CyApplicationManager getCyApplicationManager() {
-		return cyApplicationManager;
-	}
-
-	public CyApplicationConfiguration getCyApplicationConfiguration() {
-		return cyApplicationConfiguration;
-	}
-
-	public CySwingApplication getCySwingApplication() {
-		return cySwingApplication;
-	}
-	
 	public CyNetworkFactory getCyNetworkFactory() {
 		return cyNetworkFactory;
 	}
-
+	
 	public VisualStyleFactory getVisualStyleFactory() {
 		return visualStyleFactory;
 	}

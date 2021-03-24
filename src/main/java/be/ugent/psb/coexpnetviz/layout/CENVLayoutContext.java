@@ -29,9 +29,6 @@ public class CENVLayoutContext {
 	@Tunable(description = "Space between adjacent connected components in the grid of connected components")
 	public double connectedComponentSpacing = 800.0;
     
-    @Tunable(description = "Space between adjacent partitions in a circle layout of partitions")
-    public double partitionSpacing = 400.0;
-    
     @Tunable(description = "Minimum space between the baits partition and its surrounding partitions")
     public double baitPartitionSpacing = 400.0;
     

@@ -32,10 +32,6 @@ public class UserException extends Exception {
 		super();
 	}
 
-	public UserException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
 	public UserException(String message, Throwable cause) {
 		super(message, cause);
 	}
@@ -44,10 +40,6 @@ public class UserException extends Exception {
 		super(message);
 	}
 
-	public UserException(Throwable cause) {
-		super(cause);
-	}
-	
 	@Override
 	public String getMessage() {
 		// TODO discern between GUI/CLI. CLI wants <br>, GUI doesn't. Or report upstream, maybe they should fix it.

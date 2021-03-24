@@ -225,21 +225,9 @@
         <!-- Cytoscape -->
         <dependency>
             <groupId>org.cytoscape</groupId>
-            <artifactId>application-api</artifactId>
-            <version>${cytoscape.api.version}</version>
-            <!-- Do not include in jar, they are provided-by/included-in cytoscape already -->
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.cytoscape</groupId>
             <artifactId>service-api</artifactId>
             <version>${cytoscape.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.cytoscape</groupId>
-            <artifactId>swing-application-api</artifactId>
-            <version>${cytoscape.api.version}</version>
+            <!-- Do not include in jar, they are provided-by/included-in cytoscape already -->
             <scope>provided</scope>
         </dependency>
         <dependency>

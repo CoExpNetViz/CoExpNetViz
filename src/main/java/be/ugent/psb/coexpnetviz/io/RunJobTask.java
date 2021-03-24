@@ -365,10 +365,13 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		
 		try {
 			JsonNode response = callBackend(monitor);
-			createNetwork(monitor);
-			Map<Integer, CyNode> nodes = createNodes(monitor, response);
-			createEdges(monitor, response, nodes);
-			CyNetworkView networkView = createNetworkView(monitor);
+			
+			monitor.setStatusMessage("Creating network");
+			monitor.setProgress(0.6);
+			createNetwork();
+			Map<Integer, CyNode> nodes = createNodes(response);
+			createEdges(response, nodes);
+			CyNetworkView networkView = createNetworkView();
 			
 			// Finally, reveal the created network to the user in the GUI. Doing this earlier risks
 			// them editing it while we're still working on it.
@@ -537,17 +540,12 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		return root;
 	}
 	
-	private void createNetwork(TaskMonitor monitor) {
-		monitor.setStatusMessage("Creating network");
-		monitor.setProgress(0.4);
+	private void createNetwork() {
 		network = context.getCyNetworkFactory().createNetwork();
 		network.getRow(network).set(CyNetwork.NAME, networkName);
 	}
 	
-	private Map<Integer, CyNode> createNodes(TaskMonitor monitor, JsonNode response) {
-		monitor.setStatusMessage("Creating nodes");
-		monitor.setProgress(0.5);
-		
+	private Map<Integer, CyNode> createNodes(JsonNode response) {
 		// Define extra node columns. false means the user may delete the columns.
 		CyTable nodeTable = network.getDefaultNodeTable();
 		nodeTable.createColumn(CENVContext.NAMESPACE, "type", String.class, false);
@@ -602,10 +600,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		return nodes;
 	}
 
-	private void createEdges(TaskMonitor monitor, JsonNode response, Map<Integer, CyNode> nodes) {
-		monitor.setStatusMessage("Creating edges");
-		monitor.setProgress(0.6);
-		
+	private void createEdges(JsonNode response, Map<Integer, CyNode> nodes) {
 		CyTable edgeTable = network.getDefaultEdgeTable();
 		edgeTable.createColumn(CENVContext.NAMESPACE, "max_correlation", Double.class, false);
 
@@ -647,10 +642,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	 * We do this after we are done with the CyNetwork, its nodes and edges. Otherwise we would
 	 * have to call CyEventHelper to flushPayloadEvents() to the view.
 	 */
-	private CyNetworkView createNetworkView(TaskMonitor monitor) {
-		monitor.setStatusMessage("Creating network view");
-		monitor.setProgress(0.7);
-		
+	private CyNetworkView createNetworkView() {
 		/* User can't view the network before it has a view, so create one and add it to the GUI.
 		 * We add it to the GUI right away to prevent the user from clicking "Create view" while
 		 * we're working on ours.

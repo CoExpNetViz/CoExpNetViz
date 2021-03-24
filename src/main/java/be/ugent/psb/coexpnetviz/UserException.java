@@ -25,6 +25,7 @@ package be.ugent.psb.coexpnetviz;
 /*
  * A generic exception with a user-friendly message
  */
+@SuppressWarnings("serial")
 public class UserException extends Exception {
 
 	public UserException() {

@@ -22,6 +22,7 @@ package be.ugent.psb.coexpnetviz;
  * #L%
  */
 
+@SuppressWarnings("serial")
 public class InputError extends Exception {
 
 	public InputError(String message) {

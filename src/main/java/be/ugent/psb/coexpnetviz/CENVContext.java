@@ -34,6 +34,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
+import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
@@ -85,6 +86,7 @@ public class CENVContext {
 	private CyApplicationConfiguration cyApplicationConfiguration;
 	private CySwingApplication cySwingApplication;
 	private CyNetworkFactory cyNetworkFactory;
+	private CySessionManager cySessionManager;
 	
 	private CENVLayoutAlgorithm layoutAlgorithm;
 	
@@ -100,7 +102,7 @@ public class CENVContext {
 			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkTableManager cyNetworkTableManager,
 			OpenBrowser openBrowser, CyApplicationManager cyApplicationManager,
 			CyApplicationConfiguration cyApplicationConfiguration, CySwingApplication cySwingApplication,
-			CyNetworkFactory cyNetworkFactory) {
+			CyNetworkFactory cyNetworkFactory, CySessionManager cySessionManager) {
 		super();
 		this.undoSupport = undoSupport;
 		this.taskManager = taskManager;
@@ -124,6 +126,7 @@ public class CENVContext {
 		this.cyApplicationConfiguration = cyApplicationConfiguration;
 		this.cySwingApplication = cySwingApplication;
 		this.cyNetworkFactory = cyNetworkFactory;
+		this.cySessionManager = cySessionManager;
 		
 		jsonMapper = JsonMapper
 				.builder()
@@ -239,6 +242,10 @@ public class CENVContext {
 	
 	public ObjectMapper getJsonMapper() {
 		return jsonMapper;
+	}
+	
+	public CySessionManager getCySessionManager() {
+		return cySessionManager;
 	}
 	
 }

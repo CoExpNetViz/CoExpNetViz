@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -148,10 +150,10 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	@Tunable(description = "Upper percentile rank", tooltip = percentilesHelp, longDescription = percentilesHelp)
 	public BoundedDouble upperPercentileRank = new BoundedDouble(0.0, 95.0, 100.0, false, false);
 
-	// TODO put next to cyto session file instead
-	@Tunable(description = "Output dir")
-	public File outputDir;
+	private static final String outputDirHelp = "Directory in which to write additional info which does not fit in Cytoscape, e.g. correlation matrices and the log file.";
 	
+	private File outputDir;
+
 	// These are sets to remove duplicates
 	private Set<File> expressionMatrixFiles;
 	private Set<String> cleanedBaits;
@@ -166,6 +168,43 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		super();
 		this.context = context;
 		baitGroupSource.setSelectedValue("File");
+		
+	}
+	
+	@Tunable(description = "Output directory", tooltip = outputDirHelp, longDescription = outputDirHelp, listenForChange="networkName")
+	public File getOutputDir() {
+		/*
+		 * There's no need to set outputDir here in response to networkName getting updated.
+		 * Cytoscape will call the setter eventually for us with the right value.
+		 * A getter with side effects is probably bad design anyway.
+		 * 
+		 * All listenForChange does is call this getter again when networkName changes.
+		 * 
+		 * Session manager returns a path, not just the file name. I don't think it ever
+		 * returns empty str, but not a huge problem if it does (it would default to CWD).
+		 */
+		String sessionPath = context.getCySessionManager().getCurrentSessionFileName();
+		
+		if (sessionPath == null) {
+			return outputDir;
+		}
+		
+		File dir = new File(sessionPath).getAbsoluteFile().getParentFile();
+		if (networkName != null && networkName != "") {
+			String name = networkName + "_" + formatCurrentDateTime();
+			dir = dir.toPath().resolve(name).toFile();
+		}
+		return dir;
+	}
+	
+	public void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
+	}
+	
+	private String formatCurrentDateTime() {
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_n");
+		return formatter.format(now);
 	}
 	
 	@Override
@@ -188,6 +227,8 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			if (lowerPercentileRank.getValue() > upperPercentileRank.getValue()) {
 				throw new InputError("Lower percentile rank must be less or equal to upper percentile rank.");
 			}
+			
+			cleanOutputDir();
 		} catch (InputError e) {
 			try {
 				msg.append(e.getMessage());
@@ -261,6 +302,19 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 			throw new InputError(name + " is not readable.");
 		}
 		return file.getAbsoluteFile();
+	}
+	
+	private void cleanOutputDir() throws InputError {
+		if (outputDir == null) {
+			throw new InputError("Output directory is required.");
+		} else if (outputDir.exists()) {
+			if (!outputDir.isDirectory()) {
+				throw new InputError("Output directory is not a directory.");
+			} else if (!outputDir.canWrite()) {
+				throw new InputError("Output directory is not writeable.");
+			}
+		}
+		outputDir = outputDir.getAbsoluteFile();
 	}
 
 	@Override

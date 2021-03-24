@@ -41,6 +41,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNetworkTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkManager;
 import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.session.CySessionManager;
 import org.cytoscape.task.edit.ImportDataTableTaskFactory;
 import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
 import org.cytoscape.util.swing.OpenBrowser;
@@ -102,7 +103,8 @@ public class CytoscapeActivator extends AbstractCyActivator {
 				getService(bundleContext, CyApplicationManager.class),
 				getService(bundleContext, CyApplicationConfiguration.class),
 				getService(bundleContext, CySwingApplication.class),
-				getService(bundleContext, CyNetworkFactory.class)
+				getService(bundleContext, CyNetworkFactory.class),
+				getService(bundleContext, CySessionManager.class)
 	    	);
 	    	
 	    	registerCreateNetwork(bundleContext);

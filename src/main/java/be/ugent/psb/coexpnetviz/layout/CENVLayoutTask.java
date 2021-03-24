@@ -45,7 +45,6 @@ import org.cytoscape.work.undo.UndoSupport;
 import com.google.common.collect.Iterables;
 
 import be.ugent.psb.coexpnetviz.CENVContext;
-import be.ugent.psb.util.Sets;
 
 /**
  * Lay out nodes of a CENV network.
@@ -126,7 +125,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     		toVisit.add(Iterables.getFirst(unvisited, null));
     		
     		while (!toVisit.isEmpty()) {
-    			CyNode node = Sets.pop(toVisit);
+    			CyNode node = pop(toVisit);
     			unvisited.remove(node);
     			connectedComponent.add(node);
     			for (CyNode neighbour : getNetwork().getNeighborList(node, CyEdge.Type.ANY)) {
@@ -218,5 +217,11 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	
     	return container;
     }
+
+	private <E> E pop(Set<E> set) {
+		E element = Iterables.getFirst(set, null);
+		set.remove(element);
+		return element;
+	}
 
 }

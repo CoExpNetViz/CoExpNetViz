@@ -63,36 +63,30 @@ public class CytoscapeActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	try {
-	    	context = new CENVContext(
-				getService(bundleContext, UndoSupport.class),
-				getService(bundleContext, CyNetworkManager.class),
-				getService(bundleContext, CyNetworkViewManager.class),
-				getService(bundleContext, VisualMappingManager.class),
-				getService(bundleContext, VisualStyleFactory.class),
-				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
-				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
-				getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
-				getService(bundleContext, CyNetworkViewFactory.class),
-				getService(bundleContext, CyNetworkFactory.class),
-				getService(bundleContext, CySessionManager.class)
-	    	);
-	    	
-	    	registerCreateNetwork(bundleContext);
-	        
-	        // Register our layout algorithm, also add it to the menu
-	        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
-	        context.setLayoutAlgorithm(cgal);
-	        Properties cgalProperties = new Properties();
-	        cgalProperties.setProperty(PREFERRED_MENU, APP_MENU);
-	        cgalProperties.setProperty("preferredTaskManager", "menu");
-	        cgalProperties.setProperty(TITLE, cgal.toString());
-	        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
-    	}
-    	catch (Throwable e) {
-    		e.printStackTrace();
-    		throw e;
-    	}
+    	context = new CENVContext(
+			getService(bundleContext, UndoSupport.class),
+			getService(bundleContext, CyNetworkManager.class),
+			getService(bundleContext, CyNetworkViewManager.class),
+			getService(bundleContext, VisualMappingManager.class),
+			getService(bundleContext, VisualStyleFactory.class),
+			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
+			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
+			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
+			getService(bundleContext, CyNetworkViewFactory.class),
+			getService(bundleContext, CyNetworkFactory.class),
+			getService(bundleContext, CySessionManager.class)
+    	);
+    	
+    	registerCreateNetwork(bundleContext);
+        
+        // Register our layout algorithm, also add it to the menu
+        CENVLayoutAlgorithm cgal = new CENVLayoutAlgorithm(context.getUndoSupport());
+        context.setLayoutAlgorithm(cgal);
+        Properties cgalProperties = new Properties();
+        cgalProperties.setProperty(PREFERRED_MENU, APP_MENU);
+        cgalProperties.setProperty("preferredTaskManager", "menu");
+        cgalProperties.setProperty(TITLE, cgal.toString());
+        registerService(bundleContext, cgal, CyLayoutAlgorithm.class, cgalProperties);
     }
 
 	private void registerCreateNetwork(BundleContext bundleContext) {

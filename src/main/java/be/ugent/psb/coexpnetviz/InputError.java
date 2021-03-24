@@ -1,5 +1,3 @@
-package be.ugent.psb.coexpnetviz;
-
 /*
  * #%L
  * CoExpNetViz
@@ -21,6 +19,8 @@ package be.ugent.psb.coexpnetviz;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+package be.ugent.psb.coexpnetviz;
 
 @SuppressWarnings("serial")
 public class InputError extends Exception {

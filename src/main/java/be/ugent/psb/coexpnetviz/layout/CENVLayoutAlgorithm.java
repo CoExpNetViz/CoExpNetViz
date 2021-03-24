@@ -1,16 +1,3 @@
-package be.ugent.psb.coexpnetviz.layout;
-
-import java.util.Set;
-
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.undo.UndoSupport;
-
-import be.ugent.psb.coexpnetviz.CENVContext;
-
 /*
  * #%L
  * CoExpNetViz
@@ -32,6 +19,19 @@ import be.ugent.psb.coexpnetviz.CENVContext;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+package be.ugent.psb.coexpnetviz.layout;
+
+import java.util.Set;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.undo.UndoSupport;
+
+import be.ugent.psb.coexpnetviz.CENVContext;
 
 
 public class CENVLayoutAlgorithm extends AbstractLayoutAlgorithm {

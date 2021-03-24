@@ -1,5 +1,3 @@
-package be.ugent.psb.coexpnetviz.layout;
-
 /*
  * #%L
  * CoExpNetViz
@@ -21,6 +19,8 @@ package be.ugent.psb.coexpnetviz.layout;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+package be.ugent.psb.coexpnetviz.layout;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -183,7 +183,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		 * Session manager returns a path, not just the file name. I don't think it ever
 		 * returns empty str, but not a huge problem if it does (it would default to CWD).
 		 */
-		String sessionPath = context.getCySessionManager().getCurrentSessionFileName();
+		String sessionPath = context.getSessionManager().getCurrentSessionFileName();
 		
 		if (sessionPath == null) {
 			return outputDir;
@@ -369,8 +369,8 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			
 			// Finally, reveal the created network to the user in the GUI. Doing this earlier risks
 			// them editing it while we're still working on it.
-			context.getCyNetworkManager().addNetwork(network, true);
-			context.getCyNetworkViewManager().addNetworkView(networkView);
+			context.getNetworkManager().addNetwork(network, true);
+			context.getNetworkViewManager().addNetworkView(networkView);
 			
 			// Apply our layout to the network in a next task
 			insertTasksAfterCurrentTask(context.getLayoutAlgorithm().createTaskIterator(
@@ -535,7 +535,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	}
 	
 	private void createNetwork() {
-		network = context.getCyNetworkFactory().createNetwork();
+		network = context.getNetworkFactory().createNetwork();
 		network.getRow(network).set(CyNetwork.NAME, networkName);
 	}
 	
@@ -641,7 +641,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		 * We add it to the GUI right away to prevent the user from clicking "Create view" while
 		 * we're working on ours.
 		 */
-		CyNetworkView networkView = context.getCyNetworkViewFactory().createNetworkView(network);
+		CyNetworkView networkView = context.getNetworkViewFactory().createNetworkView(network);
 
 		/* Style the view
 		 * 

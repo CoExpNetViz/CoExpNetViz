@@ -59,17 +59,17 @@ public class CyActivator extends AbstractCyActivator {
     @Override
     public void start(BundleContext bundleContext) throws Exception {
     	context = new CENVContext(
-			getService(bundleContext, UndoSupport.class),
 			getService(bundleContext, CyNetworkManager.class),
+			getService(bundleContext, CyNetworkFactory.class),
 			getService(bundleContext, CyNetworkViewManager.class),
-			getService(bundleContext, VisualMappingManager.class),
+			getService(bundleContext, CyNetworkViewFactory.class),
+			getService(bundleContext, CySessionManager.class),
+			getService(bundleContext, UndoSupport.class),
 			getService(bundleContext, VisualStyleFactory.class),
+			getService(bundleContext, VisualMappingManager.class),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
-			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
-			getService(bundleContext, CyNetworkViewFactory.class),
-			getService(bundleContext, CyNetworkFactory.class),
-			getService(bundleContext, CySessionManager.class)
+			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)")
     	);
     	
     	registerCreateNetwork(bundleContext);

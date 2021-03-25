@@ -46,40 +46,40 @@ public class CENVContext {
 	public static final String NAMESPACE = "coexpnetviz";
 	
 	// The OSGi services we consume
+	private CyNetworkManager networkManager;
+	private CyNetworkFactory networkFactory;
+	private CyNetworkViewManager networkViewManager;
+	private CyNetworkViewFactory networkViewFactory;
+	private CySessionManager sessionManager;
 	private UndoSupport undoSupport;
-	private CyNetworkManager cyNetworkManager;
-	private CyNetworkViewManager cyNetworkViewManager;
-	private VisualMappingManager visualMappingManager;
 	private VisualStyleFactory visualStyleFactory;
+	private VisualMappingManager visualMappingManager;
 	private VisualMappingFunctionFactory continuousMappingFactory;
 	private VisualMappingFunctionFactory discreteMappingFactory;
 	private VisualMappingFunctionFactory passthroughMappingFactory;
-	private CyNetworkViewFactory cyNetworkViewFactory;
-	private CyNetworkFactory cyNetworkFactory;
-	private CySessionManager cySessionManager;
 	
 	private LayoutAlgorithm layoutAlgorithm;
 	
 	private ObjectMapper jsonMapper;
 
-	public CENVContext(UndoSupport undoSupport, CyNetworkManager cyNetworkManager,
-			CyNetworkViewManager cyNetworkViewManager, VisualMappingManager visualMappingManager,
-			VisualStyleFactory visualStyleFactory, VisualMappingFunctionFactory continuousMappingFactory,
-			VisualMappingFunctionFactory discreteMappingFactory, VisualMappingFunctionFactory passthroughMappingFactory,
-			CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory,
-			CySessionManager cySessionManager) {
+	public CENVContext(CyNetworkManager networkManager, CyNetworkFactory networkFactory,
+			CyNetworkViewManager networkViewManager, CyNetworkViewFactory networkViewFactory,
+			CySessionManager sessionManager, UndoSupport undoSupport, VisualStyleFactory visualStyleFactory,
+			VisualMappingManager visualMappingManager, VisualMappingFunctionFactory continuousMappingFactory,
+			VisualMappingFunctionFactory discreteMappingFactory,
+			VisualMappingFunctionFactory passthroughMappingFactory) {
 		super();
+		this.networkManager = networkManager;
+		this.networkFactory = networkFactory;
+		this.networkViewManager = networkViewManager;
+		this.networkViewFactory = networkViewFactory;
+		this.sessionManager = sessionManager;
 		this.undoSupport = undoSupport;
-		this.cyNetworkManager = cyNetworkManager;
-		this.cyNetworkViewManager = cyNetworkViewManager;
-		this.visualMappingManager = visualMappingManager;
 		this.visualStyleFactory = visualStyleFactory;
+		this.visualMappingManager = visualMappingManager;
 		this.continuousMappingFactory = continuousMappingFactory;
 		this.discreteMappingFactory = discreteMappingFactory;
 		this.passthroughMappingFactory = passthroughMappingFactory;
-		this.cyNetworkViewFactory = cyNetworkViewFactory;
-		this.cyNetworkFactory = cyNetworkFactory;
-		this.cySessionManager = cySessionManager;
 		
 		jsonMapper = JsonMapper
 				.builder()
@@ -88,32 +88,36 @@ public class CENVContext {
 				.build();
 	}
 
+	public CyNetworkManager getNetworkManager() {
+		return networkManager;
+	}
+
+	public CyNetworkFactory getNetworkFactory() {
+		return networkFactory;
+	}
+
+	public CyNetworkViewManager getNetworkViewManager() {
+		return networkViewManager;
+	}
+
+	public CyNetworkViewFactory getNetworkViewFactory() {
+		return networkViewFactory;
+	}
+
+	public CySessionManager getSessionManager() {
+		return sessionManager;
+	}
+
 	public UndoSupport getUndoSupport() {
 		return undoSupport;
 	}
 
-	public CyNetworkManager getCyNetworkManager() {
-		return cyNetworkManager;
-	}
-
-	public CyNetworkViewManager getCyNetworkViewManager() {
-		return cyNetworkViewManager;
+	public VisualStyleFactory getVisualStyleFactory() {
+		return visualStyleFactory;
 	}
 
 	public VisualMappingManager getVisualMappingManager() {
 		return visualMappingManager;
-	}
-	
-	public CyNetworkViewFactory getCyNetworkViewFactory() {
-		return cyNetworkViewFactory;
-	}
-
-	public CyNetworkFactory getCyNetworkFactory() {
-		return cyNetworkFactory;
-	}
-	
-	public VisualStyleFactory getVisualStyleFactory() {
-		return visualStyleFactory;
 	}
 
 	public VisualMappingFunctionFactory getContinuousMappingFactory() {
@@ -135,13 +139,9 @@ public class CENVContext {
 	public void setLayoutAlgorithm(LayoutAlgorithm layoutAlgorithm) {
 		this.layoutAlgorithm = layoutAlgorithm;
 	}
-	
+
 	public ObjectMapper getJsonMapper() {
 		return jsonMapper;
-	}
-	
-	public CySessionManager getCySessionManager() {
-		return cySessionManager;
 	}
 	
 }

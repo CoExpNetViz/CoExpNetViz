@@ -69,7 +69,8 @@ public class CyActivator extends AbstractCyActivator {
 			getService(bundleContext, VisualMappingManager.class),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
-			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)")
+			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
+			bundleContext.getBundle().getVersion()
     	);
     	
     	registerCreateNetwork(bundleContext);

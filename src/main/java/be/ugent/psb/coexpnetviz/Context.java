@@ -31,6 +31,7 @@ import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.undo.UndoSupport;
+import org.osgi.framework.Version;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,7 @@ public class Context {
 	public static final String APP_NAME = "CoExpNetViz";
 	public static final String APP_MENU = "Apps." + APP_NAME;
 	public static final String NAMESPACE = "coexpnetviz";
+	public final String APP_VERSION;
 	
 	// The OSGi services we consume
 	private CyNetworkManager networkManager;
@@ -67,7 +69,7 @@ public class Context {
 			CySessionManager sessionManager, UndoSupport undoSupport, VisualStyleFactory visualStyleFactory,
 			VisualMappingManager visualMappingManager, VisualMappingFunctionFactory continuousMappingFactory,
 			VisualMappingFunctionFactory discreteMappingFactory,
-			VisualMappingFunctionFactory passthroughMappingFactory) {
+			VisualMappingFunctionFactory passthroughMappingFactory, Version version) {
 		super();
 		this.networkManager = networkManager;
 		this.networkFactory = networkFactory;
@@ -80,6 +82,7 @@ public class Context {
 		this.continuousMappingFactory = continuousMappingFactory;
 		this.discreteMappingFactory = discreteMappingFactory;
 		this.passthroughMappingFactory = passthroughMappingFactory;
+		APP_VERSION = version.toString();
 		
 		jsonMapper = JsonMapper
 				.builder()

@@ -168,7 +168,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	
 	@ProvidesTitle
 	public String getTitle() {
-		return "CoExpNetViz parameters";
+		return "CoExpNetViz (" + context.APP_VERSION + ") parameters";
 	}
 	
 	@Tunable(description = "Output directory", tooltip = outputDirHelp, longDescription = outputDirHelp, listenForChange="networkName")

@@ -31,7 +31,8 @@ import org.cytoscape.work.TaskMonitor.Level;
 
 public class CondaCall {
 
-	public static final String CONDA_ENV = Context.NAMESPACE;
+	public static final int BACKEND_MAJOR_VERSION = 5;
+	public static final String CONDA_ENV = Context.NAMESPACE + BACKEND_MAJOR_VERSION;
 	
 	private TaskMonitor monitor;
 	private String condaArgs;
@@ -159,9 +160,7 @@ public class CondaCall {
 	}
 	
 	protected void showMessage(Level level, String msg) {
-		// TODO discern between GUI/CLI. CLI only understands <br>, GUI only understands \n.
-		// Or report upstream, maybe they should fix it.
-		monitor.showMessage(level, msg.replaceAll("\n", "<br>\n"));
+		Context.showTaskMessage(monitor, level, msg);
 	}
 
 }

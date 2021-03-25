@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskMonitor.Level;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.BoundedDouble;
@@ -389,10 +391,74 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	}
 
 	private JsonNode callBackend(TaskMonitor monitor) throws UserException, InterruptedException {
+		monitor.setStatusMessage("Updating '" + CondaCall.CONDA_ENV + "' conda env");
+		updateCondaEnv(monitor);
+		
 		monitor.setStatusMessage("Running python backend");
 		BackendCall backendCall = new BackendCall(monitor, context, outputDir, createJsonInput());
 		backendCall.run();
 		return backendCall.getResponse();
+	}
+	
+	private void updateCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
+		boolean update = condaEnvExists(monitor);
+		String args;
+		if (update) {
+			if (context.isCondaUpToDate()) {
+				String msg = "Conda update skipped. Already updated once since cytoscape started (or since app was restarted).";
+				monitor.showMessage(Level.INFO, msg);
+				return;
+			}
+			
+			/* `update --update-all` does not support the `coexpnetviz=={major}.*` bit.
+			 * If you were to just `update --update-all` it would update coexpnetviz to
+			 * a higher major version even if available. `install --update-all` does
+			 * support `coexpnetviz==...` and so won't update it too far, but does update
+			 * everything in the env including coexpnetviz itself.
+			 */
+			args = "install --update-all";
+		} else {
+			args = "create";
+		}
+			
+		args += String.format(
+			" -n %s --channel anaconda --channel timdiels --channel coexpnetviz python==3.8.* coexpnetviz==%d.*",
+			CondaCall.CONDA_ENV,
+			CondaCall.BACKEND_MAJOR_VERSION
+		);
+		TextReaderThread stdoutThread = new TextReaderThread("stdout from conda");
+		try {
+			new CondaCall(monitor, args, stdoutThread).run();
+		} catch (UserException e) {
+			if (!update) {
+				throw e;
+			}
+			
+			/* Just warn on update failure; we can still run the backend without updating.
+			 * E.g. user might be offline.
+			 */
+			Context.showTaskMessage(monitor, Level.WARN, e.getMessage());
+		}
+		
+		context.setCondaUpToDate();
+	}
+	
+	private boolean condaEnvExists(TaskMonitor monitor) throws UserException, InterruptedException {
+		JsonParserThread stdoutThread = new JsonParserThread("json env list from conda", context.getJsonMapper());
+		new CondaCall(monitor, "env list --json", stdoutThread).run();
+		JsonNode output = stdoutThread.getOutput();
+		JsonNode envs = output.get("envs");
+		assert envs.isArray();
+		for (JsonNode env : envs) {
+			assert env.isTextual();
+			// Path('/foo/bar').endsWith('r') would be false, it only returns true when it matches
+			// the full file name
+			System.out.println(env.textValue());
+			if (Paths.get(env.textValue()).endsWith(CondaCall.CONDA_ENV)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/*

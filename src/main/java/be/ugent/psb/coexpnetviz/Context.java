@@ -30,6 +30,8 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskMonitor.Level;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.Version;
 
@@ -63,6 +65,7 @@ public class Context {
 	private LayoutAlgorithm layoutAlgorithm;
 	
 	private ObjectMapper jsonMapper;
+	private boolean condaUpToDate = false;
 
 	public Context(CyNetworkManager networkManager, CyNetworkFactory networkFactory,
 			CyNetworkViewManager networkViewManager, CyNetworkViewFactory networkViewFactory,
@@ -145,6 +148,23 @@ public class Context {
 
 	public ObjectMapper getJsonMapper() {
 		return jsonMapper;
+	}
+
+	public boolean isCondaUpToDate() {
+		return condaUpToDate;
+	}
+	
+	public void setCondaUpToDate() {
+		condaUpToDate = true;
+	}
+	
+	public static void showTaskMessage(TaskMonitor monitor, Level level, String msg) {
+		/* TODO discern between GUI/CLI. CLI only understands <br>, GUI only understands \n.
+		 * Or report upstream, maybe they should fix it. Then again, showMessage(INFO) seems
+		 * to work fine with either \n or <br> in CLI. Maybe it only happens when it displays
+		 * an uncaught task exception?
+		 */
+		monitor.showMessage(level, msg.replaceAll("\n", "<br>\n"));
 	}
 	
 }

@@ -22,39 +22,43 @@
 
 package be.ugent.psb.coexpnetviz;
 
-import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
-
-/*
- * Read an input stream into a String in a separate thread
- */
-public class ReaderThread extends Thread {
+// In case you are tempted to add a ReaderThread interface, don't, Thread has no interface.
+public abstract class AbstractReaderThread extends Thread {
 	
-	private String output;
-	private InputStream input;
-	private IOException caughtException;
+	private InputStream inputStream;
+	private UserException caughtException;
 	
-	public ReaderThread(InputStream input) {
-		super();
-		this.input = input;
-	}
-
-	@Override
-	public void run() {
-		try {
-			output = IOUtils.toString(input);
-		} catch (IOException e) {
-			caughtException = e;
-		}
+	public AbstractReaderThread(String name) {
+		super(name);
 	}
 	
-	public String getOutput() throws IOException {
+	public AbstractReaderThread(String name, InputStream inputStream) {
+		super(name);
+		this.inputStream = inputStream;
+	}
+	
+	protected InputStream getInputStream() {
+		return inputStream;
+	}
+	
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
+
+	protected UserException getCaughtException() {
+		return caughtException;
+	}
+
+	protected void setCaughtException(UserException caughtException) {
+		this.caughtException = caughtException;
+	}
+	
+	public void throwIfCaughtException() throws UserException {
 		if (caughtException != null) {
 			throw caughtException;
 		}
-		return output;
 	}
 	
 }

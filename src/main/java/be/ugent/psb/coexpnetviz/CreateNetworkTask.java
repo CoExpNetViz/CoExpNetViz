@@ -26,8 +26,6 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -56,7 +53,6 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskMonitor.Level;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.BoundedDouble;
@@ -392,115 +388,11 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		}
 	}
 
-	private void showMessage(TaskMonitor monitor, Level level, String msg) {
-		// TODO discern between GUI/CLI. CLI wants <br>, GUI doesn't. Or report upstream, maybe they should fix it.
-		monitor.showMessage(level, msg.replaceAll("\n", "<br>\n"));
-	}
-
 	private JsonNode callBackend(TaskMonitor monitor) throws UserException, InterruptedException {
-		// conda does not pass on stdin to coexpnetviz unless --no-capture-output is specified.
-		final String command = "conda run -n coexpnetviz --no-capture-output coexpnetviz";
-		monitor.setStatusMessage("Running python backend: " + command);
-		
-		Process process = null;
-		JsonParserThread stdoutThread = null;
-		ReaderThread stderrThread = null;
-		int exitCode;
-		try {
-			// Start backend process
-			try {
-				process = Runtime.getRuntime().exec(command);
-			} catch (IOException e) {
-				throw new UserException("Failed to exec backend command", e);
-			}
-			
-			/* Read stdout/err in a separate thread to avoid blocking the backend process.
-			 * If we wait for the backend process to exit before reading, the backend process
-			 * may fill up its output buffer and start waiting for us to read it; i.e. deadlock.
-			 */
-			stdoutThread = new JsonParserThread(process.getInputStream(), context.getJsonMapper());
-			stderrThread = new ReaderThread(process.getErrorStream());
-			stdoutThread.start();
-			stderrThread.start();
-			
-			// Pass json input to backend process
-			ObjectNode jsonInput = createJsonInput();
-			try {
-				context.getJsonMapper().writeValue(process.getOutputStream(), jsonInput);
-				process.getOutputStream().close();
-			} catch (IOException e) {
-				throw new UserException("Failed to send json input to backend", e);
-			}
-			
-			/* Wait for backend process and our reader threads to exit
-			 * 
-			 * Simply waiting for it to close its stdout is not enough and that also
-			 * wouldn't allow cancelling the task.
-			 */
-			exitCode = process.waitFor();
-			stdoutThread.join();
-			stderrThread.join();
-		} catch (InterruptedException e) {
-			showMessage(monitor, Level.WARN, "Cancelled");
-			
-			if (process != null) {
-				monitor.setStatusMessage("Killing backend process");
-				process.destroy(); // TODO backend probably does not respond to sigterm, it should.
-				try {
-					process.waitFor(5, TimeUnit.SECONDS);
-				} catch (InterruptedException e1) {
-				}
-				process.destroyForcibly();
-			}
-			
-			monitor.setStatusMessage("Killing reader threads");
-			if (stdoutThread != null) {
-				stdoutThread.interrupt();
-			}
-			if (stderrThread != null) {
-				stderrThread.interrupt();
-			}
-			
-			throw e;
-		}
-		
-		// Mention the log file, if any
-		Path logFile = outputDir.toPath().resolve("coexpnetviz.log");
-		if (Files.exists(logFile)) {
-			showMessage(monitor, Level.INFO, "Backend log file: " + logFile);
-		}
-		
-		// Report crash to user, if any.
-		if (exitCode != 0) {
-			final int BROKEN_PIPE = 120;
-			if (exitCode == BROKEN_PIPE) {
-				/* The backend encounters a broken pipe when we stop reading stdout/err
-				 * before it closes those streams itself. This happens when our stdout/err
-				 * thread dies due to an exception. E.g. most likely stdoutThread failed to
-				 * parse stdout. In that case, we show stdout's exception here, otherwise we
-				 * just mention it exited non-zero. Either way we'll show a message when
-				 * something went wrong with stderr.   
-				 */
-				stdoutThread.throwIfCaughtException();
-			}
-			throwExitedNonZero(monitor, stderrThread, exitCode);
-		}
-		
-		return stdoutThread.getResponse();
-	}
-	
-	private void throwExitedNonZero(TaskMonitor monitor, ReaderThread stderrThread, int exitCode) throws UserException {
-		StringBuilder msg = new StringBuilder();
-		msg.append("python backend exited non-zero: ").append(exitCode).append("\n");
-		
-		try {
-			msg.append("stderr: ").append(stderrThread.getOutput());
-		} catch (IOException e) {
-			showMessage(monitor, Level.WARN, "Failed to read stderr from backend process: " + e.toString());
-			e.printStackTrace();
-		}
-		
-		throw new UserException(msg.toString());
+		monitor.setStatusMessage("Running python backend");
+		BackendCall backendCall = new BackendCall(monitor, context, outputDir, createJsonInput());
+		backendCall.run();
+		return backendCall.getResponse();
 	}
 	
 	/*

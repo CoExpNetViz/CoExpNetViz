@@ -25,38 +25,34 @@ package be.ugent.psb.coexpnetviz;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 
 /*
- * Parse json output in a separate thread
+ * Read an input stream into a String in a separate thread
  */
-public class JsonParserThread extends AbstractReaderThread {
+public class TextReaderThread extends AbstractReaderThread {
 	
-	private ObjectMapper jsonMapper;
-	private JsonNode output;
+	private String output;
 	
-	public JsonParserThread(String name, ObjectMapper jsonMapper) {
+	public TextReaderThread(String name) {
 		super(name);
-		this.jsonMapper = jsonMapper;
 	}
 	
-	public JsonParserThread(String name, ObjectMapper jsonMapper, InputStream inputStream) {
+	public TextReaderThread(String name, InputStream inputStream) {
 		super(name, inputStream);
-		this.jsonMapper = jsonMapper;
 	}
 
 	@Override
 	public void run() {
 		try {
-			output = jsonMapper.readTree(getInputStream());
+			output = IOUtils.toString(getInputStream());
 		} catch (IOException e) {
-			String msg = "Failed to read or parse " + getName() + ": " + e.toString();
+			String msg = "Failed to read " + getName() + ": " + e.toString();
 			setCaughtException(new UserException(msg, e));
 		}
 	}
 	
-	public JsonNode getOutput() throws UserException {
+	public String getOutput() throws UserException {
 		throwIfCaughtException();
 		return output;
 	}

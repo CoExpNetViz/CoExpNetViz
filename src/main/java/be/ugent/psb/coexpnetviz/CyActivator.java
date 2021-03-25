@@ -49,7 +49,7 @@ import org.osgi.framework.BundleContext;
  */
 public class CyActivator extends AbstractCyActivator {
 
-	private CENVContext context;
+	private Context context;
 	
 	/**
 	 * Entry point for the CoExpNetViz plugin for Cytoscape 3. Integrates our
@@ -58,7 +58,7 @@ public class CyActivator extends AbstractCyActivator {
 	 */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-    	context = new CENVContext(
+    	context = new Context(
 			getService(bundleContext, CyNetworkManager.class),
 			getService(bundleContext, CyNetworkFactory.class),
 			getService(bundleContext, CyNetworkViewManager.class),
@@ -79,11 +79,11 @@ public class CyActivator extends AbstractCyActivator {
 	private void registerCreateNetwork(BundleContext bundleContext) {
 		// Add a menu item for the create-network task
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, CENVContext.APP_MENU);
+		props.setProperty(PREFERRED_MENU, Context.APP_MENU);
 		props.setProperty(TITLE, "Create co-expression network");
 		
 		// and a command
-		props.setProperty(COMMAND_NAMESPACE, CENVContext.NAMESPACE);
+		props.setProperty(COMMAND_NAMESPACE, Context.NAMESPACE);
 		props.setProperty(COMMAND, "create_network");
 		props.setProperty(COMMAND_DESCRIPTION, "Create a co-expression network");
 		
@@ -97,11 +97,11 @@ public class CyActivator extends AbstractCyActivator {
 		
 		// Add menu item
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, CENVContext.APP_MENU);
-		props.setProperty(TITLE, CENVContext.APP_NAME);
+		props.setProperty(PREFERRED_MENU, Context.APP_MENU);
+		props.setProperty(TITLE, Context.APP_NAME);
 		
 		// and a command
-		props.setProperty(COMMAND_NAMESPACE, CENVContext.NAMESPACE);
+		props.setProperty(COMMAND_NAMESPACE, Context.NAMESPACE);
 		props.setProperty(COMMAND, "apply_layout");
 		props.setProperty(COMMAND_DESCRIPTION, "Apply CoExpNetViz layout to a CoExpNetViz network");
 		

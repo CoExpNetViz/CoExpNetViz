@@ -35,7 +35,7 @@ import org.cytoscape.work.undo.UndoSupport;
 public class LayoutAlgorithm extends AbstractLayoutAlgorithm {
 	
     public LayoutAlgorithm(UndoSupport undoSupport) {
-        super(CENVContext.NAMESPACE, CENVContext.APP_NAME, undoSupport);
+        super(Context.NAMESPACE, Context.APP_NAME, undoSupport);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String layoutAttribute) {

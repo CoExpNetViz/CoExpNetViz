@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 /**
  * CoExpNetViz app context, provides references to what would otherwise be globals.
  */
-public class CENVContext {
+public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
 	public static final String APP_MENU = "Apps." + APP_NAME;
@@ -62,7 +62,7 @@ public class CENVContext {
 	
 	private ObjectMapper jsonMapper;
 
-	public CENVContext(CyNetworkManager networkManager, CyNetworkFactory networkFactory,
+	public Context(CyNetworkManager networkManager, CyNetworkFactory networkFactory,
 			CyNetworkViewManager networkViewManager, CyNetworkViewFactory networkViewFactory,
 			CySessionManager sessionManager, UndoSupport undoSupport, VisualStyleFactory visualStyleFactory,
 			VisualMappingManager visualMappingManager, VisualMappingFunctionFactory continuousMappingFactory,

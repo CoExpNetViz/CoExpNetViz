@@ -30,9 +30,9 @@ import org.cytoscape.work.TaskIterator;
  */
 public class CreateNetworkTaskFactory extends AbstractTaskFactory {
 
-	private final CENVContext context;
+	private final Context context;
 
-	public CreateNetworkTaskFactory(CENVContext context) {
+	public CreateNetworkTaskFactory(Context context) {
 		super();
 		this.context = context;
 	}

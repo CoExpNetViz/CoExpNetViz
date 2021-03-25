@@ -60,14 +60,14 @@ import com.google.common.collect.Iterables;
  */
 public class LayoutTask extends AbstractLayoutTask {
 
-    private static final String TYPE_ATTRIBUTE = CENVContext.NAMESPACE + "::type";
-    private static final String PARTITION_ATTRIBUTE = CENVContext.NAMESPACE + "::partition_id";
+    private static final String TYPE_ATTRIBUTE = Context.NAMESPACE + "::type";
+    private static final String PARTITION_ATTRIBUTE = Context.NAMESPACE + "::partition_id";
 
     private LayoutContext context;
 
     public LayoutTask(CyNetworkView networkView, Set<View<CyNode>> nodesToLayOut, LayoutContext context, UndoSupport undo)
     {
-        super(CENVContext.APP_NAME, networkView, nodesToLayOut, null, undo);
+        super(Context.APP_NAME, networkView, nodesToLayOut, null, undo);
         this.context = context;
     }
 

@@ -88,7 +88,7 @@ import com.google.common.base.Throwables;
  */
 public class CreateNetworkTask extends AbstractTask implements TunableValidator {
 
-	private CENVContext context;
+	private Context context;
 	
 	/*
 	 * Empty network to turn into a co-expression network
@@ -159,7 +159,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	// The thread that called run(), if any
 	private volatile Thread thread;
 	
-	public CreateNetworkTask(CENVContext context) {
+	public CreateNetworkTask(Context context) {
 		super();
 		this.context = context;
 		baitsSource.setSelectedValue("File");
@@ -542,11 +542,11 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	private Map<Long, CyNode> createNodes(JsonNode response) {
 		// Define extra node columns. false means the user may delete the columns.
 		CyTable nodeTable = network.getDefaultNodeTable();
-		nodeTable.createColumn(CENVContext.NAMESPACE, "type", String.class, false);
-		nodeTable.createListColumn(CENVContext.NAMESPACE, "genes", String.class, false);
-		nodeTable.createColumn(CENVContext.NAMESPACE, "family", String.class, false);
-		nodeTable.createColumn(CENVContext.NAMESPACE, "colour", String.class, false);
-		nodeTable.createColumn(CENVContext.NAMESPACE, "partition_id", Long.class, false);
+		nodeTable.createColumn(Context.NAMESPACE, "type", String.class, false);
+		nodeTable.createListColumn(Context.NAMESPACE, "genes", String.class, false);
+		nodeTable.createColumn(Context.NAMESPACE, "family", String.class, false);
+		nodeTable.createColumn(Context.NAMESPACE, "colour", String.class, false);
+		nodeTable.createColumn(Context.NAMESPACE, "partition_id", Long.class, false);
 		
 		Map<Long, CyNode> nodes = new HashMap<>();
 		for (JsonNode rawNode : response.get("nodes")) {
@@ -564,7 +564,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			
 			nodeAttr = rawNode.get("type");
 			assert nodeAttr.isTextual();
-			nodeAttrs.set(CENVContext.NAMESPACE, "type", nodeAttr.textValue());
+			nodeAttrs.set(Context.NAMESPACE, "type", nodeAttr.textValue());
 			
 			/* Apparently you could use mapper.convertValue to convert to List<String>
 			 * but I couldn't get that to compile.
@@ -576,19 +576,19 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 				assert gene.isTextual();
 				genes.add(gene.textValue());
 			}
-			nodeAttrs.set(CENVContext.NAMESPACE, "genes", genes);
+			nodeAttrs.set(Context.NAMESPACE, "genes", genes);
 			
 			nodeAttr = rawNode.get("family");
 			assert nodeAttr.isTextual();
-			nodeAttrs.set(CENVContext.NAMESPACE, "family", nodeAttr.textValue());
+			nodeAttrs.set(Context.NAMESPACE, "family", nodeAttr.textValue());
 			
 			nodeAttr = rawNode.get("colour");
 			assert nodeAttr.isTextual();
-			nodeAttrs.set(CENVContext.NAMESPACE, "colour", nodeAttr.textValue());
+			nodeAttrs.set(Context.NAMESPACE, "colour", nodeAttr.textValue());
 			
 			nodeAttr = rawNode.get("partition_id");
 			assert nodeAttr.isIntegralNumber();
-			nodeAttrs.set(CENVContext.NAMESPACE, "partition_id", nodeAttr.asLong());
+			nodeAttrs.set(Context.NAMESPACE, "partition_id", nodeAttr.asLong());
 		}
 		
 		return nodes;
@@ -596,7 +596,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 
 	private void createEdges(JsonNode response, Map<Long, CyNode> nodes) {
 		CyTable edgeTable = network.getDefaultEdgeTable();
-		edgeTable.createColumn(CENVContext.NAMESPACE, "max_correlation", Double.class, false);
+		edgeTable.createColumn(Context.NAMESPACE, "max_correlation", Double.class, false);
 
 		for (JsonNode jsonEdge : response.get("homology_edges")) {
 			CyNode node1 = getNode(nodes, jsonEdge, "bait_node1");
@@ -619,7 +619,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			
 			JsonNode edgeAttr = jsonEdge.get("max_correlation");
 			assert edgeAttr.isNumber();
-			edgeAttrs.set(CENVContext.NAMESPACE, "max_correlation", edgeAttr.asDouble());
+			edgeAttrs.set(Context.NAMESPACE, "max_correlation", edgeAttr.asDouble());
 		}
 	}
 
@@ -661,12 +661,12 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		));
 		
 		style.addVisualMappingFunction(passthrough.createVisualMappingFunction(
-			CENVContext.NAMESPACE + "::colour", String.class, BasicVisualLexicon.NODE_FILL_COLOR
+			Context.NAMESPACE + "::colour", String.class, BasicVisualLexicon.NODE_FILL_COLOR
 		));
 		
 		// Cor edge colour: red (-1) -- black (0) -- green (1)
 		ContinuousMapping<Double, Paint> edgeColourMapping = (ContinuousMapping<Double, Paint>) continuous.createVisualMappingFunction(
-			CENVContext.NAMESPACE + "::max_correlation", Double.class, BasicVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT
+			Context.NAMESPACE + "::max_correlation", Double.class, BasicVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT
 		);
 		edgeColourMapping.addPoint(-1.0, new BoundaryRangeValues<>(Color.RED, Color.RED, Color.RED));
 		edgeColourMapping.addPoint(0.0, new BoundaryRangeValues<>(Color.BLACK, Color.BLACK, Color.BLACK));
@@ -692,12 +692,12 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	 */
 	private VisualStyle getOrCreateStyle() {
 		for (VisualStyle style : context.getVisualMappingManager().getAllVisualStyles()) {
-			if (style.getTitle() == CENVContext.APP_NAME) {
+			if (style.getTitle() == Context.APP_NAME) {
 				return style;
 			}
 		}
 		
-		VisualStyle style = context.getVisualStyleFactory().createVisualStyle(CENVContext.APP_NAME);
+		VisualStyle style = context.getVisualStyleFactory().createVisualStyle(Context.APP_NAME);
 		context.getVisualMappingManager().addVisualStyle(style);
 		return style;
 	}

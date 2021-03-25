@@ -113,18 +113,18 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	 * Would have liked this to appear before the other baitGroup options in CLI
 	 * help but Tunable(gravity) has no effect on it.
 	 */
-	@Tunable(description = "Bait group source", tooltip = "Provide baits inline in a text field or use a baits file.", longDescription="Whether you'll provide baits inline with baitGroupText or as a baitGroupFile")
-	public ListSingleSelection<String> baitGroupSource = new ListSingleSelection<>("Inline", "File");
+	@Tunable(description = "Baits source", tooltip = "Provide baits inline in a text field or use a baits file.", longDescription="Whether you'll provide baits inline with baitGroupText or as a baitGroupFile")
+	public ListSingleSelection<String> baitsSource = new ListSingleSelection<>("Inline", "File");
 
 	private static final String baitGroupTextHelp = "Bait genes separated by ',' or ';'. E.g. AT2G03340;AT2G03341;AT2G03342";
 	
-	@Tunable(description = "Bait names", dependsOn = "baitGroupSource=Inline", tooltip = baitGroupTextHelp, longDescription = baitGroupTextHelp)
-	public String baitGroupText;
+	@Tunable(description = "Bait names", dependsOn = "baitsSource=Inline", tooltip = baitGroupTextHelp, longDescription = baitGroupTextHelp)
+	public String baitsText;
 	
 	private static final String baitGroupFileHelp = "Path to file containing bait genes";  // TODO which format?
 
-	@Tunable(description = "Bait group file", dependsOn = "baitGroupSource=File", params="input=true", tooltip = baitGroupFileHelp, longDescription = baitGroupFileHelp)
-	public File baitGroupFile;
+	@Tunable(description = "Baits file", dependsOn = "baitsSource=File", params="input=true", tooltip = baitGroupFileHelp, longDescription = baitGroupFileHelp)
+	public File baitsFile;
 
 	private static final String expressionMatricesHelp = "One or more matrix files separated by ',' or ';'. E.g. /home/user/matrix.txt;/data/matrix2.txt on a unix-like OS or C:\\matrix.txt on Windows.";
 	
@@ -168,7 +168,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	public RunJobTask(CENVContext context) {
 		super();
 		this.context = context;
-		baitGroupSource.setSelectedValue("File");
+		baitsSource.setSelectedValue("File");
 		
 	}
 	
@@ -218,10 +218,10 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 		try {
 			cleanNetworkName();
 			
-			if (baitGroupSource.getSelectedValue() == "Inline") {
+			if (baitsSource.getSelectedValue() == "Inline") {
 				cleanBaits();
 			} else {
-				baitGroupFile = cleanInputFile("Bait group file", baitGroupFile, true);
+				baitsFile = cleanInputFile("Baits file", baitsFile, true);
 			}
 			
 			cleanExpressionMatrices();
@@ -258,7 +258,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	}
 	
 	private void cleanBaits() throws InputError {
-		String[] baits = baitGroupText.split("[,;]");
+		String[] baits = baitsText.split("[,;]");
 		cleanedBaits = new HashSet<String>();
 		for (String bait : baits) {
 			bait = bait.trim();
@@ -515,13 +515,13 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	private ObjectNode createJsonInput() {
 		ObjectNode root = context.getJsonMapper().createObjectNode();
 		
-		if (baitGroupSource.getSelectedValue() == "Inline") {
+		if (baitsSource.getSelectedValue() == "Inline") {
 			ArrayNode baitsArray = root.putArray("baits");
 			for (String bait : cleanedBaits) {
 				baitsArray.add(bait);
 			}
 		} else {
-			root.put("baits", baitGroupFile.toString());
+			root.put("baits", baitsFile.toString());
 		}
 		
 		ArrayNode matrixArray = root.putArray("expression_matrices");

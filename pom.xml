@@ -119,7 +119,7 @@
                     <instructions>
                         <Bundle-SymbolicName>be.ugent.psb.coexpnetviz</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Bundle-Activator>be.ugent.psb.coexpnetviz.CytoscapeActivator</Bundle-Activator>
+                        <Bundle-Activator>be.ugent.psb.coexpnetviz.CyActivator</Bundle-Activator>
                         
                         <!-- Export nothing, keep everything private -->
                         <Export-Package></Export-Package>

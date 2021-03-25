@@ -36,8 +36,6 @@ import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
-
 /**
  * CoExpNetViz app context, provides references to what would otherwise be globals.
  */
@@ -60,7 +58,7 @@ public class CENVContext {
 	private CyNetworkFactory cyNetworkFactory;
 	private CySessionManager cySessionManager;
 	
-	private CENVLayoutAlgorithm layoutAlgorithm;
+	private LayoutAlgorithm layoutAlgorithm;
 	
 	private ObjectMapper jsonMapper;
 
@@ -130,11 +128,11 @@ public class CENVContext {
 		return passthroughMappingFactory;
 	}
 	
-	public CENVLayoutAlgorithm getLayoutAlgorithm() {
+	public LayoutAlgorithm getLayoutAlgorithm() {
 		return layoutAlgorithm;
 	}
 	
-	public void setLayoutAlgorithm(CENVLayoutAlgorithm layoutAlgorithm) {
+	public void setLayoutAlgorithm(LayoutAlgorithm layoutAlgorithm) {
 		this.layoutAlgorithm = layoutAlgorithm;
 	}
 	

@@ -22,26 +22,40 @@
 
 package be.ugent.psb.coexpnetviz;
 
-import org.cytoscape.work.AbstractTaskFactory;
-import org.cytoscape.work.TaskIterator;
-
-import be.ugent.psb.coexpnetviz.io.RunJobTask;
-
 /**
- * Runs coexpnetviz-python and creates a network from the result
+ * Layout tree node
  */
-public class CENVTaskFactory extends AbstractTaskFactory {
-
-	private final CENVContext context;
-
-	public CENVTaskFactory(CENVContext context) {
-		super();
-		this.context = context;
+public abstract class LayoutNode {
+	abstract double getX();
+	abstract void setX(double x);
+	abstract double getY();
+	abstract void setY(double y);
+	abstract double getWidth();
+	abstract double getHeight();
+	
+	/**
+	 * Commit modeled layout to actual view (i.e. update View<CyNode>)
+	 * 
+	 * @param parentX Global X position of parent
+	 * @param parentY
+	 */
+	abstract void updateView(double parentX, double parentY);
+	
+	void setPosition(double x, double y) {
+		setX(x);
+		setY(y);
 	}
 
-	@Override
-	public TaskIterator createTaskIterator() {
-		return new TaskIterator(new RunJobTask(context));
+	double getArea() {
+		return getWidth() * getHeight();
 	}
-
+	
+	void setCenter(double x, double y) {
+		setPosition(x - getWidth() / 2.0, y - getHeight() / 2.0);
+	}
+	
+	double getDiameter() {
+		return Math.sqrt(getWidth()*getWidth() + getHeight()*getHeight());
+	}
+	
 }

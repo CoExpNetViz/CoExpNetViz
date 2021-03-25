@@ -20,22 +20,26 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.layout;
+package be.ugent.psb.coexpnetviz;
 
-import org.cytoscape.work.Tunable;
+import org.cytoscape.work.AbstractTaskFactory;
+import org.cytoscape.work.TaskIterator;
 
-public class CENVLayoutContext {
-    
-	@Tunable(description = "Space between adjacent connected components in the grid of connected components")
-	public double connectedComponentSpacing = 800.0;
-    
-    @Tunable(description = "Minimum space between the baits partition and its surrounding partitions")
-    public double baitPartitionSpacing = 400.0;
-    
-    @Tunable(description = "Space between adjacent nodes in a grid of a non-bait partition")
-    public double nodeSpacing = 80.0;
-    
-    @Tunable(description = "Space between adjacent nodes in a circle layout of baits")
-    public double baitNodeSpacing = 80.0;
-    
+/**
+ * Runs coexpnetviz-python and creates a network from the result
+ */
+public class CreateNetworkTaskFactory extends AbstractTaskFactory {
+
+	private final CENVContext context;
+
+	public CreateNetworkTaskFactory(CENVContext context) {
+		super();
+		this.context = context;
+	}
+
+	@Override
+	public TaskIterator createTaskIterator() {
+		return new TaskIterator(new CreateNetworkTask(context));
+	}
+
 }

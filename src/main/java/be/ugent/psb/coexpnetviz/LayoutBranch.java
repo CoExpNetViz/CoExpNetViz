@@ -20,26 +20,29 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.layout;
+package be.ugent.psb.coexpnetviz;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Container extends UIComponent {
+/**
+ * Layout branch node, wraps multiple layout nodes
+ */
+public class LayoutBranch extends LayoutNode {
 	
-	private List<UIComponent> children;
+	private List<LayoutNode> children;
 	private double x;
 	private double y;
 	
-	public Container() {
+	public LayoutBranch() {
 		children = new ArrayList<>();
 		x = 0;
 		y = 0;
 	}
 	
-	public void add(UIComponent child) {
+	public void add(LayoutNode child) {
 		children.add(child);
 	}
 	
@@ -47,9 +50,9 @@ public class Container extends UIComponent {
      * Sort children by geometric area
      */
     public void sortByArea() {
-    	Collections.sort(children, new Comparator<UIComponent>() {
+    	Collections.sort(children, new Comparator<LayoutNode>() {
     		@Override
-    		public int compare(UIComponent o1, UIComponent o2) {
+    		public int compare(LayoutNode o1, LayoutNode o2) {
     			return Double.compare(o1.getArea(), o2.getArea());
     		}
 		});
@@ -68,7 +71,7 @@ public class Container extends UIComponent {
     	for (int i=0; i < children.size(); i++) {
     		int row = i / columns;
     		int column = i % columns;
-    		UIComponent child = children.get(i);
+    		LayoutNode child = children.get(i);
     		rowSizes.set(row, Math.max(rowSizes.get(row), child.getHeight()));
     		columnSizes.set(column, Math.max(columnSizes.get(column), child.getWidth()));
     	}
@@ -102,7 +105,7 @@ public class Container extends UIComponent {
     	// Determine circumference
     	double circumference = 0.0;
     	double maxDiameter = 0.0;
-    	for (UIComponent child : children) {
+    	for (LayoutNode child : children) {
     		circumference += child.getDiameter();
     		maxDiameter = Math.max(child.getDiameter(), maxDiameter);
     	}
@@ -114,7 +117,7 @@ public class Container extends UIComponent {
     	// Lay out children
     	double angle = 0.0;
     	double spacingPerChild = spacing * (children.size()-1) / children.size();
-    	for (UIComponent child : children) {
+    	for (LayoutNode child : children) {
     		double angularShare = (child.getDiameter() + spacingPerChild) / circumference * 2.0 * Math.PI; // how much radians will we use to fit this child
     		angle += angularShare / 2.0;
     		child.setCenter(radius + radius * Math.cos(angle), radius + radius * Math.sin(angle)); // +radius to keep things positive
@@ -125,7 +128,7 @@ public class Container extends UIComponent {
 	@Override
 	double getWidth() {
 		double max = 0.0;
-		for (UIComponent child : children) {
+		for (LayoutNode child : children) {
 			max = Math.max(max, child.getX() + child.getWidth());
 		}
 		return max;
@@ -134,7 +137,7 @@ public class Container extends UIComponent {
 	@Override
 	double getHeight() {
 		double max = 0.0;
-		for (UIComponent child : children) {
+		for (LayoutNode child : children) {
 			max = Math.max(max, child.getY() + child.getHeight());
 		}
 		return max;
@@ -142,7 +145,7 @@ public class Container extends UIComponent {
 
 	@Override
 	void updateView(double parentX, double parentY) {
-		for (UIComponent child : children) {
+		for (LayoutNode child : children) {
 			child.updateView(parentX + x, parentY + y);
 		}
 	}

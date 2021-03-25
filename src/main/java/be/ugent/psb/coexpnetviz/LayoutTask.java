@@ -20,7 +20,7 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.layout;
+package be.ugent.psb.coexpnetviz;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +44,6 @@ import org.cytoscape.work.undo.UndoSupport;
 
 import com.google.common.collect.Iterables;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
-
 /**
  * Lay out nodes of a CENV network.
  * 
@@ -60,14 +58,14 @@ import be.ugent.psb.coexpnetviz.CENVContext;
  * Within each partition, nodes are sorted by their name. Partitions in the circle of
  * partitions are sorted by their size.
  */
-public class CENVLayoutTask extends AbstractLayoutTask {
+public class LayoutTask extends AbstractLayoutTask {
 
     private static final String TYPE_ATTRIBUTE = CENVContext.NAMESPACE + "::type";
     private static final String PARTITION_ATTRIBUTE = CENVContext.NAMESPACE + "::partition_id";
 
-    private CENVLayoutContext context;
+    private LayoutContext context;
 
-    public CENVLayoutTask(CyNetworkView networkView, Set<View<CyNode>> nodesToLayOut, CENVLayoutContext context, UndoSupport undo)
+    public LayoutTask(CyNetworkView networkView, Set<View<CyNode>> nodesToLayOut, LayoutContext context, UndoSupport undo)
     {
         super(CENVContext.APP_NAME, networkView, nodesToLayOut, null, undo);
         this.context = context;
@@ -81,7 +79,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
         requireColumn(dataTable, PARTITION_ATTRIBUTE);
 
         // Do layout
-        Container container = layOutConnectedComponents();
+        LayoutBranch container = layOutConnectedComponents();
         container.updateView(0, 0);
     }
     
@@ -95,8 +93,8 @@ public class CENVLayoutTask extends AbstractLayoutTask {
         }
     }
     
-    private Container layOutConnectedComponents() {
-    	Container container = new Container();
+    private LayoutBranch layOutConnectedComponents() {
+    	LayoutBranch container = new LayoutBranch();
         
     	// Create a container per connected component
     	for (Set<CyNode> connectedComponent : getConnectedComponents()) {
@@ -139,7 +137,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	return connectedComponents;
     }
     
-    private Container layOutConnectedComponent(Set<CyNode> connectedComponent) {
+    private LayoutBranch layOutConnectedComponent(Set<CyNode> connectedComponent) {
     	// Group nodes by partition_id and keep baits separate
     	Map<Long, Set<CyNode>> nonBaitPartitions = new HashMap<>(); // partition id -> partition
     	Set<CyNode> baitPartition = new HashSet<>();
@@ -160,7 +158,7 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	
     	// Create children. Singletons are merged into a partition of their own.
     	Set<CyNode> singletons = new HashSet<>();
-    	Container nonBaitPartitionsContainer = new Container();
+    	LayoutBranch nonBaitPartitionsContainer = new LayoutBranch();
     	for (Set<CyNode> partition : nonBaitPartitions.values()) {
     		if (partition.size() > 1) {
     			nonBaitPartitionsContainer.add(layOutNonBaitPartition(partition));
@@ -171,9 +169,9 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	}
     	nonBaitPartitionsContainer.add(layOutNonBaitPartition(singletons));
     	
-    	Container baitsContainer = layOutBaitPartition(baitPartition);
+    	LayoutBranch baitsContainer = layOutBaitPartition(baitPartition);
     	
-    	Container container = new Container();
+    	LayoutBranch container = new LayoutBranch();
     	container.add(nonBaitPartitionsContainer);
     	container.add(baitsContainer);
     	
@@ -185,19 +183,19 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	return container;
     }
 
-	private Container layOutNonBaitPartition(Set<CyNode> partition) {
-    	Container container = createContainer(partition);
+	private LayoutBranch layOutNonBaitPartition(Set<CyNode> partition) {
+    	LayoutBranch container = createContainer(partition);
     	container.layOutInGrid(context.nodeSpacing);
     	return container;
     }
     
-    private Container layOutBaitPartition(Set<CyNode> partition) {
-    	Container container = createContainer(partition);
+    private LayoutBranch layOutBaitPartition(Set<CyNode> partition) {
+    	LayoutBranch container = createContainer(partition);
     	container.layOutInCircle(context.baitNodeSpacing, 0);
     	return container;
     }
     
-    private Container createContainer(Set<CyNode> partition) {
+    private LayoutBranch createContainer(Set<CyNode> partition) {
     	// Sort nodes by name
     	List<CyNode> sortedPartition = new ArrayList<>(partition);
     	Collections.sort(sortedPartition, new Comparator<CyNode>() {
@@ -210,9 +208,9 @@ public class CENVLayoutTask extends AbstractLayoutTask {
     	});
     	
     	// Create Container with `Node`s
-    	Container container = new Container();
+    	LayoutBranch container = new LayoutBranch();
     	for (CyNode node : sortedPartition) {
-    		container.add(new Node(networkView.getNodeView(node)));
+    		container.add(new LayoutLeaf(networkView.getNodeView(node)));
     	}
     	
     	return container;

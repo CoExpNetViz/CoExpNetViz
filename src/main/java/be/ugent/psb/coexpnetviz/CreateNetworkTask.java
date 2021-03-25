@@ -20,7 +20,7 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.io;
+package be.ugent.psb.coexpnetviz;
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -67,12 +67,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Throwables;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
-import be.ugent.psb.coexpnetviz.InputError;
-import be.ugent.psb.coexpnetviz.JsonParserThread;
-import be.ugent.psb.coexpnetviz.ReaderThread;
-import be.ugent.psb.coexpnetviz.UserException;
-
 /* Create a co-expression network starting from an empty network  
  * 
  * Tunables notes: tunables are only picked up when public field/property in a public class.
@@ -92,7 +86,7 @@ import be.ugent.psb.coexpnetviz.UserException;
  * task history. Task history is hidden by default so better include all info
  * in the exception. CLI expects <br> as line ending, GUI expects \n.
  */
-public class RunJobTask extends AbstractTask implements TunableValidator {
+public class CreateNetworkTask extends AbstractTask implements TunableValidator {
 
 	private CENVContext context;
 	
@@ -165,7 +159,7 @@ public class RunJobTask extends AbstractTask implements TunableValidator {
 	// The thread that called run(), if any
 	private volatile Thread thread;
 	
-	public RunJobTask(CENVContext context) {
+	public CreateNetworkTask(CENVContext context) {
 		super();
 		this.context = context;
 		baitsSource.setSelectedValue("File");

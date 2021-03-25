@@ -20,7 +20,7 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.layout;
+package be.ugent.psb.coexpnetviz;
 
 import java.util.Set;
 
@@ -31,22 +31,20 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
 
-import be.ugent.psb.coexpnetviz.CENVContext;
 
-
-public class CENVLayoutAlgorithm extends AbstractLayoutAlgorithm {
+public class LayoutAlgorithm extends AbstractLayoutAlgorithm {
 	
-    public CENVLayoutAlgorithm(UndoSupport undoSupport) {
+    public LayoutAlgorithm(UndoSupport undoSupport) {
         super(CENVContext.NAMESPACE, CENVContext.APP_NAME, undoSupport);
     }
 
     public TaskIterator createTaskIterator(CyNetworkView networkView, Object context, Set<View<CyNode>> nodesToLayOut, String layoutAttribute) {
-        return new TaskIterator(new CENVLayoutTask(networkView, nodesToLayOut, (CENVLayoutContext) context, undoSupport));
+        return new TaskIterator(new LayoutTask(networkView, nodesToLayOut, (LayoutContext) context, undoSupport));
     }
 
     @Override
-    public CENVLayoutContext createLayoutContext() {
-        return new CENVLayoutContext();
+    public LayoutContext createLayoutContext() {
+        return new LayoutContext();
     }
 
     @Override

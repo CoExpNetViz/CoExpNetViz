@@ -20,22 +20,22 @@
  * #L%
  */
 
-package be.ugent.psb.coexpnetviz.layout;
+package be.ugent.psb.coexpnetviz;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 
 /**
- * Adapts a CyNode to a UIComponent
+ * Layout leaf node, wraps a CyNode
  */
-public class Node extends UIComponent {
+public class LayoutLeaf extends LayoutNode {
 	
 	private View<CyNode> node;
 	private double x;
 	private double y;
 
-	public Node(View<CyNode> node) {
+	public LayoutLeaf(View<CyNode> node) {
 		this.node = node;
 		x = 0;
 		y = 0;

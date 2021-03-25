@@ -44,12 +44,10 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 
-import be.ugent.psb.coexpnetviz.layout.CENVLayoutAlgorithm;
-
 /**
  * Activates CENV plugin in Cytoscape.
  */
-public class CytoscapeActivator extends AbstractCyActivator {
+public class CyActivator extends AbstractCyActivator {
 
 	private CENVContext context;
 	
@@ -90,11 +88,11 @@ public class CytoscapeActivator extends AbstractCyActivator {
 		props.setProperty(COMMAND_DESCRIPTION, "Create a co-expression network");
 		
 		// finally, actually register it
-		registerService(bundleContext, new CENVTaskFactory(context), TaskFactory.class, props);
+		registerService(bundleContext, new CreateNetworkTaskFactory(context), TaskFactory.class, props);
 	}
 	
 	private void registerLayoutAlgorithm(BundleContext bundleContext) {
-		CENVLayoutAlgorithm layoutAlgorithm = new CENVLayoutAlgorithm(context.getUndoSupport());
+		LayoutAlgorithm layoutAlgorithm = new LayoutAlgorithm(context.getUndoSupport());
 		context.setLayoutAlgorithm(layoutAlgorithm);
 		
 		// Add menu item

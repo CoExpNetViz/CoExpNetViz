@@ -135,11 +135,11 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 
 	private static final String percentilesHelp = "For each expression matrix, consider genes co-expressed if their correlation is less or equal to the lower percentile or greater or equal to the upper percentile of the correlations between a sample of genes of the expression matrix.";
 
-	@Tunable(description = "Lower percentile rank", tooltip = percentilesHelp, longDescription = percentilesHelp)
-	public BoundedDouble lowerPercentileRank = new BoundedDouble(0.0, 5.0, 100.0, false, false);
+	@Tunable(description = "Lower percentile", tooltip = percentilesHelp, longDescription = percentilesHelp)
+	public BoundedDouble lowerPercentile = new BoundedDouble(0.0, 5.0, 100.0, false, false);
 
-	@Tunable(description = "Upper percentile rank", tooltip = percentilesHelp, longDescription = percentilesHelp)
-	public BoundedDouble upperPercentileRank = new BoundedDouble(0.0, 95.0, 100.0, false, false);
+	@Tunable(description = "Upper percentile", tooltip = percentilesHelp, longDescription = percentilesHelp)
+	public BoundedDouble upperPercentile = new BoundedDouble(0.0, 95.0, 100.0, false, false);
 
 	private static final String outputDirHelp = "Directory in which to write additional info which does not fit in Cytoscape, e.g. correlation matrices and the log file.";
 	
@@ -220,8 +220,8 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			
 			// BoundedDouble already checks bounds and ensures a valid is entered
 			// (despite Tunable(required=false) being the default)
-			if (lowerPercentileRank.getValue() > upperPercentileRank.getValue()) {
-				throw new InputError("Lower percentile rank must be less or equal to upper percentile rank.");
+			if (lowerPercentile.getValue() > upperPercentile.getValue()) {
+				throw new InputError("Lower percentile must be less or equal to upper percentile.");
 			}
 			
 			cleanOutputDir();
@@ -419,8 +419,8 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			root.put("gene_families", geneFamiliesFile.toString());
 		}
 		
-		root.put("lower_percentile_rank", lowerPercentileRank.getValue());
-		root.put("upper_percentile_rank", upperPercentileRank.getValue());
+		root.put("lower_percentile", lowerPercentile.getValue());
+		root.put("upper_percentile", upperPercentile.getValue());
 		root.put("output_dir", outputDir.toString());
 		
 		return root;

@@ -98,7 +98,6 @@ public class CyActivator extends AbstractCyActivator {
 		
 		// Add menu item
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, Context.APP_MENU);
 		props.setProperty(TITLE, Context.APP_NAME);
 		
 		// and a command

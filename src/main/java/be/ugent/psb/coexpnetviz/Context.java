@@ -45,7 +45,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 public class Context {
 
 	public static final String APP_NAME = "CoExpNetViz";
-	public static final String APP_MENU = "Apps." + APP_NAME;
 	public static final String NAMESPACE = "coexpnetviz";
 	public final String APP_VERSION;
 	

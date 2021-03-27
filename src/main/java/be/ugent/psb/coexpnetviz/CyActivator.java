@@ -80,7 +80,7 @@ public class CyActivator extends AbstractCyActivator {
 	private void registerCreateNetwork(BundleContext bundleContext) {
 		// Add a menu item for the create-network task
 		Properties props = new Properties();
-		props.setProperty(PREFERRED_MENU, Context.APP_MENU);
+		props.setProperty(PREFERRED_MENU, "Apps");
 		props.setProperty(TITLE, "Create co-expression network");
 		
 		// and a command

@@ -42,7 +42,7 @@ command as it defaults to a subdirectory of your session location. The output
 directory stores coexpnetviz.log and intermediate results.
 
 The tutorial will continue with the dialog instead. To open the dialog, select
-`Apps > Create co-expression network` from the cytoscape menu. You can hover
+`Apps > Create co-expression network` from the Cytoscape menu. You can hover
 over each input field for a tooltip. CoExpNetViz needs a subset of genes to use
 as baits, other genes will be compared against the baits to check for
 co-expression. Please fill in the following:
@@ -112,7 +112,7 @@ There are no self (`x-x`), synonymous (`x-y` and `y-x`) or duplicate
 (`x-y` and `x-y`) edges.
 
 The following files are saved in a directory `{network_name}_{datetime}` next
-to your cytoscape session file (the `.cys` file):
+to your Cytoscape session file (the `.cys` file):
 
 - `{expression_matrix}.correlation_matrix.txt`: Correlations between genes and
   baits of the expression matrix before any cutoffs have been applied.
@@ -260,7 +260,7 @@ Links:
 Mostly boils down to following the [Cytoscape app ladder]. Here's a short
 version for Debian:
 
-- `apt install openjdk-...-jdk`, peek at the cytoscape install step to find out
+- `apt install openjdk-...-jdk`, peek at the Cytoscape install step to find out
   which Java version Cytoscape requires.
 - `apt install maven`
 - [Install Cytoscape](https://cytoscape.org/download.html). I clicked

@@ -37,7 +37,7 @@ For now please ignore the gene families arg to follow the tutorial.
 
 Files for the above command can be found in
 [coexpnetviz_example.tgz][example files]. If your current Cytoscape session has
-never been saved before, you'll also need to provide an outputDir in the above
+never been saved before, you'll also need to provide an `outputDir` in the above
 command as it defaults to a subdirectory of your session location. The output
 directory stores coexpnetviz.log and intermediate results.
 
@@ -47,17 +47,13 @@ over each input field for a tooltip. CoExpNetViz needs a subset of genes to use
 as baits, other genes will be compared against the baits to check for
 co-expression. Please fill in the following:
 
-Network name
-    my_network
-Baits source
-    File
-Baits file
-    /home/user/example/baits_one_species.txt
-Expression matrices
-    /home/user/example/arabidopsis_dataset.txt;/home/user/coexpnetviz/example/tomato_dataset.txt
-    (do not add quotes in the dialog; that's only necessary in the command line)
-Gene families file
-    /home/user/example/plaza_mono_and_dicot_v3_fams.yml
+- Network name: `my_network`
+- Baits source: `File`
+- Baits file: `/home/user/example/baits_one_species.txt`
+- Expression matrices:
+  `/home/user/example/arabidopsis_dataset.txt;/home/user/coexpnetviz/example/tomato_dataset.txt`.
+  Do not add quotes in the dialog; that's only necessary in the command line.
+- Gene families file: `/home/user/example/plaza_mono_and_dicot_v3_fams.yml`
 
 The percentiles can be tweaked to move the cutoff points for genes to be
 considered co-expressed. E.g. increasing the upper percentile from 95 to 97
@@ -74,13 +70,10 @@ keeps it up to date) and creates the network.
 #### Output
 The created network has 3 types of nodes:
 
-bait
-    represents a single bait gene. They are white and diamond shaped.
-family
-    represents the genes of a family which (anti-)correlate with a bait.
-gene
-    represents a gene which is neither a bait, nor appears in a family, but
-    does (anti-)correlate with a bait.
+- bait: represents a single bait gene. They are white and diamond shaped.
+- family: represents the genes of a family which (anti-)correlate with a bait.
+- gene: represents a gene which is neither a bait, nor appears in a family, but
+  does (anti-)correlate with a bait.
 
 Genes which do not (anti-)correlate with any bait are not represented by any
 node. All other genes are represented by exactly one node in the network.
@@ -94,30 +87,23 @@ selecting `Layout > CoExpNetViz` in the Cytoscape menu.
 
 Nodes have the following attributes:
 
-id
-    Unique node id.
-label
-    Labels are unique (but often don't make valid identifiers, e.g. they may
-    contain spaces).
-colour
-    Node display colour.
-type
-    `bait`, `family` or `gene`.
-family
-    The family the genes represented by this node are part of, if any.
-genes
-    Genes represented by the node. For family nodes these are all genes of the
-    family which sufficiently (anti-)correlate with a bait.
-partition_id
-    Id of the partition the node is part of. Bait nodes form a partition. Other
-    nodes are partitioned by the subset of baits they correlate with. I.e.
-    nodes of the same partition correlate to the same baits.
+- id: Unique node id.
+- label: Labels are unique (but often don't make valid identifiers, e.g. they
+  may contain spaces).
+- colour: Node display colour.
+- type: `bait`, `family` or `gene`.
+- family: The family the genes represented by this node are part of, if any.
+- genes: Genes represented by the node. For family nodes these are all genes of
+  the family which sufficiently (anti-)correlate with a bait.
+- partition_id: Id of the partition the node is part of. Bait nodes form a
+  partition. Other nodes are partitioned by the subset of baits they correlate
+  with. I.e. nodes of the same partition correlate to the same baits.
 
 Edges between a bait and non-bait node denotes the bait is sufficiently
 (anti-)correlated to the gene expression of the gene(s) represented by the
 non-bait node. A green edge denotes correlation, a red edge denotes
 anti-correlation. The darker the color, the stronger the correlation.
-Edges have a max_correlation attribute, which is the strongest Pearson
+Edges have a `max_correlation` attribute, which is the strongest Pearson
 correlation of the bait and each gene represented by the non-bait node (i.e.
 excluding correlation values that were cut off by the tresholds).
 
@@ -128,28 +114,25 @@ There are no self (`x-x`), synonymous (`x-y` and `y-x`) or duplicate
 The following files are saved in a directory `{network_name}_{datetime}` next
 to your cytoscape session file (the `.cys` file):
 
-{expression_matrix}.correlation_matrix.txt
-    Correlations between genes and baits of the expression matrix before any
-    cutoffs have been applied.
-{expression_matrix}.sample_matrix.txt
-    Correlations between a sample of genes of the expression matrix. This
-    sample is used to derive the matrix' percentiles.
-{expression_matrix}.sample_histogram.png
-    Frequency of sample matrix values. The red vertical lines are the
-    percentiles. Correlations ranging between the red lines are cut off.
-{expression_matrix}.sample_cdf.png
-    Cumulative distribution function (discrete) of the sample matrix values.
-    The red horizontal lines are the percentiles used, divided by 100. The
-    points where the red lines first intersect with the function, roughly
-    (depending on how jumpy the function is in that part) mark the cutoff
-    thresholds (imagine a vertical line at the intersection and read the
-    correlation value on the X-axis).
-percentile_values.txt
-    Lower and upper percentile cutoffs used for each expression matrix.
-significant_correlations.txt
-    Correlations between genes and baits after cutoffs have been applied.
-coexpnetviz.log
-    Further details of the run: coexpnetviz version, warnings, ...
+- `{expression_matrix}.correlation_matrix.txt`: Correlations between genes and
+  baits of the expression matrix before any cutoffs have been applied.
+- `{expression_matrix}.sample_matrix.txt`: Correlations between a sample of
+  genes of the expression matrix. This sample is used to derive the matrix'
+  percentiles.
+- `{expression_matrix}.sample_histogram.png`: Frequency of sample matrix
+  values. The red vertical lines are the percentiles. Correlations ranging
+  between the red lines are cut off.
+- `{expression_matrix}.sample_cdf.png`: Cumulative distribution function
+  (discrete) of the sample matrix values. The red horizontal lines are the
+  percentiles used, divided by 100. The points where the red lines first
+  intersect with the function, roughly (depending on how jumpy the function is
+  in that part) mark the cutoff thresholds (imagine a vertical line at the
+  intersection and read the correlation value on the X-axis).
+- `percentile_values.txt`: Lower and upper percentile cutoffs used for each
+  expression matrix.
+- `significant_correlations.txt`: Correlations between genes and baits after
+  cutoffs have been applied.
+- `coexpnetviz.log`: Further details of the run: coexpnetviz version, warnings, ...
 
 
 ### Input formats
@@ -158,12 +141,19 @@ coexpnetviz.log
 Examples:
 
 ```
-PGSC0003DMP400054926 PGSC0003DMP400018704 Solyc03g097500 Solyc02g014730 Solyc04g011600 AT5G41040 AT5G23190 AT3G11430
+PGSC0003DMP400054926;Solyc02g014730;Solyc04g011600;AT5G41040;AT5G23190;AT3G11430
 ```
 
 ```
-PGSC0003DMP400054926	PGSC0003DMP400018704 Solyc03g097500 Solyc02g014730 Solyc04g011600 AT5G41040 AT5G23190 AT3G11430
+PGSC0003DMP400054926
+Solyc02g014730
+Solyc04g011600
+AT5G41040
+AT5G23190
+AT3G11430
 ```
+
+or even (you probably shouldn't rely on this too much):
 
 ```
 PGSC0003DMP400054926

@@ -6,7 +6,7 @@ what it is and how to use it.
 - [GitHub]
 
 ### Development docs
-Some tips for developing the app.
+Docs for developing the app itself, users may ignore this.
 
 Links:
 
@@ -15,8 +15,9 @@ Links:
 - [Cytoscape javadoc]
 - [Cytoscape source code on GitHub][Cytoscape source] in case the docs weren't clear.
 
-Setting up your dev env mostly boils down to following the
-[Cytoscape app ladder]. Here's a short version for Debian:
+#### Setting up a dev env
+Mostly boils down to following the [Cytoscape app ladder]. Here's a short
+version for Debian:
 
 - `apt install openjdk-...-jdk`, peek at the cytoscape install step to find out
   which Java version Cytoscape requires.
@@ -36,10 +37,6 @@ Setting up your dev env mostly boils down to following the
   into workspace. As root dir pick the parent dir of the cloned repo. Select
   CoExpNetViz and finish.
 
-Versioning: set the version in pom.xml, append `-SNAPSHOT` to make it a dev
-version. SNAPSHOT is commonly understood by tools and they may refresh
-accordingly when they notice a new snapshot is pushed.
-
 To build the jar, run `mvn package`. The jar is in the target dir. To install
 it, add a symlink in `~/CytoscapeConfiguration/3/apps/installed` to the created
 jar.
@@ -56,6 +53,14 @@ Debugging:
   stdout/err. Not sure where INFO and DEBUG go to, they do not appear in the
   log file.
 
+
+#### Releasing a new version
+- Bump the version in pom.xml, be sure to remove `-SNAPSHOT`. SNAPSHOT is
+  commonly understood by tools to be a dev version and they may refresh
+  accordingly when they notice a new snapshot is pushed.
+- Build the jar
+- Upload it to the [Cytoscape app page]
+- Bump to the next patch version and append `-SNAPSHOT` again.
 
 
 [Cytoscape app page]: https://apps.cytoscape.org/apps/coexpnetviz

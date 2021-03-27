@@ -100,11 +100,6 @@ public class CyActivator extends AbstractCyActivator {
 		Properties props = new Properties();
 		props.setProperty(TITLE, Context.APP_NAME);
 		
-		// and a command
-		props.setProperty(COMMAND_NAMESPACE, Context.NAMESPACE);
-		props.setProperty(COMMAND, "apply_layout");
-		props.setProperty(COMMAND_DESCRIPTION, "Apply CoExpNetViz layout to a CoExpNetViz network");
-		
 		registerService(bundleContext, layoutAlgorithm, CyLayoutAlgorithm.class, props);
 	}
 }

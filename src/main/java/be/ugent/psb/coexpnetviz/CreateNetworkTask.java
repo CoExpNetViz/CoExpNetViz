@@ -108,17 +108,18 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	@Tunable(description = "Baits source", tooltip = "Provide baits inline in a text field or use a baits file.", longDescription="Whether you'll provide baits inline with baitGroupText or as a baitGroupFile")
 	public ListSingleSelection<String> baitsSource = new ListSingleSelection<>("Inline", "File");
 
-	private static final String baitGroupTextHelp = "Bait genes separated by ',' or ';'. E.g. AT2G03340;AT2G03341;AT2G03342";
+	private static final String commonBaitsHelp = "Please provide at least 1 bait from each expression matrix and at least 2 baits in total.";
+	private static final String baitGroupTextHelp = "Bait genes separated by ',' or ';'. " + commonBaitsHelp + " E.g. AT2G03340;AT2G03341;AT2G03342";
 	
 	@Tunable(description = "Bait names", dependsOn = "baitsSource=Inline", tooltip = baitGroupTextHelp, longDescription = baitGroupTextHelp)
 	public String baitsText;
 	
-	private static final String baitGroupFileHelp = "Path to file containing bait genes";  // TODO which format?
+	private static final String baitGroupFileHelp = "Path to file containing bait genes separated by ';', whitespace or ','." + commonBaitsHelp;
 
 	@Tunable(description = "Baits file", dependsOn = "baitsSource=File", params="input=true", tooltip = baitGroupFileHelp, longDescription = baitGroupFileHelp)
 	public File baitsFile;
 
-	private static final String expressionMatricesHelp = "One or more matrix files separated by ',' or ';'. E.g. /home/user/matrix.txt;/data/matrix2.txt on a unix-like OS or C:\\matrix.txt on Windows.";
+	private static final String expressionMatricesHelp = "One expression matrix file per species separated by ',' or ';'. E.g. /home/user/matrix.txt;/data/matrix2.txt on a unix-like OS or C:\\matrix.txt on Windows.";
 	
 	/* List<T> is not supported by Tunable; ListMultiSelection is for selecting
 	 * multiple values from a list, not building a list of values. Cytoscape google
@@ -161,7 +162,6 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		super();
 		this.context = context;
 		baitsSource.setSelectedValue("File");
-		
 	}
 	
 	@ProvidesTitle

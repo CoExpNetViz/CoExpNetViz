@@ -144,7 +144,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	@Tunable(description = "Upper percentile", tooltip = percentilesHelp, longDescription = percentilesHelp)
 	public BoundedDouble upperPercentile = new BoundedDouble(0.0, 95.0, 100.0, false, false);
 
-	private static final String outputDirHelp = "Directory in which to write additional info which does not fit in Cytoscape, e.g. correlation matrices and the log file.";
+	private static final String outputDirHelp = "Directory in which to write additional info which does not fit in Cytoscape, e.g. correlation matrices and the log file. Defaults to the location of the cytoscape session + the network name + the current date and time.";
 	
 	private File outputDir;
 
@@ -304,6 +304,20 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	
 	private void cleanOutputDir() throws InputError {
 		if (outputDir == null) {
+			/* Try to provide default value for CLI
+			 * 
+			 * A CLI user does not get to see the default as this code only runs after
+			 * they run the command, not when they ask for help on the command. But at
+			 * least this way we do provide a default on CLI as well.
+			 * 
+			 * The CLI never calls getOutputDir or setOutputDir when the outputDir arg
+			 * is not provided. When the arg isn't provided, it is null, so try to set
+			 * a default value for it. It can also be null when GUI, but in that case
+			 * getOutputDir will just return null again, so this is a noop in GUI context.
+			 */
+			outputDir = getOutputDir();
+		}
+		if (outputDir == null) {
 			throw new InputError("Output directory is required.");
 		} else if (outputDir.exists()) {
 			if (!outputDir.isDirectory()) {
@@ -311,6 +325,9 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			} else if (!outputDir.canWrite()) {
 				throw new InputError("Output directory is not writeable.");
 			}
+		} else {
+			// Backend expects the dir to exist
+			outputDir.mkdirs();
 		}
 		outputDir = outputDir.getAbsoluteFile();
 	}

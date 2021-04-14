@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
@@ -73,9 +74,16 @@ public class CyActivator extends AbstractCyActivator {
 			bundleContext.getBundle().getVersion()
     	);
     	
-    	registerCreateNetwork(bundleContext);
+    	registerPropsReader(bundleContext);
         registerLayoutAlgorithm(bundleContext);
+        registerCreateNetwork(bundleContext);
     }
+
+	private void registerPropsReader(BundleContext bundleContext) {
+		Properties props = new Properties();
+		props.setProperty("cyPropertyName", PropsReader.PROPERTY_NAME);
+		registerService(bundleContext, context.getPropsReader(), CyProperty.class, props);
+	}
 
 	private void registerCreateNetwork(BundleContext bundleContext) {
 		// Add a menu item for the create-network task
@@ -93,13 +101,10 @@ public class CyActivator extends AbstractCyActivator {
 	}
 	
 	private void registerLayoutAlgorithm(BundleContext bundleContext) {
-		LayoutAlgorithm layoutAlgorithm = new LayoutAlgorithm(context.getUndoSupport());
-		context.setLayoutAlgorithm(layoutAlgorithm);
-		
 		// Add menu item
 		Properties props = new Properties();
 		props.setProperty(TITLE, Context.APP_NAME);
 		
-		registerService(bundleContext, layoutAlgorithm, CyLayoutAlgorithm.class, props);
+		registerService(bundleContext, context.getLayoutAlgorithm(), CyLayoutAlgorithm.class, props);
 	}
 }

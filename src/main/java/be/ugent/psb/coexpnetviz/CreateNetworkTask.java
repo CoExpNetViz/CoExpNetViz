@@ -445,7 +445,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		);
 		TextReaderThread stdoutThread = new TextReaderThread("stdout from conda");
 		try {
-			new CondaCall(monitor, args, stdoutThread).run();
+			new CondaCall(context, monitor, args, stdoutThread).run();
 		} catch (UserException e) {
 			if (!update) {
 				throw e;
@@ -462,7 +462,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	
 	private boolean condaEnvExists(TaskMonitor monitor) throws UserException, InterruptedException {
 		JsonParserThread stdoutThread = new JsonParserThread("json env list from conda", context.getJsonMapper());
-		new CondaCall(monitor, "env list --json", stdoutThread).run();
+		new CondaCall(context, monitor, "env list --json", stdoutThread).run();
 		JsonNode output = stdoutThread.getOutput();
 		JsonNode envs = output.get("envs");
 		assert envs.isArray();

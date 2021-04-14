@@ -22,6 +22,13 @@
 
 package be.ugent.psb.coexpnetviz;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CySessionManager;
@@ -53,6 +60,7 @@ public class Context {
 	private CyNetworkFactory networkFactory;
 	private CyNetworkViewManager networkViewManager;
 	private CyNetworkViewFactory networkViewFactory;
+	private PropsReader propsReader;
 	private CySessionManager sessionManager;
 	private UndoSupport undoSupport;
 	private VisualStyleFactory visualStyleFactory;
@@ -86,6 +94,9 @@ public class Context {
 		this.passthroughMappingFactory = passthroughMappingFactory;
 		APP_VERSION = version.toString();
 		
+		this.propsReader = new PropsReader();
+		layoutAlgorithm = new LayoutAlgorithm(undoSupport);
+		
 		jsonMapper = JsonMapper
 				.builder()
 				// Parse NaN, Inf, ... as floats
@@ -107,6 +118,10 @@ public class Context {
 
 	public CyNetworkViewFactory getNetworkViewFactory() {
 		return networkViewFactory;
+	}
+	
+	public PropsReader getPropsReader() {
+		return propsReader;
 	}
 
 	public CySessionManager getSessionManager() {
@@ -141,10 +156,6 @@ public class Context {
 		return layoutAlgorithm;
 	}
 	
-	public void setLayoutAlgorithm(LayoutAlgorithm layoutAlgorithm) {
-		this.layoutAlgorithm = layoutAlgorithm;
-	}
-
 	public ObjectMapper getJsonMapper() {
 		return jsonMapper;
 	}
@@ -155,6 +166,94 @@ public class Context {
 	
 	public void setCondaUpToDate() {
 		condaUpToDate = true;
+	}
+	
+	/*
+	 * Path to conda executable, can be relative in which case it will be searched for
+	 * on the system PATH
+	 */
+	public Path getCondaPath() throws UserException {
+		String condaPathString = getPropsReader().getProperties().getProperty(NAMESPACE + ".condaPath");
+		Path condaPath = Paths.get(condaPathString);
+		
+		// Windows uses conda.bat, linux uses conda; added some more to be on the safe side.
+		String[] extensions = new String[] {"", "bat", "exe", "sh"};
+		
+		if (!condaPath.isAbsolute()) {
+			// Find conda on the system path so we can make sure it exists, so we can show a friendly
+			// error message later if we do not find conda anywhere before trying to run it.
+			for (String extension : extensions) {
+				condaPath = findExecutableOnSystemPath(condaPathString, extension);
+				if (condaPath != null) {
+					return condaPath;
+				}
+			}
+			
+			// Try the default conda install locations if the user did not set a different value for the
+			// condaPath property yet
+			boolean isDefault = condaPathString == "conda";
+			if (isDefault) {
+				Path homeDir = SystemUtils.getUserHome().toPath();
+				String[] condaDirNames = new String[] {"Anaconda3", "Miniconda3"};
+				for (String condaDirName : condaDirNames) {
+					if (!SystemUtils.IS_OS_WINDOWS) {
+						condaDirName = condaDirName.toLowerCase();
+					}
+					Path condaBin = homeDir.resolve(condaDirName).resolve("condabin");
+					
+					for (String extension : extensions) {
+						if (extension != "") {
+							extension = "." + extension;
+						}
+						condaPath = condaBin.resolve("conda" + extension);
+						if (Files.isExecutable(condaPath)) {
+							return condaPath;
+						}
+					}
+				}
+			}
+		}
+		
+		if (condaPath == null || !Files.isExecutable(condaPath)) {
+			// The lack of exec permission is so unlikely that I lump it together in the same error message 
+			throw new UserException(
+				"Could not find conda (or, unlikely, you do not have permission to execute it). " +
+				"Please set the coexpnetviz.condaPath property to the path of your conda " +
+				"executable. The property can be found in the Cytoscape menu: Edit > Preferences > Properties; " +
+				"select coexpnetviz in the dropdown box. To find the path on Windows, search for " +
+				"'Anaconda prompt' in the start menu; in the prompt, type 'where conda' (without quotes); " +
+				"probably either of those paths will do. To find the path on linux/mac you could try " +
+				"running 'which conda' or `whereis conda` in a terminal."
+			);
+		}
+		
+		return condaPath;
+	}
+
+	private Path findExecutableOnSystemPath(String executable, String extension) {
+		if (extension == "") {
+			return findExecutableOnSystemPath(executable);
+		}
+		
+		// Try with a different extension
+		if (FilenameUtils.isExtension(executable, extension)) {
+			return null;
+		}
+		
+		String basePath = FilenameUtils.removeExtension(executable);
+		return findExecutableOnSystemPath(basePath + "." + extension);
+	}
+	
+	public Path findExecutableOnSystemPath(String executable) {
+		for (String dir : System.getenv("PATH").split(File.pathSeparator)) {
+	    	Path path = Paths.get(dir, executable);
+	        if (Files.isExecutable(path)) {
+	        	return path.toAbsolutePath();
+	        }
+	    }
+	    
+	    // Did not find it
+		return null;
 	}
 	
 	public static void showTaskMessage(TaskMonitor monitor, Level level, String msg) {

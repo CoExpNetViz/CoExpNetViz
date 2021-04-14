@@ -34,19 +34,22 @@ public class CondaCall {
 	public static final int BACKEND_MAJOR_VERSION = 5;
 	public static final String CONDA_ENV = Context.NAMESPACE + BACKEND_MAJOR_VERSION;
 	
+	protected Context context;
 	private TaskMonitor monitor;
 	private String condaArgs;
 	private AbstractReaderThread stdoutThread;
 
-	public CondaCall(TaskMonitor monitor, String condaArgs, AbstractReaderThread stdoutThread) {
+	public CondaCall(Context context, TaskMonitor monitor, String condaArgs, AbstractReaderThread stdoutThread) {
 		super();
+		this.context = context;
 		this.monitor = monitor;
 		this.condaArgs = condaArgs;
 		this.stdoutThread = stdoutThread;
 	}
 	
-	protected CondaCall(TaskMonitor monitor, String condaArgs) {
+	protected CondaCall(Context context, TaskMonitor monitor, String condaArgs) {
 		super();
+		this.context = context;
 		this.monitor = monitor;
 		this.condaArgs = condaArgs;
 		this.stdoutThread = null;
@@ -58,7 +61,7 @@ public class CondaCall {
 
 	public void run() throws UserException, InterruptedException {
 		// Conda does not pass on stdin to coexpnetviz unless --no-capture-output is specified.
-		final String command = "conda " + condaArgs;
+		final String command = context.getCondaPath() + " " + condaArgs;
 		showMessage(Level.INFO, "Executing: " + command);
 		
 		Process process = null;

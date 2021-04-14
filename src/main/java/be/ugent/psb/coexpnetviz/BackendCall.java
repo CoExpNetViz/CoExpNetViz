@@ -38,15 +38,13 @@ public class BackendCall extends CondaCall {
 	
 	private static String CONDA_ARGS = String.format("run -n %s --no-capture-output coexpnetviz", CondaCall.CONDA_ENV);
 	
-	private Context context;
 	private File outputDir;
 	private ObjectNode jsonInput;
 	private JsonParserThread stdoutThread;
 	
 	public BackendCall(TaskMonitor monitor, Context context, File outputDir, ObjectNode jsonInput) {
-		super(monitor, CONDA_ARGS);
+		super(context, monitor, CONDA_ARGS);
 		stdoutThread = new JsonParserThread("json response from backend", context.getJsonMapper());
-		this.context = context;
 		this.outputDir = outputDir;
 		this.jsonInput = jsonInput;
 	}

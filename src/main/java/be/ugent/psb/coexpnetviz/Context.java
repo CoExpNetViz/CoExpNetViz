@@ -191,14 +191,14 @@ public class Context {
 			
 			// Try the default conda install locations if the user did not set a different value for the
 			// condaPath property yet
-			boolean isDefault = condaPathString == "conda";
+			boolean isDefault = condaPathString.equals("conda");
 			if (isDefault) {
 				Path homeDir = SystemUtils.getUserHome().toPath();
 				String[] condaDirNames = new String[] {"anaconda3", "miniconda3"};
 				for (String condaDirName : condaDirNames) {
 					Path condaBin = homeDir.resolve(condaDirName).resolve("condabin");
 					for (String extension : extensions) {
-						if (extension != "") {
+						if (!extension.isEmpty()) {
 							extension = "." + extension;
 						}
 						condaPath = condaBin.resolve("conda" + extension);
@@ -227,7 +227,7 @@ public class Context {
 	}
 
 	private Path findExecutableOnSystemPath(String executable, String extension) {
-		if (extension == "") {
+		if (extension.isEmpty()) {
 			return findExecutableOnSystemPath(executable);
 		}
 		

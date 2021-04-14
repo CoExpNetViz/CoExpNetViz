@@ -188,7 +188,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		}
 		
 		File dir = new File(sessionPath).getAbsoluteFile().getParentFile();
-		if (networkName != null && networkName != "") {
+		if (networkName != null && !networkName.isEmpty()) {
 			String name = networkName + "_" + formatCurrentDateTime();
 			dir = dir.toPath().resolve(name).toFile();
 		}
@@ -210,7 +210,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		try {
 			cleanNetworkName();
 			
-			if (baitsSource.getSelectedValue() == "Inline") {
+			if (baitsSource.getSelectedValue().equals("Inline")) {
 				cleanBaits();
 			} else {
 				baitsFile = cleanInputFile("Baits file", baitsFile, true);
@@ -484,7 +484,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	private ObjectNode createJsonInput() {
 		ObjectNode root = context.getJsonMapper().createObjectNode();
 		
-		if (baitsSource.getSelectedValue() == "Inline") {
+		if (baitsSource.getSelectedValue().equals("Inline")) {
 			ArrayNode baitsArray = root.putArray("baits");
 			for (String bait : cleanedBaits) {
 				baitsArray.add(bait);

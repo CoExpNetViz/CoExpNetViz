@@ -194,13 +194,9 @@ public class Context {
 			boolean isDefault = condaPathString == "conda";
 			if (isDefault) {
 				Path homeDir = SystemUtils.getUserHome().toPath();
-				String[] condaDirNames = new String[] {"Anaconda3", "Miniconda3"};
+				String[] condaDirNames = new String[] {"anaconda3", "miniconda3"};
 				for (String condaDirName : condaDirNames) {
-					if (!SystemUtils.IS_OS_WINDOWS) {
-						condaDirName = condaDirName.toLowerCase();
-					}
 					Path condaBin = homeDir.resolve(condaDirName).resolve("condabin");
-					
 					for (String extension : extensions) {
 						if (extension != "") {
 							extension = "." + extension;

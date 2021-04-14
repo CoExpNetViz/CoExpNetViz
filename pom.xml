@@ -95,7 +95,6 @@
                             <verbose>true</verbose>
                             <roots>
                                 <root>src/main/java</root>
-                                <root>src/test</root>
                             </roots>
                         </configuration>
                         <phase>process-sources</phase>
@@ -124,8 +123,8 @@
                         <!-- Export nothing, keep everything private -->
                         <Export-Package></Export-Package>
                         
-                        <!-- Include some dependencies in the bundle which aren't provided by cytoscape. Also include test dependencies because we provide those in our dev env. -->
-                        <Embed-Dependency>*;scope=!provided|test;groupId=!org.cytoscape</Embed-Dependency>
+                        <!-- Include some dependencies in the bundle which aren't provided by cytoscape. -->
+                        <Embed-Dependency>*;scope=!provided;groupId=!org.cytoscape</Embed-Dependency>
                         
                         <!-- Embed deps of deps too -->
                         <Embed-Transitive>true</Embed-Transitive>

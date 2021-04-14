@@ -99,15 +99,16 @@ Nodes have the following attributes:
   partition. Other nodes are partitioned by the subset of baits they correlate
   with. I.e. nodes of the same partition correlate to the same baits.
 
-Edges between a bait and non-bait node denotes the bait is sufficiently
+Edges between a bait node and another node denotes the bait is sufficiently
 (anti-)correlated to the gene expression of the gene(s) represented by the
-non-bait node. A green edge denotes correlation, a red edge denotes
-anti-correlation. The darker the color, the stronger the correlation.
-Edges have a `max_correlation` attribute, which is the strongest Pearson
-correlation of the bait and each gene represented by the non-bait node (i.e.
-excluding correlation values that were cut off by the tresholds).
+other node. A green edge denotes correlation, a red edge denotes
+anti-correlation. The darker the color, the stronger the correlation. Edges
+have a `max_correlation` attribute, which is the strongest Pearson correlation
+of the bait and each gene represented by the non-bait node (i.e. excluding
+correlation values that were cut off by the tresholds).
 
-Edges between baits denote homology, i.e. they are of the same family.
+Dotted edges between baits denote homology, i.e. they are of the same family.
+
 There are no self (`x-x`), synonymous (`x-y` and `y-x`) or duplicate
 (`x-y` and `x-y`) edges.
 
@@ -236,9 +237,10 @@ and non-bait genes not appearing in any family become gene nodes. Gene and
 family nodes which aren't co-expressed (correlated or anti-correlated) with any
 bait are dropped from the network.
 
-Next, edges are added between bait and gene nodes whose genes are
-co-expressed, as well as between bait and family nodes where at least one of
-the family's genes is co-expressed with the corresponding bait.
+Next, bait-bait and bait-gene correlation edges are added between bait/gene
+nodes whose genes are co-expressed, as well as between bait and family nodes
+where at least one of the family's genes is co-expressed with the corresponding
+bait. There are no edges between gene nodes.
 
 Then, gene and family nodes are grouped into partitions in such a way that all
 nodes in a partition are co-expressed with the same set of baits.

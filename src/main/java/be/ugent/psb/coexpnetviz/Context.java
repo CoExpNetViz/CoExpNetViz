@@ -72,7 +72,7 @@ public class Context {
 	private LayoutAlgorithm layoutAlgorithm;
 	
 	private ObjectMapper jsonMapper;
-	private boolean condaUpToDate = false;
+	private boolean condaEnvUpToDate = false;
 
 	public Context(CyNetworkManager networkManager, CyNetworkFactory networkFactory,
 			CyNetworkViewManager networkViewManager, CyNetworkViewFactory networkViewFactory,
@@ -160,12 +160,12 @@ public class Context {
 		return jsonMapper;
 	}
 
-	public boolean isCondaUpToDate() {
-		return condaUpToDate;
+	public boolean isCondaEnvUpToDate() {
+		return condaEnvUpToDate;
 	}
 	
-	public void setCondaUpToDate() {
-		condaUpToDate = true;
+	public void setCondaEnvUpToDate() {
+		condaEnvUpToDate = true;
 	}
 	
 	/*

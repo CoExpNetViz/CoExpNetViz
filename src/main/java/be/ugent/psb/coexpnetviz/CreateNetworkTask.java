@@ -30,11 +30,14 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -408,6 +411,9 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	}
 
 	private JsonNode callBackend(TaskMonitor monitor) throws UserException, InterruptedException {
+		monitor.setStatusMessage("Checking conda --version");
+		checkCondaVersion(monitor);
+
 		monitor.setStatusMessage("Updating '" + CondaCall.CONDA_ENV + "' conda env");
 		updateCondaEnv(monitor);
 		
@@ -417,11 +423,42 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		return backendCall.getResponse();
 	}
 	
+	private void checkCondaVersion(TaskMonitor monitor) throws UserException, InterruptedException {
+		int[] condaVersion = getCondaVersion(monitor);
+		int[] minVersion = {4, 9, 0};
+		if (Arrays.compare(condaVersion, minVersion) < 0) {
+			throw new UserException("Please update conda to at least v4.9.0. E.g. execute `conda install conda` (in a conda shell, without the quotes).");
+		}
+	}
+
+	private int[] getCondaVersion(TaskMonitor monitor) throws UserException, InterruptedException {
+		TextReaderThread stdoutThread = new TextReaderThread("stdout from conda");
+		String args = "--version";
+		new CondaCall(context, monitor, args, stdoutThread).run();
+		String output = stdoutThread.getOutput();
+		return parseCondaVersionOutput(monitor, output);
+	}
+
+	private int[] parseCondaVersionOutput(TaskMonitor monitor, String output) throws UserException {
+		Pattern pattern = Pattern.compile("conda ([0-9]+).([0-9]+).([0-9]+)");
+		Matcher matcher = pattern.matcher(output);
+		if (!matcher.find()) {
+			monitor.showMessage(Level.ERROR, "Could not parse conda --version output: " + output);
+			throw new UserException("Failed to parse conda --version output, please send a bug report.");
+		}
+		int[] versionParts = {
+			Integer.parseInt(matcher.group(1)),
+			Integer.parseInt(matcher.group(2)),
+			Integer.parseInt(matcher.group(3))
+		};
+		return versionParts;
+	}
+
 	private void updateCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
 		boolean update = condaEnvExists(monitor);
 		String args;
 		if (update) {
-			if (context.isCondaUpToDate()) {
+			if (context.isCondaEnvUpToDate()) {
 				String msg = "Conda update skipped. Already updated once since cytoscape started (or since app was restarted).";
 				monitor.showMessage(Level.INFO, msg);
 				return;
@@ -457,7 +494,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			Context.showTaskMessage(monitor, Level.WARN, e.getMessage());
 		}
 		
-		context.setCondaUpToDate();
+		context.setCondaEnvUpToDate();
 	}
 	
 	private boolean condaEnvExists(TaskMonitor monitor) throws UserException, InterruptedException {

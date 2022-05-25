@@ -31,7 +31,7 @@ import org.cytoscape.work.TaskMonitor.Level;
 
 public class CondaCall {
 
-	public static final int BACKEND_MAJOR_VERSION = 5;
+	public static final int BACKEND_MAJOR_VERSION = 6;
 	public static final String CONDA_ENV = Context.NAMESPACE + BACKEND_MAJOR_VERSION;
 	
 	protected Context context;

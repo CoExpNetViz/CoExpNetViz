@@ -25,7 +25,11 @@ package be.ugent.psb.coexpnetviz;
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -421,9 +425,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		updateCondaEnv(monitor);
 		
 		monitor.setStatusMessage("Running python backend");
-		BackendCall backendCall = new BackendCall(monitor, context, outputDir, createJsonInput());
-		backendCall.run();
-		return backendCall.getResponse();
+		return condaCallBackend(monitor);
 	}
 	
 	private void checkCondaVersion(TaskMonitor monitor) throws UserException, InterruptedException {
@@ -460,7 +462,11 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	private void exportCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
 		VoidReaderThread stdoutThread = new VoidReaderThread("stdout from conda");
 		String envFile = outputDir.toPath().resolve("conda_env.yaml").toString();
-		String args = "env export -f " + envFile;
+		String args = String.format(
+			"env export -n %s -f %s",
+			CondaCall.CONDA_ENV,
+			envFile
+		);
 		new CondaCall(context, monitor, args, stdoutThread).run();
 	}
 
@@ -525,6 +531,26 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		return false;
 	}
 	
+	private JsonNode condaCallBackend(TaskMonitor monitor) throws UserException, InterruptedException {
+		File jsonInputFile = outputDir.toPath().resolve("input.json").toFile();
+		writeJsonInput(createJsonInput(), jsonInputFile);
+		JsonParserThread stdoutThread = new JsonParserThread("json response from backend", context.getJsonMapper());
+		String args = String.format(
+			"run -n %s --no-capture-output coexpnetviz %s",
+			CondaCall.CONDA_ENV,
+			jsonInputFile.toString()
+		);
+		new CondaCall(context, monitor, args, stdoutThread).run();
+		
+		// Mention the log file, if any
+		Path logFile = outputDir.toPath().resolve("coexpnetviz.log");
+		if (Files.exists(logFile)) {
+			Context.showTaskMessage(monitor, Level.INFO, "Backend log file: " + logFile);
+		}
+		
+		return stdoutThread.getOutput();
+	}
+	
 	/*
 	 * Formulate json for a call to coexpnetviz-python
 	 */
@@ -554,6 +580,17 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		root.put("output_dir", outputDir.toString());
 		
 		return root;
+	}
+	
+	private void writeJsonInput(ObjectNode json, File jsonFile) throws UserException {
+		try {
+			FileWriter writer = new FileWriter(jsonFile);
+			context.getJsonMapper().writeValue(writer, json);
+			writer.close();
+		} catch (IOException e) {
+			String msg = String.format("Failed to write json input to %s: %s", jsonFile.toString(), e.toString());
+			throw new UserException(msg, e);
+		}
 	}
 	
 	private void createNetwork() {

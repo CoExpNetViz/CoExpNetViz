@@ -413,6 +413,9 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	private JsonNode callBackend(TaskMonitor monitor) throws UserException, InterruptedException {
 		monitor.setStatusMessage("Checking conda --version");
 		checkCondaVersion(monitor);
+		
+		monitor.setStatusMessage("Exporting conda env");
+		exportCondaEnv(monitor);
 
 		monitor.setStatusMessage("Updating '" + CondaCall.CONDA_ENV + "' conda env");
 		updateCondaEnv(monitor);
@@ -452,6 +455,13 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			Integer.parseInt(matcher.group(3))
 		};
 		return versionParts;
+	}
+	
+	private void exportCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
+		VoidReaderThread stdoutThread = new VoidReaderThread("stdout from conda");
+		String envFile = outputDir.toPath().resolve("conda_env.yaml").toString();
+		String args = "env export -f " + envFile;
+		new CondaCall(context, monitor, args, stdoutThread).run();
 	}
 
 	private void updateCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {

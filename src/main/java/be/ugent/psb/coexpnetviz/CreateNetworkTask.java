@@ -126,13 +126,29 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	public File baitsFile;
 
 	private static final String expressionMatricesHelp = "One expression matrix file per species separated by ',' or ';'. E.g. /home/user/matrix.txt;/data/matrix2.txt on a unix-like OS or C:\\matrix.txt on Windows.";
+	private static final String expressionMatrixHelp = "Path to expression matrix file of a species.";
+	
+	@Tunable(description = "Expression matrix 1", params="input=true", tooltip = expressionMatrixHelp, longDescription = expressionMatrixHelp)
+	public File expressionMatrix1;
+	
+	@Tunable(description = "Expression matrix 2", params="input=true", tooltip = expressionMatrixHelp, longDescription = expressionMatrixHelp)
+	public File expressionMatrix2;
+	
+	@Tunable(description = "Expression matrix 3", params="input=true", tooltip = expressionMatrixHelp, longDescription = expressionMatrixHelp)
+	public File expressionMatrix3;
+	
+	@Tunable(description = "Expression matrix 4", params="input=true", tooltip = expressionMatrixHelp, longDescription = expressionMatrixHelp)
+	public File expressionMatrix4;
+	
+	@Tunable(description = "Expression matrix 5", params="input=true", tooltip = expressionMatrixHelp, longDescription = expressionMatrixHelp)
+	public File expressionMatrix5;
 	
 	/* List<T> is not supported by Tunable; ListMultiSelection is for selecting
 	 * multiple values from a list, not building a list of values. Cytoscape google
 	 * groups did not mention a way of doing List<File>; you could implement your
 	 * own GUITunableHandler and ..Factory for it or maybe some other app already
-	 * offers one, seems quite doable but this will do. Cytoscape's FileHandler
-	 * implementation is a good start probably.
+	 * offers one, seems quite doable but this and the above 5 fields will do.
+	 * Cytoscape's FileHandler implementation is a good start probably.
 	 */
 	@Tunable(description = "Expression matrices", tooltip = expressionMatricesHelp, longDescription = expressionMatricesHelp)
 	public String expressionMatrices;
@@ -271,8 +287,24 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	}
 	
 	private void cleanExpressionMatrices() throws InputError {
-		String[] paths = expressionMatrices.split("[,;]");
 		expressionMatrixFiles = new HashSet<File>();
+		
+		// Add files from single value fields
+		File[] singleFieldFiles = {
+			expressionMatrix1,
+			expressionMatrix2,
+			expressionMatrix3,
+			expressionMatrix4,
+			expressionMatrix5
+		};
+		for (File file : singleFieldFiles) {
+			if (file != null) {
+				expressionMatrixFiles.add(cleanInputFile(file.toString(), file, true));
+			}
+		}
+		
+		// Add from multivalue field
+		String[] paths = expressionMatrices.split("[,;]");
 		for (String path : paths) {
 			path = path.trim();
 			if (path.isEmpty()) {
@@ -296,7 +328,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 				throw new InputError(name + " is required.");
 			}
 			else {
-				return file;
+				return null;
 			}
 		} else if (!file.exists()) {
 			throw new InputError(name + " does not exist.");

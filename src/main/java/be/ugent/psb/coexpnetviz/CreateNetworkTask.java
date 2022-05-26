@@ -27,7 +27,6 @@ import java.awt.Paint;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -418,6 +417,9 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		monitor.setStatusMessage("Checking conda --version");
 		checkCondaVersion(monitor);
 		
+		monitor.setStatusMessage("Writing system info");
+		writeSystemInfo(monitor);
+		
 		monitor.setStatusMessage("Exporting conda env");
 		exportCondaEnv(monitor);
 
@@ -457,6 +459,28 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			Integer.parseInt(matcher.group(3))
 		};
 		return versionParts;
+	}
+	
+	private void writeSystemInfo(TaskMonitor monitor) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(outputDir.toPath().resolve("system_info.txt").toFile());
+			writer.write(String.format(
+				"os.name: %s\nos.version: %s\njava.version: %s\ncytoscape version: %s\ncoexpnetviz app version: %s\n",
+				System.getProperty("os.name"),
+				System.getProperty("os.version"),
+				System.getProperty("java.version"),
+				context.getCyVersion().getVersion(),
+				context.APP_VERSION
+			));
+			writer.close();
+		} catch (IOException e) {
+			// System info is only used for bug reports, ignore if it fails to write the file
+			monitor.showMessage(
+				Level.WARN,
+				"Failed to write system info to file, but you don't need it unless you are reporting a bug: " + e.toString()
+			);
+		}
 	}
 	
 	private void exportCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {

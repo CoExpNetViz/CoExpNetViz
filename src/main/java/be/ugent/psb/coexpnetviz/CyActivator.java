@@ -30,6 +30,7 @@ import static org.cytoscape.work.ServiceProperties.TITLE;
 
 import java.util.Properties;
 
+import org.cytoscape.application.CyVersion;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.property.CyProperty;
@@ -71,7 +72,8 @@ public class CyActivator extends AbstractCyActivator {
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=continuous)"),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=discrete)"),
 			getService(bundleContext, VisualMappingFunctionFactory.class, "(mapping.type=passthrough)"),
-			bundleContext.getBundle().getVersion()
+			bundleContext.getBundle().getVersion(),
+			getService(bundleContext, CyVersion.class)
     	);
     	
     	registerPropsReader(bundleContext);

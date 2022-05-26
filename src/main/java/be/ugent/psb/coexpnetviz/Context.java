@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.cytoscape.application.CyVersion;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CySessionManager;
@@ -68,6 +69,7 @@ public class Context {
 	private VisualMappingFunctionFactory continuousMappingFactory;
 	private VisualMappingFunctionFactory discreteMappingFactory;
 	private VisualMappingFunctionFactory passthroughMappingFactory;
+	private CyVersion cyVersion;
 	
 	private LayoutAlgorithm layoutAlgorithm;
 	
@@ -79,7 +81,7 @@ public class Context {
 			CySessionManager sessionManager, UndoSupport undoSupport, VisualStyleFactory visualStyleFactory,
 			VisualMappingManager visualMappingManager, VisualMappingFunctionFactory continuousMappingFactory,
 			VisualMappingFunctionFactory discreteMappingFactory,
-			VisualMappingFunctionFactory passthroughMappingFactory, Version version) {
+			VisualMappingFunctionFactory passthroughMappingFactory, Version version, CyVersion cyVersion) {
 		super();
 		this.networkManager = networkManager;
 		this.networkFactory = networkFactory;
@@ -92,6 +94,7 @@ public class Context {
 		this.continuousMappingFactory = continuousMappingFactory;
 		this.discreteMappingFactory = discreteMappingFactory;
 		this.passthroughMappingFactory = passthroughMappingFactory;
+		this.cyVersion = cyVersion;
 		APP_VERSION = version.toString();
 		
 		this.propsReader = new PropsReader();
@@ -168,6 +171,10 @@ public class Context {
 		condaEnvUpToDate = true;
 	}
 	
+	public CyVersion getCyVersion() {
+		return cyVersion;
+	}
+
 	/*
 	 * Path to conda executable, can be relative in which case it will be searched for
 	 * on the system PATH

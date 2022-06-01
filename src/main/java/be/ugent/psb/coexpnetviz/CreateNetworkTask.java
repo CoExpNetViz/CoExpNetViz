@@ -472,7 +472,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 
 	private int[] getCondaVersion(TaskMonitor monitor) throws UserException, InterruptedException {
 		TextReaderThread stdoutThread = new TextReaderThread("stdout from conda");
-		String args = "--version";
+		String[] args = {"--version"};
 		new CondaCall(context, monitor, args, stdoutThread).run();
 		String output = stdoutThread.getOutput();
 		return parseCondaVersionOutput(monitor, output);
@@ -518,17 +518,20 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	private void exportCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
 		VoidReaderThread stdoutThread = new VoidReaderThread("stdout from conda");
 		String envFile = outputDir.toPath().resolve("conda_env.yaml").toString();
-		String args = String.format(
-			"env export -n %s -f %s",
+		String[] args = {
+			"env",
+			"export",
+			"-n",
 			CondaCall.CONDA_ENV,
+			"-f",
 			envFile
-		);
+		};
 		new CondaCall(context, monitor, args, stdoutThread).run();
 	}
 
 	private void updateCondaEnv(TaskMonitor monitor) throws UserException, InterruptedException {
 		boolean update = condaEnvExists(monitor);
-		String args;
+		List<String> args = new ArrayList<String>();
 		if (update) {
 			if (context.isCondaEnvUpToDate()) {
 				String msg = "Conda update skipped. Already updated once since cytoscape started (or since app was restarted).";
@@ -542,16 +545,23 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			 * support `coexpnetviz==...` and so won't update it too far, but does update
 			 * everything in the env including coexpnetviz itself.
 			 */
-			args = "install --update-all";
+			args.add("install");
+			args.add("--update-all");
 		} else {
-			args = "create";
+			args.add("create");
 		}
 			
-		args += String.format(
-			" -n %s --channel anaconda --channel timdiels --channel coexpnetviz python==3.8.* coexpnetviz==%d.*",
-			CondaCall.CONDA_ENV,
-			CondaCall.BACKEND_MAJOR_VERSION
-		);
+		args.add("-n");
+		args.add(CondaCall.CONDA_ENV);
+		args.add("--channel");
+		args.add("anaconda");
+		args.add("--channel");
+		args.add("timdiels");
+		args.add("--channel");
+		args.add("coexpnetviz");
+		args.add("python==3.8.*");
+		args.add(String.format("coexpnetviz==%d.*", CondaCall.BACKEND_MAJOR_VERSION));
+			
 		TextReaderThread stdoutThread = new TextReaderThread("stdout from conda");
 		try {
 			new CondaCall(context, monitor, args, stdoutThread).run();
@@ -571,7 +581,8 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 	
 	private boolean condaEnvExists(TaskMonitor monitor) throws UserException, InterruptedException {
 		JsonParserThread stdoutThread = new JsonParserThread("json env list from conda", context.getJsonMapper());
-		new CondaCall(context, monitor, "env list --json", stdoutThread).run();
+		String[] args = new String[] {"env", "list", "--json"};
+		new CondaCall(context, monitor, args, stdoutThread).run();
 		JsonNode output = stdoutThread.getOutput();
 		JsonNode envs = output.get("envs");
 		assert envs.isArray();
@@ -591,11 +602,14 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		File jsonInputFile = outputDir.toPath().resolve("input.json").toFile();
 		writeJsonInput(createJsonInput(), jsonInputFile);
 		JsonParserThread stdoutThread = new JsonParserThread("json response from backend", context.getJsonMapper());
-		String args = String.format(
-			"run -n %s --no-capture-output coexpnetviz %s",
+		String[] args = {
+			"run",
+			"-n",
 			CondaCall.CONDA_ENV,
+			"--no-capture-output",
+			"coexpnetviz",
 			jsonInputFile.toString()
-		);
+		};
 		new CondaCall(context, monitor, args, stdoutThread).run();
 		
 		// Mention the log file, if any

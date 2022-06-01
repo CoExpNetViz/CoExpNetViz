@@ -24,6 +24,9 @@ package be.ugent.psb.coexpnetviz;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.cytoscape.work.TaskMonitor;
@@ -36,25 +39,31 @@ public class CondaCall {
 	
 	protected Context context;
 	private TaskMonitor monitor;
-	private String condaArgs;
+	private List<String> command;
 	private AbstractReaderThread stdoutThread;
 
-	public CondaCall(Context context, TaskMonitor monitor, String condaArgs, AbstractReaderThread stdoutThread) {
+	public CondaCall(Context context, TaskMonitor monitor, List<String> condaArgs, AbstractReaderThread stdoutThread) throws UserException {
 		super();
 		this.context = context;
 		this.monitor = monitor;
-		this.condaArgs = condaArgs;
 		this.stdoutThread = stdoutThread;
+		
+		this.command = new ArrayList<String>();
+		command.add(context.getCondaPath().toString());
+		command.addAll(condaArgs);
 	}
 	
+	public CondaCall(Context context, TaskMonitor monitor, String[] condaArgs, AbstractReaderThread stdoutThread) throws UserException {
+		this(context, monitor, Arrays.asList(condaArgs), stdoutThread);
+	}
+
 	protected AbstractReaderThread getStdoutThread() {
 		return stdoutThread;
 	}
 
 	public void run() throws UserException, InterruptedException {
 		// Conda does not pass on stdin to coexpnetviz unless --no-capture-output is specified.
-		final String command = context.getCondaPath() + " " + condaArgs;
-		showMessage(Level.INFO, "Executing: " + command);
+		showMessage(Level.INFO, "Executing: " + command.toString());
 		
 		Process process = null;
 		AbstractReaderThread stdoutThread = getStdoutThread();
@@ -63,7 +72,7 @@ public class CondaCall {
 		try {
 			// Start conda process
 			try {
-				process = Runtime.getRuntime().exec(command);
+				process = Runtime.getRuntime().exec(command.toArray(new String[0]));
 			} catch (IOException e) {
 				throw new UserException("Failed to execute conda: " + e.toString(), e);
 			}

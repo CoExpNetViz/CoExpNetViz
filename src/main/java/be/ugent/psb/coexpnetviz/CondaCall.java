@@ -47,14 +47,6 @@ public class CondaCall {
 		this.stdoutThread = stdoutThread;
 	}
 	
-	protected CondaCall(Context context, TaskMonitor monitor, String condaArgs) {
-		super();
-		this.context = context;
-		this.monitor = monitor;
-		this.condaArgs = condaArgs;
-		this.stdoutThread = null;
-	}
-	
 	protected AbstractReaderThread getStdoutThread() {
 		return stdoutThread;
 	}

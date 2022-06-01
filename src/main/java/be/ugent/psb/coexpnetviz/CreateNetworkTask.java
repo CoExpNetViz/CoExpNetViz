@@ -318,6 +318,27 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 		if (expressionMatrixFiles.isEmpty()) {
 			throw new InputError("At least 1 expression matrix is required.");
 		}
+		
+		// Make sure it's not an excel file.
+		// Alternatively we could check it looks like a CSV file but I fear that would be too restrictive.
+		for (File file : expressionMatrixFiles) {
+			try {
+				String mimeType = Files.probeContentType(file.toPath());
+				if (mimeType.contains("excel") || mimeType.contains("xls") || mimeType.contains("spreadsheet")) {
+					throw new InputError(String.format(
+						"Expression matrix seems to be a spreadsheet file, which is not supported.\n" +
+						"Please open the spreadsheet and export it to a CSV file.\n" +
+						"For more info on supported input formats, see https://github.com/CoExpNetViz/CoExpNetViz/wiki/Input-formats\n" +
+						"Expression matrix: %s\nDetected mime type: %s",
+						file.toString(),
+						mimeType
+					));
+				}
+			} catch (IOException e) {
+				// Only raised when the file type is unknown, we're optimistic and assume it's
+				// a valid CSV file then.
+			}
+		}
 	}
 
 	private File cleanInputFile(String name, File file, boolean required) throws InputError {

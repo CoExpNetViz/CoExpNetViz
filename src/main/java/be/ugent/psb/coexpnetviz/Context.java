@@ -25,7 +25,6 @@ package be.ugent.psb.coexpnetviz;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -181,7 +180,7 @@ public class Context {
 	 */
 	public Path getCondaPath() throws UserException {
 		String condaPathString = getPropsReader().getProperties().getProperty(NAMESPACE + ".condaPath");
-		Path condaPath = Paths.get(condaPathString);
+		Path condaPath = Path.of(condaPathString);
 		
 		// Windows uses conda.bat, linux uses conda; added some more to be on the safe side.
 		String[] extensions = new String[] {"", "bat", "exe", "sh"};
@@ -249,7 +248,7 @@ public class Context {
 	
 	public Path findExecutableOnSystemPath(String executable) {
 		for (String dir : System.getenv("PATH").split(File.pathSeparator)) {
-	    	Path path = Paths.get(dir, executable);
+			Path path = Path.of(dir).resolve(executable);
 	        if (Files.isExecutable(path)) {
 	        	return path.toAbsolutePath();
 	        }

@@ -29,7 +29,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -612,7 +611,7 @@ public class CreateNetworkTask extends AbstractTask implements TunableValidator 
 			// Path('/foo/bar').endsWith('r') would be false, it only returns true when it matches
 			// the full file name
 			System.out.println(env.textValue());
-			if (Paths.get(env.textValue()).endsWith(CondaCall.CONDA_ENV)) {
+			if (Path.of(env.textValue()).endsWith(CondaCall.CONDA_ENV)) {
 				return true;
 			}
 		}
